@@ -112,7 +112,7 @@ export const projects: Project[] = [
     primary: 'worlds',
     secondary: 'systems',
     topic: 'Co-presence beyond task success',
-    summary: 'A research world where a human and an AI agent live alongside each other without making task success the only goal.',
+    summary: 'A shared research world where a human and an AI agent live alongside each other, exploring co-dwelling, curiosity, and shared agency beyond task success.',
     existsNow: 'The bridge contract and deterministic toy world are implemented.',
     why: 'It studies agency, curiosity, and co-presence beyond reward optimization.',
     unresolved: 'The full logbook, drive layer, and orchestration loop are still in progress.',
@@ -122,7 +122,7 @@ export const projects: Project[] = [
   },
   {
     id: 'open-world-notes',
-    title: 'Open World Observation Notes',
+    title: 'Notes of Open World Observations',
     role: 'Inhabited Worlds Anchor',
     statusCode: 'archive',
     statusLabel: 'Ongoing archive',
