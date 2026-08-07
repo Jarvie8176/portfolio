@@ -17,7 +17,7 @@ const { projects } = Astro.props as Props;
       >
         <div class="slice-material">
           <span class="slice-role">{project.role}</span>
-          <strong>{project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title}</strong>
+          <strong>{project.title}</strong>
           <span>{project.materialLabel}</span>
         </div>
       </div>

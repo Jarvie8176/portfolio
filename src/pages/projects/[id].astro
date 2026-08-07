@@ -1,0 +1,268 @@
+---
+import Base from '../../layouts/Base.astro';
+import { practiceLabels, projects, type Project } from '../../data/projects';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props as { project: Project };
+const practiceList = [project.primary, project.secondary].filter(Boolean) as Array<Project['primary']>;
+const statusClass: Record<Project['statusCode'], string> = {
+  operational: 'status-operational',
+  integration: 'status-integration',
+  prototype: 'status-prototype',
+  research_build: 'status-research',
+  concept: 'status-concept',
+  archive: 'status-archive',
+};
+---
+
+<Base
+  title={`${site.name} — ${project.title}`}
+  description={project.summary}
+  crumb={`projects / ${project.id}`}
+  ogType="article"
+>
+  <main class={`project-detail practice-${project.primary}`}>
+    <section class="project-hero" aria-labelledby="project-title">
+      <div class="project-heading">
+        <div class="badge-row">
+          <span class={`status-badge ${statusClass[project.statusCode]}`}>{project.statusLabel}</span>
+          {practiceList.map((practice) => (
+            <span class={`mode-tag practice-${practice}`}>{practiceLabels[practice]}</span>
+          ))}
+        </div>
+        <p class="topic">{project.topic}</p>
+        <h1 id="project-title">{project.title}</h1>
+        <p class="summary">{project.summary}</p>
+      </div>
+
+      <div
+        class={`project-artifact practice-${project.primary}`}
+        aria-hidden="true"
+        style={`--artifact-image: url('${project.coverImage}'); --artifact-position: ${project.coverPosition ?? 'center'};`}
+      ></div>
+    </section>
+
+    <section class="project-ledger" aria-labelledby="ledger-title">
+      <h2 id="ledger-title">Project Record</h2>
+      <dl>
+        <div>
+          <dt>Exists Now</dt>
+          <dd>{project.existsNow}</dd>
+        </div>
+        <div>
+          <dt>Why It Matters</dt>
+          <dd>{project.why}</dd>
+        </div>
+        <div>
+          <dt>Unresolved</dt>
+          <dd>{project.unresolved}</dd>
+        </div>
+        <div>
+          <dt>Evidence</dt>
+          <dd>{project.evidence}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <p class="back-link"><a href={`/#${project.id}`}>Back to work index</a></p>
+  </main>
+</Base>
+
+<style>
+  .project-detail {
+    padding: clamp(3rem, 8vw, 6rem) 0 clamp(5rem, 10vw, 8rem);
+  }
+
+  .project-hero,
+  .project-ledger,
+  .back-link {
+    max-width: 68rem;
+    margin-inline: auto;
+  }
+
+  .project-hero {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.92fr) minmax(18rem, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+
+  .project-heading {
+    min-width: 0;
+  }
+
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-badge,
+  .mode-tag,
+  .topic,
+  .project-ledger dt {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.55rem;
+    padding: 0 0.55rem;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    color: var(--ink-soft);
+  }
+
+  .status-operational { color: var(--embodied); }
+  .status-integration,
+  .status-prototype,
+  .status-research { color: var(--systems); }
+  .status-concept,
+  .status-archive { color: var(--worlds); }
+
+  .mode-tag {
+    border-radius: 999px;
+    padding: 0.32rem 0.6rem;
+    background: color-mix(in srgb, currentColor 9%, transparent);
+  }
+
+  .practice-systems { color: var(--systems); }
+  .practice-embodied { color: var(--embodied); }
+  .practice-worlds { color: var(--worlds); }
+
+  .topic {
+    margin: 1.6rem 0 0;
+    color: var(--ink-faint);
+  }
+
+  .project-heading h1 {
+    margin: 0.75rem 0 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 6vw, 4.8rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.02;
+    overflow-wrap: anywhere;
+  }
+
+  .summary {
+    max-width: 34rem;
+    margin: 1.25rem 0 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.7;
+  }
+
+  .project-artifact {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background:
+      linear-gradient(160deg, color-mix(in srgb, currentColor 9%, transparent), transparent 58%),
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, currentColor 8%, transparent) 0 1px,
+        transparent 1px 32px
+      ),
+      var(--surface);
+  }
+
+  .project-artifact::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--artifact-image);
+    background-position: var(--artifact-position);
+    background-size: cover;
+    opacity: 0.9;
+  }
+
+  .project-artifact::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(160deg, color-mix(in srgb, currentColor 14%, transparent), transparent 52%),
+      linear-gradient(0deg, color-mix(in srgb, var(--paper) 18%, transparent), transparent 44%);
+  }
+
+  .project-ledger {
+    margin-top: clamp(4rem, 8vw, 6rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule-hard);
+  }
+
+  .project-ledger h2 {
+    margin: 0 0 1.2rem;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  .project-ledger dl {
+    margin: 0;
+  }
+
+  .project-ledger div {
+    display: grid;
+    grid-template-columns: minmax(9rem, 0.28fr) minmax(0, 0.72fr);
+    gap: clamp(1.25rem, 3vw, 3rem);
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .project-ledger dt {
+    color: currentColor;
+  }
+
+  .project-ledger dd {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .back-link {
+    margin-top: 2rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 780px) {
+    .project-detail {
+      padding-inline: 0;
+    }
+
+    .project-hero {
+      grid-template-columns: 1fr;
+    }
+
+    .project-ledger div {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+  }
+</style>
