@@ -12,12 +12,12 @@ import { site } from '../data/site';
   description={site.description}
   wide
 >
+  <PracticeIndex projects={projects} />
+
   <main id="work" class="home">
     <CoverGallery projects={projects} />
     <ProjectSections />
   </main>
-
-  <PracticeIndex projects={projects} />
 </Base>
 
 <style>

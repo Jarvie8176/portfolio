@@ -49,15 +49,16 @@ const practices = Object.entries(practiceLabels) as [Practice, string][];
 
 <style>
   .practice-index {
-    position: fixed;
+    position: sticky;
     inset-inline: 0;
-    bottom: 0;
+    top: var(--site-header-min);
     z-index: 45;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(10rem, 1fr);
     align-items: center;
     min-height: var(--practice-index-height);
-    border-top: 1px solid var(--rule);
+    border-top: 1px solid color-mix(in srgb, var(--rule) 68%, transparent);
+    border-bottom: 1px solid var(--rule);
     background: color-mix(in srgb, var(--surface) 92%, transparent);
     backdrop-filter: blur(18px);
   }
@@ -111,6 +112,7 @@ const practices = Object.entries(practiceLabels) as [Practice, string][];
 
   @media (max-width: 760px) {
     .practice-index {
+      top: 0;
       grid-template-columns: 1fr;
       min-height: auto;
     }

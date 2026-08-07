@@ -11,6 +11,8 @@ import { site } from '../data/site';
   description={site.description}
   wide
 >
+  <PracticeIndex projects={projects} />
+
   <main id="work" class="work-page">
     <section class="work-intro" aria-labelledby="work-title">
       <span>Work</span>
@@ -23,8 +25,6 @@ import { site } from '../data/site';
 
     <ProjectSections />
   </main>
-
-  <PracticeIndex projects={projects} />
 </Base>
 
 <style>
