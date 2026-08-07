@@ -33,18 +33,6 @@ Systems, embodied life, and inhabited worlds that resist being flattened into
 tasks, data, or generated output.
 ```
 
-Chinese working line:
-
-```text
-在 GenAI 时代，探索那些无法被还原的东西。
-```
-
-Chinese supporting line:
-
-```text
-从能运行的系统，到身体里的生活，再到与他者共同栖居的世界。
-```
-
 ## Practice Taxonomy
 
 Use three primary practice groups:
@@ -76,7 +64,7 @@ Project placement:
 The homepage order follows the practice taxonomy:
 
 ```text
-[NAV] J. Kong · Work · Notes · About · 中 / EN
+[NAV] J. Kong · Work · Contact
 
 [S0] Cover Gallery
      Six diagonal project-material slices + hero thesis
@@ -91,11 +79,9 @@ Embodied Life
 
 Inhabited Worlds
 [S5] commonplace
-[S6] Open World Observation Notes / 开放世界观察笔记
+[S6] Open World Observation Notes
 
-[S7] Practice Map
-
-[FOOTER] Principle · Links · About
+[FOOTER] Name · GitHub · version
 [FIXED] Practice Index
 ```
 
