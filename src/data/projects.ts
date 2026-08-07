@@ -14,6 +14,7 @@ export interface Project {
   statusLabel: string;
   primary: Practice;
   secondary?: Practice;
+  topic: string;
   summary: string;
   existsNow: string;
   why: string;
@@ -40,6 +41,7 @@ export const projects: Project[] = [
     statusLabel: 'In use',
     primary: 'systems',
     secondary: 'worlds',
+    topic: 'Attention filtering',
     summary: 'A system for gathering information, reducing noise, and showing what matters.',
     existsNow: 'Read, reason, and push kits are in use for a digest loop.',
     why: 'It keeps attention from being spent on every incoming signal.',
@@ -56,6 +58,7 @@ export const projects: Project[] = [
     statusLabel: 'Integration in progress',
     primary: 'systems',
     secondary: 'embodied',
+    topic: 'Self-owned assistant layer',
     summary: 'A self-owned assistant layer that connects memory, conversation, action, surfaces, and safety.',
     existsNow: 'Architecture is accepted and several organs exist.',
     why: 'It asks how an assistant can stay auditable and under human authority.',
@@ -72,6 +75,7 @@ export const projects: Project[] = [
     statusLabel: 'Concept study',
     primary: 'embodied',
     secondary: 'systems',
+    topic: 'Memory support as care',
     summary: 'A memory helper that turns daily audio into notes, reminders, and traces the user can keep.',
     existsNow: 'The product shape, roadmap, and feasibility gates are defined.',
     why: 'It treats memory support as care without handing authority to the machine.',
@@ -89,6 +93,7 @@ export const projects: Project[] = [
     statusLabel: 'Active prototype',
     primary: 'embodied',
     secondary: 'worlds',
+    topic: 'Outdoor access through embodied media',
     summary: 'A VR walking project that brings real outdoor trails to people who cannot easily walk outside.',
     existsNow: 'Core playback, spatial audio, speed-source, and media-pipeline questions have working spikes.',
     why: 'It asks what place, motion, and outdoor memory mean when the body cannot easily reach the trail.',
@@ -106,6 +111,7 @@ export const projects: Project[] = [
     statusLabel: 'Research build',
     primary: 'worlds',
     secondary: 'systems',
+    topic: 'Co-presence beyond task success',
     summary: 'A research world where a human and an AI agent live alongside each other without making task success the only goal.',
     existsNow: 'The bridge contract and deterministic toy world are implemented.',
     why: 'It studies agency, curiosity, and co-presence beyond reward optimization.',
@@ -122,6 +128,7 @@ export const projects: Project[] = [
     statusLabel: 'Ongoing archive',
     primary: 'worlds',
     secondary: 'embodied',
+    topic: 'Public-world observation',
     summary: 'A photo and caption practice about meeting the public world with beauty, doubt, care, and memory.',
     existsNow: 'A public photo-and-caption practice is ongoing.',
     why: 'It keeps encounters, refusals, animals, objects, and memory gaps visible.',
