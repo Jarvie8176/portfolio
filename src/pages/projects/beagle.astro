@@ -1,0 +1,193 @@
+---
+import Base from '../../layouts/Base.astro';
+import DotNav from '../../components/DotNav.astro';
+
+const navItems = [
+  { id: 'problem', label: 'problem' },
+  { id: 'principle', label: 'principle' },
+  { id: 'how', label: 'how it works' },
+  { id: 'status', label: 'status' },
+  { id: 'thread', label: 'thread' },
+];
+---
+<Base
+  title="Beagle — a memory you can keep · field notes"
+  description="An always-on memory prosthesis: an agent that listens to your day and keeps the logbook. Concept page — design phase."
+  crumb="projects / beagle"
+  ogType="article"
+>
+  <main class="doc">
+    <!-- ================= HERO ================= -->
+    <section class="hero">
+      <span class="label kicker">project · personal cognitive agent</span>
+      <h1>Beagle</h1>
+      <p class="dek">An always-on memory prosthesis: an agent that listens to your
+      day and keeps the logbook, so that a leaky working memory stops taxing the
+      life it belongs to.</p>
+      <div class="hero-meta">
+        <span class="stamp stamp--big">concept</span>
+        <span class="meta">design phase · snapshot 2026-08</span>
+      </div>
+    </section>
+
+    <hr class="rule rule--hard" />
+
+    <!-- ================= 01 PROBLEM ================= -->
+    <section id="problem">
+      <div class="sec"><span class="sec-no">01</span><h2>The problem</h2></div>
+
+      <p>Some minds spend a disproportionate share of the day on bookkeeping:
+      holding what was said, what was promised, what still needs doing. For people
+      with ADHD, and for people in early cognitive decline, that overhead is not a
+      quirk — it decides what a day can contain. Appointments dissolve, intentions
+      evaporate between rooms, conversations happen and leave no retrievable trace.</p>
+
+      <aside class="note">The target user is concrete, not hypothetical: this is
+      designed for specific people in the author's life, then generalized.</aside>
+
+      <p>Existing tools assume the user will do the capturing. But capture is
+      exactly the faculty that is impaired. The premise of Beagle is that the
+      record should make itself.</p>
+    </section>
+
+    <!-- ================= 02 PRINCIPLE ================= -->
+    <section id="principle">
+      <div class="sec"><span class="sec-no">02</span><h2>The principle — single ship</h2></div>
+
+      <div class="principle">
+        <p class="zh">单船 — one ship, one captain.</p>
+        <p>Every person is the captain of their own life. The agent extends
+        executive function and memory; it never takes the wheel. It drafts the
+        logbook, surfaces the reminder, indexes the past — and decision authority
+        stays, structurally, with the human.</p>
+      </div>
+
+      <p>This is a design constraint, not a slogan. It rules out engagement
+      optimization, rules out autonomous action on the user's behalf, and shapes
+      the architecture below: the pipeline produces <em>records and prompts</em>,
+      never <em>decisions</em>.</p>
+    </section>
+
+    <!-- ================= 03 HOW IT WORKS ================= -->
+    <section id="how">
+      <div class="sec"><span class="sec-no">03</span><h2>How it works</h2></div>
+
+      <p>The first milestone is deliberately modest — a nightly pipeline, not an
+      agent crew. One pass, once a day:</p>
+
+      <div class="chain">
+        <span class="chain-box">wearable recorder</span><span class="chain-arrow">→</span>
+        <span class="chain-box">private sync</span><span class="chain-arrow">→</span>
+        <span class="chain-box">local transcription</span><span class="chain-arrow">→</span>
+        <span class="chain-box">one extraction pass</span><span class="chain-arrow">→</span>
+        <span class="chain-box chain-box--hot">daily logbook</span><span class="chain-arrow">→</span>
+        <span class="chain-box">priority nudge</span>
+      </div>
+      <p class="meta chain-caption">nightly · runs entirely on hardware the user owns</p>
+
+      <p>Audio from the day is transcribed and distilled into a readable daily
+      note in the user's own knowledge vault: a timeline, the people spoken with,
+      the commitments made, the things to do. Anything urgent becomes a quiet
+      push notification. Everything else waits to be read — or searched, weeks
+      later, when "what did she say about the appointment?" actually matters.</p>
+
+      <aside class="note">Extraction must hold up across 中文 / English / 日本語 in
+      the same day's audio — a hard requirement, not a stretch goal.</aside>
+
+      <p>Because the microphone is always on, privacy is not a feature but the
+      ground rule: audio and transcripts stay on the user's own machines, local
+      models do the reading, and any future use of cloud models is gated on
+      redaction that provably works.</p>
+    </section>
+
+    <!-- ================= 04 STATUS ================= -->
+    <section id="status">
+      <div class="sec"><span class="sec-no">04</span><h2>Where it stands</h2></div>
+
+      <dl class="ledger">
+        <div>
+          <dt><span class="stamp stamp--live">verified</span></dt>
+          <dd><p>Product spec, roadmap, and architecture risk evaluation written.
+          Local inference base for evaluation is in place.</p></dd>
+        </div>
+        <div>
+          <dt><span class="stamp stamp--proto">open</span></dt>
+          <dd>
+            <p>Three feasibility gates before code:</p>
+            <p>① Does the recorder truly keep data local, and can export run
+            unattended? ② Can a single consumer GPU carry transcription plus
+            extraction, serially, every night? ③ Is local-model extraction good
+            enough across three languages — or does a redaction layer have to come
+            first?</p>
+          </dd>
+        </div>
+        <div>
+          <dt><span class="stamp">not started</span></dt>
+          <dd><p>Implementation. The skeleton will be forked from a proven
+          personal ingest pipeline rather than built from zero.</p></dd>
+        </div>
+      </dl>
+
+      <blockquote>The honest description of Beagle today: a carefully argued
+      design, three open questions, and a refusal to write code before the
+      questions are answered.</blockquote>
+    </section>
+
+    <!-- ================= 05 THREAD ================= -->
+    <section id="thread">
+      <div class="sec"><span class="sec-no">05</span><h2>The thread</h2></div>
+
+      <p>Beagle is one project in a portfolio about a single idea: extending human
+      attention and memory without replacing human agency. Here the memory being
+      kept is one's own — an archive against forgetting, built for the days when
+      remembering is the hardest work there is.</p>
+
+      <p class="meta">back to the log → <a href="/#commonplace">Commonplace — curiosity without reward</a></p>
+    </section>
+  </main>
+
+  <DotNav items={navItems} />
+</Base>
+
+<style>
+  .hero { margin: 0 0 var(--sp-2); }
+  .hero .kicker { display: block; margin-bottom: 1.1rem; }
+  .hero h1 {
+    font-size: var(--fs-h1);
+    line-height: 1.02;
+    font-weight: 600;
+    margin: 0 0 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .hero .dek {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 36rem;
+    margin: 0;
+  }
+  .hero-meta {
+    display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem; align-items: center;
+    margin-top: var(--sp-3);
+  }
+  .principle {
+    border: 1px solid var(--line-hard);
+    border-radius: var(--radius);
+    background: var(--paper-2);
+    padding: 1.3rem 1.5rem;
+    margin: var(--sp-3) 0;
+  }
+  .principle .zh {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    margin: 0 0 0.3rem;
+  }
+  .principle p { margin: 0.4rem 0 0; }
+  blockquote {
+    margin: var(--sp-3) 0;
+    padding-left: 1.1rem;
+    border-left: 3px solid var(--stamp);
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+</style>

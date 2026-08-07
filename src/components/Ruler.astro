@@ -1,0 +1,90 @@
+---
+/**
+ * Ruler — fixed bottom scroll-progress indicator.
+ * Tick marks drawn in CSS; the vermillion cursor is driven by a
+ * CSS scroll-driven animation (zero JS). Browsers without
+ * animation-timeline support degrade to a static ruler.
+ */
+---
+<div class="ruler" aria-hidden="true">
+  <div class="ruler-fill"></div>
+  <div class="ruler-cursor"></div>
+</div>
+
+<style>
+  .ruler {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1.9rem;
+    z-index: 40;
+    background:
+      /* major tick every 96px */
+      repeating-linear-gradient(
+        to right,
+        var(--line-hard) 0, var(--line-hard) 1px,
+        transparent 1px, transparent 96px
+      ) top / 100% 0.85rem no-repeat,
+      /* minor tick every 12px */
+      repeating-linear-gradient(
+        to right,
+        var(--line) 0, var(--line) 1px,
+        transparent 1px, transparent 12px
+      ) top / 100% 0.5rem no-repeat,
+      var(--paper-2);
+    border-top: 1px solid var(--line-hard);
+  }
+
+  .ruler-fill {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--stamp) 9%, transparent);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  .ruler-cursor {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: var(--stamp);
+    display: none;
+  }
+  /* slide-rule hairline head */
+  .ruler-cursor::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--stamp);
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .ruler-cursor {
+      display: block;
+      animation: ruler-advance auto linear both;
+      animation-timeline: scroll(root block);
+    }
+    .ruler-fill {
+      animation: ruler-fill auto linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+
+  @keyframes ruler-advance {
+    from { left: 0; }
+    to   { left: calc(100% - 2px); }
+  }
+  @keyframes ruler-fill {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  @media print {
+    .ruler { display: none; }
+  }
+</style>
