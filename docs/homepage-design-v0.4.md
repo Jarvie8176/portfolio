@@ -57,7 +57,7 @@ Project placement:
 | Beagle | Embodied Life | Systems |
 | Trailwalk | Embodied Life | Inhabited Worlds |
 | commonplace | Inhabited Worlds | Systems |
-| Open World Observation Notes | Inhabited Worlds | Embodied Life |
+| Notes of Open World Observations | Inhabited Worlds | Embodied Life |
 
 ## Homepage IA
 
@@ -79,7 +79,7 @@ Embodied Life
 
 Inhabited Worlds
 [S5] commonplace
-[S6] Open World Observation Notes
+[S6] Notes of Open World Observations
 
 [FOOTER] Name · GitHub · version
 [FIXED] Practice Index
@@ -100,7 +100,7 @@ project through real project material or a clearly labeled material placeholder.
 Slice order:
 
 ```text
-amanuensis -> Yaaa -> Beagle -> Trailwalk -> commonplace -> Open World Observation Notes
+amanuensis -> Yaaa -> Beagle -> Trailwalk -> commonplace -> Notes of Open World Observations
 ```
 
 Rules:
@@ -148,7 +148,7 @@ Project status:
 | Beagle | Incubation Study | Concept study |
 | Trailwalk | Lead Embodied Work | Active prototype |
 | commonplace | Research World | Research build |
-| Open World Observation Notes | Inhabited Worlds Anchor | Ongoing archive |
+| Notes of Open World Observations | Inhabited Worlds Anchor | Ongoing archive |
 
 ## Simple English Copy
 
@@ -179,9 +179,10 @@ Project lines:
   traces the user can keep.
 - Trailwalk: A VR walking project that brings real outdoor trails to people who
   cannot easily walk outside.
-- commonplace: A research world where a human and an AI agent live alongside
-  each other without making task success the only goal.
-- Open World Observation Notes: A photo and caption practice about meeting the
+- commonplace: A shared research world where a human and an AI agent live
+  alongside each other, exploring co-dwelling, curiosity, and shared agency
+  beyond task success.
+- Notes of Open World Observations: A photo and caption practice about meeting the
   public world with beauty, doubt, care, and memory.
 
 ## Component Naming
@@ -244,7 +245,7 @@ Avoid overclaiming:
 - Beagle is pre-MVP / concept-stage.
 - Trailwalk is an active prototype, not a polished consumer or medical product.
 - commonplace is a research build; do not claim a complete autonomous loop.
-- Open World Observation Notes is an ongoing practice, not a complete archive.
+- Notes of Open World Observations is an ongoing practice, not a complete archive.
 
 ## Render Audit: 2026-08-07 Landing Screenshot
 
