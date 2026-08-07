@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "./tokens.css";
 
-/* Map field-notes tokens into Tailwind's theme so utilities
+/* Map design tokens into Tailwind's theme so utilities
    (bg-paper, text-ink-soft, font-mono, …) resolve to the same values. */
 @theme inline {
   --color-paper: var(--paper);
@@ -29,9 +29,9 @@ html {
   scroll-margin-top: var(--sp-4);
 }
 
-/* keep content clear of the fixed bottom ruler */
+/* keep content clear of the fixed bottom practice index */
 body {
-  padding-bottom: 3.5rem;
+  padding-bottom: var(--practice-index-height);
 }
 
 @media (prefers-reduced-motion: reduce) {

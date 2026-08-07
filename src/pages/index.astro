@@ -1,93 +1,529 @@
 ---
 import Base from '../layouts/Base.astro';
-import DotNav from '../components/DotNav.astro';
-import { projects } from '../data/projects';
+import CoverGallery from '../components/CoverGallery.astro';
+import PracticeIndex from '../components/PracticeIndex.astro';
+import { practiceLabels, projects, type Practice, type Project } from '../data/projects';
+import { site } from '../data/site';
 
-const navItems = [
-  { id: 'thesis', label: 'thesis' },
-  ...projects.map((p) => ({ id: p.id, label: p.id.replace('-', ' ') })),
-  { id: 'about', label: 'about' },
-];
+const groupedProjects = (Object.keys(practiceLabels) as Practice[]).map((practice) => ({
+  practice,
+  label: practiceLabels[practice],
+  projects: projects.filter((project) => project.primary === practice),
+}));
+
+const statusClass: Record<Project['statusCode'], string> = {
+  operational: 'status-operational',
+  integration: 'status-integration',
+  prototype: 'status-prototype',
+  research_build: 'status-research',
+  concept: 'status-concept',
+  archive: 'status-archive',
+};
 ---
+
 <Base
-  title="field notes — extending attention and memory"
-  description="A portfolio of technical and artistic projects about extending human attention and memory without replacing human agency."
-  crumb="index"
+  title={`${site.name} — ${site.homeTitle}`}
+  description={site.description}
+  wide
 >
-  <main class="doc">
-    <!-- ================= THESIS ================= -->
-    <section class="hero" id="thesis">
-      <span class="label kicker">portfolio · one page</span>
-      <h1>Extending attention and&nbsp;memory, without replacing&nbsp;agency.</h1>
-      <p class="dek">
-        扩展人的注意力与记忆，不替代人的主体性。 Six projects — agents,
-        research, VR, photography — that keep logbooks against forgetting,
-        and leave the captain at the wheel.
-      </p>
-    </section>
+  <main id="work" class="home">
+    <CoverGallery projects={projects} />
 
-    <hr class="rule rule--hard" />
+    {groupedProjects.map((group) => (
+      <section class={`practice-block practice-${group.practice}`} id={group.practice}>
+        <div class="practice-heading">
+          <span>{group.label}</span>
+          <p>
+            {group.practice === 'systems' &&
+              'Working systems for memory, attention, filtering, surfaces, and safety.'}
+            {group.practice === 'embodied' &&
+              'Projects that return AI and media to bodies, care, movement, and daily life.'}
+            {group.practice === 'worlds' &&
+              'Worlds shared with agents, animals, strangers, places, and public space.'}
+          </p>
+        </div>
 
-    <!-- ================= PROJECTS ================= -->
-    {projects.map((p, i) => (
-      <section id={p.id}>
-        <div class="sec">
-          <span class="sec-no">{String(i + 1).padStart(2, '0')}</span>
-          <h2>{p.kicker}</h2>
-        </div>
-        <div class="entry">
-          <div class="entry-top">
-            <h3>{p.title}</h3>
-            <span class={`stamp ${p.stampClass}`}>{p.stamp}</span>
-          </div>
-          <p>{p.dek}</p>
-          {p.href ? (
-            <p class="meta"><a href={p.href}>concept page →</a></p>
-          ) : (
-            <p class="meta">concept page — in preparation</p>
-          )}
-        </div>
+        {group.projects.map((project, index) => (
+          <article
+            class={`project-section layout-${index % 2 === 0 ? 'visual-left' : 'visual-right'}`}
+            id={project.id}
+            data-project-section
+            data-practice={project.primary}
+            data-project-title={project.title}
+          >
+            <div class="evidence-artifact" aria-label={`${project.title} evidence material`}>
+              <div
+                class={`artifact-surface practice-${project.primary}`}
+                style={`--artifact-image: url('${project.coverImage}'); --artifact-position: ${project.coverPosition ?? 'center'};`}
+              >
+                <span class="artifact-label">{project.materialLabel}</span>
+                <strong>{project.title}</strong>
+                <p>{project.evidence}</p>
+              </div>
+            </div>
+
+            <div class="project-copy">
+              <div class="badge-row">
+                <span class="role-badge">{project.role}</span>
+                <span class={`status-badge ${statusClass[project.statusCode]}`}>
+                  {project.statusLabel}
+                </span>
+              </div>
+              <h2>{project.title}</h2>
+              <p class="summary">{project.summary}</p>
+
+              <dl class="project-facts">
+                <div>
+                  <dt>Exists now</dt>
+                  <dd>{project.existsNow}</dd>
+                </div>
+                <div>
+                  <dt>Why it matters</dt>
+                  <dd>{project.why}</dd>
+                </div>
+                <div>
+                  <dt>Open question</dt>
+                  <dd>{project.unresolved}</dd>
+                </div>
+              </dl>
+
+              <div class="mode-row">
+                <span class={`mode-tag practice-${project.primary}`}>
+                  {practiceLabels[project.primary]}
+                </span>
+                {project.secondary && (
+                  <span class={`mode-tag practice-${project.secondary}`}>
+                    {practiceLabels[project.secondary]}
+                  </span>
+                )}
+              </div>
+
+              {project.href ? (
+                <a class="project-link" href={project.href}>View project notes</a>
+              ) : (
+                <span class="project-link pending">Project notes in preparation</span>
+              )}
+            </div>
+          </article>
+        ))}
       </section>
     ))}
 
-    <!-- ================= ABOUT ================= -->
-    <section id="about">
-      <div class="sec"><span class="sec-no">07</span><h2>About</h2></div>
+    <section class="practice-map" id="notes" data-project-section data-practice="worlds" data-project-title="Practice Map">
+      <div class="practice-heading">
+        <span>Practice Map</span>
+        <p>The work is grouped by primary practice, but each project crosses at least one border.</p>
+      </div>
+      <div class="map-grid">
+        {groupedProjects.map((group) => (
+          <div class={`map-column practice-${group.practice}`}>
+            <h2>{group.label}</h2>
+            {projects.map((project) => (
+              <div class:list={['map-node', { 'is-primary': project.primary === group.practice, 'is-secondary': project.secondary === group.practice }]}>
+                <span>{project.title}</span>
+                <small>
+                  {project.primary === group.practice && 'primary'}
+                  {project.secondary === group.practice && 'secondary'}
+                </small>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="closing" id="about">
       <p>
-        One person, two practices: systems that carry memory, and photographs
-        that refuse to let encounters dissolve. The thread between them is the
-        thesis above — a logbook is a promise to a future self.
+        These projects explore how AI and software can support a person without
+        replacing the person. Some build systems for remembering, filtering,
+        deciding, and acting with care. Some return to the body: walking,
+        disability, memory, and daily life. Others look at worlds we live in
+        with agents, animals, strangers, places, and public space.
       </p>
+      <div class="closing-links" aria-label="Reader paths">
+        <a href="#systems">Systems</a>
+        <a href="#embodied">Embodied Life</a>
+        <a href="#worlds">Inhabited Worlds</a>
+        <a href="/colophon/">Colophon</a>
+      </div>
     </section>
   </main>
 
-  <DotNav items={navItems} />
+  <PracticeIndex projects={projects} />
 </Base>
 
 <style>
-  .hero { margin: 0 0 var(--sp-2); }
-  .hero .kicker { display: block; margin-bottom: 1.1rem; }
-  .hero h1 {
-    font-size: var(--fs-h1);
-    line-height: 1.02;
-    font-weight: 600;
-    margin: 0 0 1.2rem;
-    letter-spacing: -0.01em;
-  }
-  .hero .dek {
-    font-size: 1.25rem;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    max-width: 36rem;
-    margin: 0;
+  .home {
+    background: var(--paper);
   }
 
-  .entry-top {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    margin-bottom: 0.3rem;
+  .practice-block,
+  .practice-map,
+  .closing {
+    padding: clamp(4rem, 10vh, 6rem) clamp(1.5rem, 4vw, 4rem);
+    border-bottom: 1px solid var(--rule);
   }
-  .entry-top h3 { margin: 0; font-size: var(--fs-h3); font-weight: 600; }
-  .entry p { max-width: 38rem; }
+
+  .practice-heading {
+    max-width: 72rem;
+    margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    grid-template-columns: minmax(11rem, 0.35fr) minmax(0, 0.65fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: end;
+  }
+
+  .practice-heading span {
+    color: currentColor;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .practice-heading p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.7;
+  }
+
+  .practice-systems { color: var(--systems); }
+  .practice-embodied { color: var(--embodied); }
+  .practice-worlds { color: var(--worlds); }
+
+  .project-section {
+    max-width: 72rem;
+    min-height: calc(100svh - var(--project-section-offset));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.95fr) minmax(18rem, 1.05fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    padding: clamp(2.5rem, 7vh, 5rem) 0;
+  }
+
+  .project-section + .project-section {
+    border-top: 1px solid var(--rule);
+  }
+
+  .layout-visual-right .evidence-artifact {
+    order: 2;
+  }
+
+  .evidence-artifact {
+    min-width: 0;
+  }
+
+  .artifact-surface {
+    position: relative;
+    min-height: clamp(22rem, 52vh, 34rem);
+    display: grid;
+    align-content: center;
+    gap: 0.9rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background:
+      linear-gradient(160deg, color-mix(in srgb, currentColor 9%, transparent), transparent 58%),
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, currentColor 8%, transparent) 0 1px,
+        transparent 1px 32px
+      ),
+      var(--surface);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .artifact-surface::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--artifact-image);
+    background-position: var(--artifact-position);
+    background-size: cover;
+    opacity: 0.24;
+    filter: saturate(0.85);
+  }
+
+  .artifact-surface::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--surface) 88%, transparent), color-mix(in srgb, var(--surface) 46%, transparent)),
+      linear-gradient(160deg, color-mix(in srgb, currentColor 14%, transparent), transparent 56%);
+  }
+
+  .artifact-surface > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .artifact-label,
+  .role-badge,
+  .status-badge,
+  .mode-tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .artifact-label {
+    color: currentColor;
+  }
+
+  .artifact-surface strong {
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .artifact-surface p {
+    max-width: 24rem;
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+
+  .project-copy {
+    color: var(--ink);
+  }
+
+  .badge-row,
+  .mode-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .role-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.65rem;
+    padding: 0 0.55rem;
+    border-radius: 3px;
+    background: color-mix(in srgb, currentColor 11%, transparent);
+    color: currentColor;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.8rem;
+    padding: 0 0.65rem;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    background: transparent;
+    color: var(--ink-soft);
+  }
+
+  .status-operational { color: var(--embodied); }
+  .status-integration,
+  .status-prototype,
+  .status-research { color: var(--systems); }
+  .status-concept,
+  .status-archive { color: var(--worlds); }
+
+  .project-copy h2 {
+    margin: 1.5rem 0 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(2.15rem, 5vw, 4rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.05;
+  }
+
+  .summary {
+    max-width: 42rem;
+    margin: 1rem 0 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+    line-height: 1.65;
+  }
+
+  .project-facts {
+    display: grid;
+    gap: 0.9rem;
+    margin: 1.6rem 0;
+  }
+
+  .project-facts div {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr;
+    gap: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .project-facts dt {
+    color: var(--ink-faint);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .project-facts dd {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    line-height: 1.7;
+  }
+
+  .mode-tag {
+    border-radius: 999px;
+    padding: 0.35rem 0.65rem;
+    background: color-mix(in srgb, currentColor 9%, transparent);
+    color: currentColor;
+  }
+
+  .project-link {
+    display: inline-flex;
+    margin-top: 1.6rem;
+    color: var(--accent);
+    font-family: var(--sans);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .project-link::after {
+    content: " ->";
+  }
+
+  .project-link.pending {
+    color: var(--ink-faint);
+  }
+
+  .project-link.pending::after {
+    content: "";
+  }
+
+  .map-grid {
+    max-width: 72rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .map-column {
+    min-width: 0;
+    padding: 1.2rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--surface);
+  }
+
+  .map-column h2 {
+    margin: 0 0 1rem;
+    color: currentColor;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .map-node {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-family: var(--sans);
+  }
+
+  .map-node.is-primary {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .map-node.is-secondary {
+    color: var(--ink-soft);
+  }
+
+  .map-node small {
+    color: currentColor;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+  }
+
+  .closing {
+    padding-bottom: 8rem;
+  }
+
+  .closing p {
+    max-width: 54rem;
+    margin: 0 auto;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    line-height: 1.45;
+  }
+
+  .closing-links {
+    max-width: 54rem;
+    margin: 2rem auto 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .closing-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.15rem;
+    padding: 0 0.8rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .closing-links a:hover {
+    border-color: var(--rule-hard);
+    color: var(--ink);
+  }
+
+  @media (max-width: 860px) {
+    .practice-heading,
+    .project-section,
+    .map-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .project-section {
+      min-height: auto;
+    }
+
+    .layout-visual-right .evidence-artifact {
+      order: 0;
+    }
+
+    .project-facts div {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+  }
 </style>

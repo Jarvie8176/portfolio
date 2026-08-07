@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
 ---
 <Base
-  title="colophon · field notes"
-  description="How this site is made: Astro, Tailwind, a field-notes design system, and no JavaScript where CSS will do."
+  title={`Colophon · ${site.name}`}
+  description="How this portfolio is made: Astro, Tailwind, editorial research materials, and lightweight static pages."
   crumb="colophon"
 >
   <main class="doc">
@@ -14,19 +15,19 @@ import Base from '../layouts/Base.astro';
 
     <hr class="rule rule--hard" />
 
-    <p>This site is a static build: Astro with Tailwind, set in Source Serif 4
-    and IBM Plex Mono. The visual language is a field notebook — paper ground,
-    ink, hairlines, and vermillion stamps for status marks.</p>
+    <p>This site is a static build: Astro with Tailwind, set in CJK-safe Noto
+    type families. The visual language is an editorial research surface:
+    project materials, honest status marks, and enough structure to keep claims
+    inspectable.</p>
 
-    <p>The ruler along the bottom edge measures your progress down the page.
-    It is drawn and driven entirely in CSS — no JavaScript moves it. The dot
-    marks on the right are the only script on most pages: a small observer
-    that notes which section you are reading.</p>
+    <p>The homepage uses a small observer to keep the practice index aligned
+    with the section in view. Motion stays quiet, and the site remains a static
+    document first.</p>
 
-    <p>Status stamps mean what they say. <span class="stamp">concept</span>
-    means no code yet; <span class="stamp stamp--live">partially live</span>
-    means some of it runs and some of it does not. The absence of a claim is
-    itself a record.</p>
+    <p>Status marks follow the homepage taxonomy: <span class="stamp stamp--live">In use</span>{' '}
+    for real running loops, <span class="stamp stamp--proto">Active prototype</span>{' '}
+    for working prototypes with open validation, and <span class="stamp">Concept study</span>{' '}
+    for design-stage work. The absence of a claim is itself a record.</p>
   </main>
 </Base>
 

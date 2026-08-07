@@ -1,68 +1,134 @@
-/**
- * Public-safe project index for the one-pager.
- * Copy here is deliberately conservative: status wording follows the
- * honest-snapshot convention (no "shipped" claims, no internal refs).
- * Full concept pages land per-project as their public rewrite clears.
- */
+export type Practice = 'systems' | 'embodied' | 'worlds';
+
 export interface Project {
   id: string;
   title: string;
-  kicker: string;
-  stamp: string;
-  stampClass: string;
-  dek: string;
-  /** set when the concept page exists; sections without it render as "page pending" */
+  role: string;
+  statusCode:
+    | 'operational'
+    | 'integration'
+    | 'prototype'
+    | 'research_build'
+    | 'concept'
+    | 'archive';
+  statusLabel: string;
+  primary: Practice;
+  secondary?: Practice;
+  summary: string;
+  existsNow: string;
+  why: string;
+  unresolved: string;
+  evidence: string;
+  materialLabel: string;
+  coverImage: string;
+  coverPosition?: string;
   href?: string;
 }
 
+export const practiceLabels: Record<Practice, string> = {
+  systems: 'Systems',
+  embodied: 'Embodied Life',
+  worlds: 'Inhabited Worlds',
+};
+
 export const projects: Project[] = [
   {
-    id: 'beagle',
-    title: 'Beagle',
-    kicker: 'personal cognitive agent',
-    stamp: 'concept',
-    stampClass: '',
-    dek: 'An always-on memory prosthesis: an agent that listens to your day and keeps the logbook, so a leaky working memory stops taxing the life it belongs to. One ship, one captain — it never takes the wheel.',
-    href: '/projects/beagle/',
-  },
-  {
-    id: 'commonplace',
-    title: 'Commonplace',
-    kicker: 'human + ai dyad research',
-    stamp: 'research',
-    stampClass: 'stamp--research',
-    dek: 'A study in whether a human-and-agent pair can be self-sufficient: an agent that keeps a commonplace book because it is curious, not because it is rewarded.',
-  },
-  {
-    id: 'trailwalk',
-    title: 'Trailwalk',
-    kicker: 'vr accessibility · nature',
-    stamp: 'prototype',
-    stampClass: 'stamp--proto',
-    dek: 'Natural walking in real terrain for people whose mobility no longer reaches the trail — real places, honest pace, no barriers between a body and the woods.',
+    id: 'amanuensis',
+    title: 'amanuensis',
+    role: 'Systems Case',
+    statusCode: 'operational',
+    statusLabel: 'In use',
+    primary: 'systems',
+    secondary: 'worlds',
+    summary: 'A system for gathering information, reducing noise, and showing what matters.',
+    existsNow: 'Read, reason, and push kits are in use for a digest loop.',
+    why: 'It keeps attention from being spent on every incoming signal.',
+    unresolved: 'Public release posture and broader adapter shape remain open.',
+    evidence: 'Digest loop, triage policy seam, delivery ledger',
+    materialLabel: 'Read/reason/push trace',
+    coverImage: '/assets/project-covers/amanuensis-trace.svg',
   },
   {
     id: 'yaaa',
     title: 'Yaaa',
-    kicker: 'ai assistant · operational layer',
-    stamp: 'partially live',
-    stampClass: 'stamp--live',
-    dek: 'An operational layer for a personal AI assistant: accepted architecture, built organs, pending bindings. The dossier is public; the wiring is honest about what runs.',
+    role: 'Assistant Operating Layer',
+    statusCode: 'integration',
+    statusLabel: 'Integration in progress',
+    primary: 'systems',
+    secondary: 'embodied',
+    summary: 'A self-owned assistant layer that connects memory, conversation, action, surfaces, and safety.',
+    existsNow: 'Architecture is accepted and several organs exist.',
+    why: 'It asks how an assistant can stay auditable and under human authority.',
+    unresolved: 'The full assistant loop and high-sensitivity safety path are not closed.',
+    evidence: 'Capability map and binding plan',
+    materialLabel: 'Assistant layer map',
+    coverImage: '/assets/project-covers/yaaa-layer-map.svg',
   },
   {
-    id: 'amanuensis',
-    title: 'amanuensis',
-    kicker: 'reading & reasoning kits',
-    stamp: 'partially live',
-    stampClass: 'stamp--live',
-    dek: 'Three small kits that read so you can think: capture, digest, resurface. The daily digest loop has been running since mid-2026.',
+    id: 'beagle',
+    title: 'Beagle',
+    role: 'Incubation Study',
+    statusCode: 'concept',
+    statusLabel: 'Concept study',
+    primary: 'embodied',
+    secondary: 'systems',
+    summary: 'A memory helper that turns daily audio into notes, reminders, and traces the user can keep.',
+    existsNow: 'The product shape, roadmap, and feasibility gates are defined.',
+    why: 'It treats memory support as care without handing authority to the machine.',
+    unresolved: 'Recorder export, local extraction quality, and compute budget still need proof.',
+    evidence: 'Nightly walking-skeleton plan',
+    materialLabel: 'Daily logbook pipeline',
+    coverImage: '/assets/project-covers/beagle-logbook.svg',
+    href: '/projects/beagle/',
   },
   {
-    id: 'field-notes',
+    id: 'trailwalk',
+    title: 'Trailwalk',
+    role: 'Lead Embodied Work',
+    statusCode: 'prototype',
+    statusLabel: 'Active prototype',
+    primary: 'embodied',
+    secondary: 'worlds',
+    summary: 'A VR walking project that brings real outdoor trails to people who cannot easily walk outside.',
+    existsNow: 'Core playback, spatial audio, speed-source, and media-pipeline questions have working spikes.',
+    why: 'It asks what place, motion, and outdoor memory mean when the body cannot easily reach the trail.',
+    unresolved: 'Quest playback, audio-rate architecture, and comfort validation remain open.',
+    evidence: '360 trail capture, spatial audio, walking-pad speed trace',
+    materialLabel: '360 trail capture panel',
+    coverImage: '/assets/project-covers/trailwalk-shoreline.jpg',
+    coverPosition: '50% 46%',
+  },
+  {
+    id: 'commonplace',
+    title: 'commonplace',
+    role: 'Research World',
+    statusCode: 'research_build',
+    statusLabel: 'Research build',
+    primary: 'worlds',
+    secondary: 'systems',
+    summary: 'A research world where a human and an AI agent live alongside each other without making task success the only goal.',
+    existsNow: 'The bridge contract and deterministic toy world are implemented.',
+    why: 'It studies agency, curiosity, and co-presence beyond reward optimization.',
+    unresolved: 'The full logbook, drive layer, and orchestration loop are still in progress.',
+    evidence: 'SyntheticBridge run and logbook trace',
+    materialLabel: 'Bridge trace',
+    coverImage: '/assets/project-covers/commonplace-bridge.svg',
+  },
+  {
+    id: 'open-world-notes',
     title: '开放世界观察笔记',
-    kicker: 'photography · カラスたるもの',
-    stamp: 'fieldwork',
-    stampClass: 'stamp--fieldwork',
-    dek: 'A photographic quest log of co-presence in public space — people, crows, artifacts, and the records that failed. 145 entries and counting; an archive against memory loss.',
+    role: 'Inhabited Worlds Anchor',
+    statusCode: 'archive',
+    statusLabel: 'Ongoing archive',
+    primary: 'worlds',
+    secondary: 'embodied',
+    summary: 'A photo and caption practice about meeting the public world with beauty, doubt, care, and memory.',
+    existsNow: 'A public photo-and-caption practice is ongoing.',
+    why: 'It keeps encounters, refusals, animals, objects, and memory gaps visible.',
+    unresolved: 'A gallery requires image-level visibility review before publication.',
+    evidence: 'Photo captions, collection fragments, visibility notes',
+    materialLabel: 'Public-world photo strip',
+    coverImage: '/assets/project-covers/open-world-rain.jpg',
+    coverPosition: '48% 62%',
   },
 ];
