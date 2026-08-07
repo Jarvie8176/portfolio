@@ -232,12 +232,17 @@ const audiences = [
                         Trail captures, demo invitations, research notes, and
                         community updates.
                     </p>
-                    <a class="button button-light" href={updateHref}
-                        >Request updates</a
-                    >
+                    <div class="loop-actions" aria-label="Trailwalk updates">
+                        <a class="button button-light" href={contactHref}
+                            >Request updates</a
+                        >
+                        <a class="button button-ghost" href={updateHref}
+                            >See development in action</a
+                        >
+                    </div>
                     <p class="fine-print">
-                        Use {updateLabel} for updates, demos, and partnership
-                        notes.
+                        Email us for updates, or visit {updateLabel} to follow
+                        development notes.
                     </p>
                 </div>
             </section>
@@ -686,7 +691,7 @@ const audiences = [
     .loop-inner {
         position: relative;
         z-index: 1;
-        max-width: 480px;
+        max-width: 620px;
         margin: 0 auto;
         text-align: center;
     }
@@ -702,6 +707,13 @@ const audiences = [
         color: rgba(255, 255, 255, 0.5);
         font-size: 15px;
         line-height: 1.7;
+    }
+
+    .loop-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
     }
 
     .loop-inner .fine-print {
