@@ -129,7 +129,7 @@ export const projects: Project[] = [
     primary: 'worlds',
     secondary: 'embodied',
     topic: 'Public-world observation',
-    summary: 'A photo and caption practice about meeting the public world with beauty, doubt, care, and memory.',
+    summary: '"I record moments worth remembering." An ongoing instant-photo exchange project exploring public encounters, refusal, the ethics of the gaze, and the small knots left in ordinary days.',
     existsNow: 'A public photo-and-caption practice is ongoing.',
     why: 'It keeps encounters, refusals, animals, objects, and memory gaps visible.',
     unresolved: 'A gallery requires image-level visibility review before publication.',
