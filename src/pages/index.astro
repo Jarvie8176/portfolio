@@ -135,16 +135,16 @@ const statusClass: Record<Project['statusCode'], string> = {
   .practice-block,
   .practice-map,
   .closing {
-    padding: clamp(4rem, 10vh, 6rem) clamp(1.5rem, 4vw, 4rem);
+    padding: clamp(3rem, 7vh, 4.5rem) clamp(1.5rem, 4vw, 4rem);
     border-bottom: 1px solid var(--rule);
   }
 
   .practice-heading {
-    max-width: 72rem;
-    margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+    max-width: 68rem;
+    margin: 0 auto clamp(2rem, 4vw, 3rem);
     display: grid;
-    grid-template-columns: minmax(11rem, 0.35fr) minmax(0, 0.65fr);
-    gap: clamp(1.5rem, 4vw, 4rem);
+    grid-template-columns: minmax(9rem, 0.28fr) minmax(0, 0.72fr);
+    gap: clamp(1.25rem, 3vw, 3rem);
     align-items: end;
   }
 
@@ -170,14 +170,14 @@ const statusClass: Record<Project['statusCode'], string> = {
   .practice-worlds { color: var(--worlds); }
 
   .project-section {
-    max-width: 76rem;
-    min-height: calc(88svh - var(--project-section-offset));
+    max-width: 68rem;
+    min-height: auto;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: minmax(18rem, 0.95fr) minmax(18rem, 1.05fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    grid-template-columns: minmax(17rem, 0.9fr) minmax(17rem, 1fr);
+    gap: clamp(2rem, 4vw, 4rem);
     align-items: center;
-    padding: clamp(2.5rem, 7vh, 5rem) 0;
+    padding: clamp(2.75rem, 6vh, 4rem) 0;
   }
 
   .project-section + .project-section {
@@ -194,7 +194,7 @@ const statusClass: Record<Project['statusCode'], string> = {
 
   .artifact-surface {
     position: relative;
-    min-height: clamp(24rem, 58vh, 38rem);
+    min-height: auto;
     display: block;
     aspect-ratio: 4 / 3;
     overflow: hidden;
@@ -236,13 +236,15 @@ const statusClass: Record<Project['statusCode'], string> = {
   .topic,
   .mode-tag {
     font-family: var(--mono);
-    font-size: 0.72rem;
+    font-size: 0.64rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .project-copy {
+    min-width: 0;
+    max-width: 34rem;
     color: var(--ink);
   }
 
@@ -250,14 +252,14 @@ const statusClass: Record<Project['statusCode'], string> = {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.45rem;
   }
 
   .role-badge {
     display: inline-flex;
     align-items: center;
-    min-height: 1.65rem;
-    padding: 0 0.55rem;
+    min-height: 1.45rem;
+    padding: 0 0.48rem;
     border-radius: 3px;
     background: color-mix(in srgb, currentColor 11%, transparent);
     color: currentColor;
@@ -266,8 +268,8 @@ const statusClass: Record<Project['statusCode'], string> = {
   .status-badge {
     display: inline-flex;
     align-items: center;
-    min-height: 1.8rem;
-    padding: 0 0.65rem;
+    min-height: 1.5rem;
+    padding: 0 0.52rem;
     border: 1px solid currentColor;
     border-radius: 3px;
     background: transparent;
@@ -285,10 +287,11 @@ const statusClass: Record<Project['statusCode'], string> = {
     margin: 0.8rem 0 0;
     color: var(--ink);
     font-family: var(--serif);
-    font-size: clamp(2.15rem, 5vw, 4rem);
+    font-size: clamp(2rem, 4vw, 3.35rem);
     font-weight: 600;
     letter-spacing: 0;
     line-height: 1.05;
+    overflow-wrap: anywhere;
   }
 
   .project-copy h2 a {
@@ -301,11 +304,11 @@ const statusClass: Record<Project['statusCode'], string> = {
   }
 
   .summary {
-    max-width: 42rem;
+    max-width: 32rem;
     margin: 1rem 0 0;
     color: var(--ink);
     font-family: var(--sans);
-    font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+    font-size: clamp(1rem, 1.35vw, 1.18rem);
     line-height: 1.65;
   }
 
@@ -316,7 +319,7 @@ const statusClass: Record<Project['statusCode'], string> = {
 
   .mode-tag {
     border-radius: 999px;
-    padding: 0.35rem 0.65rem;
+    padding: 0.28rem 0.52rem;
     background: color-mix(in srgb, currentColor 9%, transparent);
     color: currentColor;
   }
