@@ -23,6 +23,7 @@ export interface Project {
   materialLabel: string;
   coverImage: string;
   coverPosition?: string;
+  titleLang?: string;
   href?: string;
 }
 
@@ -100,7 +101,7 @@ export const projects: Project[] = [
     unresolved: 'Quest playback, audio-rate architecture, and comfort validation remain open.',
     evidence: '360 trail capture, spatial audio, walking-pad speed trace',
     materialLabel: '360 trail capture panel',
-    coverImage: '/assets/project-covers/trailwalk-shoreline.jpg',
+    coverImage: '/assets/project-covers/trailwalk-shoreline.webp',
     coverPosition: '50% 46%',
   },
   {
@@ -135,7 +136,8 @@ export const projects: Project[] = [
     unresolved: 'A gallery requires image-level visibility review before publication.',
     evidence: 'Photo captions, collection fragments, visibility notes',
     materialLabel: 'Public-world photo strip',
-    coverImage: '/assets/project-covers/open-world-rain.jpg',
+    coverImage: '/assets/project-covers/open-world-rain.webp',
     coverPosition: '48% 62%',
+    titleLang: 'zh-Hans',
   },
 ];
