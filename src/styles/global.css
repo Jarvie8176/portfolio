@@ -26,12 +26,7 @@ html {
 
 /* anchored sections stop clear of the viewport edge */
 [id] {
-  scroll-margin-top: var(--sp-4);
-}
-
-/* keep content clear of the fixed bottom practice index */
-body {
-  padding-bottom: var(--practice-index-height);
+  scroll-margin-top: var(--project-section-offset);
 }
 
 @media (prefers-reduced-motion: reduce) {

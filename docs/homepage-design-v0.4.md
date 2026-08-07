@@ -65,7 +65,6 @@ The homepage order follows the practice taxonomy:
 
 ```text
 [NAV] J. Kong · Work · Contact
-[SECONDARY NAV] Systems / Embodied Life / Inhabited Worlds
 
 [S0] Cover Gallery
      Six diagonal project-material slices + hero thesis
@@ -195,7 +194,7 @@ Use these names in implementation and docs:
 |---|---|
 | `SiteHeader` | Fixed or sticky top navigation |
 | `CoverGallery` | S0 diagonal project-material cover |
-| `PracticeIndex` | Fixed bottom mode index; not a ruler |
+| `PracticeIndex` | Sticky mode index below the header; not a ruler |
 | `StatusBadge` | Current honest project status |
 | `ModeTag` | Systems / Embodied Life / Inhabited Worlds labels |
 | `RoleBadge` | Section role such as Lead Work or Research Build |
