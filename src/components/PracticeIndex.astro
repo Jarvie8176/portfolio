@@ -1,0 +1,135 @@
+---
+import { practiceLabels, type Practice, type Project } from '../data/projects';
+
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props as Props;
+const practices = Object.entries(practiceLabels) as [Practice, string][];
+---
+
+<nav class="practice-index" aria-label="Practice index">
+  {practices.map(([key, label]) => (
+    <a class={`practice-link practice-${key}`} href={`#${key}`} data-practice-link={key}>
+      <span></span>
+      {label}
+    </a>
+  ))}
+  <span class="active-project" data-active-project>{projects[0]?.title}</span>
+</nav>
+
+<script>
+  const links = [...document.querySelectorAll('[data-practice-link]')] as HTMLElement[];
+  const activeProject = document.querySelector('[data-active-project]');
+  const sections = [...document.querySelectorAll('[data-project-section]')] as HTMLElement[];
+
+  const setActive = (section: HTMLElement) => {
+    const practice = section.dataset.practice;
+    const title = section.dataset.projectTitle;
+    for (const link of links) {
+      link.classList.toggle('is-active', link.dataset.practiceLink === practice);
+    }
+    if (activeProject && title) activeProject.textContent = title;
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target instanceof HTMLElement) setActive(visible.target);
+    },
+    { threshold: [0.35, 0.55], rootMargin: '-28% 0px -42% 0px' }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+  if (sections[0]) setActive(sections[0]);
+</script>
+
+<style>
+  .practice-index {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 45;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(10rem, 1fr);
+    align-items: center;
+    min-height: var(--practice-index-height);
+    border-top: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter: blur(18px);
+  }
+
+  .practice-link,
+  .active-project {
+    min-height: var(--practice-index-height);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    border-right: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .practice-link span {
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  .practice-systems { color: var(--systems); }
+  .practice-embodied { color: var(--embodied); }
+  .practice-worlds { color: var(--worlds); }
+
+  .practice-link:not(.is-active) {
+    color: var(--ink-faint);
+  }
+
+  .practice-link.is-active span {
+    background: currentColor;
+  }
+
+  .active-project {
+    justify-content: flex-start;
+    padding: 0 2rem;
+    border-right: 0;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  @media (max-width: 760px) {
+    .practice-index {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .practice-link {
+      display: none;
+    }
+
+    .practice-link.is-active,
+    .active-project {
+      display: flex;
+      min-height: 2.8rem;
+      border-right: 0;
+      padding: 0 1.2rem;
+      justify-content: flex-start;
+    }
+
+    .active-project {
+      display: none;
+    }
+  }
+</style>

@@ -1,30 +1,35 @@
 /* ============================================================
-   Field Notes — portfolio visual design tokens
-   Motif: expedition logbook / field notes.
-   Light "paper" theme is canonical for concept pages;
-   dark "darkroom" tokens reserved for the photo gallery.
+   Portfolio visual design tokens
+   Motif: editorial research publication + field material +
+   technical evidence.
    ============================================================ */
 
 :root {
   /* -- paper surfaces ------------------------------------- */
-  --paper:      #f7f4ee;   /* page ground, warm off-white   */
-  --paper-2:    #efe9dd;   /* inset panels, code, asides    */
-  --paper-3:    #e6dfd0;   /* hover / pressed               */
+  --paper:      #f6f7f5;   /* page ground                   */
+  --surface:    #fcfbf7;   /* evidence panels               */
+  --paper-2:    #fcfbf7;   /* legacy alias: panels          */
+  --paper-3:    #edf1ed;   /* hover / pressed               */
 
   /* -- ink ------------------------------------------------ */
-  --ink:        #211d18;   /* primary text                  */
-  --ink-soft:   #5f5749;   /* secondary text, captions      */
-  --ink-faint:  #8a8172;   /* metadata, disabled            */
+  --ink:        #1b1d1f;   /* primary text                  */
+  --ink-soft:   #5a5e63;   /* secondary text, captions      */
+  --ink-faint:  #8a8f92;   /* metadata, disabled            */
 
   /* -- lines ---------------------------------------------- */
-  --line:       #d6cdbc;   /* hairlines, dotted rules       */
-  --line-hard:  #a99f8c;   /* emphasized rules              */
+  --rule:       #dce1de;   /* hairlines, dividers           */
+  --rule-hard:  #9ca6a0;   /* emphasized rules              */
+  --line:       #dce1de;   /* legacy alias                  */
+  --line-hard:  #9ca6a0;   /* legacy alias                  */
 
   /* -- functional color (used sparingly) ------------------ */
-  --stamp:      #b23f24;   /* vermillion: status stamps, marks */
-  --accent:     #2d5e86;   /* links, interactive            */
-  --live:       #3d6b4f;   /* "live/verified" state         */
-  --open:       #8a6d1f;   /* "open question" state         */
+  --systems:    #2c4e8a;
+  --embodied:   #657052;
+  --worlds:     #985e49;
+  --stamp:      #985e49;   /* status stamps, marks          */
+  --accent:     #2c4e8a;   /* links, interactive            */
+  --live:       #657052;   /* "live/verified" state         */
+  --open:       #2c4e8a;   /* "open question" state         */
 
   /* -- darkroom (photo gallery variant, reference only) ---- */
   --dark-ground:#141210;
@@ -32,13 +37,14 @@
   --dark-line:  #3a352d;
 
   /* -- type ----------------------------------------------- */
-  --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Noto Serif CJK SC", serif;
-  --mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --sans:  "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --serif: "Noto Serif", Georgia, "Noto Serif CJK SC", serif;
+  --mono:  "Noto Sans Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* type scale (px reference; set on rem) */
   --fs-label: 0.72rem;   /* 11.5 — stamps, section labels   */
   --fs-meta:  0.82rem;   /* 13   — metadata, margin notes   */
-  --fs-body:  1.0625rem; /* 17   — body serif               */
+  --fs-body:  1rem;      /* 16   — body                     */
   --fs-h3:    1.35rem;
   --fs-h2:    1.8rem;
   --fs-h1:    clamp(2.4rem, 6vw, 3.6rem);
@@ -57,6 +63,9 @@
   --col-main: 42rem;       /* ~68ch at body size            */
   --col-note: 14rem;       /* margin-note rail              */
   --radius:   3px;
+  --site-header-min: 52px;
+  --practice-index-height: 3.2rem;
+  --project-section-offset: calc(var(--site-header-min) + var(--practice-index-height) + 2rem);
 }
 
 /* ============================================================
@@ -69,19 +78,11 @@ html { background: var(--paper); }
 
 body {
   margin: 0;
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--ink);
-  background:
-    /* faint horizontal ruling, notebook ghost */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0, transparent 31px,
-      color-mix(in srgb, var(--line) 26%, transparent) 31px,
-      color-mix(in srgb, var(--line) 26%, transparent) 32px
-    ),
-    var(--paper);
+  background: var(--paper);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -192,6 +193,11 @@ a:hover { color: var(--stamp); }
   max-width: calc(var(--col-main) + var(--col-note) + 6rem);
   margin: 0 auto;
   padding: 0 var(--sp-3);
+}
+
+.page--wide {
+  max-width: none;
+  padding: 0;
 }
 
 .doc { position: relative; max-width: var(--col-main); }

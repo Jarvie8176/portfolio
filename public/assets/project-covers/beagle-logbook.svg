@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Beagle logbook pipeline material</title>
+  <desc id="desc">A daily logbook page with timeline rows and local-only pipeline marks.</desc>
+  <rect width="1200" height="1600" fill="#fcfbf7"/>
+  <g stroke="#657052" stroke-opacity=".18" stroke-width="2">
+    <path d="M0 176h1200M0 296h1200M0 416h1200M0 536h1200M0 656h1200M0 776h1200M0 896h1200M0 1016h1200M0 1136h1200M0 1256h1200M0 1376h1200"/>
+    <path d="M230 0v1600M880 0v1600"/>
+  </g>
+  <g font-family="Noto Sans Mono, ui-monospace, monospace" fill="#1b1d1f">
+    <text x="130" y="160" font-size="42" font-weight="700">daily logbook / concept gate</text>
+    <text x="130" y="290" font-size="31" fill="#5a5e63">21:00  private sync</text>
+    <text x="130" y="410" font-size="31" fill="#5a5e63">21:20  local transcription</text>
+    <text x="130" y="530" font-size="31" fill="#5a5e63">21:55  extraction pass</text>
+    <text x="130" y="650" font-size="31" fill="#5a5e63">22:10  priority nudge</text>
+    <text x="130" y="1185" font-size="29" fill="#985e49">open gates: recorder export / compute / multilingual extraction</text>
+  </g>
+  <g fill="none" stroke="#657052" stroke-width="9" stroke-linecap="round">
+    <path d="M880 290h120M880 410h120M880 530h120M880 650h120"/>
+  </g>
+  <g fill="#657052">
+    <circle cx="230" cy="290" r="13"/><circle cx="230" cy="410" r="13"/><circle cx="230" cy="530" r="13"/><circle cx="230" cy="650" r="13"/>
+  </g>
+</svg>

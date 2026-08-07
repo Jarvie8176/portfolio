@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Yaaa assistant layer map material</title>
+  <desc id="desc">Nested assistant layers connecting memory, conversation, action, surfaces, and safety.</desc>
+  <rect width="1200" height="1600" fill="#f6f7f5"/>
+  <g fill="none" stroke-width="6">
+    <circle cx="600" cy="760" r="410" stroke="#2c4e8a" stroke-opacity=".38"/>
+    <circle cx="600" cy="760" r="285" stroke="#657052" stroke-opacity=".42"/>
+    <circle cx="600" cy="760" r="160" stroke="#985e49" stroke-opacity=".5"/>
+  </g>
+  <g stroke="#1b1d1f" stroke-opacity=".18" stroke-width="3">
+    <path d="M600 350v820M190 760h820M310 470l580 580M890 470 310 1050"/>
+  </g>
+  <g font-family="Noto Sans Mono, ui-monospace, monospace" font-size="34" font-weight="700" fill="#1b1d1f">
+    <text x="118" y="210">assistant operating layer</text>
+    <text x="465" y="748">human</text>
+    <text x="452" y="802">authority</text>
+    <text x="148" y="530" fill="#2c4e8a">memory</text>
+    <text x="824" y="530" fill="#657052">surface</text>
+    <text x="146" y="1082" fill="#985e49">safety</text>
+    <text x="830" y="1082" fill="#2c4e8a">action</text>
+  </g>
+  <g fill="#fcfbf7" stroke="#1b1d1f" stroke-opacity=".55" stroke-width="3">
+    <rect x="374" y="655" width="452" height="210" rx="10"/>
+    <rect x="118" y="442" width="204" height="80" rx="8"/>
+    <rect x="786" y="442" width="226" height="80" rx="8"/>
+    <rect x="118" y="997" width="188" height="80" rx="8"/>
+    <rect x="798" y="997" width="188" height="80" rx="8"/>
+  </g>
+</svg>
