@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
+import { build } from '../data/build';
 import { site } from '../data/site';
 
 interface Props {
@@ -43,7 +44,10 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
       <slot />
       <footer class="site-foot">
         <span class="meta">{site.name}</span>
-        <span class="meta"><a href="/colophon/">colophon</a></span>
+        <span class="meta-row">
+          <span class="meta version-tag" aria-label={`Version ${build.version}`}>v{build.version}</span>
+          <span class="meta"><a href="/colophon/">colophon</a></span>
+        </span>
       </footer>
     </div>
   </body>

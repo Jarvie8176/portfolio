@@ -45,7 +45,7 @@ const { projects } = Astro.props as Props;
     min-height: calc(100svh - var(--site-header-min) - var(--practice-index-height));
     display: grid;
     align-items: end;
-    padding: clamp(4rem, 10vh, 6rem) clamp(1.5rem, 4vw, 4rem) clamp(3.5rem, 8vh, 5rem);
+    padding: clamp(3.5rem, 8vh, 5.5rem) clamp(1.5rem, 4vw, 4rem) clamp(3.25rem, 7vh, 4.5rem);
     overflow: hidden;
     border-bottom: 1px solid var(--rule);
     background: var(--paper);
@@ -60,7 +60,7 @@ const { projects } = Astro.props as Props;
     border: 2px solid var(--ink);
     border-radius: 3px;
     overflow: hidden;
-    opacity: 0.82;
+    opacity: 0.78;
   }
 
   .cover-slice {
@@ -110,7 +110,7 @@ const { projects } = Astro.props as Props;
 
   .slice-material {
     position: absolute;
-    inset: auto 1.5rem 1rem;
+    inset: auto 1.5rem 1.45rem;
     display: grid;
     gap: 0.45rem;
     transform: skewX(15deg);
@@ -140,8 +140,8 @@ const { projects } = Astro.props as Props;
   .cover-copy {
     position: relative;
     z-index: 2;
-    max-width: 44rem;
-    padding: 1.4rem 0 0;
+    max-width: 36rem;
+    padding: 1rem 0 0;
     color: var(--ink);
   }
 
@@ -157,29 +157,29 @@ const { projects } = Astro.props as Props;
   }
 
   .cover-copy h1 {
-    max-width: 42rem;
+    max-width: 35rem;
     margin: 0;
     font-family: var(--serif);
-    font-size: clamp(2.25rem, 5.2vw, 4.65rem);
+    font-size: clamp(2rem, 4.2vw, 3.9rem);
     font-weight: 600;
     letter-spacing: 0;
-    line-height: 0.98;
+    line-height: 1.02;
   }
 
   .cover-copy p {
-    max-width: 34rem;
+    max-width: 30rem;
     margin: 1.25rem 0 0;
     color: var(--ink-soft);
     font-family: var(--sans);
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    line-height: 1.7;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    line-height: 1.65;
   }
 
   .cover-practices {
     display: flex;
     flex-wrap: wrap;
     gap: 0.65rem;
-    margin-top: 1.45rem;
+    margin-top: 1.05rem;
   }
 
   .practice-pill {
@@ -228,7 +228,7 @@ const { projects } = Astro.props as Props;
     }
 
     .cover-copy h1 {
-      font-size: clamp(2.25rem, 13vw, 3.8rem);
+      font-size: clamp(2.15rem, 12vw, 3.55rem);
       line-height: 1.02;
     }
   }
