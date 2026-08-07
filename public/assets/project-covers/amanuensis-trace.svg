@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Amanuensis digest trace material</title>
+  <desc id="desc">Layered lines, policy marks, and delivery rows representing a digest loop.</desc>
+  <rect width="1200" height="1600" fill="#f4f6f2"/>
+  <g stroke="#2c4e8a" stroke-opacity=".22" stroke-width="2">
+    <path d="M125 0v1600M255 0v1600M385 0v1600M515 0v1600M645 0v1600M775 0v1600M905 0v1600M1035 0v1600"/>
+    <path d="M0 132h1200M0 292h1200M0 452h1200M0 612h1200M0 772h1200M0 932h1200M0 1092h1200M0 1252h1200M0 1412h1200"/>
+  </g>
+  <g fill="none" stroke-linecap="round">
+    <path d="M145 376c120-86 219-73 302 36s190 112 321 13 226-91 292 25" stroke="#2c4e8a" stroke-width="12"/>
+    <path d="M145 608c151 45 257 29 318-48s174-86 340-28 256 47 318-34" stroke="#657052" stroke-width="10"/>
+    <path d="M145 852c98-48 185-37 263 32s161 77 250 25 190-51 303 3" stroke="#985e49" stroke-width="10"/>
+  </g>
+  <g font-family="Noto Sans Mono, ui-monospace, monospace" font-size="42" font-weight="700" fill="#1b1d1f">
+    <text x="130" y="190">read / reason / push</text>
+    <text x="130" y="1270" fill="#5a5e63" font-size="31">policy: attention budget preserved</text>
+    <text x="130" y="1330" fill="#5a5e63" font-size="31">delivery: quiet, inspectable, reversible</text>
+  </g>
+  <g fill="#2c4e8a">
+    <circle cx="170" cy="376" r="18"/><circle cx="447" cy="412" r="18"/><circle cx="768" cy="425" r="18"/><circle cx="1060" cy="450" r="18"/>
+  </g>
+</svg>

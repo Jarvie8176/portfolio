@@ -1,0 +1,234 @@
+---
+import { practiceLabels, type Project } from '../data/projects';
+
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props as Props;
+---
+
+<section class="cover-gallery" id="cover" aria-labelledby="cover-title">
+  <div class="cover-slices" aria-hidden="true">
+    {projects.map((project, index) => (
+      <div
+        class={`cover-slice slice-${index + 1} practice-${project.primary}`}
+        style={`--cover-image: url('${project.coverImage}'); --cover-position: ${project.coverPosition ?? 'center'};`}
+      >
+        <div class="slice-material">
+          <span class="slice-role">{project.role}</span>
+          <strong>{project.title}</strong>
+          <span>{project.materialLabel}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="cover-copy">
+    <span class="eyebrow">Portfolio · research practice</span>
+    <h1 id="cover-title">Exploring what cannot be reduced in the age of GenAI</h1>
+    <p>
+      Systems, embodied life, and inhabited worlds that resist being flattened
+      into tasks, data, or generated output.
+    </p>
+    <div class="cover-practices" aria-label="Practice groups">
+      {Object.entries(practiceLabels).map(([key, label]) => (
+        <a class={`practice-pill practice-${key}`} href={`#${key}`}>{label}</a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cover-gallery {
+    position: relative;
+    min-height: calc(100svh - var(--site-header-min));
+    display: grid;
+    align-items: end;
+    padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 4vw, 4rem) clamp(5.5rem, 12vh, 8rem);
+    overflow: hidden;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  .cover-slices {
+    position: absolute;
+    inset: clamp(1rem, 2vw, 1.6rem);
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+    border: 2px solid var(--ink);
+    border-radius: 3px;
+    overflow: hidden;
+    opacity: 0.72;
+  }
+
+  .cover-slice {
+    position: relative;
+    min-width: 0;
+    border-left: 2px solid var(--ink);
+    transform: skewX(-15deg);
+    transform-origin: bottom;
+    overflow: hidden;
+    background: var(--surface);
+    color: var(--systems);
+  }
+
+  .cover-slice:first-child {
+    border-left: 0;
+  }
+
+  .cover-slice::before {
+    content: "";
+    position: absolute;
+    inset: -8%;
+    background-image: var(--cover-image);
+    background-position: var(--cover-position);
+    background-size: cover;
+    transform: skewX(15deg) scale(1.12);
+    opacity: 0.84;
+  }
+
+  .cover-slice::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(0deg, color-mix(in srgb, var(--paper) 52%, transparent), color-mix(in srgb, var(--surface) 15%, transparent)),
+      linear-gradient(160deg, color-mix(in srgb, currentColor 22%, transparent), transparent 55%),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in srgb, currentColor 16%, transparent) 0 1px,
+        transparent 1px 26px
+      );
+    opacity: 0.88;
+  }
+
+  .practice-systems { color: var(--systems); }
+  .practice-embodied { color: var(--embodied); }
+  .practice-worlds { color: var(--worlds); }
+
+  .slice-material {
+    position: absolute;
+    inset: auto 1.5rem 1.4rem;
+    display: grid;
+    gap: 0.45rem;
+    transform: skewX(15deg);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.35;
+    z-index: 1;
+  }
+
+  .slice-material strong {
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 2vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.05;
+  }
+
+  .slice-role {
+    color: currentColor;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .cover-copy {
+    position: relative;
+    z-index: 2;
+    max-width: 58rem;
+    padding: 1.4rem 0 0;
+    color: var(--ink);
+  }
+
+  .eyebrow {
+    display: block;
+    margin-bottom: 1.1rem;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .cover-copy h1 {
+    max-width: 54rem;
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 7vw, 5.9rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 0.98;
+  }
+
+  .cover-copy p {
+    max-width: 39rem;
+    margin: 1.25rem 0 0;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.7;
+  }
+
+  .cover-practices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-top: 1.45rem;
+  }
+
+  .practice-pill {
+    border: 1px solid color-mix(in srgb, currentColor 42%, transparent);
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem;
+    background: color-mix(in srgb, currentColor 9%, transparent);
+    color: var(--systems);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  @media (max-width: 760px) {
+    .cover-gallery {
+      min-height: auto;
+      padding-top: 2rem;
+    }
+
+    .cover-slices {
+      position: relative;
+      inset: auto;
+      grid-template-columns: 1fr;
+      height: auto;
+      min-height: 28rem;
+      margin-bottom: 2rem;
+      border-width: 1px;
+    }
+
+    .cover-slice {
+      min-height: 4.5rem;
+      border-left: 0;
+      border-top: 1px solid var(--ink);
+      transform: none;
+    }
+
+    .cover-slice:first-child {
+      border-top: 0;
+    }
+
+    .slice-material {
+      inset: auto 1rem 0.8rem;
+      transform: none;
+    }
+
+    .cover-copy h1 {
+      font-size: clamp(2.25rem, 13vw, 3.8rem);
+      line-height: 1.02;
+    }
+  }
+</style>

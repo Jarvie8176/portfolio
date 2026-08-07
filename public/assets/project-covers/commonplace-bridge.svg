@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Commonplace bridge trace material</title>
+  <desc id="desc">A deterministic world trace with perception, action, and logbook rows.</desc>
+  <rect width="1200" height="1600" fill="#f3f5f1"/>
+  <g font-family="Noto Sans Mono, ui-monospace, monospace" font-size="33" fill="#1b1d1f">
+    <text x="120" y="230" fill="#657052" font-weight="700">// SyntheticBridge deterministic run</text>
+    <text x="120" y="340">perception: { tick: 3, world: "meadow" }</text>
+    <text x="120" y="435">action: { affordance: "forage", reason: "curious" }</text>
+    <text x="120" y="530">result: { status: "ok" }</text>
+    <text x="120" y="720" fill="#985e49">logbook: "found wild herbs near the stream"</text>
+  </g>
+  <g fill="none" stroke="#985e49" stroke-width="4" stroke-opacity=".42">
+    <path d="M150 970c160-170 320-170 480 0s320 170 480 0"/>
+    <path d="M150 1100c160-170 320-170 480 0s320 170 480 0"/>
+    <path d="M150 1230c160-170 320-170 480 0s320 170 480 0"/>
+  </g>
+  <g fill="#985e49" fill-opacity=".74">
+    <circle cx="310" cy="970" r="20"/><circle cx="630" cy="970" r="20"/><circle cx="950" cy="970" r="20"/>
+    <circle cx="470" cy="1100" r="20"/><circle cx="790" cy="1100" r="20"/>
+  </g>
+</svg>

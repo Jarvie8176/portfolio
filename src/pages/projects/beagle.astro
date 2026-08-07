@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import DotNav from '../../components/DotNav.astro';
+import { site } from '../../data/site';
 
 const navItems = [
   { id: 'problem', label: 'problem' },
@@ -11,8 +12,8 @@ const navItems = [
 ];
 ---
 <Base
-  title="Beagle — a memory you can keep · field notes"
-  description="An always-on memory prosthesis: an agent that listens to your day and keeps the logbook. Concept page — design phase."
+  title={`Beagle — a memory you can keep · ${site.name}`}
+  description="A design-stage memory prosthesis: an agent concept for turning daily audio into a private logbook. Concept page — design phase."
   crumb="projects / beagle"
   ogType="article"
 >
@@ -21,9 +22,9 @@ const navItems = [
     <section class="hero">
       <span class="label kicker">project · personal cognitive agent</span>
       <h1>Beagle</h1>
-      <p class="dek">An always-on memory prosthesis: an agent that listens to your
-      day and keeps the logbook, so that a leaky working memory stops taxing the
-      life it belongs to.</p>
+      <p class="dek">A design-stage memory prosthesis: an agent concept for
+      turning daily audio into a private logbook, so that a leaky working memory
+      stops taxing the life it belongs to.</p>
       <div class="hero-meta">
         <span class="stamp stamp--big">concept</span>
         <span class="meta">design phase · snapshot 2026-08</span>
@@ -72,8 +73,8 @@ const navItems = [
     <section id="how">
       <div class="sec"><span class="sec-no">03</span><h2>How it works</h2></div>
 
-      <p>The first milestone is deliberately modest — a nightly pipeline, not an
-      agent crew. One pass, once a day:</p>
+      <p>The intended first milestone is deliberately modest — a nightly
+      pipeline, not an agent crew. One pass, once a day:</p>
 
       <div class="chain">
         <span class="chain-box">wearable recorder</span><span class="chain-arrow">→</span>
@@ -83,21 +84,22 @@ const navItems = [
         <span class="chain-box chain-box--hot">daily logbook</span><span class="chain-arrow">→</span>
         <span class="chain-box">priority nudge</span>
       </div>
-      <p class="meta chain-caption">nightly · runs entirely on hardware the user owns</p>
+      <p class="meta chain-caption">nightly · intended to run entirely on hardware the user owns</p>
 
-      <p>Audio from the day is transcribed and distilled into a readable daily
-      note in the user's own knowledge vault: a timeline, the people spoken with,
-      the commitments made, the things to do. Anything urgent becomes a quiet
-      push notification. Everything else waits to be read — or searched, weeks
-      later, when "what did she say about the appointment?" actually matters.</p>
+      <p>Audio from the day would be transcribed and distilled into a readable
+      daily note in the user's own knowledge vault: a timeline, the people spoken
+      with, the commitments made, the things to do. Anything urgent would become
+      a quiet push notification. Everything else would wait to be read — or
+      searched, weeks later, when "what did she say about the appointment?"
+      actually matters.</p>
 
       <aside class="note">Extraction must hold up across 中文 / English / 日本語 in
       the same day's audio — a hard requirement, not a stretch goal.</aside>
 
-      <p>Because the microphone is always on, privacy is not a feature but the
-      ground rule: audio and transcripts stay on the user's own machines, local
-      models do the reading, and any future use of cloud models is gated on
-      redaction that provably works.</p>
+      <p>If the microphone becomes always-on, privacy is not a feature but the
+      ground rule: audio and transcripts must stay on the user's own machines,
+      local models should do the reading, and any future use of cloud models is
+      gated on redaction that provably works.</p>
     </section>
 
     <!-- ================= 04 STATUS ================= -->
