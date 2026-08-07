@@ -12,9 +12,9 @@ const { crumb } = Astro.props as Props;
   <a class="site-brand" href="/" aria-label={`${site.name} home`}>{site.name}</a>
   <nav class="site-nav" aria-label="Primary">
     <a href="/#work">Work</a>
-    <a href="/#notes">Notes</a>
+    <a href="/#notes">Map</a>
     <a href="/#about">About</a>
-    <span class="lang-switch" aria-label="Language switch"><span>中</span><b>/</b><span>EN</span></span>
+    <a href="/#contact">Contact</a>
   </nav>
   {crumb && <span class="site-crumb">{crumb}</span>}
 </header>
@@ -64,25 +64,6 @@ const { crumb } = Astro.props as Props;
     color: var(--ink);
   }
 
-  .lang-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    min-height: 2rem;
-    padding: 0 0.7rem;
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    color: var(--ink-soft);
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    white-space: nowrap;
-  }
-
-  .lang-switch b {
-    color: var(--rule-hard);
-    font-weight: 500;
-  }
-
   .site-crumb {
     grid-column: 1 / -1;
     color: var(--ink-faint);
@@ -104,8 +85,5 @@ const { crumb } = Astro.props as Props;
       font-size: 0.82rem;
     }
 
-    .lang-switch {
-      padding: 0 0.55rem;
-    }
   }
 </style>

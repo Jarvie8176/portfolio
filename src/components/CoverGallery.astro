@@ -17,7 +17,7 @@ const { projects } = Astro.props as Props;
       >
         <div class="slice-material">
           <span class="slice-role">{project.role}</span>
-          <strong>{project.title}</strong>
+          <strong>{project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title}</strong>
           <span>{project.materialLabel}</span>
         </div>
       </div>
@@ -49,6 +49,18 @@ const { projects } = Astro.props as Props;
     overflow: hidden;
     border-bottom: 1px solid var(--rule);
     background: var(--paper);
+  }
+
+  .cover-gallery::before {
+    content: "";
+    position: absolute;
+    inset: auto auto calc(var(--practice-index-height) + 0.95rem) 0;
+    z-index: 1;
+    width: min(48rem, 58vw);
+    height: min(34rem, 58vh);
+    background:
+      linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 94%, transparent) 68%, transparent 100%);
+    pointer-events: none;
   }
 
   .cover-slices {
@@ -187,32 +199,44 @@ const { projects } = Astro.props as Props;
     border-radius: 999px;
     padding: 0.4rem 0.75rem;
     background: color-mix(in srgb, currentColor 9%, transparent);
-    color: var(--systems);
     font-family: var(--mono);
     font-size: 0.72rem;
     font-weight: 700;
     text-decoration: none;
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 960px) {
     .cover-gallery {
       min-height: auto;
+      display: flex;
+      flex-direction: column;
       padding-top: 2rem;
       padding-bottom: 3.5rem;
     }
 
+    .cover-gallery::before {
+      content: none;
+    }
+
+    .cover-copy {
+      order: 1;
+      max-width: 42rem;
+      padding: 0;
+    }
+
     .cover-slices {
       position: relative;
+      order: 2;
       inset: auto;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       height: auto;
-      min-height: 28rem;
-      margin-bottom: 2rem;
+      min-height: 16rem;
+      margin-top: 2rem;
       border-width: 1px;
     }
 
     .cover-slice {
-      min-height: 4.5rem;
+      min-height: 8rem;
       border-left: 0;
       border-top: 1px solid var(--ink);
       transform: none;
@@ -223,13 +247,41 @@ const { projects } = Astro.props as Props;
     }
 
     .slice-material {
-      inset: auto 1rem 0.8rem;
+      inset: auto 0.85rem 0.75rem;
       transform: none;
+      font-size: 0.68rem;
+    }
+
+    .slice-material strong {
+      font-size: clamp(1rem, 4vw, 1.35rem);
     }
 
     .cover-copy h1 {
       font-size: clamp(2.15rem, 12vw, 3.55rem);
       line-height: 1.02;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .cover-slices {
+      grid-template-columns: 1fr;
+      min-height: 18rem;
+    }
+
+    .cover-slice {
+      min-height: 4.25rem;
+    }
+
+    .slice-material {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .slice-role,
+    .slice-material > span:last-child {
+      display: none;
     }
   }
 </style>

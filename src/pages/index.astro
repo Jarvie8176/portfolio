@@ -75,9 +75,16 @@ const statusClass: Record<Project['statusCode'], string> = {
               </div>
               <p class="topic">{project.topic}</p>
               <h2>
-                {project.href ? <a href={project.href}>{project.title}</a> : project.title}
+                {project.href ? (
+                  <a href={project.href}>
+                    {project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title}
+                  </a>
+                ) : (
+                  project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title
+                )}
               </h2>
               <p class="summary">{project.summary}</p>
+              {project.href && <a class="project-link" href={project.href}>View project</a>}
             </div>
           </article>
         ))}
@@ -95,7 +102,7 @@ const statusClass: Record<Project['statusCode'], string> = {
             <h2>{group.label}</h2>
             {projects.map((project) => (
               <div class:list={['map-node', { 'is-primary': project.primary === group.practice, 'is-secondary': project.secondary === group.practice }]}>
-                <span>{project.title}</span>
+                <span>{project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title}</span>
                 <small>
                   {project.primary === group.practice && 'primary'}
                   {project.secondary === group.practice && 'secondary'}
@@ -107,18 +114,18 @@ const statusClass: Record<Project['statusCode'], string> = {
       </div>
     </section>
 
-    <section class="closing" id="about">
+    <section class="closing" id="about" aria-labelledby="about-title">
+      <span class="about-label">About</span>
+      <h2 id="about-title">{site.name}</h2>
       <p>
-        These projects explore how AI and software can support a person without
-        replacing the person. Some build systems for remembering, filtering,
-        deciding, and acting with care. Some return to the body: walking,
-        disability, memory, and daily life. Others look at worlds we live in
-        with agents, animals, strangers, places, and public space.
+        {site.role} These projects explore how AI and software can support a
+        person without replacing the person.
       </p>
-      <div class="closing-links" aria-label="Reader paths">
+      <div class="closing-links" id="contact" aria-label="Reader paths and contact">
         <a href="#systems">Systems</a>
         <a href="#embodied">Embodied Life</a>
         <a href="#worlds">Inhabited Worlds</a>
+        <a href={site.githubUrl} rel="me noopener" target="_blank">GitHub</a>
         <a href="/colophon/">Colophon</a>
       </div>
     </section>
@@ -296,11 +303,29 @@ const statusClass: Record<Project['statusCode'], string> = {
 
   .project-copy h2 a {
     color: inherit;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.12em;
   }
 
   .project-copy h2 a:hover {
     color: var(--accent);
+  }
+
+  .project-link {
+    display: inline-flex;
+    margin-top: 1.2rem;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .project-link:hover {
+    color: var(--stamp);
   }
 
   .summary {
@@ -321,7 +346,6 @@ const statusClass: Record<Project['statusCode'], string> = {
     border-radius: 999px;
     padding: 0.28rem 0.52rem;
     background: color-mix(in srgb, currentColor 9%, transparent);
-    color: currentColor;
   }
 
   .map-grid {
@@ -377,6 +401,28 @@ const statusClass: Record<Project['statusCode'], string> = {
 
   .closing {
     padding-bottom: 8rem;
+  }
+
+  .about-label {
+    display: block;
+    max-width: 54rem;
+    margin: 0 auto 0.8rem;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .closing h2 {
+    max-width: 54rem;
+    margin: 0 auto 1rem;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1.1;
   }
 
   .closing p {
