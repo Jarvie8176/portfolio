@@ -1,0 +1,318 @@
+/* ============================================================
+   Field Notes — portfolio visual design tokens
+   Motif: expedition logbook / field notes.
+   Light "paper" theme is canonical for concept pages;
+   dark "darkroom" tokens reserved for the photo gallery.
+   ============================================================ */
+
+:root {
+  /* -- paper surfaces ------------------------------------- */
+  --paper:      #f7f4ee;   /* page ground, warm off-white   */
+  --paper-2:    #efe9dd;   /* inset panels, code, asides    */
+  --paper-3:    #e6dfd0;   /* hover / pressed               */
+
+  /* -- ink ------------------------------------------------ */
+  --ink:        #211d18;   /* primary text                  */
+  --ink-soft:   #5f5749;   /* secondary text, captions      */
+  --ink-faint:  #8a8172;   /* metadata, disabled            */
+
+  /* -- lines ---------------------------------------------- */
+  --line:       #d6cdbc;   /* hairlines, dotted rules       */
+  --line-hard:  #a99f8c;   /* emphasized rules              */
+
+  /* -- functional color (used sparingly) ------------------ */
+  --stamp:      #b23f24;   /* vermillion: status stamps, marks */
+  --accent:     #2d5e86;   /* links, interactive            */
+  --live:       #3d6b4f;   /* "live/verified" state         */
+  --open:       #8a6d1f;   /* "open question" state         */
+
+  /* -- darkroom (photo gallery variant, reference only) ---- */
+  --dark-ground:#141210;
+  --dark-ink:   #e8e2d6;
+  --dark-line:  #3a352d;
+
+  /* -- type ----------------------------------------------- */
+  --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Noto Serif CJK SC", serif;
+  --mono:  "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* type scale (px reference; set on rem) */
+  --fs-label: 0.72rem;   /* 11.5 — stamps, section labels   */
+  --fs-meta:  0.82rem;   /* 13   — metadata, margin notes   */
+  --fs-body:  1.0625rem; /* 17   — body serif               */
+  --fs-h3:    1.35rem;
+  --fs-h2:    1.8rem;
+  --fs-h1:    clamp(2.4rem, 6vw, 3.6rem);
+
+  --lh-body: 1.65;
+  --track-label: 0.14em;
+
+  /* -- spacing -------------------------------------------- */
+  --sp-1: 0.5rem;
+  --sp-2: 1rem;
+  --sp-3: 1.75rem;
+  --sp-4: 3rem;
+  --sp-5: 5rem;
+
+  /* -- layout --------------------------------------------- */
+  --col-main: 42rem;       /* ~68ch at body size            */
+  --col-note: 14rem;       /* margin-note rail              */
+  --radius:   3px;
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+html { background: var(--paper); }
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+  background:
+    /* faint horizontal ruling, notebook ghost */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0, transparent 31px,
+      color-mix(in srgb, var(--line) 26%, transparent) 31px,
+      color-mix(in srgb, var(--line) 26%, transparent) 32px
+    ),
+    var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--stamp); }
+
+::selection { background: color-mix(in srgb, var(--stamp) 22%, transparent); }
+
+/* ============================================================
+   Type utilities
+   ============================================================ */
+
+.label {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.meta {
+  font-family: var(--mono);
+  font-size: var(--fs-meta);
+  color: var(--ink-faint);
+}
+
+/* ============================================================
+   Stamp — project status marks
+   Usage: <span class="stamp">concept</span>
+   States: .stamp--concept (default) .stamp--proto .stamp--live
+           .stamp--research .stamp--fieldwork
+   Hero variant: .stamp--big (rubber-stamp tilt)
+   ============================================================ */
+
+.stamp {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--stamp);
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius);
+  padding: 0.28em 0.65em 0.22em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.stamp--proto     { color: var(--open); }
+.stamp--live      { color: var(--live); }
+.stamp--research  { color: var(--accent); }
+.stamp--fieldwork { color: var(--ink-soft); }
+
+.stamp--big {
+  font-size: 0.95rem;
+  padding: 0.4em 0.9em 0.32em;
+  border-width: 2px;
+  transform: rotate(-2.5deg);
+  /* uneven ink take-up */
+  mask-image: radial-gradient(120% 120% at 30% 20%, #000 55%, rgba(0,0,0,.82) 100%);
+}
+
+/* ============================================================
+   Rules
+   ============================================================ */
+
+.rule        { border: 0; border-top: 1px solid var(--line); margin: var(--sp-3) 0; }
+.rule--dot   { border-top-style: dotted; border-top-width: 2px; }
+.rule--hard  { border-top-color: var(--line-hard); }
+
+/* ============================================================
+   Section label:  01 — Problem
+   ============================================================ */
+
+.sec {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin: var(--sp-5) 0 var(--sp-2);
+}
+.sec > .sec-no { font-family: var(--mono); font-size: var(--fs-meta); color: var(--stamp); }
+.sec > h2 {
+  font-size: var(--fs-label);
+  font-family: var(--mono);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+  margin: 0;
+  flex-shrink: 0;
+}
+.sec::after {
+  content: "";
+  flex: 1;
+  border-top: 2px dotted var(--line);
+  transform: translateY(-0.2em);
+}
+
+/* ============================================================
+   Layout: main column + margin-note rail
+   ============================================================ */
+
+.page {
+  max-width: calc(var(--col-main) + var(--col-note) + 6rem);
+  margin: 0 auto;
+  padding: 0 var(--sp-3);
+}
+
+.doc { position: relative; max-width: var(--col-main); }
+
+/* margin note: floats into right rail on wide screens */
+.note {
+  font-family: var(--mono);
+  font-size: var(--fs-meta);
+  line-height: 1.55;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--line-hard);
+  padding-left: 0.8rem;
+  margin: var(--sp-2) 0;
+}
+@media (min-width: 1100px) {
+  .note {
+    float: right;
+    clear: right;
+    width: var(--col-note);
+    margin: 0 calc(-1 * (var(--col-note) + 3rem)) var(--sp-2) 1.5rem;
+  }
+}
+
+/* ============================================================
+   Pipeline chain (system diagrams)
+   <div class="chain"><span class="chain-box">…</span>…</div>
+   ============================================================ */
+
+.chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin: var(--sp-3) 0 var(--sp-2);
+}
+.chain-box {
+  font-family: var(--mono);
+  font-size: var(--fs-meta);
+  border: 1px solid var(--line-hard);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  padding: 0.45em 0.8em;
+  white-space: nowrap;
+}
+.chain-box--hot { border-color: var(--stamp); color: var(--stamp); background: transparent; }
+.chain-arrow { font-family: var(--mono); color: var(--ink-faint); user-select: none; }
+.chain-caption { margin-top: 0.35rem; }
+
+/* ============================================================
+   Status ledger (dl)
+   ============================================================ */
+
+.ledger { margin: var(--sp-3) 0; }
+.ledger > div {
+  display: grid;
+  grid-template-columns: 9.5rem 1fr;
+  gap: 1.2rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px dotted var(--line);
+}
+.ledger dt { margin: 0; align-self: start; padding-top: 0.15em; }
+.ledger dd { margin: 0; }
+.ledger dd p { margin: 0 0 0.4rem; }
+@media (max-width: 560px) {
+  .ledger > div { grid-template-columns: 1fr; gap: 0.3rem; }
+}
+
+/* ============================================================
+   Project card (hub)
+   ============================================================ */
+
+.card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid var(--line-hard);
+  border-radius: var(--radius);
+  background: var(--paper);
+  padding: 1.1rem 1.25rem 1.25rem;
+  transition: background 120ms ease;
+}
+.card:hover { background: var(--paper-2); color: inherit; }
+.card .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.card h3 { margin: 0; font-size: var(--fs-h3); font-weight: 600; }
+.card p  { margin: 0; color: var(--ink-soft); font-size: 0.95rem; }
+
+/* ============================================================
+   Header / footer
+   ============================================================ */
+
+.site-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: var(--sp-3) 0 var(--sp-2);
+  border-bottom: 1px solid var(--line-hard);
+  margin-bottom: var(--sp-4);
+}
+.site-mark {
+  font-family: var(--mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+}
+.site-mark b { color: var(--stamp); font-weight: 500; }
+
+.site-foot {
+  margin: var(--sp-5) 0 var(--sp-4);
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--line-hard);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}

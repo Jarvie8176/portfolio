@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* Map field-notes tokens into Tailwind's theme so utilities
+   (bg-paper, text-ink-soft, font-mono, …) resolve to the same values. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-hard: var(--line-hard);
+  --color-stamp: var(--stamp);
+  --color-accent: var(--accent);
+  --color-live: var(--live);
+  --color-open: var(--open);
+  --font-serif: var(--serif);
+  --font-mono: var(--mono);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* anchored sections stop clear of the viewport edge */
+[id] {
+  scroll-margin-top: var(--sp-4);
+}
+
+/* keep content clear of the fixed bottom ruler */
+body {
+  padding-bottom: 3.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
