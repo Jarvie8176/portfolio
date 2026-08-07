@@ -1,15 +1,12 @@
 ---
-const contactEmail = "projects@fnpg.me";
-const partnerEmail = "projects@fnpg.me";
-const contactHref = `mailto:${contactEmail}?subject=Trailwalk%20contact`;
-const partnerHref = `mailto:${partnerEmail}?subject=Trailwalk%20partnership`;
-const updateHref = `mailto:${contactEmail}?subject=Trailwalk%20updates`;
+const contactHref = "https://fnpg.me/";
+const contactLabel = "fnpg.me";
 
 const experienceItems = [
     {
         number: "01",
         title: "Real Trails, Real Places",
-        body: "From afternoon walk on Shoreline Trail in Port Moody, BC to the iceberg view on the mountain top in Saint Anthony, NL. Every trail is walked and recorded by human",
+        body: "Trailwalk starts with real outdoor captures: forest paths, lakeshores, mountain meadows. The experience should feel like a place you can look around, not a computer-generated scene.",
     },
     {
         number: "02",
@@ -122,7 +119,7 @@ const audiences = [
                         been separated from the outdoors.
                     </p>
                     <div class="hero-actions" aria-label="Trailwalk actions">
-                        <a class="button button-light" href={updateHref}
+                        <a class="button button-light" href={contactHref}
                             >Stay Updated</a
                         >
                         <a class="button button-ghost" href={contactHref}
@@ -144,9 +141,9 @@ const audiences = [
                         sustain wellbeing, memory, and connection.
                     </p>
                     <p class="pull-quote">
-                        The gaming industry and GenAI in Virtual Reality deludes
-                        the mind from the real world, yet the real outdoors
-                        remains inaccessible to the people who may need it most.
+                        The problem isn't a lack of technology. It's that the
+                        outdoors remains inaccessible to the people who may need
+                        it most.
                     </p>
                 </div>
             </section>
@@ -197,14 +194,14 @@ const audiences = [
                 <div class="contact-card">
                     <h2>Help shape what this becomes</h2>
                     <p class="body-copy">
-                        Trailwalk is in its earliest stage with a technical
-                        demo, and we need your voice from the community to shape
-                        its future potentials.
+                        Trailwalk is in its earliest stage: a concept shaped by
+                        real community input. We're not building a product and
+                        then asking people to use it. We're asking first.
                     </p>
                     <a class="button button-primary" href={contactHref}
                         >Contact Us <span aria-hidden="true">→</span></a
                     >
-                    <p class="email-note">{contactEmail}</p>
+                    <p class="email-note">{contactLabel}</p>
                 </div>
             </section>
 
@@ -231,9 +228,13 @@ const audiences = [
                         Trail captures, demo invitations, research notes, and
                         community updates.
                     </p>
-                    <a class="button button-light" href={updateHref}
+                    <a class="button button-light" href={contactHref}
                         >Request updates</a
                     >
+                    <p class="fine-print">
+                        Use the contact hub for updates, demos, and partnership
+                        notes.
+                    </p>
                 </div>
             </section>
         </main>
@@ -336,7 +337,7 @@ const audiences = [
         color: var(--tw-tertiary);
         font-size: 12px;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0;
         text-transform: uppercase;
     }
 
@@ -398,7 +399,7 @@ const audiences = [
     }
 
     .contours path:nth-child(odd) {
-        stroke-opacity: 1.25;
+        stroke-opacity: 1;
     }
 
     .hero-inner {
@@ -418,7 +419,7 @@ const audiences = [
         margin-bottom: 32px;
         color: #fff;
         font-family: var(--tw-serif);
-        font-size: clamp(40px, 5.5vw, 78px);
+        font-size: 72px;
         font-weight: 400;
         letter-spacing: 0;
         line-height: 1.08;
@@ -429,7 +430,7 @@ const audiences = [
         max-width: 540px;
         margin-bottom: 52px;
         color: rgba(255, 255, 255, 0.6);
-        font-size: clamp(17px, 1.8vw, 21px);
+        font-size: 19px;
         font-weight: 400;
         line-height: 1.65;
     }
@@ -497,7 +498,7 @@ const audiences = [
     h2 {
         color: var(--tw-text);
         font-family: var(--tw-serif);
-        font-size: clamp(28px, 3.5vw, 44px);
+        font-size: 42px;
         font-weight: 400;
         line-height: 1.18;
         letter-spacing: 0;
@@ -511,7 +512,7 @@ const audiences = [
     .body-copy {
         color: var(--tw-secondary);
         font-family: var(--tw-sans);
-        font-size: clamp(16px, 1.5vw, 18px);
+        font-size: 17px;
         line-height: 1.8;
     }
 
@@ -520,7 +521,7 @@ const audiences = [
         margin-bottom: 0;
         color: var(--tw-forest);
         font-family: var(--tw-serif);
-        font-size: clamp(17px, 1.8vw, 21px);
+        font-size: 20px;
         font-style: italic;
         line-height: 1.55;
     }
@@ -563,7 +564,7 @@ const audiences = [
         color: var(--tw-lake);
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0;
     }
 
     .feature div {
@@ -577,7 +578,7 @@ const audiences = [
         margin: 6px 0 0;
         color: var(--tw-text);
         font-family: var(--tw-serif);
-        font-size: clamp(19px, 1.8vw, 23px);
+        font-size: 22px;
         font-weight: 500;
         line-height: 1.25;
         text-wrap: balance;
@@ -629,7 +630,7 @@ const audiences = [
 
     .contact-card .body-copy {
         margin-bottom: 44px;
-        font-size: clamp(15px, 1.5vw, 17px);
+        font-size: 16px;
         line-height: 1.75;
     }
 
@@ -689,7 +690,7 @@ const audiences = [
     .loop-inner h2 {
         margin-bottom: 16px;
         color: #fff;
-        font-size: clamp(26px, 3vw, 38px);
+        font-size: 36px;
     }
 
     .loop-inner p {
@@ -742,6 +743,32 @@ const audiences = [
 
         .hero {
             min-height: 88svh;
+        }
+
+        h1 {
+            font-size: 44px;
+        }
+
+        .hero-inner > p,
+        .body-copy {
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 32px;
+        }
+
+        .pull-quote {
+            font-size: 18px;
+        }
+
+        .feature h3,
+        .audience-card h3 {
+            font-size: 20px;
+        }
+
+        .loop-inner h2 {
+            font-size: 30px;
         }
 
         .experience-grid,
