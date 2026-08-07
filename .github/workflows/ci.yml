@@ -1,0 +1,27 @@
+# Build validation only. This workflow deliberately holds no secrets and no
+# deploy credentials: deployment is pull-based from the serving side, which
+# independently verifies this check succeeded before it ships a commit.
+# GitHub-hosted runner on purpose (public repo — fork PRs must never reach
+# private infrastructure).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: test -f dist/index.html
