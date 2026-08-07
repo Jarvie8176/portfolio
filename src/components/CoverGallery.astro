@@ -42,10 +42,10 @@ const { projects } = Astro.props as Props;
 <style>
   .cover-gallery {
     position: relative;
-    min-height: calc(100svh - var(--site-header-min));
+    min-height: calc(100svh - var(--site-header-min) - var(--practice-index-height));
     display: grid;
     align-items: end;
-    padding: clamp(5rem, 12vh, 8rem) clamp(1.5rem, 4vw, 4rem) clamp(5.5rem, 12vh, 8rem);
+    padding: clamp(4rem, 10vh, 6rem) clamp(1.5rem, 4vw, 4rem) clamp(3.5rem, 8vh, 5rem);
     overflow: hidden;
     border-bottom: 1px solid var(--rule);
     background: var(--paper);
@@ -53,14 +53,14 @@ const { projects } = Astro.props as Props;
 
   .cover-slices {
     position: absolute;
-    inset: clamp(1rem, 2vw, 1.6rem);
+    inset: clamp(0.8rem, 1.6vw, 1.25rem) clamp(0.8rem, 1.6vw, 1.25rem) calc(var(--practice-index-height) + clamp(0.8rem, 1.6vw, 1.25rem));
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 0;
     border: 2px solid var(--ink);
     border-radius: 3px;
     overflow: hidden;
-    opacity: 0.72;
+    opacity: 0.82;
   }
 
   .cover-slice {
@@ -110,7 +110,7 @@ const { projects } = Astro.props as Props;
 
   .slice-material {
     position: absolute;
-    inset: auto 1.5rem 1.4rem;
+    inset: auto 1.5rem 1rem;
     display: grid;
     gap: 0.45rem;
     transform: skewX(15deg);
@@ -140,7 +140,7 @@ const { projects } = Astro.props as Props;
   .cover-copy {
     position: relative;
     z-index: 2;
-    max-width: 58rem;
+    max-width: 44rem;
     padding: 1.4rem 0 0;
     color: var(--ink);
   }
@@ -157,17 +157,17 @@ const { projects } = Astro.props as Props;
   }
 
   .cover-copy h1 {
-    max-width: 54rem;
+    max-width: 42rem;
     margin: 0;
     font-family: var(--serif);
-    font-size: clamp(2.6rem, 7vw, 5.9rem);
+    font-size: clamp(2.25rem, 5.2vw, 4.65rem);
     font-weight: 600;
     letter-spacing: 0;
     line-height: 0.98;
   }
 
   .cover-copy p {
-    max-width: 39rem;
+    max-width: 34rem;
     margin: 1.25rem 0 0;
     color: var(--ink-soft);
     font-family: var(--sans);
@@ -198,6 +198,7 @@ const { projects } = Astro.props as Props;
     .cover-gallery {
       min-height: auto;
       padding-top: 2rem;
+      padding-bottom: 3.5rem;
     }
 
     .cover-slices {

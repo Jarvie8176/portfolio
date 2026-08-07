@@ -51,15 +51,11 @@ const statusClass: Record<Project['statusCode'], string> = {
             data-practice={project.primary}
             data-project-title={project.title}
           >
-            <div class="evidence-artifact" aria-label={`${project.title} evidence material`}>
+            <div class="evidence-artifact" aria-label={`${project.title} image material`}>
               <div
                 class={`artifact-surface practice-${project.primary}`}
                 style={`--artifact-image: url('${project.coverImage}'); --artifact-position: ${project.coverPosition ?? 'center'};`}
-              >
-                <span class="artifact-label">{project.materialLabel}</span>
-                <strong>{project.title}</strong>
-                <p>{project.evidence}</p>
-              </div>
+              ></div>
             </div>
 
             <div class="project-copy">
@@ -68,26 +64,6 @@ const statusClass: Record<Project['statusCode'], string> = {
                 <span class={`status-badge ${statusClass[project.statusCode]}`}>
                   {project.statusLabel}
                 </span>
-              </div>
-              <h2>{project.title}</h2>
-              <p class="summary">{project.summary}</p>
-
-              <dl class="project-facts">
-                <div>
-                  <dt>Exists now</dt>
-                  <dd>{project.existsNow}</dd>
-                </div>
-                <div>
-                  <dt>Why it matters</dt>
-                  <dd>{project.why}</dd>
-                </div>
-                <div>
-                  <dt>Open question</dt>
-                  <dd>{project.unresolved}</dd>
-                </div>
-              </dl>
-
-              <div class="mode-row">
                 <span class={`mode-tag practice-${project.primary}`}>
                   {practiceLabels[project.primary]}
                 </span>
@@ -97,12 +73,11 @@ const statusClass: Record<Project['statusCode'], string> = {
                   </span>
                 )}
               </div>
-
-              {project.href ? (
-                <a class="project-link" href={project.href}>View project notes</a>
-              ) : (
-                <span class="project-link pending">Project notes in preparation</span>
-              )}
+              <p class="topic">{project.topic}</p>
+              <h2>
+                {project.href ? <a href={project.href}>{project.title}</a> : project.title}
+              </h2>
+              <p class="summary">{project.summary}</p>
             </div>
           </article>
         ))}
@@ -195,8 +170,8 @@ const statusClass: Record<Project['statusCode'], string> = {
   .practice-worlds { color: var(--worlds); }
 
   .project-section {
-    max-width: 72rem;
-    min-height: calc(100svh - var(--project-section-offset));
+    max-width: 76rem;
+    min-height: calc(88svh - var(--project-section-offset));
     margin: 0 auto;
     display: grid;
     grid-template-columns: minmax(18rem, 0.95fr) minmax(18rem, 1.05fr);
@@ -219,11 +194,9 @@ const statusClass: Record<Project['statusCode'], string> = {
 
   .artifact-surface {
     position: relative;
-    min-height: clamp(22rem, 52vh, 34rem);
-    display: grid;
-    align-content: center;
-    gap: 0.9rem;
-    padding: clamp(1.5rem, 4vw, 3rem);
+    min-height: clamp(24rem, 58vh, 38rem);
+    display: block;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
     border: 1px solid var(--rule);
     border-radius: 4px;
@@ -245,8 +218,8 @@ const statusClass: Record<Project['statusCode'], string> = {
     background-image: var(--artifact-image);
     background-position: var(--artifact-position);
     background-size: cover;
-    opacity: 0.24;
-    filter: saturate(0.85);
+    opacity: 0.88;
+    filter: saturate(0.92);
   }
 
   .artifact-surface::after {
@@ -254,18 +227,13 @@ const statusClass: Record<Project['statusCode'], string> = {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(90deg, color-mix(in srgb, var(--surface) 88%, transparent), color-mix(in srgb, var(--surface) 46%, transparent)),
-      linear-gradient(160deg, color-mix(in srgb, currentColor 14%, transparent), transparent 56%);
+      linear-gradient(160deg, color-mix(in srgb, currentColor 16%, transparent), transparent 52%),
+      linear-gradient(0deg, color-mix(in srgb, var(--paper) 22%, transparent), transparent 44%);
   }
 
-  .artifact-surface > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  .artifact-label,
   .role-badge,
   .status-badge,
+  .topic,
   .mode-tag {
     font-family: var(--mono);
     font-size: 0.72rem;
@@ -274,33 +242,11 @@ const statusClass: Record<Project['statusCode'], string> = {
     text-transform: uppercase;
   }
 
-  .artifact-label {
-    color: currentColor;
-  }
-
-  .artifact-surface strong {
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: clamp(2rem, 4vw, 3.25rem);
-    font-weight: 600;
-    line-height: 1;
-  }
-
-  .artifact-surface p {
-    max-width: 24rem;
-    margin: 0;
-    color: var(--ink-soft);
-    font-family: var(--mono);
-    font-size: 0.82rem;
-    line-height: 1.7;
-  }
-
   .project-copy {
     color: var(--ink);
   }
 
-  .badge-row,
-  .mode-row {
+  .badge-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -336,13 +282,22 @@ const statusClass: Record<Project['statusCode'], string> = {
   .status-archive { color: var(--worlds); }
 
   .project-copy h2 {
-    margin: 1.5rem 0 0;
+    margin: 0.8rem 0 0;
     color: var(--ink);
     font-family: var(--serif);
     font-size: clamp(2.15rem, 5vw, 4rem);
     font-weight: 600;
     letter-spacing: 0;
     line-height: 1.05;
+  }
+
+  .project-copy h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .project-copy h2 a:hover {
+    color: var(--accent);
   }
 
   .summary {
@@ -354,34 +309,9 @@ const statusClass: Record<Project['statusCode'], string> = {
     line-height: 1.65;
   }
 
-  .project-facts {
-    display: grid;
-    gap: 0.9rem;
-    margin: 1.6rem 0;
-  }
-
-  .project-facts div {
-    display: grid;
-    grid-template-columns: 8.5rem 1fr;
-    gap: 1rem;
-    padding-top: 0.85rem;
-    border-top: 1px solid var(--rule);
-  }
-
-  .project-facts dt {
+  .topic {
+    margin: 1.3rem 0 0;
     color: var(--ink-faint);
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .project-facts dd {
-    margin: 0;
-    color: var(--ink-soft);
-    font-family: var(--sans);
-    line-height: 1.7;
   }
 
   .mode-tag {
@@ -389,27 +319,6 @@ const statusClass: Record<Project['statusCode'], string> = {
     padding: 0.35rem 0.65rem;
     background: color-mix(in srgb, currentColor 9%, transparent);
     color: currentColor;
-  }
-
-  .project-link {
-    display: inline-flex;
-    margin-top: 1.6rem;
-    color: var(--accent);
-    font-family: var(--sans);
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .project-link::after {
-    content: " ->";
-  }
-
-  .project-link.pending {
-    color: var(--ink-faint);
-  }
-
-  .project-link.pending::after {
-    content: "";
   }
 
   .map-grid {
@@ -519,11 +428,6 @@ const statusClass: Record<Project['statusCode'], string> = {
 
     .layout-visual-right .evidence-artifact {
       order: 0;
-    }
-
-    .project-facts div {
-      grid-template-columns: 1fr;
-      gap: 0.35rem;
     }
   }
 </style>
