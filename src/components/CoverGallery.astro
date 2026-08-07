@@ -25,12 +25,7 @@ const { projects } = Astro.props as Props;
   </div>
 
   <div class="cover-copy">
-    <span class="eyebrow">Portfolio · research practice</span>
     <h1 id="cover-title">Exploring what cannot be reduced in the age of GenAI</h1>
-    <p>
-      Systems, embodied life, and inhabited worlds that resist being flattened
-      into tasks, data, or generated output.
-    </p>
     <div class="cover-practices" aria-label="Practice groups">
       {Object.entries(practiceLabels).map(([key, label]) => (
         <a class={`practice-pill practice-${key}`} href={`#${key}`}>{label}</a>
@@ -157,17 +152,6 @@ const { projects } = Astro.props as Props;
     color: var(--ink);
   }
 
-  .eyebrow {
-    display: block;
-    margin-bottom: 1.1rem;
-    color: var(--ink-soft);
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
   .cover-copy h1 {
     max-width: 35rem;
     margin: 0;
@@ -178,20 +162,11 @@ const { projects } = Astro.props as Props;
     line-height: 1.02;
   }
 
-  .cover-copy p {
-    max-width: 30rem;
-    margin: 1.25rem 0 0;
-    color: var(--ink-soft);
-    font-family: var(--sans);
-    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
-    line-height: 1.65;
-  }
-
   .cover-practices {
     display: flex;
     flex-wrap: wrap;
     gap: 0.65rem;
-    margin-top: 1.05rem;
+    margin-top: 1.25rem;
   }
 
   .practice-pill {
