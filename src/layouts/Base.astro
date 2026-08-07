@@ -7,12 +7,10 @@ import { site } from '../data/site';
 interface Props {
   title: string;
   description: string;
-  /** breadcrumb shown top-right, e.g. "projects / beagle" */
-  crumb?: string;
   ogType?: string;
   wide?: boolean;
 }
-const { title, description, crumb, ogType = 'website', wide = false } = Astro.props;
+const { title, description, ogType = 'website', wide = false } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
 <!doctype html>
@@ -39,7 +37,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     />
   </head>
   <body>
-    <SiteHeader crumb={crumb} />
+    <SiteHeader />
     <div class:list={['page', { 'page--wide': wide }]}>
       <slot />
       <footer class="site-foot">
