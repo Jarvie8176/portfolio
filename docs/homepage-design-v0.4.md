@@ -260,6 +260,27 @@ Avoid overclaiming:
 - commonplace is a research build; do not claim a complete autonomous loop.
 - Open World Observation Notes is an ongoing practice, not a complete archive.
 
+## Render Audit: 2026-08-07 Landing Screenshot
+
+The current S0 direction is accepted: a first-screen diagonal gallery with one
+slice per project. The screenshot still showed three issues to close before
+calling the landing page done:
+
+- The thesis text was strong enough to obscure the gallery and slice labels.
+- Project sections still behaved like full-screen chapters, creating too much
+  vertical air for the reduced landing copy.
+- At the captured desktop width, the first project title could be clipped by the
+  image/text grid.
+
+Resolution:
+
+- Keep the S0 gallery as the primary cover, but reduce thesis width and scale so
+  the project materials remain legible.
+- Keep landing project content to image, name, tags, topic, and one sentence.
+- Reduce project-section height, column width, tag size, and summary scale.
+- Add a footer version tag from the build git short hash for dev-deployment
+  verification.
+
 ## PR Plan
 
 ### PR 1: Homepage IA + Cover Gallery
