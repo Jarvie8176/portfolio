@@ -182,7 +182,7 @@ const audiences = [
                             remember the feeling of being outside.
                         </p>
                         <p class="origin-note">
-                            Early captures include <a
+                            Field samples include an afternoon walk on <a
                                 href={shorelineTrailHref}
                                 target="_blank"
                                 rel="noreferrer"
@@ -217,35 +217,7 @@ const audiences = [
                                     <span>{item.number}</span>
                                     <div aria-hidden="true" />
                                     <h3>{item.title}</h3>
-                                    {
-                                        item.number === "01" ? (
-                                            <p>
-                                                {item.body} Field samples
-                                                include an afternoon walk on{" "}
-                                                <a
-                                                    href={shorelineTrailHref}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    Shoreline Trail in Port
-                                                    Moody, BC
-                                                </a>
-                                                , to{" "}
-                                                <a
-                                                    href={saintAnthonyViewHref}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                >
-                                                    an iceberg view from a
-                                                    mountain viewpoint in Saint
-                                                    Anthony, NL
-                                                </a>
-                                                .
-                                            </p>
-                                        ) : (
-                                            <p>{item.body}</p>
-                                        )
-                                    }
+                                    <p>{item.body}</p>
                                 </article>
                             ))
                         }
