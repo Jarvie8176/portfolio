@@ -1,6 +1,8 @@
 ---
-const contactHref = "https://fnpg.me/";
-const contactLabel = "fnpg.me";
+const contactEmail = "projects@fnpg.me";
+const contactHref = `mailto:${contactEmail}?subject=Trailwalk%20contact`;
+const updateHref = "https://fnpg.me/";
+const updateLabel = "fnpg.me";
 
 const experienceItems = [
     {
@@ -119,7 +121,7 @@ const audiences = [
                         been separated from the outdoors.
                     </p>
                     <div class="hero-actions" aria-label="Trailwalk actions">
-                        <a class="button button-light" href={contactHref}
+                        <a class="button button-light" href={updateHref}
                             >Stay Updated</a
                         >
                         <a class="button button-ghost" href={contactHref}
@@ -201,7 +203,7 @@ const audiences = [
                     <a class="button button-primary" href={contactHref}
                         >Contact Us <span aria-hidden="true">→</span></a
                     >
-                    <p class="email-note">{contactLabel}</p>
+                    <p class="email-note">{contactEmail}</p>
                 </div>
             </section>
 
@@ -228,11 +230,11 @@ const audiences = [
                         Trail captures, demo invitations, research notes, and
                         community updates.
                     </p>
-                    <a class="button button-light" href={contactHref}
+                    <a class="button button-light" href={updateHref}
                         >Request updates</a
                     >
                     <p class="fine-print">
-                        Use the contact hub for updates, demos, and partnership
+                        Use {updateLabel} for updates, demos, and partnership
                         notes.
                     </p>
                 </div>
