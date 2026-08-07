@@ -23,7 +23,6 @@ export interface Project {
   materialLabel: string;
   coverImage: string;
   coverPosition?: string;
-  titleLang?: string;
   href?: string;
 }
 
@@ -123,7 +122,7 @@ export const projects: Project[] = [
   },
   {
     id: 'open-world-notes',
-    title: '开放世界观察笔记',
+    title: 'Open World Observation Notes',
     role: 'Inhabited Worlds Anchor',
     statusCode: 'archive',
     statusLabel: 'Ongoing archive',
@@ -138,6 +137,5 @@ export const projects: Project[] = [
     materialLabel: 'Public-world photo strip',
     coverImage: '/assets/project-covers/open-world-rain.webp',
     coverPosition: '48% 62%',
-    titleLang: 'zh-Hans',
   },
 ];

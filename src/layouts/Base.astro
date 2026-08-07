@@ -34,7 +34,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;600;700&text=%E4%B8%AD%E6%96%87%E6%97%A5%E6%9C%AC%E8%AA%9E%E5%BC%80%E6%94%BE%E4%B8%96%E7%95%8C%E8%A7%82%E5%AF%9F%E7%AC%94%E8%AE%B0&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Mono:wght@400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -42,11 +42,11 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <SiteHeader crumb={crumb} />
     <div class:list={['page', { 'page--wide': wide }]}>
       <slot />
-      <footer class="site-foot">
+      <footer class="site-foot" id="contact">
         <span class="meta">{site.name}</span>
         <span class="meta-row">
+          <span class="meta"><a href={site.githubUrl} rel="me noopener" target="_blank">GitHub</a></span>
           <span class="meta version-tag" aria-label={`Version ${build.version}`}>v{build.version}</span>
-          <span class="meta"><a href="/colophon/">colophon</a></span>
         </span>
       </footer>
     </div>

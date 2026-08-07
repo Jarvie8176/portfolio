@@ -19,6 +19,8 @@ const statusClass: Record<Project['statusCode'], string> = {
   concept: 'status-concept',
   archive: 'status-archive',
 };
+
+const hrefFor = (project: Project) => project.href ?? `/projects/${project.id}/`;
 ---
 
 <Base
@@ -33,14 +35,6 @@ const statusClass: Record<Project['statusCode'], string> = {
       <section class={`practice-block practice-${group.practice}`} id={group.practice}>
         <div class="practice-heading">
           <span>{group.label}</span>
-          <p>
-            {group.practice === 'systems' &&
-              'Working systems for memory, attention, filtering, surfaces, and safety.'}
-            {group.practice === 'embodied' &&
-              'Projects that return AI and media to bodies, care, movement, and daily life.'}
-            {group.practice === 'worlds' &&
-              'Worlds shared with agents, animals, strangers, places, and public space.'}
-          </p>
         </div>
 
         {group.projects.map((project, index) => (
@@ -75,60 +69,15 @@ const statusClass: Record<Project['statusCode'], string> = {
               </div>
               <p class="topic">{project.topic}</p>
               <h2>
-                {project.href ? (
-                  <a href={project.href}>
-                    {project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title}
-                  </a>
-                ) : (
-                  project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title
-                )}
+                <a href={hrefFor(project)}>{project.title}</a>
               </h2>
               <p class="summary">{project.summary}</p>
-              {project.href && <a class="project-link" href={project.href}>View project</a>}
+              <a class="project-link" href={hrefFor(project)}>View project</a>
             </div>
           </article>
         ))}
       </section>
     ))}
-
-    <section class="practice-map" id="notes" data-project-section data-practice="worlds" data-project-title="Practice Map">
-      <div class="practice-heading">
-        <span>Practice Map</span>
-        <p>The work is grouped by primary practice, but each project crosses at least one border.</p>
-      </div>
-      <div class="map-grid">
-        {groupedProjects.map((group) => (
-          <div class={`map-column practice-${group.practice}`}>
-            <h2>{group.label}</h2>
-            {projects.map((project) => (
-              <div class:list={['map-node', { 'is-primary': project.primary === group.practice, 'is-secondary': project.secondary === group.practice }]}>
-                <span>{project.titleLang ? <span lang={project.titleLang}>{project.title}</span> : project.title}</span>
-                <small>
-                  {project.primary === group.practice && 'primary'}
-                  {project.secondary === group.practice && 'secondary'}
-                </small>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <section class="closing" id="about" aria-labelledby="about-title">
-      <span class="about-label">About</span>
-      <h2 id="about-title">{site.name}</h2>
-      <p>
-        {site.role} These projects explore how AI and software can support a
-        person without replacing the person.
-      </p>
-      <div class="closing-links" id="contact" aria-label="Reader paths and contact">
-        <a href="#systems">Systems</a>
-        <a href="#embodied">Embodied Life</a>
-        <a href="#worlds">Inhabited Worlds</a>
-        <a href={site.githubUrl} rel="me noopener" target="_blank">GitHub</a>
-        <a href="/colophon/">Colophon</a>
-      </div>
-    </section>
   </main>
 
   <PracticeIndex projects={projects} />
@@ -139,9 +88,7 @@ const statusClass: Record<Project['statusCode'], string> = {
     background: var(--paper);
   }
 
-  .practice-block,
-  .practice-map,
-  .closing {
+  .practice-block {
     padding: clamp(3rem, 7vh, 4.5rem) clamp(1.5rem, 4vw, 4rem);
     border-bottom: 1px solid var(--rule);
   }
@@ -149,10 +96,8 @@ const statusClass: Record<Project['statusCode'], string> = {
   .practice-heading {
     max-width: 68rem;
     margin: 0 auto clamp(2rem, 4vw, 3rem);
-    display: grid;
-    grid-template-columns: minmax(9rem, 0.28fr) minmax(0, 0.72fr);
-    gap: clamp(1.25rem, 3vw, 3rem);
-    align-items: end;
+    display: flex;
+    align-items: center;
   }
 
   .practice-heading span {
@@ -162,14 +107,6 @@ const statusClass: Record<Project['statusCode'], string> = {
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-  }
-
-  .practice-heading p {
-    margin: 0;
-    color: var(--ink-soft);
-    font-family: var(--sans);
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    line-height: 1.7;
   }
 
   .practice-systems { color: var(--systems); }
@@ -348,126 +285,8 @@ const statusClass: Record<Project['statusCode'], string> = {
     background: color-mix(in srgb, currentColor 9%, transparent);
   }
 
-  .map-grid {
-    max-width: 72rem;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-  }
-
-  .map-column {
-    min-width: 0;
-    padding: 1.2rem;
-    border: 1px solid var(--rule);
-    border-radius: 4px;
-    background: var(--surface);
-  }
-
-  .map-column h2 {
-    margin: 0 0 1rem;
-    color: currentColor;
-    font-family: var(--mono);
-    font-size: 0.82rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .map-node {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.75rem 0;
-    border-top: 1px solid var(--rule);
-    color: var(--ink-faint);
-    font-family: var(--sans);
-  }
-
-  .map-node.is-primary {
-    color: var(--ink);
-    font-weight: 700;
-  }
-
-  .map-node.is-secondary {
-    color: var(--ink-soft);
-  }
-
-  .map-node small {
-    color: currentColor;
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-  }
-
-  .closing {
-    padding-bottom: 8rem;
-  }
-
-  .about-label {
-    display: block;
-    max-width: 54rem;
-    margin: 0 auto 0.8rem;
-    color: var(--ink-soft);
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .closing h2 {
-    max-width: 54rem;
-    margin: 0 auto 1rem;
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: clamp(2rem, 4vw, 3.4rem);
-    font-weight: 600;
-    line-height: 1.1;
-  }
-
-  .closing p {
-    max-width: 54rem;
-    margin: 0 auto;
-    color: var(--ink);
-    font-family: var(--serif);
-    font-size: clamp(1.5rem, 3vw, 2.4rem);
-    line-height: 1.45;
-  }
-
-  .closing-links {
-    max-width: 54rem;
-    margin: 2rem auto 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .closing-links a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.15rem;
-    padding: 0 0.8rem;
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    background: var(--surface);
-    color: var(--ink-soft);
-    font-family: var(--mono);
-    font-size: 0.76rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    text-transform: uppercase;
-  }
-
-  .closing-links a:hover {
-    border-color: var(--rule-hard);
-    color: var(--ink);
-  }
-
   @media (max-width: 860px) {
-    .practice-heading,
-    .project-section,
-    .map-grid {
+    .project-section {
       grid-template-columns: 1fr;
     }
 
