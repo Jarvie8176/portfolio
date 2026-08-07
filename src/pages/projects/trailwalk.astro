@@ -12,7 +12,7 @@ const experienceItems = [
     {
         number: "01",
         title: "Real Trails, Real Places",
-        body: "Every trail was walked and captured by a real human.",
+        body: "From the Pacific coast to Canada's eastern edge, we have walked and captured terabytes of high-fidelity walking experiences across Metro Vancouver, BC, Gros Morne National Park, NL, Cape Breton Island, NS, and more.",
     },
     {
         number: "02",
@@ -220,7 +220,8 @@ const audiences = [
                                     {
                                         item.number === "01" ? (
                                             <p>
-                                                From an afternoon walk on{" "}
+                                                {item.body} Field samples
+                                                include an afternoon walk on{" "}
                                                 <a
                                                     href={shorelineTrailHref}
                                                     target="_blank"
@@ -239,7 +240,7 @@ const audiences = [
                                                     mountain viewpoint in Saint
                                                     Anthony, NL
                                                 </a>
-                                                . {item.body}
+                                                .
                                             </p>
                                         ) : (
                                             <p>{item.body}</p>
