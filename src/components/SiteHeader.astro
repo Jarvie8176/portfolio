@@ -19,7 +19,19 @@ const isContactPath = pathname === '/contact/';
     <a class="site-brand" href="/" aria-label={`${site.name} home`}>{site.name}</a>
   </div>
   <div class="site-actions">
-    {subtitle && <a class="site-subtitle" href={subtitleHref}>{subtitle}</a>}
+    {crumb ? (
+      <a class="site-subtitle" href={subtitleHref}>{subtitle}</a>
+    ) : (
+      <div class="site-subtitle site-subtitle--links" aria-label="Research practice sections">
+        <a href="/work/">Research practice</a>
+        <span aria-hidden="true">·</span>
+        <a href="/work/#systems">Systems</a>
+        <span aria-hidden="true">/</span>
+        <a href="/work/#embodied">Embodied Life</a>
+        <span aria-hidden="true">/</span>
+        <a href="/work/#worlds">Inhabited Worlds</a>
+      </div>
+    )}
     <nav class="site-nav" aria-label="Primary">
       <a href="/work/" aria-current={isWorkPath ? 'page' : undefined}>Work</a>
       <a href="/contact/" aria-current={isContactPath ? 'page' : undefined}>Contact</a>
@@ -86,6 +98,22 @@ const isContactPath = pathname === '/contact/';
   }
 
   .site-subtitle:hover {
+    color: var(--ink-soft);
+  }
+
+  .site-subtitle--links {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 0.42rem;
+  }
+
+  .site-subtitle--links a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .site-subtitle--links a:hover {
     color: var(--ink-soft);
   }
 
