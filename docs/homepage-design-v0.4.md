@@ -65,6 +65,7 @@ The homepage order follows the practice taxonomy:
 
 ```text
 [NAV] J. Kong · Work · Contact
+[SECONDARY NAV] Systems / Embodied Life / Inhabited Worlds
 
 [S0] Cover Gallery
      Six diagonal project-material slices + hero thesis

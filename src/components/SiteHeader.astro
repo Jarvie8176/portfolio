@@ -1,42 +1,29 @@
 ---
 import { site } from '../data/site';
 
-interface Props {
-  crumb?: string;
-}
-
-const { crumb } = Astro.props as Props;
-const subtitle = crumb ?? site.headerSubtitle;
-const crumbKey = crumb?.toLowerCase();
-const subtitleHref = crumbKey === 'contact' ? '/contact/' : '/work/';
 const pathname = Astro.url.pathname;
 const isWorkPath = pathname === '/work/' || pathname.startsWith('/projects/');
 const isContactPath = pathname === '/contact/';
+const showPracticeNav = !isContactPath;
 ---
 
 <header class="site-header">
-  <div class="site-identity">
+  <div class="site-primary">
     <a class="site-brand" href="/" aria-label={`${site.name} home`}>{site.name}</a>
-  </div>
-  <div class="site-actions">
-    {crumb ? (
-      <a class="site-subtitle" href={subtitleHref}>{subtitle}</a>
-    ) : (
-      <div class="site-subtitle site-subtitle--links" aria-label="Research practice sections">
-        <a href="/work/">Research practice</a>
-        <span aria-hidden="true">·</span>
-        <a href="/work/#systems">Systems</a>
-        <span aria-hidden="true">/</span>
-        <a href="/work/#embodied">Embodied Life</a>
-        <span aria-hidden="true">/</span>
-        <a href="/work/#worlds">Inhabited Worlds</a>
-      </div>
-    )}
     <nav class="site-nav" aria-label="Primary">
       <a href="/work/" aria-current={isWorkPath ? 'page' : undefined}>Work</a>
       <a href="/contact/" aria-current={isContactPath ? 'page' : undefined}>Contact</a>
     </nav>
   </div>
+  {showPracticeNav && (
+    <nav class="practice-nav" aria-label="Practice sections">
+      <a href="/work/#systems">Systems</a>
+      <span aria-hidden="true">/</span>
+      <a href="/work/#embodied">Embodied Life</a>
+      <span aria-hidden="true">/</span>
+      <a href="/work/#worlds">Inhabited Worlds</a>
+    </nav>
+  )}
 </header>
 
 <style>
@@ -55,11 +42,11 @@ const isContactPath = pathname === '/contact/';
     backdrop-filter: blur(16px);
   }
 
-  .site-identity {
+  .site-primary {
     min-width: 0;
     display: flex;
     align-items: baseline;
-    gap: 0.85rem;
+    gap: clamp(1.35rem, 3vw, 2.5rem);
   }
 
   .site-brand {
@@ -72,48 +59,29 @@ const isContactPath = pathname === '/contact/';
     text-decoration: none;
   }
 
-  .site-actions {
+  .practice-nav {
     min-width: 0;
     display: flex;
     align-items: baseline;
     justify-content: flex-end;
-    gap: clamp(1rem, 3vw, 2rem);
-  }
-
-  .site-subtitle {
-    min-width: 0;
-    max-width: min(36rem, 46vw);
+    gap: 0.42rem;
     color: var(--ink-faint);
     font-family: var(--mono);
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
     text-align: right;
-    text-decoration: none;
     text-transform: uppercase;
     white-space: nowrap;
   }
 
-  .site-subtitle:hover {
-    color: var(--ink-soft);
-  }
-
-  .site-subtitle--links {
-    display: flex;
-    align-items: baseline;
-    justify-content: flex-end;
-    gap: 0.42rem;
-  }
-
-  .site-subtitle--links a {
+  .practice-nav a {
     color: inherit;
     text-decoration: none;
   }
 
-  .site-subtitle--links a:hover {
+  .practice-nav a:hover {
     color: var(--ink-soft);
   }
 
@@ -152,30 +120,22 @@ const isContactPath = pathname === '/contact/';
       padding-bottom: 1rem;
     }
 
-    .site-identity {
+    .site-primary {
       width: 100%;
-      display: grid;
-      gap: 0.35rem;
-    }
-
-    .site-actions {
-      width: 100%;
-      display: grid;
-      gap: 0.7rem;
-    }
-
-    .site-subtitle {
-      max-width: none;
-      text-align: left;
-      white-space: normal;
+      flex-wrap: wrap;
+      gap: 0.85rem 1.35rem;
     }
 
     .site-nav {
-      width: 100%;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 0.7rem;
       font-size: 0.82rem;
     }
 
+    .practice-nav {
+      justify-content: flex-start;
+      text-align: left;
+      white-space: normal;
+    }
   }
 </style>
