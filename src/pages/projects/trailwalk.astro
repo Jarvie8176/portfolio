@@ -152,6 +152,34 @@ const audiences = [
                 </div>
             </section>
 
+            <section class="origin-section" aria-labelledby="origin-title">
+                <div class="origin-inner">
+                    <div>
+                        <p class="section-kicker">Field Origin</p>
+                        <h2 id="origin-title">Born from real walks</h2>
+                    </div>
+                    <div class="origin-copy">
+                        <p>
+                            Trailwalk began with field walks in real weather:
+                            rain through forest canopy, wet leaves underfoot,
+                            gravel, puddles, and the quiet shift that happens
+                            when movement and sound pull attention back into the
+                            body.
+                        </p>
+                        <p>
+                            The early insight came before perfect fidelity: even
+                            rough 360-degree footage in a headset, paired with
+                            walking and outdoor sound, could help the body
+                            remember the feeling of being outside.
+                        </p>
+                        <p class="origin-note">
+                            Early captures include Shoreline Trail in Port Moody,
+                            BC and Saint Anthony, NL.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             <div class="waveform-wrap" aria-hidden="true">
                 <svg viewBox="0 0 200 20" class="waveform" fill="none">
                     <path
@@ -490,6 +518,7 @@ const audiences = [
     }
 
     .problem-section,
+    .origin-section,
     .experience-section,
     .contact-section {
         padding: var(--tw-section-y) var(--tw-section-x);
@@ -517,6 +546,46 @@ const audiences = [
 
     .problem-section h2 {
         margin-bottom: 32px;
+    }
+
+    .origin-section {
+        padding-top: 0;
+    }
+
+    .origin-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 56px;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 46px 0;
+        border-top: 1px solid var(--tw-divider);
+        border-bottom: 1px solid var(--tw-divider);
+    }
+
+    .section-kicker {
+        margin-bottom: 18px;
+        color: var(--tw-lake);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .origin-copy p {
+        margin-bottom: 20px;
+        color: var(--tw-secondary);
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+    .origin-copy p:last-child {
+        margin-bottom: 0;
+    }
+
+    .origin-note {
+        color: var(--tw-forest);
+        font-weight: 600;
     }
 
     .body-copy {
@@ -789,6 +858,7 @@ const audiences = [
         }
 
         .experience-grid,
+        .origin-inner,
         .audience-grid {
             grid-template-columns: 1fr;
             gap: 28px;
