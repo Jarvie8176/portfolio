@@ -182,8 +182,9 @@ Project lines:
 - commonplace: A shared research world where a human and an AI agent live
   alongside each other, exploring co-dwelling, curiosity, and shared agency
   beyond task success.
-- Notes of Open World Observations: A photo and caption practice about meeting the
-  public world with beauty, doubt, care, and memory.
+- Notes of Open World Observations: "I record moments worth remembering." An
+  ongoing instant-photo exchange project exploring public encounters, refusal,
+  the ethics of the gaze, and the small knots left in ordinary days.
 
 ## Component Naming
 
