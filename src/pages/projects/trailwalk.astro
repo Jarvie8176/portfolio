@@ -3,12 +3,16 @@ const contactEmail = "projects@fnpg.me";
 const contactHref = `mailto:${contactEmail}?subject=Trailwalk%20contact`;
 const updateHref = "https://fnpg.me/";
 const updateLabel = "fnpg.me";
+const shorelineTrailHref =
+    "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
+const saintAnthonyViewHref =
+    "https://www.google.com/maps/search/?api=1&query=iceberg%20view%20mountain%20viewpoint%20Saint%20Anthony%20NL";
 
 const experienceItems = [
     {
         number: "01",
         title: "Real Trails, Real Places",
-        body: "The technical demo uses real trail captures, from an afternoon walk on Shoreline Trail in Port Moody, BC, to an iceberg view from a mountain viewpoint in Saint Anthony, NL.",
+        body: "The technical demo uses real trail captures.",
     },
     {
         number: "02",
@@ -173,8 +177,18 @@ const audiences = [
                             remember the feeling of being outside.
                         </p>
                         <p class="origin-note">
-                            Early captures include Shoreline Trail in Port Moody,
-                            BC and Saint Anthony, NL.
+                            Early captures include <a
+                                href={shorelineTrailHref}
+                                target="_blank"
+                                rel="noreferrer"
+                                >Shoreline Trail in Port Moody, BC</a
+                            > and <a
+                                href={saintAnthonyViewHref}
+                                target="_blank"
+                                rel="noreferrer"
+                                >an iceberg view from a mountain viewpoint in
+                                Saint Anthony, NL</a
+                            >.
                         </p>
                     </div>
                 </div>
@@ -198,7 +212,35 @@ const audiences = [
                                     <span>{item.number}</span>
                                     <div aria-hidden="true" />
                                     <h3>{item.title}</h3>
-                                    <p>{item.body}</p>
+                                    {
+                                        item.number === "01" ? (
+                                            <p>
+                                                {item.body} From an afternoon
+                                                walk on{" "}
+                                                <a
+                                                    href={shorelineTrailHref}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    Shoreline Trail in Port
+                                                    Moody, BC
+                                                </a>
+                                                , to{" "}
+                                                <a
+                                                    href={saintAnthonyViewHref}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    an iceberg view from a
+                                                    mountain viewpoint in Saint
+                                                    Anthony, NL
+                                                </a>
+                                                .
+                                            </p>
+                                        ) : (
+                                            <p>{item.body}</p>
+                                        )
+                                    }
                                 </article>
                             ))
                         }
@@ -321,6 +363,7 @@ const audiences = [
         background: var(--tw-bg);
         color: var(--tw-text);
         font-family: var(--tw-sans);
+        zoom: 1.25;
         -webkit-font-smoothing: antialiased;
     }
 
@@ -821,6 +864,10 @@ const audiences = [
             flex-direction: column;
             padding-top: 18px;
             padding-bottom: 18px;
+        }
+
+        body {
+            zoom: 1;
         }
 
         .page-nav nav {
