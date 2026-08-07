@@ -1,0 +1,705 @@
+---
+const contactEmail = 'projects@fnpg.me';
+const partnerEmail = 'projects@fnpg.me';
+const contactHref = `mailto:${contactEmail}?subject=Trailwalk%20contact`;
+const partnerHref = `mailto:${partnerEmail}?subject=Trailwalk%20partnership`;
+const updateHref = `mailto:${contactEmail}?subject=Trailwalk%20updates`;
+
+const experienceItems = [
+  {
+    number: '01',
+    title: 'Real Trails, Real Places',
+    body: 'Every walk is captured on a real outdoor trail: forest paths, lakeshores, mountain meadows. Not computer-generated. Not simulated.',
+  },
+  {
+    number: '02',
+    title: 'The Sound of Being There',
+    body: 'Birds, water, wind, footsteps: recorded in spatial audio so the world feels present around you.',
+  },
+  {
+    number: '03',
+    title: 'At Your Own Pace',
+    body: 'Walk with support, sit comfortably, or use a wheelchair. Every session should adapt to the person.',
+  },
+];
+
+const audiences = [
+  {
+    title: 'Older Adults',
+    body: 'Reconnect with outdoor places from home or community settings, safely and at your own comfort level.',
+  },
+  {
+    title: 'People with Mobility Challenges',
+    body: 'Experience trails that would be physically inaccessible, at your own pace.',
+  },
+  {
+    title: 'Caregivers & Families',
+    body: 'Share a meaningful, low-stress outdoor experience with someone you care for.',
+  },
+  {
+    title: 'Community Partners',
+    body: 'Recreation centers, accessibility organizations, and senior programs can bring immersive nature walks to the people they serve.',
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trailwalk — Walking in Nature is not a privilege</title>
+    <meta
+      name="description"
+      content="Trailwalk brings real outdoor trails into safe indoor settings through immersive 360-degree trail walks and spatial outdoor sound."
+    />
+    <meta property="og:title" content="Trailwalk — Walking in Nature is not a privilege" />
+    <meta
+      property="og:description"
+      content="Immersive 360-degree trail walks for everyone who has been separated from the outdoors."
+    />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="accent-bar" aria-hidden="true"></div>
+    <header class="page-nav" aria-label="Trailwalk sections">
+      <a class="nav-brand" href="#hero">Trailwalk</a>
+      <nav>
+        <a href="#problem">The Problem</a>
+        <a href="#experience">The Experience</a>
+        <a href="#audience">Who It's For</a>
+        <a href="#contact">Help Shape Trailwalk</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="hero" aria-labelledby="hero-title">
+        <div class="hero-photo" aria-hidden="true"></div>
+        <div class="hero-overlay" aria-hidden="true"></div>
+        <svg class="contours" viewBox="0 0 1440 900" preserveAspectRatio="none" fill="none" aria-hidden="true">
+          <path d="M-50,140 C200,120 480,200 740,170 S1120,120 1500,175" />
+          <path d="M-50,260 C280,240 520,310 780,278 S1160,235 1500,285" />
+          <path d="M-50,400 C180,380 460,450 730,420 S1080,375 1500,425" />
+          <path d="M-50,530 C320,510 560,575 830,545 S1240,500 1500,550" />
+          <path d="M-50,660 C200,645 500,710 800,680 S1120,640 1500,685" />
+          <path d="M-50,780 C260,765 540,810 840,785 S1200,750 1500,790" />
+        </svg>
+
+        <div class="hero-inner">
+          <h1 id="hero-title">Walking in Nature<br />is not a privilege</h1>
+          <p>Immersive 360-degree trail walks for everyone who has been separated from the outdoors.</p>
+          <div class="hero-actions" aria-label="Trailwalk actions">
+            <a class="button button-light" href={updateHref}>Stay Updated</a>
+            <a class="button button-ghost" href={contactHref}>Get in Touch</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="problem-section" id="problem">
+        <div class="text-column">
+          <h2>Many people can't simply go outside</h2>
+          <p class="body-copy">
+            For millions of older adults, people with mobility challenges, and those in care settings,
+            stepping onto a forest trail isn't a simple decision. Weather, distance, terrain,
+            physical limitations, and safety concerns keep people indoors: separated from the natural
+            places that sustain wellbeing, memory, and connection.
+          </p>
+          <p class="pull-quote">
+            The problem isn't a lack of technology. It's that the outdoors remains inaccessible to the
+            people who may need it most.
+          </p>
+        </div>
+      </section>
+
+      <div class="waveform-wrap" aria-hidden="true">
+        <svg viewBox="0 0 200 20" class="waveform" fill="none">
+          <path d="M0,10 L28,10 L36,3 L44,17 L52,6 L60,14 L68,4 L76,16 L84,8 L92,12 L100,10 L200,10" />
+        </svg>
+      </div>
+
+      <section class="experience-section" id="experience">
+        <div class="wide-column">
+          <h2>Real trails, brought indoors</h2>
+          <div class="experience-grid">
+            {experienceItems.map((item) => (
+              <article class="feature">
+                <span>{item.number}</span>
+                <div aria-hidden="true"></div>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="audience-section" id="audience">
+        <div class="wide-column">
+          <h2>Built with and for</h2>
+          <div class="audience-grid">
+            {audiences.map((audience) => (
+              <article class="audience-card">
+                <h3>{audience.title}</h3>
+                <p>{audience.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div class="contact-card">
+          <h2>Help shape what this becomes</h2>
+          <p class="body-copy">
+            Trailwalk is in its earliest stage: a concept shaped by real community input. We're not
+            building a product and then asking people to use it. We're asking first.
+          </p>
+          <a class="button button-primary" href={contactHref}>Contact Us <span aria-hidden="true">→</span></a>
+          <p class="email-note">{contactEmail}</p>
+          <div class="partner-note">
+            <p>Are you an organization interested in partnership?</p>
+            <a href={partnerHref}>{partnerEmail} →</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="loop-section" id="stay-in-the-loop">
+        <svg class="contours loop-contours" viewBox="0 0 1440 500" preserveAspectRatio="none" fill="none" aria-hidden="true">
+          <path d="M-50,80 C300,60 600,130 900,95 S1300,55 1500,105" />
+          <path d="M-50,220 C200,200 500,270 800,240 S1200,195 1500,250" />
+          <path d="M-50,370 C250,355 550,410 850,385 S1250,350 1500,395" />
+        </svg>
+        <div class="loop-inner">
+          <h2>Stay in the loop</h2>
+          <p>Trail captures, demo invitations, research notes, and community updates.</p>
+          <a class="button button-light" href={updateHref}>Request updates</a>
+          <p class="fine-print">No form yet. Email us and we'll keep you posted.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="trail-footer">
+      <span>Trailwalk</span>
+      <span>© 2026 · Concept Stage</span>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --tw-bg: #f8f5ef;
+    --tw-bg-alt: #f2efe9;
+    --tw-text: #2c2b28;
+    --tw-secondary: #6b6860;
+    --tw-tertiary: #9b9488;
+    --tw-forest: #2e5e3e;
+    --tw-forest-hover: #24502f;
+    --tw-lake: #3b7a8a;
+    --tw-divider: #e2ddd4;
+    --tw-wave: #d4cfc4;
+    --tw-dark: #1c3728;
+    --tw-darkest: #0e1f16;
+    --tw-footer: #152b1f;
+    --tw-sand: #ebe6db;
+    --tw-serif: "Lora", Georgia, serif;
+    --tw-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --tw-section-y: clamp(80px, 10vw, 148px);
+    --tw-section-x: clamp(32px, 8vw, 160px);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--tw-bg);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--tw-bg);
+    color: var(--tw-text);
+    font-family: var(--tw-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: var(--tw-forest);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #3a7a4f;
+  }
+
+  .accent-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--tw-forest) 0%, var(--tw-lake) 100%);
+  }
+
+  .page-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 64px;
+    padding: 0 var(--tw-section-x);
+    border-bottom: 1px solid rgba(226, 221, 212, 0.72);
+    background: rgba(248, 245, 239, 0.92);
+    backdrop-filter: blur(16px);
+  }
+
+  .nav-brand {
+    color: var(--tw-text);
+    font-family: var(--tw-serif);
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .page-nav nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: clamp(14px, 2.2vw, 34px);
+  }
+
+  .page-nav nav a {
+    color: var(--tw-tertiary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .page-nav nav a:hover {
+    color: var(--tw-forest);
+  }
+
+  .hero {
+    position: relative;
+    min-height: calc(100svh - 64px);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 80px var(--tw-section-x);
+    background: #14130f;
+  }
+
+  .hero-photo,
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero-photo {
+    background-image: url("/assets/project-covers/trailwalk-forest-path.webp");
+    background-position: center;
+    background-size: cover;
+    filter: saturate(0.95) contrast(0.96);
+    opacity: 1;
+  }
+
+  .hero-overlay {
+    background:
+      linear-gradient(90deg, rgba(20, 19, 15, 0.82) 0%, rgba(20, 19, 15, 0.58) 42%, rgba(20, 19, 15, 0.18) 100%),
+      linear-gradient(0deg, rgba(20, 19, 15, 0.32) 0%, rgba(20, 19, 15, 0.02) 58%);
+  }
+
+  .contours {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .contours path {
+    stroke: rgba(255, 255, 255, 0.028);
+    stroke-width: 1.1;
+  }
+
+  .contours path:nth-child(odd) {
+    stroke-opacity: 1.25;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin-top: 0;
+  }
+
+  h1 {
+    margin-bottom: 32px;
+    color: #fff;
+    font-family: var(--tw-serif);
+    font-size: clamp(40px, 5.5vw, 78px);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .hero-inner > p {
+    max-width: 540px;
+    margin-bottom: 52px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: clamp(17px, 1.8vw, 21px);
+    font-weight: 400;
+    line-height: 1.65;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 100px;
+    font-family: var(--tw-sans);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .button-light {
+    padding: 15px 34px;
+    background: #fff;
+    color: var(--tw-darkest);
+  }
+
+  .button-light:hover {
+    background: var(--tw-sand);
+    color: var(--tw-darkest);
+  }
+
+  .button-ghost {
+    padding: 15px 34px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .button-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+  }
+
+  .problem-section,
+  .experience-section,
+  .contact-section {
+    padding: var(--tw-section-y) var(--tw-section-x);
+    background: var(--tw-bg);
+  }
+
+  .text-column {
+    max-width: 660px;
+  }
+
+  .wide-column {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    color: var(--tw-text);
+    font-family: var(--tw-serif);
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 400;
+    line-height: 1.18;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+
+  .problem-section h2 {
+    margin-bottom: 32px;
+  }
+
+  .body-copy {
+    color: var(--tw-secondary);
+    font-family: var(--tw-sans);
+    font-size: clamp(16px, 1.5vw, 18px);
+    line-height: 1.8;
+  }
+
+  .pull-quote {
+    max-width: 540px;
+    margin-bottom: 0;
+    color: var(--tw-forest);
+    font-family: var(--tw-serif);
+    font-size: clamp(17px, 1.8vw, 21px);
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  .waveform-wrap {
+    padding: 0 var(--tw-section-x);
+    background: var(--tw-bg);
+  }
+
+  .waveform {
+    display: block;
+    width: clamp(100px, 16vw, 180px);
+    height: 20px;
+  }
+
+  .waveform path {
+    stroke: var(--tw-wave);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+  }
+
+  .experience-section h2,
+  .audience-section h2 {
+    margin-bottom: 72px;
+  }
+
+  .experience-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 56px;
+  }
+
+  .feature {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .feature span {
+    color: var(--tw-lake);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .feature div {
+    width: 100%;
+    height: 1px;
+    background: var(--tw-divider);
+  }
+
+  .feature h3,
+  .audience-card h3 {
+    margin: 6px 0 0;
+    color: var(--tw-text);
+    font-family: var(--tw-serif);
+    font-size: clamp(19px, 1.8vw, 23px);
+    font-weight: 500;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .feature p,
+  .audience-card p {
+    margin-bottom: 0;
+    color: var(--tw-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .audience-section {
+    padding: var(--tw-section-y) var(--tw-section-x);
+    background: var(--tw-bg-alt);
+  }
+
+  .audience-section h2 {
+    margin-bottom: 56px;
+  }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .audience-card {
+    min-width: 0;
+    padding: 36px 40px;
+    border-radius: 10px;
+    background: var(--tw-bg);
+  }
+
+  .audience-card h3 {
+    margin-bottom: 10px;
+  }
+
+  .contact-card {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .contact-card h2 {
+    margin-bottom: 24px;
+  }
+
+  .contact-card .body-copy {
+    margin-bottom: 44px;
+    font-size: clamp(15px, 1.5vw, 17px);
+    line-height: 1.75;
+  }
+
+  .button-primary {
+    min-height: 54px;
+    padding: 16px 40px;
+    background: var(--tw-forest);
+    color: #fff;
+    font-size: 16px;
+  }
+
+  .button-primary:hover {
+    background: var(--tw-forest-hover);
+    color: #fff;
+  }
+
+  .email-note {
+    margin: 16px 0 0;
+    color: var(--tw-tertiary);
+    font-size: 14px;
+  }
+
+  .partner-note {
+    margin-top: 52px;
+    padding-top: 32px;
+    border-top: 1px solid var(--tw-divider);
+  }
+
+  .partner-note p {
+    margin-bottom: 8px;
+    color: var(--tw-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .partner-note a {
+    color: var(--tw-forest);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .loop-section {
+    position: relative;
+    overflow: hidden;
+    padding: var(--tw-section-y) var(--tw-section-x);
+    background: var(--tw-dark);
+  }
+
+  .loop-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .loop-inner h2 {
+    margin-bottom: 16px;
+    color: #fff;
+    font-size: clamp(26px, 3vw, 38px);
+  }
+
+  .loop-inner p {
+    margin-bottom: 36px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .loop-inner .fine-print {
+    margin: 18px 0 0;
+    color: rgba(255, 255, 255, 0.28);
+    font-size: 12px;
+  }
+
+  .trail-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 36px var(--tw-section-x);
+    background: var(--tw-footer);
+  }
+
+  .trail-footer span:first-child {
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--tw-serif);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .trail-footer span:last-child {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 12px;
+  }
+
+  @media (max-width: 760px) {
+    .page-nav {
+      position: static;
+      align-items: flex-start;
+      flex-direction: column;
+      padding-top: 18px;
+      padding-bottom: 18px;
+    }
+
+    .page-nav nav {
+      justify-content: flex-start;
+    }
+
+    .hero {
+      min-height: 88svh;
+    }
+
+    .experience-grid,
+    .audience-grid {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .button {
+      width: 100%;
+    }
+
+    .audience-card {
+      padding: 30px 28px;
+    }
+
+    .trail-footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+</style>
