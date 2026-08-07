@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+import DotNav from '../components/DotNav.astro';
+import { projects } from '../data/projects';
+
+const navItems = [
+  { id: 'thesis', label: 'thesis' },
+  ...projects.map((p) => ({ id: p.id, label: p.id.replace('-', ' ') })),
+  { id: 'about', label: 'about' },
+];
+---
+<Base
+  title="field notes — extending attention and memory"
+  description="A portfolio of technical and artistic projects about extending human attention and memory without replacing human agency."
+  crumb="index"
+>
+  <main class="doc">
+    <!-- ================= THESIS ================= -->
+    <section class="hero" id="thesis">
+      <span class="label kicker">portfolio · one page</span>
+      <h1>Extending attention and&nbsp;memory, without replacing&nbsp;agency.</h1>
+      <p class="dek">
+        扩展人的注意力与记忆，不替代人的主体性。 Six projects — agents,
+        research, VR, photography — that keep logbooks against forgetting,
+        and leave the captain at the wheel.
+      </p>
+    </section>
+
+    <hr class="rule rule--hard" />
+
+    <!-- ================= PROJECTS ================= -->
+    {projects.map((p, i) => (
+      <section id={p.id}>
+        <div class="sec">
+          <span class="sec-no">{String(i + 1).padStart(2, '0')}</span>
+          <h2>{p.kicker}</h2>
+        </div>
+        <div class="entry">
+          <div class="entry-top">
+            <h3>{p.title}</h3>
+            <span class={`stamp ${p.stampClass}`}>{p.stamp}</span>
+          </div>
+          <p>{p.dek}</p>
+          {p.href ? (
+            <p class="meta"><a href={p.href}>concept page →</a></p>
+          ) : (
+            <p class="meta">concept page — in preparation</p>
+          )}
+        </div>
+      </section>
+    ))}
+
+    <!-- ================= ABOUT ================= -->
+    <section id="about">
+      <div class="sec"><span class="sec-no">07</span><h2>About</h2></div>
+      <p>
+        One person, two practices: systems that carry memory, and photographs
+        that refuse to let encounters dissolve. The thread between them is the
+        thesis above — a logbook is a promise to a future self.
+      </p>
+    </section>
+  </main>
+
+  <DotNav items={navItems} />
+</Base>
+
+<style>
+  .hero { margin: 0 0 var(--sp-2); }
+  .hero .kicker { display: block; margin-bottom: 1.1rem; }
+  .hero h1 {
+    font-size: var(--fs-h1);
+    line-height: 1.02;
+    font-weight: 600;
+    margin: 0 0 1.2rem;
+    letter-spacing: -0.01em;
+  }
+  .hero .dek {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 36rem;
+    margin: 0;
+  }
+
+  .entry-top {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.3rem;
+  }
+  .entry-top h3 { margin: 0; font-size: var(--fs-h3); font-weight: 600; }
+  .entry p { max-width: 38rem; }
+</style>

@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import Ruler from '../components/Ruler.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** breadcrumb shown top-right, e.g. "projects / beagle" */
+  crumb?: string;
+  ogType?: string;
+}
+const { title, description, crumb, ogType = 'website' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="field notes" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-head">
+        <a class="site-mark" href="/"><b>◈</b>&nbsp;field notes</a>
+        {crumb && <span class="meta">{crumb}</span>}
+      </header>
+      <slot />
+      <footer class="site-foot">
+        <span class="meta">field notes</span>
+        <span class="meta"><a href="/colophon/">colophon</a></span>
+      </footer>
+    </div>
+    <Ruler />
+  </body>
+</html>
