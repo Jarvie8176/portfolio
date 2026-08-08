@@ -49,7 +49,7 @@ Use the six samples that ship in the public gallery. These are the ids in
 - `tablelands`
 - `norstead`
 - `margaret-falls`
-- `cartreau-panorama`
+- `cartreau-panorama` (shown as `Daredevil Trail`)
 - `kauzmann-ridge`
 - `shoreline-trail`
 

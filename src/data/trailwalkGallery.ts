@@ -52,8 +52,8 @@ export type TrailwalkPanorama = {
 export type TrailwalkGalleryItem = {
     id: string;
     title: string;
-    shortPlace: string;
-    locationLabel: string;
+    /** Subtitle on the card and the `Place` row in the details panel. */
+    place: string;
     terrainTag: string;
     /**
      * The camera's own clock reading (EXIF DateTimeOriginal), which carries no
@@ -137,15 +137,14 @@ const makeAssets = (
 export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
     {
         id: "tablelands",
-        title: "Tablelands Stream",
-        shortPlace: "Tablelands, NL",
-        locationLabel: "Tablelands, NL",
+        title: "Tablelands Trail",
+        place: "Gros Morne National Park, NL",
         terrainTag: "Open barrens",
         capturedAt: "2026-05-30T11:30:14",
         altitudeMeters: 258,
         coordinates: { latitude: 49.462, longitude: -57.959 },
         locationSource: "jpg_exif",
-        mapsQuery: "Gros Morne Tablelands, Newfoundland and Labrador",
+        mapsQuery: "Tablelands Trail, Gros Morne National Park, Newfoundland and Labrador",
         assets: makeAssets("tablelands", {
             panorama: 1320629,
             panoramaHd: 15469535,
@@ -158,15 +157,14 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
     },
     {
         id: "norstead",
-        title: "Norstead Lowland",
-        shortPlace: "Norstead Trail, NL",
-        locationLabel: "Norstead Trail, NL",
+        title: "Norstead Trail",
+        place: "L'Anse aux Meadows, NL",
         terrainTag: "Coastal lowland",
         capturedAt: "2026-06-01T10:30:15",
         altitudeMeters: 14,
         coordinates: { latitude: 51.603, longitude: -55.52 },
         locationSource: "original_insp_exif",
-        mapsQuery: "Norstead Trail, Newfoundland and Labrador",
+        mapsQuery: "Norstead Trail, L'Anse aux Meadows, Newfoundland and Labrador",
         assets: makeAssets("norstead", {
             panorama: 1086525,
             panoramaHd: 62273470,
@@ -180,15 +178,14 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
     {
         id: "margaret-falls",
         title: "Margaret Falls",
-        shortPlace: "Margaret Falls, BC",
-        locationLabel: "Margaret Falls, BC",
+        place: "Salmon Arm, BC",
         terrainTag: "Waterfall trail",
         capturedAt: "2026-05-01T11:36:45",
         // No coordinates: every frame from this day carries a 0/0 fix, so there
         // is no recorded position to round. The place name is the only location
         // this item has ever had.
         locationSource: "manual_review",
-        mapsQuery: "Margaret Falls, Tappen, British Columbia",
+        mapsQuery: "Margaret Falls, Salmon Arm, British Columbia",
         assets: makeAssets("margaret-falls", {
             panorama: 1725153,
             panoramaHd: 21370819,
@@ -201,16 +198,14 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
     },
     {
         id: "cartreau-panorama",
-        title: "Cartreau Panorama",
-        shortPlace: "St Anthony, NL",
-        locationLabel: "St Anthony, NL",
+        title: "Daredevil Trail",
+        place: "St. Anthony, NL",
         terrainTag: "Wide coastal view",
         capturedAt: "2026-06-02T11:21:02",
         altitudeMeters: 120,
         coordinates: { latitude: 51.354, longitude: -55.563 },
         locationSource: "original_insp_exif",
-        mapsQuery:
-            "Cartreau Point Trail, St. Anthony, Newfoundland and Labrador",
+        mapsQuery: "Daredevil Trail, St. Anthony, Newfoundland and Labrador",
         assets: makeAssets("cartreau-panorama", {
             panorama: 1015075,
             panoramaHd: 52426060,
@@ -223,15 +218,14 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
     },
     {
         id: "kauzmann-ridge",
-        title: "Kauzmann Ridge",
-        shortPlace: "Kauzmann Trail, NS",
-        locationLabel: "Kauzmann Trail, NS",
+        title: "Kauzmann Trail",
+        place: "Cape Breton Island, NS",
         terrainTag: "Highland ridge",
         capturedAt: "2026-06-08T14:23:17",
         altitudeMeters: 388,
         coordinates: { latitude: 46.994, longitude: -60.42 },
         locationSource: "original_dng_exif",
-        mapsQuery: "Kauzmann Trail, Nova Scotia",
+        mapsQuery: "Kauzmann Trail, Cape Breton Island, Nova Scotia",
         assets: makeAssets("kauzmann-ridge", {
             panorama: 777607,
             panoramaHd: 40529353,
@@ -244,12 +238,8 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
     },
     {
         id: "shoreline-trail",
-        // TODO(copy): title, place labels and terrain tag are provisional —
-        // derived from the coordinate and the staging directory name, not
-        // written. The operator is editing these by hand.
         title: "Shoreline Trail",
-        shortPlace: "Port Moody, BC",
-        locationLabel: "Port Moody, BC",
+        place: "Port Moody, BC",
         terrainTag: "Coastal forest",
         capturedAt: "2026-08-08T15:36:16",
         altitudeMeters: 1,
@@ -312,10 +302,6 @@ const readCapturedAt = (capturedAt: string) => {
         time: `${hour}:${minute}`,
     };
 };
-
-/** "June 2, 2026" — the card label, where the hour would be noise. */
-export const formatCapturedDate = (capturedAt: string) =>
-    readCapturedAt(capturedAt).date;
 
 /**
  * "June 2, 2026 · 11:21 local" — the details label.
