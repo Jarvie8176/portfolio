@@ -1,7 +1,6 @@
 ---
 import {
     formatBytes,
-    formatCapturedDate,
     formatCapturedDateTime,
     formatCoordinates,
     getTrailwalkMapsAction,
@@ -90,9 +89,8 @@ const resolveViewerAssets = (item: TrailwalkGalleryItem) => ({
 const galleryItems = trailwalkGalleryItems.map((item) => ({
     id: item.id,
     title: item.title,
-    shortPlace: item.shortPlace,
+    place: item.place,
     terrainTag: item.terrainTag,
-    capturedLabel: formatCapturedDate(item.capturedAt),
     highlight: resolveHighlights(item),
     poster: assetUrl(item.assets.poster),
 }));
@@ -109,7 +107,7 @@ const galleryItems = trailwalkGalleryItems.map((item) => ({
 const publicPayload = trailwalkGalleryItems.map((item) => ({
     id: item.id,
     title: item.title,
-    locationLabel: item.locationLabel,
+    locationLabel: item.place,
     capturedLabel: formatCapturedDateTime(item.capturedAt),
     altitudeMeters: item.altitudeMeters,
     assets: resolveViewerAssets(item),
@@ -165,13 +163,12 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
                         <span class="trailwalk-gallery__card-body">
                             <span class="trailwalk-gallery__card-meta">
                                 <span>{item.terrainTag}</span>
-                                <span>{item.capturedLabel}</span>
                             </span>
                             <span class="trailwalk-gallery__card-title">
                                 {item.title}
                             </span>
                             <span class="trailwalk-gallery__card-place">
-                                {item.shortPlace}
+                                {item.place}
                             </span>
                         </span>
                     </a>
