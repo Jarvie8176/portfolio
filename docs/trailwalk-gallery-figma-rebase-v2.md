@@ -48,13 +48,15 @@ Use the six samples that ship in the public gallery. These are the ids in
 
 - `tablelands`
 - `norstead`
-- `fishing-point`
 - `margaret-falls`
 - `cartreau-panorama`
 - `kauzmann-ridge`
+- `shoreline-trail`
 
-The earlier candidate list carried two Cartreau captures; `margaret-falls`
-replaced the duplicate.
+The set follows the source directory rather than this list: `fishing-point` was
+withdrawn when its master left the set, and `shoreline-trail` replaced it. An
+earlier candidate list carried two Cartreau captures; `margaret-falls` replaced
+the duplicate.
 
 Local source location:
 
