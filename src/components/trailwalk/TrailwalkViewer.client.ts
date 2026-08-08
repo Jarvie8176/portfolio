@@ -298,12 +298,22 @@ export const initializeTrailwalkGallery = (
         // handler, so a 404/CORS/transient failure becomes an unhandled
         // rejection that no caller can fall back from. Loading it here keeps
         // the failure catchable.
+        // TODO(test): no coverage. See tests/TODO.md T12 — every sample must
+        // open, including one with no initialView.
+        // Absent view fields are omitted, not passed as `undefined`. Photo
+        // Sphere Viewer merges this over its own defaults, so an explicit
+        // `undefined` replaces `defaultYaw: 0` and then throws
+        // `Unknown angle "undefined"` before the panorama is ever requested.
+        // A sample with no `initialView`, or with only some of the three
+        // fields set, would otherwise fail to open at all.
+        const view = item.initialView ?? {};
+
         const viewer: Viewer = new Viewer({
             container: viewerContainer,
             caption: item.title,
-            defaultYaw: item.initialView?.yaw,
-            defaultPitch: item.initialView?.pitch,
-            defaultZoomLvl: item.initialView?.zoom,
+            ...(view.yaw === undefined ? {} : { defaultYaw: view.yaw }),
+            ...(view.pitch === undefined ? {} : { defaultPitch: view.pitch }),
+            ...(view.zoom === undefined ? {} : { defaultZoomLvl: view.zoom }),
             plugins: [
                 GyroscopePlugin.withConfig({
                     moveMode: "smooth",
