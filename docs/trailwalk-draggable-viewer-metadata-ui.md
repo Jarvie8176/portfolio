@@ -2,19 +2,23 @@
 
 Date: 2026-08-07
 
-## Local Implementation Check
+## Implementation Status
 
-Current `trailwalk-detail-page` does not contain a 360 panorama viewer yet.
+Implemented. This document is the design record for what shipped, not a plan.
 
-Observed state:
+As built:
 
-- `src/pages/projects/trailwalk.astro` is a static Astro page with no gallery or
-  viewer component.
-- `package.json` has no 360 viewer dependency.
-- Existing Trailwalk links use Google Maps search URLs only for two narrative
-  origin links.
-- Existing client-side JavaScript is intentionally small, so the gallery viewer
-  should remain a progressive enhancement loaded after user intent.
+- `src/components/trailwalk/TrailwalkGallery.astro` renders the gallery and the
+  viewer shell.
+- `src/components/trailwalk/TrailwalkViewer.client.ts` is loaded only after a
+  card is selected.
+- `src/data/trailwalkGallery.ts` holds the typed metadata.
+- `@photo-sphere-viewer/core` and `@photo-sphere-viewer/gyroscope-plugin` are
+  pinned to `5.15.1` in `package.json`.
+
+The original constraint still holds: the page ships almost no client
+JavaScript, so the viewer stays a progressive enhancement loaded after user
+intent rather than part of the initial bundle.
 
 ## Viewer Recommendation
 
@@ -64,20 +68,21 @@ Recommended files:
 - `src/styles/trailwalk-gallery.css` or page-local CSS if the implementation
   remains narrow.
 
-Recommended dependency:
+Installed dependencies, pinned exactly because the gyroscope plugin declares an
+exact peer on the core package:
 
-```sh
-npm install @photo-sphere-viewer/core
-```
+- `@photo-sphere-viewer/core`
+- `@photo-sphere-viewer/gyroscope-plugin`
 
-Optional later dependencies:
+Candidates for later, not installed:
 
-```sh
-npm install @photo-sphere-viewer/markers-plugin
-npm install @photo-sphere-viewer/equirectangular-tiles-adapter
-```
+- `@photo-sphere-viewer/markers-plugin` for in-panorama field notes.
+- `@photo-sphere-viewer/equirectangular-tiles-adapter` if mobile memory ever
+  forces tiled panoramas.
 
 ## Data Contract
+
+`src/data/trailwalkGallery.ts` is the source of truth. As built:
 
 ```ts
 export type TrailwalkGalleryItem = {
@@ -87,27 +92,27 @@ export type TrailwalkGalleryItem = {
   locationLabel: string;
   terrainTag: string;
   capturedAt: string;
+  capturedLabel: string;
   altitudeMeters?: number;
-  locationSource: "jpg_exif" | "original_insp_exif" | "manual_review";
+  locationSource: TrailwalkLocationSource;
   mapsQuery: string;
-  googleMaps?: {
-    label: string;
-    href: string;
-  };
   assets: {
     highlight: string;
     highlight2x?: string;
     panorama: string;
-    poster?: string;
+    poster: string;
   };
   initialView?: {
     yaw?: string;
     pitch?: string;
     zoom?: number;
   };
-  notes?: string;
 };
 ```
+
+The Maps action is derived, not stored: `getTrailwalkMapsAction(item)` builds it
+from `mapsQuery`. What reaches the browser is a separate public projection built
+by `toPublicGalleryItem` in `TrailwalkGallery.astro`, not this type.
 
 ## Candidate Metadata Values
 

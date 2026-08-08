@@ -174,17 +174,18 @@ Do not commit raw/full-size JPGs to GitHub.
 
 ## Remaining Work
 
-1. Review PR #15 and polish any visual issues found in browser.
-2. Run real mobile QA over HTTPS:
-   - card selection places the viewer after the tapped card,
-   - no horizontal overflow,
-   - touch drag works,
-   - gyroscope permission/control works on supported browsers.
-3. Wire portfolio deploy environment with
-   `TRAILWALK_ASSET_BASE_URL=https://media.fnpg.me`.
-4. Update Figma frames `C`, `E`, and readme once writable Figma access is
-   available.
-6. Address PR review feedback and merge only after operator approval.
+1. Wire the portfolio deploy environment with
+   `TRAILWALK_ASSET_BASE_URL=https://media.fnpg.me`. The build fails closed
+   without it, so this must land before merge.
+2. Update Figma frames `C`, `E`, and the readme note once writable Figma access
+   is available.
+3. Address PR review feedback and merge only after operator approval.
+
+Done:
+
+- Mobile QA over HTTPS passed: card selection places the viewer after the
+  tapped card, no horizontal overflow, touch drag works, and the gyroscope
+  permission/control works on supported browsers.
 
 ## Suggested New Session Prompt
 

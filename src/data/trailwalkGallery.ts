@@ -163,6 +163,8 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
     },
 ];
 
+// TODO(test): no coverage. See tests/TODO.md T4 — the produced href must never
+// contain a coordinate pair, for every item in trailwalkGalleryItems.
 export const getTrailwalkMapsAction = (item: TrailwalkGalleryItem) => ({
     label: "Open approximate area",
     href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
