@@ -25,9 +25,15 @@ export type TrailwalkApproxCoordinates = {
 };
 
 /**
- * One panorama tier. The byte count is the size of the object actually served
- * from the asset host, because the reader is shown it before deciding whether
- * to spend it. Re-measure with a range request rather than estimating:
+ * One panorama tier. The standard tier is a 4096-wide derivative; the HD tier
+ * is the stitched original at 11904x5952, stripped of all metadata but
+ * otherwise untouched — the same compressed image data, so it is the highest
+ * resolution that exists rather than a re-encode of it.
+ *
+ * The byte count is the size of the object actually served from the asset
+ * host, because the reader is shown it before deciding whether to spend it,
+ * and at 12-42 MB that decision is a real one. Re-measure with a range request
+ * rather than estimating:
  *
  *   curl -sI -r 0-0 "$TRAILWALK_ASSET_BASE_URL/<key>"   # content-range: bytes 0-0/<bytes>
  */
@@ -91,7 +97,7 @@ const makeAssets = (
         bytes: bytes.panorama,
     },
     panoramaHd: {
-        key: `${assetVersion}/panoramas/${slug}-8192.jpg`,
+        key: `${assetVersion}/panoramas/${slug}-11904.jpg`,
         bytes: bytes.panoramaHd,
     },
     poster: `${assetVersion}/posters/${slug}-1600.webp`,
@@ -111,7 +117,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         mapsQuery: "Gros Morne Tablelands, Newfoundland and Labrador",
         assets: makeAssets("tablelands", {
             panorama: 1320629,
-            panoramaHd: 3785687,
+            panoramaHd: 15467441,
         }),
         initialView: {
             yaw: "12deg",
@@ -132,7 +138,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         mapsQuery: "Norstead Trail, Newfoundland and Labrador",
         assets: makeAssets("norstead", {
             panorama: 1681744,
-            panoramaHd: 5431819,
+            panoramaHd: 21022847,
         }),
         initialView: {
             yaw: "-18deg",
@@ -153,7 +159,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         mapsQuery: "Fishing Point Park Trails, St. Anthony, Newfoundland and Labrador",
         assets: makeAssets("fishing-point", {
             panorama: 1390333,
-            panoramaHd: 4414556,
+            panoramaHd: 39257827,
         }),
         initialView: {
             yaw: "28deg",
@@ -175,7 +181,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         mapsQuery: "Margaret Falls, Tappen, British Columbia",
         assets: makeAssets("margaret-falls", {
             panorama: 1725153,
-            panoramaHd: 5284670,
+            panoramaHd: 21368725,
         }),
         initialView: {
             yaw: "18deg",
@@ -197,7 +203,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
             "Cartreau Point Trail, St. Anthony, Newfoundland and Labrador",
         assets: makeAssets("cartreau-panorama", {
             panorama: 1589523,
-            panoramaHd: 4984185,
+            panoramaHd: 42294024,
         }),
         initialView: {
             yaw: "-34deg",
@@ -218,7 +224,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         mapsQuery: "Kauzmann Trail, Nova Scotia",
         assets: makeAssets("kauzmann-ridge", {
             panorama: 937829,
-            panoramaHd: 2743169,
+            panoramaHd: 12371197,
         }),
         initialView: {
             yaw: "8deg",
