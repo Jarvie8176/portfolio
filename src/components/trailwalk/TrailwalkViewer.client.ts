@@ -14,32 +14,41 @@ type PublicTrailwalkItem = TrailwalkGalleryItem & {
 
 type ViewerInstance = {
     destroy: () => void;
+    setPanorama: (path: string) => Promise<boolean>;
 };
 
 let viewerCssPromise: Promise<void> | null = null;
 
 const loadViewerCss = () => {
-    viewerCssPromise ??= import("@photo-sphere-viewer/core/index.css?url").then(
-        ({ default: href }) =>
-            new Promise<void>((resolve, reject) => {
-                const existing = document.querySelector<HTMLLinkElement>(
-                    'link[data-trailwalk-viewer-css="true"]',
-                );
+    viewerCssPromise ??= import("@photo-sphere-viewer/core/index.css?url")
+        .then(
+            ({ default: href }) =>
+                new Promise<void>((resolve, reject) => {
+                    const existing = document.querySelector<HTMLLinkElement>(
+                        'link[data-trailwalk-viewer-css="true"]',
+                    );
 
-                if (existing) {
-                    resolve();
-                    return;
-                }
+                    if (existing) {
+                        resolve();
+                        return;
+                    }
 
-                const link = document.createElement("link");
-                link.dataset.trailwalkViewerCss = "true";
-                link.rel = "stylesheet";
-                link.href = href;
-                link.addEventListener("load", () => resolve(), { once: true });
-                link.addEventListener("error", () => reject(), { once: true });
-                document.head.append(link);
-            }),
-    );
+                    const link = document.createElement("link");
+                    link.dataset.trailwalkViewerCss = "true";
+                    link.rel = "stylesheet";
+                    link.href = href;
+                    link.addEventListener("load", () => resolve(), { once: true });
+                    link.addEventListener("error", () => reject(), { once: true });
+                    document.head.append(link);
+                }),
+        )
+        .catch((error: unknown) => {
+            // Clear the cache so a later selection can retry. Leaving a rejected
+            // promise memoized would disable the gallery for the rest of the
+            // page's life after one transient stylesheet failure.
+            viewerCssPromise = null;
+            throw error;
+        });
 
     return viewerCssPromise;
 };
@@ -180,9 +189,17 @@ export const initializeTrailwalkGallery = (
         destroyViewer();
         await nextFrame();
 
-        activeViewer = new Viewer({
+        if (currentToken !== selectionToken) {
+            return;
+        }
+
+        // The panorama is deliberately not passed to the constructor. Photo
+        // Sphere Viewer would then start the load itself with no rejection
+        // handler, so a 404/CORS/transient failure becomes an unhandled
+        // rejection that no caller can fall back from. Loading it here keeps
+        // the failure catchable.
+        const viewer: ViewerInstance = new Viewer({
             container: viewerContainer,
-            panorama: item.assets.panorama,
             caption: item.title,
             defaultYaw: item.initialView?.yaw,
             defaultPitch: item.initialView?.pitch,
@@ -196,6 +213,17 @@ export const initializeTrailwalkGallery = (
             ],
             navbar: ["zoom", "move", "gyroscope", "fullscreen"],
         });
+
+        activeViewer = viewer;
+
+        // Resolves once the texture is loaded, or false if a newer selection
+        // aborted it. Marking the viewer ready before this point hides the
+        // poster for the whole download.
+        const loaded = await viewer.setPanorama(item.assets.panorama);
+
+        if (!loaded || currentToken !== selectionToken) {
+            return;
+        }
 
         viewerShell.dataset.viewerReady = "true";
         setStatus("");
@@ -232,6 +260,9 @@ export const initializeTrailwalkGallery = (
             await loadViewer(item, currentToken);
         } catch {
             if (currentToken === selectionToken) {
+                // Tear the viewer down so its own error overlay stops covering
+                // the poster the message points at.
+                destroyViewer();
                 setStatus(
                     "The 360 viewer could not load. The poster image is still available.",
                 );
@@ -241,6 +272,18 @@ export const initializeTrailwalkGallery = (
 
     cards.forEach((card) => {
         card.addEventListener("click", (event) => {
+            // Leave modified and non-primary clicks to the browser so the card
+            // can still be opened in a new tab or window.
+            if (
+                event.button !== 0 ||
+                event.metaKey ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey
+            ) {
+                return;
+            }
+
             const id = card.dataset.trailwalkId;
             const item = id ? itemsById.get(id) : undefined;
 
@@ -258,7 +301,7 @@ export const initializeTrailwalkGallery = (
             return;
         }
 
-        setDetailsOpen(detailsPanel.hidden);
+        setDetailsOpen(Boolean(detailsPanel.hidden));
     });
 
     backButton.addEventListener("click", () => {
