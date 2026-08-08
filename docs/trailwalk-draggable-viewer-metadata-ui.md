@@ -91,15 +91,15 @@ export type TrailwalkGalleryItem = {
   shortPlace: string;
   locationLabel: string;
   terrainTag: string;
-  capturedAt: string;
-  capturedLabel: string;
+  capturedAt: string;                          // wall clock, no zone offset
   altitudeMeters?: number;
-  locationSource: TrailwalkLocationSource;
+  coordinates?: TrailwalkApproxCoordinates;    // already rounded to 3 places
+  locationSource: TrailwalkLocationSource;     // provenance, not published
   mapsQuery: string;
   assets: {
-    highlight: string;
-    highlight2x?: string;
-    panorama: string;
+    highlights: TrailwalkHighlight[];          // srcset candidates
+    panorama: TrailwalkPanorama;               // key + measured byte count
+    panoramaHd: TrailwalkPanorama;
     poster: string;
   };
   initialView?: {
@@ -110,28 +110,35 @@ export type TrailwalkGalleryItem = {
 };
 ```
 
-The Maps action is derived, not stored: `getTrailwalkMapsAction(item)` builds it
-from `mapsQuery`. What reaches the browser is `publicPayload` in
-`TrailwalkGallery.astro`, an explicit projection of this type rather than this
-type itself.
+Both labels are derived rather than stored, so neither can drift from the value
+it describes: `formatCapturedDateTime(item.capturedAt)` and
+`formatCoordinates(item.coordinates)`. `getTrailwalkMapsAction(item)` reads the
+same `coordinates`, falling back to `mapsQuery` where none was recorded.
+
+What reaches the browser is `publicPayload` in `TrailwalkGallery.astro`, an
+explicit projection of this type rather than this type itself. It carries the
+poster and the two panorama tiers; card thumbnails are rendered server-side and
+are deliberately not serialized.
 
 ## Candidate Metadata Values
 
-Exact per-image coordinates, and any maps URL derived from them, live in the
-private review layer only. They must never be reproduced in this repository, in
-commit messages, or in pull request text.
-
-What a reviewer decides per image is only which of these public fields are
-accurate:
+Coordinates are published at three decimal places, roughly 110 m. The precision
+ceiling is enforced at authoring time — the number written into the repository
+is already rounded — because in a public repository the committed value is the
+disclosure whatever the renderer does with it. Full-precision values stay in the
+private review layer and must never be reproduced in this repository, in commit
+messages, or in pull request text.
 
 | field | published |
 | --- | --- |
 | `id`, `title`, `terrainTag` | yes |
 | `locationLabel`, `shortPlace` | yes, human-readable place only |
+| `capturedAt` | yes, as date and time of day in capture-local wall clock |
 | `altitudeMeters` | yes |
-| `locationSource` | yes, provenance label only |
-| `mapsQuery` | yes, a place name, never a coordinate pair |
-| exact latitude / longitude | never, and the type cannot express it |
+| `coordinates` | yes, at three decimal places and no finer |
+| `mapsQuery` | only as the fallback query where no coordinate was recorded |
+| `locationSource` | no, provenance is an audit question |
+| full-precision latitude / longitude | never, and the type cannot express it |
 
 ## Metadata UI Design
 
@@ -293,13 +300,19 @@ The rule is structural:
 
 ## Google Maps URL Pattern
 
-There is one pattern. It takes a place name, never a coordinate pair:
+There is one pattern, and its query is whatever the panel is showing, so the
+link and the text cannot disagree:
 
 ```ts
-const href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  mapsQuery,
-)}`;
+const query = item.coordinates
+  ? `${item.coordinates.latitude.toFixed(3)},${item.coordinates.longitude.toFixed(3)}`
+  : item.mapsQuery;
+const href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 ```
+
+`toFixed(3)` is a ceiling, not a rounding step: the stored value is already at
+three places, and the call is there so a future stored value that is not cannot
+leak through this function.
 
 Use `target="_blank"` and `rel="noreferrer"` on the public link.
 
@@ -310,9 +323,12 @@ Use `target="_blank"` and `rel="noreferrer"` on the public link.
 - Full panorama derivative comes from R2 or a configurable asset base URL.
 - Poster/highlight image remains visible while the viewer initializes.
 - `Back to gallery` returns focus to the selected card.
-- `Details` can show place, date, altitude, location source, and the Maps
-  action.
-- No latitude/longitude value appears anywhere in the built output.
+- `Details` can show place, captured date and time, altitude, coordinates, and
+  the Maps action.
+- No latitude/longitude value finer than three decimal places appears anywhere
+  in the built output, in the panel or in a Maps URL.
+- `Back to gallery` cancels any load still in flight rather than letting it
+  finish into a hidden shell.
 - Reduced-motion users do not get animated camera movement.
 - Build still passes with JavaScript disabled, showing gallery cards and
   fallback images.

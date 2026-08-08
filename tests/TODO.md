@@ -14,7 +14,7 @@ Each gap is marked with a `TODO(test)` comment at the site it protects.
 
 T1-T4 and T8 encode safety properties: the failure mode is a silently broken,
 over-publishing, or quietly wrong build, not a visible error. They are worth a
-runner on their own, and T1-T4 and T8 need no DOM. T5-T7 and T9 are behavioural
+runner on their own, and T1-T4 and T8 need no DOM. T5-T7, T9 and T10 are behavioural
 and need a DOM, so they are cheaper to defer.
 
 ## Gaps
@@ -126,6 +126,25 @@ returns to `"false"`, the button is re-enabled, `data-viewer-ready` stays
 `"true"`, and the status names the failure. The point is the invariant that the
 control describes the tier actually displayed, not merely that it does not
 throw.
+
+### T10 — leaving the viewer cancels work still in flight
+
+`src/components/trailwalk/TrailwalkViewer.client.ts`, the `Back to gallery`
+handler
+
+`destroyViewer()` on its own only cancels a load that has already built its
+viewer. A load still inside its dynamic import has nothing to destroy, so
+before the token bump it went on to construct a viewer and download a panorama
+— up to 42 MB on the HD tier — into a shell the reader had already left.
+Reproduced by holding the viewer chunk and pressing Back inside that window:
+the panorama was fetched, a canvas appeared in the hidden shell, and
+`data-viewer-ready` was set to `"true"`.
+
+Assert: with the viewer chunk delayed and Back pressed before it resolves, no
+panorama request is made, no canvas is created, and `data-viewer-ready` stays
+`"false"`. Assert the other half too, since a cancellation boundary is easy to
+make too wide: selecting again after Back must still load, and the HD
+preference must survive the round trip.
 
 ## Not covered here
 

@@ -485,12 +485,27 @@ export const initializeTrailwalkGallery = (
     });
 
     backButton.addEventListener("click", () => {
+        // TODO(test): no coverage. See tests/TODO.md T10 — pressing Back while
+        // the viewer chunk is still loading must leave no panorama fetched and
+        // no viewer built, and selecting again afterwards must still work.
+        // Leaving is a cancellation boundary, and the token is what makes it
+        // one. `destroyViewer()` alone only cancels a load that has already
+        // built its viewer; one still inside its dynamic import has nothing to
+        // destroy, so it goes on to construct a viewer and download a panorama
+        // — up to 42 MB on the HD tier — into a shell the reader has left.
+        selectionToken += 1;
+        selectedItem = null;
+
         viewerShell.hidden = true;
         destroyViewer();
         setStatus("");
         setDetailsOpen(false);
+        setBusy(false);
         galleryGrid.insertAdjacentElement("afterend", viewerShell);
+
+        activeCard?.removeAttribute("aria-current");
         activeCard?.focus({ preventScroll: true });
+        activeCard = null;
     });
 
     syncHdControl();
