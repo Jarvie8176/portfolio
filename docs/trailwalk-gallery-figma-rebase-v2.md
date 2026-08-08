@@ -91,8 +91,9 @@ Constraints:
 - Avoid visible instructional copy beyond natural UI labels.
 - Keep metadata outside the panorama canvas; use an HTML `Details` disclosure or
   side rail rather than putting place data inside the viewer controls.
-- Gate exact coordinate display behind publication approval; otherwise show an
-  approximate area or location label only.
+- Never show an exact coordinate. The public data model has no latitude or
+  longitude field, so there is nothing to display; show the approximate area or
+  the location label.
 - Do not upload real private/location-sensitive photos into Figma unless explicitly authorized.
 - Safe placeholders are acceptable for Figma; production will use R2-hosted assets.
 

@@ -111,8 +111,9 @@ export type TrailwalkGalleryItem = {
 ```
 
 The Maps action is derived, not stored: `getTrailwalkMapsAction(item)` builds it
-from `mapsQuery`. What reaches the browser is a separate public projection built
-by `toPublicGalleryItem` in `TrailwalkGallery.astro`, not this type.
+from `mapsQuery`. What reaches the browser is `publicPayload` in
+`TrailwalkGallery.astro`, an explicit projection of this type rather than this
+type itself.
 
 ## Candidate Metadata Values
 
