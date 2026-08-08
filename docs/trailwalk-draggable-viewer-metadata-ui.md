@@ -88,8 +88,7 @@ Candidates for later, not installed:
 export type TrailwalkGalleryItem = {
   id: string;
   title: string;
-  shortPlace: string;
-  locationLabel: string;
+  place: string;                               // card subtitle and Place row
   terrainTag: string;
   capturedAt: string;                          // wall clock, no zone offset
   altitudeMeters?: number;
@@ -132,7 +131,7 @@ messages, or in pull request text.
 | field | published |
 | --- | --- |
 | `id`, `title`, `terrainTag` | yes |
-| `locationLabel`, `shortPlace` | yes, human-readable place only |
+| `place` | yes, human-readable place only |
 | `capturedAt` | yes, as date and time of day in capture-local wall clock |
 | `altitudeMeters` | yes |
 | `coordinates` | yes, at three decimal places and no finer |
@@ -169,7 +168,8 @@ Panel title:
 
 Primary rows:
 
-- `Place`: human-readable location label.
+- `Place`: human-readable location label. The same string is the card
+  subtitle, so the two cannot disagree.
 - `Captured`: date and time of day, e.g. `June 2, 2026 · 11:21 local`. The
   clock is the camera's, which is the wall clock at the place in the photo;
   `local` says so, because none of these files records a zone to name instead.
@@ -281,22 +281,33 @@ The rule is structural:
   places — roughly 110 m. The rounding happens before the number is written
   into the file, not on the way to the page, so the repository cannot express a
   position more precise than the site publishes.
-- Three places discloses no more than `locationLabel` and `mapsQuery` already
+- Three places discloses no more than `place` and `mapsQuery` already
   do, since those name the trail. The two disclosures are deliberately kept
   consistent with each other; tightening one without the other buys nothing.
 - Full-precision values stay in the private review layer and are never copied
   into this repository, its commit messages, or its pull request text.
 - Absent is rendered as absent. An item with no recorded fix shows
   `Not recorded`; it is never backfilled by geocoding the place name.
-- Public image derivatives are EXIF-stripped before upload. This matters most
-  for the HD tier, which is the original file rather than a re-encode: the
-  resampling that produces the smaller tiers drops metadata as a side effect,
-  whereas here the stripping is the only thing standing between the source
-  file's GPS block and the public bucket. The stripped originals carry no EXIF,
-  no XMP, no maker notes and no embedded thumbnail, and the camera-native ones
-  also shed roughly 10 MB of embedded payload each.
-- Verify this again whenever the derivative set is regenerated; it is the other
-  half of the same guarantee, and it lives outside this code.
+- Public image derivatives are stripped of identifying data before upload. This
+  matters most for the HD tier, which is the original file rather than a
+  re-encode: the resampling that produces the smaller tiers drops metadata as a
+  side effect, whereas here the strip is the only thing standing between the
+  source file and the public bucket.
+- The HD tier deliberately keeps the colour profile and the lens, exposure and
+  capture fields. Those describe the photograph. What is removed is the GPS
+  block, the device path in `ImageDescription`, the embedded thumbnail, maker
+  notes and any serial or owner tag.
+- **The strip is segment-level, not tag-level**, mainly for size: camera-native
+  frames carry about 10 MB each of unlabelled vendor payload, on a tier that is
+  already 15-62 MB. The pipeline keeps only JPEG segments it can name and stops
+  at the primary EOI.
+  That payload also holds the camera's own GPS fix in a form no metadata tool
+  reports. Worth knowing when reasoning about the ceiling, but not worth
+  alarm: this page publishes the trail name, the date, the time to the minute
+  and the coordinates at three decimal places, so the full-precision value is
+  about 30-45 m from what is already stated, on named public trails.
+- Re-check whenever the derivative set is regenerated. This lives outside this
+  code; see the media runbook in the ops repo.
 
 ## Google Maps URL Pattern
 
