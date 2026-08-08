@@ -88,8 +88,7 @@ Candidates for later, not installed:
 export type TrailwalkGalleryItem = {
   id: string;
   title: string;
-  shortPlace: string;
-  locationLabel: string;
+  place: string;                               // card subtitle and Place row
   terrainTag: string;
   capturedAt: string;                          // wall clock, no zone offset
   altitudeMeters?: number;
@@ -132,7 +131,7 @@ messages, or in pull request text.
 | field | published |
 | --- | --- |
 | `id`, `title`, `terrainTag` | yes |
-| `locationLabel`, `shortPlace` | yes, human-readable place only |
+| `place` | yes, human-readable place only |
 | `capturedAt` | yes, as date and time of day in capture-local wall clock |
 | `altitudeMeters` | yes |
 | `coordinates` | yes, at three decimal places and no finer |
@@ -169,7 +168,8 @@ Panel title:
 
 Primary rows:
 
-- `Place`: human-readable location label.
+- `Place`: human-readable location label. The same string is the card
+  subtitle, so the two cannot disagree.
 - `Captured`: date and time of day, e.g. `June 2, 2026 · 11:21 local`. The
   clock is the camera's, which is the wall clock at the place in the photo;
   `local` says so, because none of these files records a zone to name instead.
@@ -281,7 +281,7 @@ The rule is structural:
   places — roughly 110 m. The rounding happens before the number is written
   into the file, not on the way to the page, so the repository cannot express a
   position more precise than the site publishes.
-- Three places discloses no more than `locationLabel` and `mapsQuery` already
+- Three places discloses no more than `place` and `mapsQuery` already
   do, since those name the trail. The two disclosures are deliberately kept
   consistent with each other; tightening one without the other buys nothing.
 - Full-precision values stay in the private review layer and are never copied
