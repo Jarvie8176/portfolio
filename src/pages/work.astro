@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import PracticeIndex from '../components/PracticeIndex.astro';
+import ProjectSections from '../components/ProjectSections.astro';
+import { projects } from '../data/projects';
+import { site } from '../data/site';
+---
+
+<Base
+  title={`${site.name} — Work`}
+  description={site.description}
+  wide
+>
+  <PracticeIndex projects={projects} />
+
+  <main id="work" class="work-page">
+    <section class="work-intro" aria-labelledby="work-title">
+      <span>Work</span>
+      <h1 id="work-title">Systems, embodied life, and inhabited worlds.</h1>
+      <p>
+        Six projects about memory, attention, bodies, care, public life, and
+        shared agency in the age of GenAI.
+      </p>
+    </section>
+
+    <ProjectSections />
+  </main>
+</Base>
+
+<style>
+  .work-page {
+    background: var(--paper);
+  }
+
+  .work-intro {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding: clamp(4rem, 9vw, 7rem) clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .work-intro span {
+    color: var(--ink-faint);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .work-intro h1 {
+    max-width: 52rem;
+    margin: 1rem 0 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 6vw, 5.2rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.02;
+  }
+
+  .work-intro p {
+    max-width: 36rem;
+    margin: 1.25rem 0 0;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    line-height: 1.65;
+  }
+</style>

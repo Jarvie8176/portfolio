@@ -33,18 +33,6 @@ Systems, embodied life, and inhabited worlds that resist being flattened into
 tasks, data, or generated output.
 ```
 
-Chinese working line:
-
-```text
-在 GenAI 时代，探索那些无法被还原的东西。
-```
-
-Chinese supporting line:
-
-```text
-从能运行的系统，到身体里的生活，再到与他者共同栖居的世界。
-```
-
 ## Practice Taxonomy
 
 Use three primary practice groups:
@@ -69,14 +57,14 @@ Project placement:
 | Beagle | Embodied Life | Systems |
 | Trailwalk | Embodied Life | Inhabited Worlds |
 | commonplace | Inhabited Worlds | Systems |
-| Open World Observation Notes | Inhabited Worlds | Embodied Life |
+| Notes of Open World Observations | Inhabited Worlds | Embodied Life |
 
 ## Homepage IA
 
 The homepage order follows the practice taxonomy:
 
 ```text
-[NAV] J. Kong · Work · Notes · About · 中 / EN
+[NAV] J. Kong · Work · Contact
 
 [S0] Cover Gallery
      Six diagonal project-material slices + hero thesis
@@ -91,11 +79,9 @@ Embodied Life
 
 Inhabited Worlds
 [S5] commonplace
-[S6] Open World Observation Notes / 开放世界观察笔记
+[S6] Notes of Open World Observations
 
-[S7] Practice Map
-
-[FOOTER] Principle · Links · About
+[FOOTER] Name · GitHub · version
 [FIXED] Practice Index
 ```
 
@@ -114,7 +100,7 @@ project through real project material or a clearly labeled material placeholder.
 Slice order:
 
 ```text
-amanuensis -> Yaaa -> Beagle -> Trailwalk -> commonplace -> Open World Observation Notes
+amanuensis -> Yaaa -> Beagle -> Trailwalk -> commonplace -> Notes of Open World Observations
 ```
 
 Rules:
@@ -162,7 +148,7 @@ Project status:
 | Beagle | Incubation Study | Concept study |
 | Trailwalk | Lead Embodied Work | Active prototype |
 | commonplace | Research World | Research build |
-| Open World Observation Notes | Inhabited Worlds Anchor | Ongoing archive |
+| Notes of Open World Observations | Inhabited Worlds Anchor | Ongoing archive |
 
 ## Simple English Copy
 
@@ -193,10 +179,12 @@ Project lines:
   traces the user can keep.
 - Trailwalk: A VR walking project that brings real outdoor trails to people who
   cannot easily walk outside.
-- commonplace: A research world where a human and an AI agent live alongside
-  each other without making task success the only goal.
-- Open World Observation Notes: A photo and caption practice about meeting the
-  public world with beauty, doubt, care, and memory.
+- commonplace: A shared research world where a human and an AI agent live
+  alongside each other, exploring co-dwelling, curiosity, and shared agency
+  beyond task success.
+- Notes of Open World Observations: "I record moments worth remembering." An
+  ongoing instant-photo exchange project exploring public encounters, refusal,
+  the ethics of the gaze, and the small knots left in ordinary days.
 
 ## Component Naming
 
@@ -206,7 +194,7 @@ Use these names in implementation and docs:
 |---|---|
 | `SiteHeader` | Fixed or sticky top navigation |
 | `CoverGallery` | S0 diagonal project-material cover |
-| `PracticeIndex` | Fixed bottom mode index; not a ruler |
+| `PracticeIndex` | Sticky mode index below the header; not a ruler |
 | `StatusBadge` | Current honest project status |
 | `ModeTag` | Systems / Embodied Life / Inhabited Worlds labels |
 | `RoleBadge` | Section role such as Lead Work or Research Build |
@@ -258,7 +246,28 @@ Avoid overclaiming:
 - Beagle is pre-MVP / concept-stage.
 - Trailwalk is an active prototype, not a polished consumer or medical product.
 - commonplace is a research build; do not claim a complete autonomous loop.
-- Open World Observation Notes is an ongoing practice, not a complete archive.
+- Notes of Open World Observations is an ongoing practice, not a complete archive.
+
+## Render Audit: 2026-08-07 Landing Screenshot
+
+The current S0 direction is accepted: a first-screen diagonal gallery with one
+slice per project. The screenshot still showed three issues to close before
+calling the landing page done:
+
+- The thesis text was strong enough to obscure the gallery and slice labels.
+- Project sections still behaved like full-screen chapters, creating too much
+  vertical air for the reduced landing copy.
+- At the captured desktop width, the first project title could be clipped by the
+  image/text grid.
+
+Resolution:
+
+- Keep the S0 gallery as the primary cover, but reduce thesis width and scale so
+  the project materials remain legible.
+- Keep landing project content to image, name, tags, topic, and one sentence.
+- Reduce project-section height, column width, tag size, and summary scale.
+- Add a footer version tag from the build git short hash for dev-deployment
+  verification.
 
 ## PR Plan
 
