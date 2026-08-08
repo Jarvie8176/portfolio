@@ -5,25 +5,21 @@ import {
     trailwalkGalleryItems,
     type TrailwalkGalleryItem,
 } from "../../data/trailwalkGallery";
+import { deployment } from "../../data/site";
 
-const assetBase = (
-    import.meta.env.TRAILWALK_ASSET_BASE_URL ??
-    import.meta.env.PUBLIC_TRAILWALK_ASSET_BASE_URL ??
-    import.meta.env.PUBLIC_TRAILWALK_ASSET_BASE ??
-    import.meta.env.PUBLIC_PORTFOLIO_MEDIA_BASE ??
-    ""
-).replace(/\/$/, "");
+const assetBase = deployment.assetBaseUrl;
 
 // TODO(test): no coverage. See tests/TODO.md T1 — a build without
 // TRAILWALK_ASSET_BASE_URL must exit non-zero. Verified by hand only, so
 // deleting this block would go unnoticed until production.
-// Fail closed. Without an asset base every card falls back to one placeholder
-// and every poster/panorama URL points at a path that is not in public/ or
-// dist/, so the gallery builds clean and ships broken. Deployment is the wrong
-// place to catch that.
+// Fail closed. Unlike the contact and updates values in src/data/site.ts, this
+// one cannot degrade to nothing: without it every poster and panorama URL
+// points at a path that ships in neither public/ nor dist/, so the gallery
+// builds clean and every card opens to a 404. Deployment is the wrong place to
+// catch that.
 if (!assetBase) {
     throw new Error(
-        "TRAILWALK_ASSET_BASE_URL is not set. The Trailwalk gallery needs a public asset base URL (for example https://media.fnpg.me); building without one produces a gallery whose posters and panoramas all 404.",
+        "TRAILWALK_ASSET_BASE_URL is not set. The Trailwalk gallery needs the public base URL its media is served from; building without one produces a gallery whose posters and panoramas all 404. See src/data/site.ts.",
     );
 }
 

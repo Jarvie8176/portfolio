@@ -14,11 +14,12 @@ permissions:
   contents: read
 
 env:
-  # Not a secret: this is the public media hostname that already appears in the
-  # published HTML. It is set here so the check exercises the same asset wiring
-  # production uses. The build fails closed without it, so a green check that
-  # omitted it would be validating a broken configuration.
-  TRAILWALK_ASSET_BASE_URL: https://media.fnpg.me
+  # Deliberately a placeholder, not the real media host. The check needs *a*
+  # base URL because the gallery build fails closed without one, but this repo
+  # is public and its deploy gate requires build output to carry no real
+  # domain, so the value here must not be the production one. What this
+  # validates is the wiring, not the hostname.
+  TRAILWALK_ASSET_BASE_URL: https://assets.example.com
 
 jobs:
   build:

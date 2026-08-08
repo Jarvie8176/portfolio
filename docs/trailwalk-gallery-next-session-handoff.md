@@ -62,7 +62,7 @@ Current implementation state:
 
 Verification completed:
 
-- `TRAILWALK_ASSET_BASE_URL=https://media.fnpg.me npm run build`
+- `TRAILWALK_ASSET_BASE_URL=<public asset base> npm run build`
 - Static page check confirmed R2 asset URLs render when the asset base is
   injected.
 - Initial rendered HTML check confirmed Photo Sphere Viewer / gyroscope code is
@@ -160,8 +160,8 @@ Usable source JPGs:
 
 Public asset delivery:
 
-- Public custom domain: `https://media.fnpg.me`
-- Public derivatives: `trailwalk/v1/...`
+- Public derivatives: `trailwalk/v1/...`, served from the base URL injected as
+  `TRAILWALK_ASSET_BASE_URL`. The value lives in the private ops tracker.
 - Derivatives are EXIF-stripped before upload. Re-verify this whenever the
   derivative set is regenerated.
 
@@ -174,9 +174,9 @@ Do not commit raw/full-size JPGs to GitHub.
 
 ## Remaining Work
 
-1. Wire the portfolio deploy environment with
-   `TRAILWALK_ASSET_BASE_URL=https://media.fnpg.me`. The build fails closed
-   without it, so this must land before merge.
+1. Wire the portfolio deploy environment with `TRAILWALK_ASSET_BASE_URL`,
+   `PORTFOLIO_CONTACT_EMAIL`, and `PORTFOLIO_UPDATES_URL`. The build fails
+   closed without the first, so it must land before merge.
 2. Update Figma frames `C`, `E`, and the readme note once writable Figma access
    is available.
 3. Address PR review feedback and merge only after operator approval.
