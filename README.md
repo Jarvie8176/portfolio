@@ -20,6 +20,13 @@ npm run typecheck  # astro sync && tsc --noEmit
 npm run build      # static build → dist/
 ```
 
+### Branches
+
+`dev` is the integration branch and is what the preview deploy builds from.
+`main` is what production promotion builds from. Work merges to `dev`;
+`main` moves only on a deliberate promotion, so merging never publishes to
+production by itself.
+
 ### Deployment values
 
 Hostnames and addresses are injected at build time and are not committed. They
