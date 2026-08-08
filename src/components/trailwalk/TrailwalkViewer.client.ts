@@ -1,3 +1,9 @@
+// Type-only, so the viewer and its plugin are still fetched on demand rather
+// than in the page's first bundle. Mirroring their shapes by hand instead would
+// buy nothing and would go stale silently on an upgrade.
+import type { PluginConstructor, Viewer } from "@photo-sphere-viewer/core";
+import type { GyroscopePlugin } from "@photo-sphere-viewer/gyroscope-plugin";
+
 /**
  * Mirrors `publicPayload` in TrailwalkGallery.astro.
  * It is written out rather than derived from TrailwalkGalleryItem so that
@@ -5,6 +11,11 @@
  * to receive. The two sides meet at a JSON.parse, so nothing checks them
  * against each other; keep them in step by hand.
  */
+type PublicPanorama = {
+    url: string;
+    sizeLabel: string;
+};
+
 type PublicTrailwalkItem = {
     id: string;
     title: string;
@@ -15,7 +26,8 @@ type PublicTrailwalkItem = {
         highlight: string;
         highlight2x?: string;
         poster: string;
-        panorama: string;
+        panorama: PublicPanorama;
+        panoramaHd: PublicPanorama;
         fallbackHighlight: string;
     };
     initialView?: {
@@ -24,16 +36,10 @@ type PublicTrailwalkItem = {
         zoom?: number;
     };
     coordinateLabel: string;
-    locationSourceLabel: string;
     mapsAction: {
         label: string;
         href: string;
     };
-};
-
-type ViewerInstance = {
-    destroy: () => void;
-    setPanorama: (path: string) => Promise<boolean>;
 };
 
 let viewerCssPromise: Promise<void> | null = null;
@@ -100,7 +106,6 @@ const renderDetails = (item: PublicTrailwalkItem) => {
             ${row("Captured", escapeHtml(item.capturedLabel))}
             ${row("Elevation", escapeHtml(elevation))}
             ${row("Coordinates", escapeHtml(item.coordinateLabel))}
-            ${row("Location source", escapeHtml(item.locationSourceLabel))}
         </dl>
         <a class="trailwalk-viewer__map-link" href="${escapeHtml(item.mapsAction.href)}" target="_blank" rel="noreferrer">
             ${escapeHtml(item.mapsAction.label)}
@@ -141,6 +146,10 @@ export const initializeTrailwalkGallery = (
     const detailsPanel = root.querySelector<HTMLElement>(
         "[data-trailwalk-details-panel]",
     );
+    const hdToggle = root.querySelector<HTMLButtonElement>(
+        "[data-trailwalk-hd-toggle]",
+    );
+    const hdSize = root.querySelector<HTMLElement>("[data-trailwalk-hd-size]");
 
     if (
         !viewerShell ||
@@ -151,7 +160,9 @@ export const initializeTrailwalkGallery = (
         !status ||
         !backButton ||
         !detailsToggle ||
-        !detailsPanel
+        !detailsPanel ||
+        !hdToggle ||
+        !hdSize
     ) {
         return;
     }
@@ -161,13 +172,48 @@ export const initializeTrailwalkGallery = (
         "(prefers-reduced-motion: reduce)",
     ).matches;
     const inlineViewer = window.matchMedia("(max-width: 920px)");
-    let activeViewer: ViewerInstance | null = null;
+    let activeViewer: Viewer | null = null;
     let activeCard: HTMLAnchorElement | null = null;
     let selectedItem: PublicTrailwalkItem | null = null;
     let selectionToken = 0;
+    // Off on arrival: the HD tier is 2.7-5.4 MB, which is not a cost to put on
+    // a reader who has not asked for it. Once asked for, it stays asked for —
+    // re-consenting on every card would be the annoying half of a default.
+    let hdEnabled = false;
+    // Set while a texture is in flight, so the HD control cannot start a second
+    // load into a viewer that is still resolving the first.
+    let busy = false;
 
     const setStatus = (message: string) => {
         status.textContent = message;
+    };
+
+    const panoramaFor = (item: PublicTrailwalkItem) =>
+        hdEnabled ? item.assets.panoramaHd : item.assets.panorama;
+
+    const syncHdControl = () => {
+        const item = selectedItem;
+        hdToggle.setAttribute("aria-pressed", String(hdEnabled));
+        hdToggle.disabled = busy || !item;
+        // The separator is text, not a margin: the build minifies the
+        // whitespace out of the markup, so a purely visual gap would leave the
+        // button reading "HD sample5.0 MB" to anything that takes it as text.
+        hdSize.textContent = item
+            ? ` · ${item.assets.panoramaHd.sizeLabel}`
+            : "";
+        hdToggle.setAttribute(
+            "aria-label",
+            !item
+                ? "HD sample"
+                : hdEnabled
+                  ? `HD sample on. Return to the standard panorama, ${item.assets.panorama.sizeLabel}.`
+                  : `HD sample, ${item.assets.panoramaHd.sizeLabel}. Loads the high-resolution panorama.`,
+        );
+    };
+
+    const setBusy = (value: boolean) => {
+        busy = value;
+        syncHdControl();
     };
 
     const setDetailsOpen = (open: boolean) => {
@@ -192,6 +238,36 @@ export const initializeTrailwalkGallery = (
         }
 
         galleryGrid.insertAdjacentElement("afterend", viewerShell);
+    };
+
+    /**
+     * Turns the gyroscope on where the device can honour it.
+     *
+     * A device that needs an explicit motion permission (iOS) will refuse this,
+     * because the request has to come from a gesture and the panorama finished
+     * loading long after the tap that started it. That refusal is the reason
+     * this is fire-and-forget: the navbar gyroscope button is still there, and
+     * pressing it asks again from inside a real gesture.
+     */
+    const startGyroscope = async (
+        viewer: Viewer,
+        plugin: PluginConstructor,
+        currentToken: number,
+    ) => {
+        const gyroscope: GyroscopePlugin | undefined = viewer.getPlugin(plugin);
+
+        // Checked before starting so that desktop, where the plugin waits ten
+        // seconds for a sensor reading that never arrives, does not log a
+        // failure the reader cannot act on.
+        if (!gyroscope || !(await gyroscope.isSupported())) {
+            return;
+        }
+
+        if (currentToken !== selectionToken) {
+            return;
+        }
+
+        await gyroscope.start();
     };
 
     const loadViewer = async (
@@ -223,7 +299,7 @@ export const initializeTrailwalkGallery = (
         // handler, so a 404/CORS/transient failure becomes an unhandled
         // rejection that no caller can fall back from. Loading it here keeps
         // the failure catchable.
-        const viewer: ViewerInstance = new Viewer({
+        const viewer: Viewer = new Viewer({
             container: viewerContainer,
             caption: item.title,
             defaultYaw: item.initialView?.yaw,
@@ -244,7 +320,7 @@ export const initializeTrailwalkGallery = (
         // Resolves once the texture is loaded, or false if a newer selection
         // aborted it. Marking the viewer ready before this point hides the
         // poster for the whole download.
-        const loaded = await viewer.setPanorama(item.assets.panorama);
+        const loaded = await viewer.setPanorama(panoramaFor(item).url);
 
         if (!loaded || currentToken !== selectionToken) {
             return;
@@ -252,6 +328,68 @@ export const initializeTrailwalkGallery = (
 
         viewerShell.dataset.viewerReady = "true";
         setStatus("");
+
+        void startGyroscope(viewer, GyroscopePlugin, currentToken).catch(
+            () => {},
+        );
+    };
+
+    /**
+     * Swaps tiers inside the running viewer instead of rebuilding it, so the
+     * reader keeps the part of the sphere they were looking at — which is
+     * usually why they reached for HD in the first place.
+     */
+    const swapPanoramaTier = async () => {
+        const item = selectedItem;
+        const viewer = activeViewer;
+
+        if (!item || !viewer) {
+            return;
+        }
+
+        selectionToken += 1;
+        const currentToken = selectionToken;
+        const tier = panoramaFor(item);
+
+        setBusy(true);
+        setStatus(
+            hdEnabled
+                ? `Loading HD view (${tier.sizeLabel})...`
+                : "Loading standard view...",
+        );
+
+        try {
+            const loaded = await viewer.setPanorama(tier.url, {
+                transition: false,
+                position: viewer.getPosition(),
+                zoom: viewer.getZoomLevel(),
+            });
+
+            if (currentToken !== selectionToken) {
+                return;
+            }
+
+            if (!loaded) {
+                throw new Error("panorama load was superseded");
+            }
+
+            setStatus("");
+        } catch {
+            if (currentToken !== selectionToken) {
+                return;
+            }
+
+            // The control must not claim a tier the viewer is not showing, so
+            // the state goes back to whatever survived the failure.
+            hdEnabled = !hdEnabled;
+            setStatus(
+                "That resolution could not be loaded. The previous view is still shown.",
+            );
+        } finally {
+            if (currentToken === selectionToken) {
+                setBusy(false);
+            }
+        }
     };
 
     const selectItem = async (
@@ -272,9 +410,13 @@ export const initializeTrailwalkGallery = (
         viewerTitle.textContent = item.title;
         poster.src = item.assets.poster || item.assets.fallbackHighlight;
         detailsPanel.innerHTML = renderDetails(item);
-        setDetailsOpen(false);
+        // Open by default: the panel is the point of the field sample, and a
+        // reader who wants the sphere alone can close it once rather than open
+        // it every time.
+        setDetailsOpen(true);
         destroyViewer();
-        setStatus("Loading 360 view...");
+        setBusy(true);
+        setStatus(`Loading 360 view (${panoramaFor(item).sizeLabel})...`);
 
         viewerShell.scrollIntoView({
             block: "start",
@@ -291,6 +433,10 @@ export const initializeTrailwalkGallery = (
                 setStatus(
                     "The 360 viewer could not load. The poster image is still available.",
                 );
+            }
+        } finally {
+            if (currentToken === selectionToken) {
+                setBusy(false);
             }
         }
     };
@@ -321,6 +467,16 @@ export const initializeTrailwalkGallery = (
         });
     });
 
+    hdToggle.addEventListener("click", () => {
+        if (busy || !selectedItem) {
+            return;
+        }
+
+        hdEnabled = !hdEnabled;
+        syncHdControl();
+        void swapPanoramaTier();
+    });
+
     detailsToggle.addEventListener("click", () => {
         if (!selectedItem) {
             return;
@@ -337,4 +493,6 @@ export const initializeTrailwalkGallery = (
         galleryGrid.insertAdjacentElement("afterend", viewerShell);
         activeCard?.focus({ preventScroll: true });
     });
+
+    syncHdControl();
 };

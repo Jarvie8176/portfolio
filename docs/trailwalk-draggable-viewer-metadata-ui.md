@@ -163,20 +163,38 @@ Panel title:
 Primary rows:
 
 - `Place`: human-readable location label.
-- `Captured`: formatted date.
+- `Captured`: date and time of day, e.g. `June 2, 2026 · 11:21 local`. The
+  clock is the camera's, which is the wall clock at the place in the photo;
+  `local` says so, because none of these files records a zone to name instead.
 - `Elevation`: altitude in meters if available.
-- `Coordinates`: always `Approximate area only`. This row exists to set the
-  visitor's expectation, not to carry a value.
+- `Coordinates`: latitude and longitude to three decimal places, e.g.
+  `51.354° N, 55.563° W`, or `Not recorded` where no position was captured.
 
 Actions:
 
-- `Open approximate area`, built from the place name in `mapsQuery`.
+- `See location in Google Maps`, built from the same three-place pair the panel
+  prints, so the link and the text cannot disagree. Items with no recorded
+  position fall back to the place name in `mapsQuery`.
 
-Secondary rows:
+Not shown:
 
-- `Location source`: `JPG EXIF`, `INSP EXIF`, or `Manual review`.
-- `Asset`: optional non-public/dev-only note; do not show R2/source key in the
-  public UI.
+- Coordinate provenance (`JPG EXIF`, `INSP EXIF`, `Manual review`) is kept in
+  the source data as an audit trail, but it answers a question a visitor is not
+  asking and is not published.
+- R2 or source object keys.
+
+Defaults on selecting a sample:
+
+- The details panel is open. A reader who wants the sphere alone closes it
+  once, rather than opening it every time.
+- The gyroscope is started where the device supports it. Devices that require
+  an explicit motion permission will refuse, because the request no longer has
+  a user gesture behind it by the time the panorama has loaded; the navbar
+  gyroscope button remains and asks again from inside a real gesture.
+- The `HD sample` toggle is off, and carries the size of what pressing it would
+  fetch (`HD sample · 5.0 MB`). Toggling swaps the texture inside the running
+  viewer so the current heading is kept. If the swap fails, the control returns
+  to the tier that is actually on screen.
 
 ### Visual Treatment
 
@@ -192,27 +210,33 @@ Match the Trailwalk detail page:
 
 ### Privacy And Accuracy Rule
 
-This repository is public. Exact trail coordinates are therefore not a
-publish-time decision here; they are simply out of scope for this codebase.
+This repository is public, so anything committed here is published whatever the
+renderer does with it. The rule is therefore about what may exist in the file,
+not about what the UI chooses to draw.
 
-An earlier draft of this design used a per-image `publicApproved` flag to gate
-exact coordinate display. That was removed. A runtime toggle only helps if the
-data it guards is safe to have around, and in a public repository the exact
-coordinates would have to be committed in order for the flag to have anything
-to switch on. The flag would have been the control, and the committed
-coordinates would have been the leak.
+An earlier draft used a per-image `publicApproved` flag to gate exact
+coordinate display. That was removed and must not come back. A runtime toggle
+only helps if the data it guards is safe to have around, and the exact
+coordinates would have to be committed for the flag to have anything to switch
+on: the flag would have been the control, and the committed coordinates would
+have been the leak.
 
-The rule is now structural:
+The rule is structural:
 
-- `TrailwalkGalleryItem` has no latitude/longitude field, so no build can emit
-  one.
-- Location reaches the public surface only as a place name (`mapsQuery`,
-  `locationLabel`), which resolves to an approximate area.
-- Exact values stay in the private review layer and are never copied into this
-  repository, its commit messages, or its pull request text.
-- Public image derivatives are EXIF-stripped before upload. Verify this again
-  whenever the derivative set is regenerated; it is the other half of the same
-  guarantee, and it lives outside this code.
+- `TrailwalkApproxCoordinates` holds values already rounded to three decimal
+  places — roughly 110 m. The rounding happens before the number is written
+  into the file, not on the way to the page, so the repository cannot express a
+  position more precise than the site publishes.
+- Three places discloses no more than `locationLabel` and `mapsQuery` already
+  do, since those name the trail. The two disclosures are deliberately kept
+  consistent with each other; tightening one without the other buys nothing.
+- Full-precision values stay in the private review layer and are never copied
+  into this repository, its commit messages, or its pull request text.
+- Absent is rendered as absent. An item with no recorded fix shows
+  `Not recorded`; it is never backfilled by geocoding the place name.
+- Public image derivatives are EXIF-stripped before upload — including the HD
+  tier. Verify this again whenever the derivative set is regenerated; it is the
+  other half of the same guarantee, and it lives outside this code.
 
 ## Google Maps URL Pattern
 
