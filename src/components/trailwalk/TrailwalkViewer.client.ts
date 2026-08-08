@@ -176,9 +176,10 @@ export const initializeTrailwalkGallery = (
     let activeCard: HTMLAnchorElement | null = null;
     let selectedItem: PublicTrailwalkItem | null = null;
     let selectionToken = 0;
-    // Off on arrival: the HD tier is 2.7-5.4 MB, which is not a cost to put on
-    // a reader who has not asked for it. Once asked for, it stays asked for —
-    // re-consenting on every card would be the annoying half of a default.
+    // Off on arrival: the HD tier is the untouched stitched original, 12-42 MB,
+    // which is not a cost to put on a reader who has not asked for it. Once
+    // asked for, it stays asked for — re-consenting on every card would be the
+    // annoying half of a default.
     let hdEnabled = false;
     // Set while a texture is in flight, so the HD control cannot start a second
     // load into a viewer that is still resolving the first.

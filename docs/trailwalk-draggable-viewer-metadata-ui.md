@@ -192,9 +192,29 @@ Defaults on selecting a sample:
   a user gesture behind it by the time the panorama has loaded; the navbar
   gyroscope button remains and asks again from inside a real gesture.
 - The `HD sample` toggle is off, and carries the size of what pressing it would
-  fetch (`HD sample · 5.0 MB`). Toggling swaps the texture inside the running
+  fetch (`HD sample · 42.3 MB`). Toggling swaps the texture inside the running
   viewer so the current heading is kept. If the swap fails, the control returns
   to the tier that is actually on screen.
+
+### Panorama Tiers
+
+- **Standard**: a 4096x2048 derivative, 0.9-1.7 MB. This is what loads on
+  selection.
+- **HD**: the stitched original, 11904x5952, 12-42 MB. It is the original file
+  with its metadata removed, not a re-encode of it: the compressed image data
+  is byte-identical to the source, so this is the highest resolution that
+  exists rather than the highest that was regenerated.
+
+The HD tier is opt-in and prices itself in the control precisely because it is
+this large. Two things follow from the size that are worth knowing before
+raising it further:
+
+- On a device whose `MAX_TEXTURE_SIZE` is 8192 — which is most phones — the
+  viewer downscales the 11904-wide image before uploading it to the GPU. Those
+  devices pay the full transfer and decode for detail they cannot display.
+  Desktop GPUs at 16384 do show it.
+- Decoding 11904x5952 needs roughly 280 MB of RGBA before the downscale, so the
+  toggle is a genuine cost on constrained devices, not only a slow load.
 
 ### Visual Treatment
 
@@ -234,9 +254,15 @@ The rule is structural:
   into this repository, its commit messages, or its pull request text.
 - Absent is rendered as absent. An item with no recorded fix shows
   `Not recorded`; it is never backfilled by geocoding the place name.
-- Public image derivatives are EXIF-stripped before upload — including the HD
-  tier. Verify this again whenever the derivative set is regenerated; it is the
-  other half of the same guarantee, and it lives outside this code.
+- Public image derivatives are EXIF-stripped before upload. This matters most
+  for the HD tier, which is the original file rather than a re-encode: the
+  resampling that produces the smaller tiers drops metadata as a side effect,
+  whereas here the stripping is the only thing standing between the source
+  file's GPS block and the public bucket. The stripped originals carry no EXIF,
+  no XMP, no maker notes and no embedded thumbnail, and the camera-native ones
+  also shed roughly 10 MB of embedded payload each.
+- Verify this again whenever the derivative set is regenerated; it is the other
+  half of the same guarantee, and it lives outside this code.
 
 ## Google Maps URL Pattern
 
