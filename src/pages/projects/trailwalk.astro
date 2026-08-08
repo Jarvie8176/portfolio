@@ -1,4 +1,6 @@
 ---
+import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
+
 const contactEmail = "projects@fnpg.me";
 const contactHref = `mailto:${contactEmail}?subject=Trailwalk%20contact`;
 const updateHref = "https://fnpg.me/";
@@ -80,6 +82,7 @@ const audiences = [
             <nav>
                 <a href="#problem">The Problem</a>
                 <a href="#origin">Origin Story</a>
+                <a href="#gallery">Gallery</a>
                 <a href="#experience">The Experience</a>
                 <a href="#audience">Who It's For</a>
                 <a href="#contact">Contact</a>
@@ -198,6 +201,8 @@ const audiences = [
                     </div>
                 </div>
             </section>
+
+            <TrailwalkGallery />
 
             <div class="waveform-wrap" aria-hidden="true">
                 <svg viewBox="0 0 200 20" class="waveform" fill="none">
