@@ -14,7 +14,7 @@ Each gap is marked with a `TODO(test)` comment at the site it protects.
 
 T1-T4 and T8 encode safety properties: the failure mode is a silently broken,
 over-publishing, or quietly wrong build, not a visible error. They are worth a
-runner on their own, and T1-T4 and T8 need no DOM. T5-T7, T9 and T10 are behavioural
+runner on their own, and T1-T4 and T8 need no DOM. T5-T7 and T9-T12 are behavioural
 and need a DOM, so they are cheaper to defer.
 
 ## Gaps
@@ -145,6 +145,27 @@ panorama request is made, no canvas is created, and `data-viewer-ready` stays
 `"false"`. Assert the other half too, since a cancellation boundary is easy to
 make too wide: selecting again after Back must still load, and the HD
 preference must survive the round trip.
+
+### T12 — every sample opens, including one with no initial view
+
+`src/components/trailwalk/TrailwalkViewer.client.ts`, `loadViewer`
+
+`initialView` is optional, and the viewer used to forward its three fields
+unconditionally. Photo Sphere Viewer merges the config over its own defaults, so
+an explicit `undefined` replaced `defaultYaw: 0` and threw
+`Unknown angle "undefined"` before the panorama was ever requested. The sample
+added without an `initialView` failed to open on every device, showing only the
+poster and the generic load-failure message.
+
+Every check that existed passed: the build was clean, the payload correct, all
+42 assets resolved, and the browser suite green — because the suite named the
+samples it selected, and every name in it predated the new one.
+
+Assert: selecting **every** item in `trailwalkGalleryItems` reaches
+`data-viewer-ready="true"` with a canvas and an empty status. Parameterise over
+the data rather than naming samples, so a new one is covered the day it is
+added. Assert the partial case too — an `initialView` with only `zoom` set must
+open, since it fails the same way.
 
 ## Not covered here
 
