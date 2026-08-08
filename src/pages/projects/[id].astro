@@ -4,10 +4,15 @@ import { practiceLabels, projects, type Project } from '../../data/projects';
 import { site } from '../../data/site';
 
 export function getStaticPaths() {
-  return projects.map((project) => ({
-    params: { id: project.id },
-    props: { project },
-  }));
+  // Projects with a hand-designed concept page own their own route; generating
+  // it here too would collide with the higher-priority static page and emit a
+  // build warning for a page that is never used.
+  return projects
+    .filter((project) => !project.conceptPage)
+    .map((project) => ({
+      params: { id: project.id },
+      props: { project },
+    }));
 }
 
 const { project } = Astro.props as { project: Project };
