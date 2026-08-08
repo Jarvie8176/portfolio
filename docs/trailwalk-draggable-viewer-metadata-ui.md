@@ -196,6 +196,33 @@ Defaults on selecting a sample:
   viewer so the current heading is kept. If the swap fails, the control returns
   to the tier that is actually on screen.
 
+### Card Thumbnails
+
+The card image is a framed 16:9 view chosen by hand, not a centre crop of the
+equirectangular source. A crop of an equirect picks whatever happens to sit at
+the centre of the sphere, which is rarely the reason the frame was worth
+keeping. The card's `aspect-ratio` is `16 / 9` so the chosen frame is shown
+whole rather than shaved.
+
+Widths are `480 / 800 / 1200 / 1600`, picked from the box the card actually
+renders at rather than from the grid definition — the page sets
+`body { zoom: 1.25 }`, so the element is a quarter larger than the CSS that
+describes it, and a `sizes` written from the stylesheet under-serves every
+candidate by that much. Measured slots, and what each configuration then draws
+for all six cards:
+
+| configuration | slot | needs | picks | six cards |
+| --- | --- | --- | --- | --- |
+| desktop 1x, 1200-1920px | 303-441 px | same | 480 | 149 KB |
+| desktop 2x | 256-367 px | 512-734 px | 800 | 356 KB |
+| phone 3x | 324-359 px | 972-1077 px | 1200 | 637 KB |
+| tablet 2x, one column | 612-718 px | 1224-1436 px | 1600 | 918 KB |
+
+Before this the ladder was a single 1200 plus a 2400 that no browser selected
+at any viewport or pixel ratio, so every configuration drew 1008 KB — a
+1200-wide file into a 367 px slot on desktop, and an upscale on the widest slot
+of all.
+
 ### Panorama Tiers
 
 - **Standard**: a 4096x2048 derivative, 0.9-1.7 MB. This is what loads on

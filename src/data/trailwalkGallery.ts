@@ -24,6 +24,12 @@ export type TrailwalkApproxCoordinates = {
     longitude: number;
 };
 
+/** One `srcset` candidate for the card thumbnail. */
+export type TrailwalkHighlight = {
+    width: number;
+    key: string;
+};
+
 /**
  * One panorama tier. The standard tier is a 4096-wide derivative; the HD tier
  * is the stitched original at 11904x5952, stripped of all metadata but
@@ -71,8 +77,7 @@ export type TrailwalkGalleryItem = {
     locationSource: TrailwalkLocationSource;
     mapsQuery: string;
     assets: {
-        highlight: string;
-        highlight2x?: string;
+        highlights: TrailwalkHighlight[];
         panorama: TrailwalkPanorama;
         panoramaHd: TrailwalkPanorama;
         poster: string;
@@ -84,14 +89,37 @@ export type TrailwalkGalleryItem = {
     };
 };
 
-const assetVersion = "trailwalk/v1";
+/**
+ * Published prefixes are immutable, so a change of content is a change of
+ * prefix. v2 revises two things at once: the norstead sample is a different
+ * frame, and every card thumbnail is now a framed 16:9 view rather than a
+ * centre crop of the equirectangular source.
+ */
+const assetVersion = "trailwalk/v2";
+
+/**
+ * Card thumbnail candidates, ascending. Chosen from the rendered box at every
+ * viewport and pixel ratio the layout produces, not from the grid definition.
+ *
+ *    303-441 px   desktop at 1x, across the whole three-column range
+ *    512-734 px   desktop at 2x, and a phone at 2x
+ *   972-1077 px   a phone at 3x
+ *  1229-1436 px   a tablet at 2x, where the grid drops to one full-width card
+ *
+ * The ladder before this was a single 1200 plus a 2400 that no browser ever
+ * selected, so a 367 px slot was served a 1200-wide file while the widest slot
+ * of all was under-served.
+ */
+const highlightWidths = [480, 800, 1200, 1600];
 
 const makeAssets = (
     slug: string,
     bytes: { panorama: number; panoramaHd: number },
 ): TrailwalkGalleryItem["assets"] => ({
-    highlight: `${assetVersion}/highlights/${slug}-1200.webp`,
-    highlight2x: `${assetVersion}/highlights/${slug}-2400.webp`,
+    highlights: highlightWidths.map((width) => ({
+        width,
+        key: `${assetVersion}/highlights/${slug}-${width}.webp`,
+    })),
     panorama: {
         key: `${assetVersion}/panoramas/${slug}-4096.jpg`,
         bytes: bytes.panorama,
@@ -131,14 +159,14 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         shortPlace: "Norstead Trail, NL",
         locationLabel: "Norstead Trail, NL",
         terrainTag: "Coastal lowland",
-        capturedAt: "2026-06-01T10:31:33",
+        capturedAt: "2026-06-01T10:30:15",
         altitudeMeters: 14,
         coordinates: { latitude: 51.603, longitude: -55.52 },
         locationSource: "original_insp_exif",
         mapsQuery: "Norstead Trail, Newfoundland and Labrador",
         assets: makeAssets("norstead", {
-            panorama: 1681744,
-            panoramaHd: 21022847,
+            panorama: 1091417,
+            panoramaHd: 16917259,
         }),
         initialView: {
             yaw: "-18deg",

@@ -23,8 +23,6 @@ type PublicTrailwalkItem = {
     capturedLabel: string;
     altitudeMeters?: number;
     assets: {
-        highlight: string;
-        highlight2x?: string;
         poster: string;
         panorama: PublicPanorama;
         panoramaHd: PublicPanorama;

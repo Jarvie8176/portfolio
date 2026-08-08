@@ -42,11 +42,44 @@ const resolvePanorama = (tier: TrailwalkGalleryItem["assets"]["panorama"]) => ({
     sizeLabel: formatBytes(tier.bytes),
 });
 
-const resolveAssets = (item: TrailwalkGalleryItem) => ({
-    highlight: assetUrl(item.assets.highlight),
-    highlight2x: item.assets.highlight2x
-        ? assetUrl(item.assets.highlight2x)
-        : undefined,
+/**
+ * Widths the card is actually asked to fill, from the rendered box rather than
+ * from the grid definition — the page applies `zoom: 1.25`, so the element is a
+ * quarter larger than the CSS that describes it, and a `sizes` written from the
+ * stylesheet would under-serve every candidate by that much.
+ *
+ *   >= 1719px   inner hits its 1100px cap, so the card stops growing: 443px
+ *   >=  921px   three columns, measured 25.5vw (367px at 1440, 256px at 1024)
+ *   >=  761px   one column, 80vw
+ *   below       one column, zoom drops to 1, 84vw
+ */
+const highlightSizes =
+    "(min-width: 1719px) 443px, (min-width: 921px) 25.5vw, (min-width: 761px) 80vw, 84vw";
+
+// Only consulted by a browser that ignores srcset. Anything that can render
+// this page's `:has()` layout picks from the candidate list instead, so the
+// middle tier is here to keep that fallback sane, not to be the common case.
+const highlightFallbackWidth = 800;
+
+const resolveHighlights = (item: TrailwalkGalleryItem) => {
+    const candidates = item.assets.highlights.map((highlight) => ({
+        width: highlight.width,
+        url: assetUrl(highlight.key),
+    }));
+    const fallback =
+        candidates.find(({ width }) => width === highlightFallbackWidth) ??
+        candidates[candidates.length - 1];
+
+    return {
+        src: fallback.url,
+        srcset: candidates.map(({ url, width }) => `${url} ${width}w`).join(", "),
+    };
+};
+
+// Split from the viewer's assets on purpose. The cards are rendered here, so
+// their thumbnail URLs have no reason to appear in the serialized payload as
+// well; the viewer never reads them.
+const resolveViewerAssets = (item: TrailwalkGalleryItem) => ({
     poster: assetUrl(item.assets.poster),
     panorama: resolvePanorama(item.assets.panorama),
     panoramaHd: resolvePanorama(item.assets.panoramaHd),
@@ -60,7 +93,8 @@ const galleryItems = trailwalkGalleryItems.map((item) => ({
     shortPlace: item.shortPlace,
     terrainTag: item.terrainTag,
     capturedLabel: formatCapturedDate(item.capturedAt),
-    assets: resolveAssets(item),
+    highlight: resolveHighlights(item),
+    poster: assetUrl(item.assets.poster),
 }));
 
 // TODO(test): no coverage. See tests/TODO.md T3 — the serialized payload must
@@ -78,7 +112,7 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
     locationLabel: item.locationLabel,
     capturedLabel: formatCapturedDateTime(item.capturedAt),
     altitudeMeters: item.altitudeMeters,
-    assets: resolveAssets(item),
+    assets: resolveViewerAssets(item),
     initialView: item.initialView,
     coordinateLabel: item.coordinates
         ? formatCoordinates(item.coordinates)
@@ -112,19 +146,17 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
                 galleryItems.map((item) => (
                     <a
                         class="trailwalk-gallery__card"
-                        href={item.assets.poster}
+                        href={item.poster}
                         data-trailwalk-card
                         data-trailwalk-id={item.id}
                     >
                         <span class="trailwalk-gallery__image-wrap">
                             <img
-                                src={item.assets.highlight}
-                                srcset={
-                                    item.assets.highlight2x
-                                        ? `${item.assets.highlight} 1200w, ${item.assets.highlight2x} 2400w`
-                                        : undefined
-                                }
-                                sizes="(min-width: 1310px) 355px, (min-width: 921px) 28vw, 84vw"
+                                src={item.highlight.src}
+                                srcset={item.highlight.srcset}
+                                sizes={highlightSizes}
+                                width="1200"
+                                height="675"
                                 alt=""
                                 loading="lazy"
                                 decoding="async"
@@ -299,7 +331,9 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
 
     .trailwalk-gallery__image-wrap {
         display: block;
-        aspect-ratio: 1.75;
+        /* Matches the 16:9 thumbnails exactly. At 1.75 the card cropped a
+           sliver off a frame that was chosen deliberately. */
+        aspect-ratio: 16 / 9;
         background:
             linear-gradient(135deg, rgba(46, 94, 62, 0.14), rgba(59, 122, 138, 0.12)),
             var(--tw-sand);
