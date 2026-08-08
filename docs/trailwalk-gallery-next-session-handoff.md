@@ -54,8 +54,9 @@ Current implementation state:
 - Gyroscope plugin support is wired with the viewer navbar `gyroscope` control.
 - No-JS fallback remains image/card based.
 - Details metadata is optional and titled `Field details`.
-- The data model has no latitude/longitude field, so no build can emit exact
-  coordinates. Location is published only as a place name.
+- The data model stores coordinates already rounded to three decimal places, so
+  no build can emit a finer position. The panel and the Maps link both read that
+  same value.
 - Mobile selection now moves the viewer directly after the selected card instead
   of jumping to the end of the gallery.
 - Mobile overflow fixes are applied around the viewer shell/stage/canvas.
@@ -133,7 +134,10 @@ readme note with the metadata UI from
 - Card click opens the selected draggable 360 image.
 - Metadata is optional behind `Details`.
 - Metadata must stay outside the panorama canvas.
-- Exact coordinates are out of scope for this public repository, structurally rather than by flag.
+- Coordinates are published at three decimal places and no finer. The ceiling
+  is structural rather than a flag: the value committed to this public
+  repository is already rounded, so there is no finer number for a renderer to
+  reach.
 
 ## Viewer Decision
 
@@ -160,8 +164,10 @@ Usable source JPGs:
 
 Public asset delivery:
 
-- Public derivatives: `trailwalk/v1/...`, served from the base URL injected as
+- Public derivatives: `trailwalk/v2/...`, served from the base URL injected as
   `TRAILWALK_ASSET_BASE_URL`. The value lives in the private ops tracker.
+  Published prefixes are immutable: adding a key is not a revision, changing
+  what an existing key returns is, and that is what bumps `v<N>`.
 - Derivatives are EXIF-stripped before upload. Re-verify this whenever the
   derivative set is regenerated.
 
