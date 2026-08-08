@@ -1,17 +1,16 @@
 ---
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
+import { build } from '../data/build';
 import { site } from '../data/site';
 
 interface Props {
   title: string;
   description: string;
-  /** breadcrumb shown top-right, e.g. "projects / beagle" */
-  crumb?: string;
   ogType?: string;
   wide?: boolean;
 }
-const { title, description, crumb, ogType = 'website', wide = false } = Astro.props;
+const { title, description, ogType = 'website', wide = false } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
 <!doctype html>
@@ -38,12 +37,15 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     />
   </head>
   <body>
-    <SiteHeader crumb={crumb} />
+    <SiteHeader />
     <div class:list={['page', { 'page--wide': wide }]}>
       <slot />
       <footer class="site-foot">
         <span class="meta">{site.name}</span>
-        <span class="meta"><a href="/colophon/">colophon</a></span>
+        <span class="meta-row">
+          <span class="meta"><a href={site.githubUrl} rel="me noopener" target="_blank">GitHub</a></span>
+          <span class="meta version-tag" aria-label={`Version ${build.version}`}>v{build.version}</span>
+        </span>
       </footer>
     </div>
   </body>
