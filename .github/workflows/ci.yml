@@ -13,6 +13,13 @@ on:
 permissions:
   contents: read
 
+env:
+  # Not a secret: this is the public media hostname that already appears in the
+  # published HTML. It is set here so the check exercises the same asset wiring
+  # production uses. The build fails closed without it, so a green check that
+  # omitted it would be validating a broken configuration.
+  TRAILWALK_ASSET_BASE_URL: https://media.fnpg.me
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,5 +30,6 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run typecheck
       - run: npm run build
       - run: test -f dist/index.html

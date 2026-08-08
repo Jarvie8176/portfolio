@@ -12,8 +12,24 @@ const assetBase = (
     import.meta.env.PUBLIC_PORTFOLIO_MEDIA_BASE ??
     ""
 ).replace(/\/$/, "");
+
+// Fail closed. Without an asset base every card falls back to one placeholder
+// and every poster/panorama URL points at a path that is not in public/ or
+// dist/, so the gallery builds clean and ships broken. Deployment is the wrong
+// place to catch that.
+if (!assetBase) {
+    throw new Error(
+        "TRAILWALK_ASSET_BASE_URL is not set. The Trailwalk gallery needs a public asset base URL (for example https://media.fnpg.me); building without one produces a gallery whose posters and panoramas all 404.",
+    );
+}
+
 const placeholderImage = "/assets/project-covers/trailwalk-shoreline.jpg";
-const assetUrl = (key: string) => (assetBase ? `${assetBase}/${key}` : `/${key}`);
+const assetUrl = (key: string) => `${assetBase}/${key}`;
+
+// `set:html` does not escape, so a future title or place name containing
+// "</script>" would break out of the JSON script element.
+const serializeGalleryData = (value: unknown) =>
+    JSON.stringify(value).replaceAll("<", "\\u003c");
 
 const galleryItems = trailwalkGalleryItems.map((item) => {
     const mapsAction = getTrailwalkMapsAction(item);
@@ -56,7 +72,11 @@ const galleryItems = trailwalkGalleryItems.map((item) => {
             </p>
         </div>
 
-        <div class="trailwalk-gallery__grid" aria-label="Trailwalk field samples">
+        <div
+            class="trailwalk-gallery__grid"
+            role="group"
+            aria-label="Trailwalk field samples"
+        >
             {
                 galleryItems.map((item) => (
                     <a
@@ -67,12 +87,13 @@ const galleryItems = trailwalkGalleryItems.map((item) => {
                     >
                         <span class="trailwalk-gallery__image-wrap">
                             <img
-                                src={assetBase ? item.assets.highlight : placeholderImage}
+                                src={item.assets.highlight}
                                 srcset={
-                                    assetBase && item.assets.highlight2x
-                                        ? `${item.assets.highlight2x} 2x`
+                                    item.assets.highlight2x
+                                        ? `${item.assets.highlight} 1200w, ${item.assets.highlight2x} 2400w`
                                         : undefined
                                 }
+                                sizes="(min-width: 1140px) 355px, (min-width: 921px) 31vw, 92vw"
                                 alt=""
                                 loading="lazy"
                                 decoding="async"
@@ -97,7 +118,6 @@ const galleryItems = trailwalkGalleryItems.map((item) => {
 
         <section
             class="trailwalk-viewer"
-            aria-live="polite"
             aria-labelledby="trailwalk-viewer-title"
             data-trailwalk-viewer-shell
             hidden
@@ -135,7 +155,11 @@ const galleryItems = trailwalkGalleryItems.map((item) => {
                         data-trailwalk-viewer
                     >
                     </div>
-                    <p class="trailwalk-viewer__status" data-trailwalk-status>
+                    <p
+                        class="trailwalk-viewer__status"
+                        aria-live="polite"
+                        data-trailwalk-status
+                    >
                     </p>
                 </div>
 
@@ -150,7 +174,7 @@ const galleryItems = trailwalkGalleryItems.map((item) => {
         </section>
     </div>
 
-    <script type="application/json" data-trailwalk-gallery-data set:html={JSON.stringify(galleryItems)} />
+    <script type="application/json" data-trailwalk-gallery-data set:html={serializeGalleryData(galleryItems)} />
 </section>
 
 <script>
@@ -168,6 +192,7 @@ const galleryItems = trailwalkGalleryItems.map((item) => {
     .trailwalk-gallery {
         padding: var(--tw-section-y) var(--tw-section-x);
         background: var(--tw-bg);
+        scroll-margin-top: 88px;
     }
 
     .trailwalk-gallery__inner {

@@ -9,14 +9,18 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "typecheck": "astro sync && tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "@photo-sphere-viewer/core": "^5.15.1",
-    "@photo-sphere-viewer/gyroscope-plugin": "^5.15.1",
+    "@photo-sphere-viewer/core": "5.15.1",
+    "@photo-sphere-viewer/gyroscope-plugin": "5.15.1",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.0",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
   }
 }
