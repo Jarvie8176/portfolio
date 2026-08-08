@@ -164,7 +164,7 @@ Usable source JPGs:
 
 Public asset delivery:
 
-- Public derivatives: `trailwalk/v2/...`, served from the base URL injected as
+- Public derivatives: `trailwalk/v5/...`, served from the base URL injected as
   `TRAILWALK_ASSET_BASE_URL`. The value lives in the private ops tracker.
   Published prefixes are immutable: adding a key is not a revision, changing
   what an existing key returns is, and that is what bumps `v<N>`.

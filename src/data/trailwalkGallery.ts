@@ -1,6 +1,7 @@
 export type TrailwalkLocationSource =
     | "jpg_exif"
     | "original_insp_exif"
+    | "original_dng_exif"
     | "manual_review";
 
 /**
@@ -91,11 +92,13 @@ export type TrailwalkGalleryItem = {
 
 /**
  * Published prefixes are immutable, so a change of content is a change of
- * prefix. v2 revises two things at once: the norstead sample is a different
- * frame, and every card thumbnail is now a framed 16:9 view rather than a
- * centre crop of the equirectangular source.
+ * prefix. v4 rebuilds the whole set from the current source directory: three
+ * samples were re-exported from their raw masters, one was withdrawn, one was
+ * added, and the HD tier's metadata handling changed: it now keeps the colour
+ * profile and the lens and exposure fields, and removes only what identifies a
+ * person or a place — including a vendor payload no metadata tool reports.
  */
-const assetVersion = "trailwalk/v2";
+const assetVersion = "trailwalk/v5";
 
 /**
  * Card thumbnail candidates, ascending. Chosen from the rendered box at every
@@ -145,7 +148,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         mapsQuery: "Gros Morne Tablelands, Newfoundland and Labrador",
         assets: makeAssets("tablelands", {
             panorama: 1320629,
-            panoramaHd: 15467441,
+            panoramaHd: 15469535,
         }),
         initialView: {
             yaw: "12deg",
@@ -165,34 +168,13 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         locationSource: "original_insp_exif",
         mapsQuery: "Norstead Trail, Newfoundland and Labrador",
         assets: makeAssets("norstead", {
-            panorama: 1091417,
-            panoramaHd: 16917259,
+            panorama: 1086525,
+            panoramaHd: 62273470,
         }),
         initialView: {
             yaw: "-18deg",
             pitch: "-2deg",
             zoom: 32,
-        },
-    },
-    {
-        id: "fishing-point",
-        title: "Fishing Point Approach",
-        shortPlace: "St Anthony, NL",
-        locationLabel: "St Anthony, NL",
-        terrainTag: "Coastal trail",
-        capturedAt: "2026-06-02T10:41:30",
-        altitudeMeters: 15,
-        coordinates: { latitude: 51.359, longitude: -55.558 },
-        locationSource: "jpg_exif",
-        mapsQuery: "Fishing Point Park Trails, St. Anthony, Newfoundland and Labrador",
-        assets: makeAssets("fishing-point", {
-            panorama: 1390333,
-            panoramaHd: 39257827,
-        }),
-        initialView: {
-            yaw: "28deg",
-            pitch: "-5deg",
-            zoom: 34,
         },
     },
     {
@@ -209,7 +191,7 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         mapsQuery: "Margaret Falls, Tappen, British Columbia",
         assets: makeAssets("margaret-falls", {
             panorama: 1725153,
-            panoramaHd: 21368725,
+            panoramaHd: 21370819,
         }),
         initialView: {
             yaw: "18deg",
@@ -223,15 +205,15 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         shortPlace: "St Anthony, NL",
         locationLabel: "St Anthony, NL",
         terrainTag: "Wide coastal view",
-        capturedAt: "2026-06-02T11:21:07",
+        capturedAt: "2026-06-02T11:21:02",
         altitudeMeters: 120,
         coordinates: { latitude: 51.354, longitude: -55.563 },
-        locationSource: "jpg_exif",
+        locationSource: "original_insp_exif",
         mapsQuery:
             "Cartreau Point Trail, St. Anthony, Newfoundland and Labrador",
         assets: makeAssets("cartreau-panorama", {
-            panorama: 1589523,
-            panoramaHd: 42294024,
+            panorama: 1015075,
+            panoramaHd: 52426060,
         }),
         initialView: {
             yaw: "-34deg",
@@ -245,20 +227,39 @@ export const trailwalkGalleryItems: TrailwalkGalleryItem[] = [
         shortPlace: "Kauzmann Trail, NS",
         locationLabel: "Kauzmann Trail, NS",
         terrainTag: "Highland ridge",
-        capturedAt: "2026-06-08T14:23:22",
+        capturedAt: "2026-06-08T14:23:17",
         altitudeMeters: 388,
         coordinates: { latitude: 46.994, longitude: -60.42 },
-        locationSource: "jpg_exif",
+        locationSource: "original_dng_exif",
         mapsQuery: "Kauzmann Trail, Nova Scotia",
         assets: makeAssets("kauzmann-ridge", {
-            panorama: 937829,
-            panoramaHd: 12371197,
+            panorama: 777607,
+            panoramaHd: 40529353,
         }),
         initialView: {
             yaw: "8deg",
             pitch: "-6deg",
             zoom: 32,
         },
+    },
+    {
+        id: "shoreline-trail",
+        // TODO(copy): title, place labels and terrain tag are provisional —
+        // derived from the coordinate and the staging directory name, not
+        // written. The operator is editing these by hand.
+        title: "Shoreline Trail",
+        shortPlace: "Port Moody, BC",
+        locationLabel: "Port Moody, BC",
+        terrainTag: "Coastal forest",
+        capturedAt: "2026-08-08T15:36:16",
+        altitudeMeters: 1,
+        coordinates: { latitude: 49.282, longitude: -122.838 },
+        locationSource: "original_dng_exif",
+        mapsQuery: "Shoreline Trail, Port Moody, British Columbia",
+        assets: makeAssets("shoreline-trail", {
+            panorama: 1624737,
+            panoramaHd: 25267730,
+        }),
     },
 ];
 
