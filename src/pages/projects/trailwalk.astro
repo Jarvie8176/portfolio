@@ -1,10 +1,16 @@
 ---
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
+import { deployment, displayHost } from "../../data/site";
 
-const contactEmail = "projects@fnpg.me";
-const contactHref = `mailto:${contactEmail}?subject=Trailwalk%20contact`;
-const updateHref = "https://fnpg.me/";
-const updateLabel = "fnpg.me";
+// Injected at build time; see src/data/site.ts. Absent in an uninjected build,
+// so every use below is conditional and the page degrades to having no contact
+// or updates affordance rather than to a placeholder address.
+const contactEmail = deployment.contactEmail;
+const contactHref = contactEmail
+    ? `mailto:${contactEmail}?subject=Trailwalk%20contact`
+    : undefined;
+const updateHref = deployment.updatesUrl;
+const updateLabel = displayHost(updateHref);
 const shorelineTrailHref =
     "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
 const saintAnthonyViewHref =
@@ -130,12 +136,16 @@ const audiences = [
                         been separated from the outdoors.
                     </p>
                     <div class="hero-actions" aria-label="Trailwalk actions">
-                        <a class="button button-light" href={updateHref}
-                            >Stay Updated</a
-                        >
-                        <a class="button button-ghost" href={contactHref}
-                            >Get in Touch</a
-                        >
+                        {updateHref && (
+                            <a class="button button-light" href={updateHref}>
+                                Stay Updated
+                            </a>
+                        )}
+                        {contactHref && (
+                            <a class="button button-ghost" href={contactHref}>
+                                Get in Touch
+                            </a>
+                        )}
                     </div>
                 </div>
             </section>
@@ -256,10 +266,12 @@ const audiences = [
                         and anyone generally interested in accessible nature to
                         shape what the product becomes next.
                     </p>
-                    <a class="button button-primary" href={contactHref}
-                        >Contact Us <span aria-hidden="true">→</span></a
-                    >
-                    <p class="email-note">{contactEmail}</p>
+                    {contactHref && (
+                        <a class="button button-primary" href={contactHref}>
+                            Contact Us <span aria-hidden="true">→</span>
+                        </a>
+                    )}
+                    {contactEmail && <p class="email-note">{contactEmail}</p>}
                 </div>
             </section>
 
@@ -287,16 +299,21 @@ const audiences = [
                         community updates.
                     </p>
                     <div class="loop-actions" aria-label="Trailwalk updates">
-                        <a class="button button-light" href={contactHref}
-                            >Request updates</a
-                        >
-                        <a class="button button-ghost" href={updateHref}
-                            >See development in action</a
-                        >
+                        {contactHref && (
+                            <a class="button button-light" href={contactHref}>
+                                Request updates
+                            </a>
+                        )}
+                        {updateHref && (
+                            <a class="button button-ghost" href={updateHref}>
+                                See development in action
+                            </a>
+                        )}
                     </div>
                     <p class="fine-print">
-                        Email us for updates, or visit {updateLabel} to follow
-                        development notes.
+                        {contactEmail && updateLabel
+                            ? `Email us for updates, or visit ${updateLabel} to follow development notes.`
+                            : "Development notes and updates are published as the prototype progresses."}
                     </p>
                 </div>
             </section>

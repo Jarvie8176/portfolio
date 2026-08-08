@@ -62,7 +62,8 @@ Local source location:
 
 Planned production storage:
 
-- Public per-image derivatives served from `https://media.fnpg.me`.
+- Public per-image derivatives, served from the base URL injected as
+  `TRAILWALK_ASSET_BASE_URL`.
 
 ## Output Spec For Hi-Fi Mock Agent
 
