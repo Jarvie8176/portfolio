@@ -130,6 +130,15 @@ throw.
 ## Not covered here
 
 Real-device gyroscope behaviour needs a secure context and a physical sensor.
-It stays manual. That now includes the default-on start: whether a device
-grants motion access without a gesture cannot be observed from a headless
-browser, which reports no sensor at all.
+It stays manual, and that now includes the default-on start.
+
+A headless browser can be made to answer the plugin's support probe by
+dispatching a synthetic `deviceorientation` event, and doing so does show the
+default-on path completing without a user gesture. It is not a test, though:
+headless Chromium also emits its own null-data `deviceorientation` event, and
+whichever arrives first wins, so the probe passes about four times in five. The
+race is in the harness, not in the code — both branches behave correctly, since
+a reading with no `alpha` is exactly the "no usable sensor" case the start is
+supposed to skip. What still cannot be observed here is the branch that
+matters most: whether a device requiring an explicit motion permission grants
+it outside a gesture. It does not, which is why the navbar control has to stay.
