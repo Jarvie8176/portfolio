@@ -1,8 +1,27 @@
-import type { TrailwalkGalleryItem } from "../../data/trailwalkGallery";
-
-type PublicTrailwalkItem = TrailwalkGalleryItem & {
-    assets: TrailwalkGalleryItem["assets"] & {
+/**
+ * Mirrors the projection `toPublicGalleryItem` builds in TrailwalkGallery.astro.
+ * It is written out rather than derived from TrailwalkGalleryItem so that
+ * widening the source type does not silently widen what the browser is assumed
+ * to receive. The two sides meet at a JSON.parse, so nothing checks them
+ * against each other; keep them in step by hand.
+ */
+type PublicTrailwalkItem = {
+    id: string;
+    title: string;
+    locationLabel: string;
+    capturedLabel: string;
+    altitudeMeters?: number;
+    assets: {
+        highlight: string;
+        highlight2x?: string;
+        poster: string;
+        panorama: string;
         fallbackHighlight: string;
+    };
+    initialView?: {
+        yaw?: string;
+        pitch?: string;
+        zoom?: number;
     };
     coordinateLabel: string;
     locationSourceLabel: string;
@@ -42,6 +61,9 @@ const loadViewerCss = () => {
                     document.head.append(link);
                 }),
         )
+        // TODO(test): no coverage. See tests/TODO.md T7 — after a rejected
+        // stylesheet load, the next call must retry rather than reuse the
+        // rejected promise.
         .catch((error: unknown) => {
             // Clear the cache so a later selection can retry. Leaving a rejected
             // promise memoized would disable the gallery for the rest of the
@@ -193,6 +215,9 @@ export const initializeTrailwalkGallery = (
             return;
         }
 
+        // TODO(test): no coverage. See tests/TODO.md T5 and T6 — a rejecting
+        // setPanorama must leave the poster visible with the failure status,
+        // and data-viewer-ready must not be set before the texture resolves.
         // The panorama is deliberately not passed to the constructor. Photo
         // Sphere Viewer would then start the load itself with no rejection
         // handler, so a 404/CORS/transient failure becomes an unhandled

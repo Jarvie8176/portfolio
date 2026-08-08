@@ -43,14 +43,18 @@ Do not make metadata the primary selected state. The selected state should remai
 
 ## Handoff Inputs
 
-Use the six migrated JPG candidates as initial content inputs:
+Use the six samples that ship in the public gallery. These are the ids in
+`src/data/trailwalkGallery.ts`, which is the source of truth:
 
-- `IMG_20260530_113007_00_010.jpg`
-- `IMG_20260601_103129_00_merged.jpg`
-- `IMG_20260602_104126_00_merged.jpg`
-- `IMG_20260602_112102_00_041.jpg`
-- `IMG_20260602_112102_00_merged.jpg`
-- `IMG_20260608_142315_00_020.jpg`
+- `tablelands`
+- `norstead`
+- `fishing-point`
+- `margaret-falls`
+- `cartreau-panorama`
+- `kauzmann-ridge`
+
+The earlier candidate list carried two Cartreau captures; `margaret-falls`
+replaced the duplicate.
 
 Local source location:
 

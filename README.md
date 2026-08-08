@@ -15,9 +15,16 @@ set in a field-notes visual language.
 
 ```sh
 npm install
-npm run dev      # dev server
-npm run build    # static build → dist/
+export TRAILWALK_ASSET_BASE_URL=https://media.fnpg.me
+npm run dev        # dev server
+npm run typecheck  # astro sync && tsc --noEmit
+npm run build      # static build → dist/
 ```
+
+`TRAILWALK_ASSET_BASE_URL` is required, not optional. It is the public base URL
+the Trailwalk gallery's posters and panoramas are served from. Building or
+serving without it fails closed on purpose: the alternative is a gallery that
+builds clean and ships cards that all open to a failed viewer.
 
 Note: CSS minification is pinned to esbuild (`astro.config.mjs`) —
 lightningcss folds `animation-timeline` into the `animation` shorthand,
