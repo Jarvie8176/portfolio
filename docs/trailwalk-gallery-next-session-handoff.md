@@ -174,9 +174,11 @@ Do not commit raw/full-size JPGs to GitHub.
 
 ## Remaining Work
 
-1. Wire the portfolio deploy environment with `TRAILWALK_ASSET_BASE_URL`,
-   `PORTFOLIO_CONTACT_EMAIL`, and `PORTFOLIO_UPDATES_URL`. The build fails
-   closed without the first, so it must land before merge.
+1. Wire the portfolio deploy environment with `TRAILWALK_ASSET_BASE_URL`. The
+   build fails closed without it, so it must land before merge.
+   `PORTFOLIO_CONTACT_EMAIL` and `PORTFOLIO_UPDATES_URL` are deliberately left
+   unset on the dev preview — they degrade to nothing, which is what keeps the
+   dev artifact free of a contact address. They belong to prod promotion.
 2. Update Figma frames `C`, `E`, and the readme note once writable Figma access
    is available.
 3. Address PR review feedback and merge only after operator approval.

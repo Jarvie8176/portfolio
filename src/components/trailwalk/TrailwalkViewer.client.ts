@@ -1,5 +1,5 @@
 /**
- * Mirrors the projection `toPublicGalleryItem` builds in TrailwalkGallery.astro.
+ * Mirrors `publicPayload` in TrailwalkGallery.astro.
  * It is written out rather than derived from TrailwalkGalleryItem so that
  * widening the source type does not silently widen what the browser is assumed
  * to receive. The two sides meet at a JSON.parse, so nothing checks them
