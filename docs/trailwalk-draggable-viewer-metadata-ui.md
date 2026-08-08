@@ -91,15 +91,15 @@ export type TrailwalkGalleryItem = {
   shortPlace: string;
   locationLabel: string;
   terrainTag: string;
-  capturedAt: string;
-  capturedLabel: string;
+  capturedAt: string;                          // wall clock, no zone offset
   altitudeMeters?: number;
-  locationSource: TrailwalkLocationSource;
+  coordinates?: TrailwalkApproxCoordinates;    // already rounded to 3 places
+  locationSource: TrailwalkLocationSource;     // provenance, not published
   mapsQuery: string;
   assets: {
-    highlight: string;
-    highlight2x?: string;
-    panorama: string;
+    highlights: TrailwalkHighlight[];          // srcset candidates
+    panorama: TrailwalkPanorama;               // key + measured byte count
+    panoramaHd: TrailwalkPanorama;
     poster: string;
   };
   initialView?: {
@@ -110,28 +110,35 @@ export type TrailwalkGalleryItem = {
 };
 ```
 
-The Maps action is derived, not stored: `getTrailwalkMapsAction(item)` builds it
-from `mapsQuery`. What reaches the browser is `publicPayload` in
-`TrailwalkGallery.astro`, an explicit projection of this type rather than this
-type itself.
+Both labels are derived rather than stored, so neither can drift from the value
+it describes: `formatCapturedDateTime(item.capturedAt)` and
+`formatCoordinates(item.coordinates)`. `getTrailwalkMapsAction(item)` reads the
+same `coordinates`, falling back to `mapsQuery` where none was recorded.
+
+What reaches the browser is `publicPayload` in `TrailwalkGallery.astro`, an
+explicit projection of this type rather than this type itself. It carries the
+poster and the two panorama tiers; card thumbnails are rendered server-side and
+are deliberately not serialized.
 
 ## Candidate Metadata Values
 
-Exact per-image coordinates, and any maps URL derived from them, live in the
-private review layer only. They must never be reproduced in this repository, in
-commit messages, or in pull request text.
-
-What a reviewer decides per image is only which of these public fields are
-accurate:
+Coordinates are published at three decimal places, roughly 110 m. The precision
+ceiling is enforced at authoring time — the number written into the repository
+is already rounded — because in a public repository the committed value is the
+disclosure whatever the renderer does with it. Full-precision values stay in the
+private review layer and must never be reproduced in this repository, in commit
+messages, or in pull request text.
 
 | field | published |
 | --- | --- |
 | `id`, `title`, `terrainTag` | yes |
 | `locationLabel`, `shortPlace` | yes, human-readable place only |
+| `capturedAt` | yes, as date and time of day in capture-local wall clock |
 | `altitudeMeters` | yes |
-| `locationSource` | yes, provenance label only |
-| `mapsQuery` | yes, a place name, never a coordinate pair |
-| exact latitude / longitude | never, and the type cannot express it |
+| `coordinates` | yes, at three decimal places and no finer |
+| `mapsQuery` | only as the fallback query where no coordinate was recorded |
+| `locationSource` | no, provenance is an audit question |
+| full-precision latitude / longitude | never, and the type cannot express it |
 
 ## Metadata UI Design
 
@@ -163,20 +170,85 @@ Panel title:
 Primary rows:
 
 - `Place`: human-readable location label.
-- `Captured`: formatted date.
+- `Captured`: date and time of day, e.g. `June 2, 2026 · 11:21 local`. The
+  clock is the camera's, which is the wall clock at the place in the photo;
+  `local` says so, because none of these files records a zone to name instead.
 - `Elevation`: altitude in meters if available.
-- `Coordinates`: always `Approximate area only`. This row exists to set the
-  visitor's expectation, not to carry a value.
+- `Coordinates`: latitude and longitude to three decimal places, e.g.
+  `51.354° N, 55.563° W`, or `Not recorded` where no position was captured.
 
 Actions:
 
-- `Open approximate area`, built from the place name in `mapsQuery`.
+- `See location in Google Maps`, built from the same three-place pair the panel
+  prints, so the link and the text cannot disagree. Items with no recorded
+  position fall back to the place name in `mapsQuery`.
 
-Secondary rows:
+Not shown:
 
-- `Location source`: `JPG EXIF`, `INSP EXIF`, or `Manual review`.
-- `Asset`: optional non-public/dev-only note; do not show R2/source key in the
-  public UI.
+- Coordinate provenance (`JPG EXIF`, `INSP EXIF`, `Manual review`) is kept in
+  the source data as an audit trail, but it answers a question a visitor is not
+  asking and is not published.
+- R2 or source object keys.
+
+Defaults on selecting a sample:
+
+- The details panel is open. A reader who wants the sphere alone closes it
+  once, rather than opening it every time.
+- The gyroscope is started where the device supports it. Devices that require
+  an explicit motion permission will refuse, because the request no longer has
+  a user gesture behind it by the time the panorama has loaded; the navbar
+  gyroscope button remains and asks again from inside a real gesture.
+- The `HD sample` toggle is off, and carries the size of what pressing it would
+  fetch (`HD sample · 42.3 MB`). Toggling swaps the texture inside the running
+  viewer so the current heading is kept. If the swap fails, the control returns
+  to the tier that is actually on screen.
+
+### Card Thumbnails
+
+The card image is a framed 16:9 view chosen by hand, not a centre crop of the
+equirectangular source. A crop of an equirect picks whatever happens to sit at
+the centre of the sphere, which is rarely the reason the frame was worth
+keeping. The card's `aspect-ratio` is `16 / 9` so the chosen frame is shown
+whole rather than shaved.
+
+Widths are `480 / 800 / 1200 / 1600`, picked from the box the card actually
+renders at rather than from the grid definition — the page sets
+`body { zoom: 1.25 }`, so the element is a quarter larger than the CSS that
+describes it, and a `sizes` written from the stylesheet under-serves every
+candidate by that much. Measured slots, and what each configuration then draws
+for all six cards:
+
+| configuration | slot | needs | picks | six cards |
+| --- | --- | --- | --- | --- |
+| desktop 1x, 1200-1920px | 303-441 px | same | 480 | 149 KB |
+| desktop 2x | 256-367 px | 512-734 px | 800 | 356 KB |
+| phone 3x | 324-359 px | 972-1077 px | 1200 | 637 KB |
+| tablet 2x, one column | 612-718 px | 1224-1436 px | 1600 | 918 KB |
+
+Before this the ladder was a single 1200 plus a 2400 that no browser selected
+at any viewport or pixel ratio, so every configuration drew 1008 KB — a
+1200-wide file into a 367 px slot on desktop, and an upscale on the widest slot
+of all.
+
+### Panorama Tiers
+
+- **Standard**: a 4096x2048 derivative, 0.9-1.7 MB. This is what loads on
+  selection.
+- **HD**: the stitched original, 11904x5952, 12-42 MB. It is the original file
+  with its metadata removed, not a re-encode of it: the compressed image data
+  is byte-identical to the source, so this is the highest resolution that
+  exists rather than the highest that was regenerated.
+
+The HD tier is opt-in and prices itself in the control precisely because it is
+this large. Two things follow from the size that are worth knowing before
+raising it further:
+
+- On a device whose `MAX_TEXTURE_SIZE` is 8192 — which is most phones — the
+  viewer downscales the 11904-wide image before uploading it to the GPU. Those
+  devices pay the full transfer and decode for detail they cannot display.
+  Desktop GPUs at 16384 do show it.
+- Decoding 11904x5952 needs roughly 280 MB of RGBA before the downscale, so the
+  toggle is a genuine cost on constrained devices, not only a slow load.
 
 ### Visual Treatment
 
@@ -192,37 +264,55 @@ Match the Trailwalk detail page:
 
 ### Privacy And Accuracy Rule
 
-This repository is public. Exact trail coordinates are therefore not a
-publish-time decision here; they are simply out of scope for this codebase.
+This repository is public, so anything committed here is published whatever the
+renderer does with it. The rule is therefore about what may exist in the file,
+not about what the UI chooses to draw.
 
-An earlier draft of this design used a per-image `publicApproved` flag to gate
-exact coordinate display. That was removed. A runtime toggle only helps if the
-data it guards is safe to have around, and in a public repository the exact
-coordinates would have to be committed in order for the flag to have anything
-to switch on. The flag would have been the control, and the committed
-coordinates would have been the leak.
+An earlier draft used a per-image `publicApproved` flag to gate exact
+coordinate display. That was removed and must not come back. A runtime toggle
+only helps if the data it guards is safe to have around, and the exact
+coordinates would have to be committed for the flag to have anything to switch
+on: the flag would have been the control, and the committed coordinates would
+have been the leak.
 
-The rule is now structural:
+The rule is structural:
 
-- `TrailwalkGalleryItem` has no latitude/longitude field, so no build can emit
-  one.
-- Location reaches the public surface only as a place name (`mapsQuery`,
-  `locationLabel`), which resolves to an approximate area.
-- Exact values stay in the private review layer and are never copied into this
-  repository, its commit messages, or its pull request text.
-- Public image derivatives are EXIF-stripped before upload. Verify this again
-  whenever the derivative set is regenerated; it is the other half of the same
-  guarantee, and it lives outside this code.
+- `TrailwalkApproxCoordinates` holds values already rounded to three decimal
+  places — roughly 110 m. The rounding happens before the number is written
+  into the file, not on the way to the page, so the repository cannot express a
+  position more precise than the site publishes.
+- Three places discloses no more than `locationLabel` and `mapsQuery` already
+  do, since those name the trail. The two disclosures are deliberately kept
+  consistent with each other; tightening one without the other buys nothing.
+- Full-precision values stay in the private review layer and are never copied
+  into this repository, its commit messages, or its pull request text.
+- Absent is rendered as absent. An item with no recorded fix shows
+  `Not recorded`; it is never backfilled by geocoding the place name.
+- Public image derivatives are EXIF-stripped before upload. This matters most
+  for the HD tier, which is the original file rather than a re-encode: the
+  resampling that produces the smaller tiers drops metadata as a side effect,
+  whereas here the stripping is the only thing standing between the source
+  file's GPS block and the public bucket. The stripped originals carry no EXIF,
+  no XMP, no maker notes and no embedded thumbnail, and the camera-native ones
+  also shed roughly 10 MB of embedded payload each.
+- Verify this again whenever the derivative set is regenerated; it is the other
+  half of the same guarantee, and it lives outside this code.
 
 ## Google Maps URL Pattern
 
-There is one pattern. It takes a place name, never a coordinate pair:
+There is one pattern, and its query is whatever the panel is showing, so the
+link and the text cannot disagree:
 
 ```ts
-const href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  mapsQuery,
-)}`;
+const query = item.coordinates
+  ? `${item.coordinates.latitude.toFixed(3)},${item.coordinates.longitude.toFixed(3)}`
+  : item.mapsQuery;
+const href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 ```
+
+`toFixed(3)` is a ceiling, not a rounding step: the stored value is already at
+three places, and the call is there so a future stored value that is not cannot
+leak through this function.
 
 Use `target="_blank"` and `rel="noreferrer"` on the public link.
 
@@ -233,9 +323,12 @@ Use `target="_blank"` and `rel="noreferrer"` on the public link.
 - Full panorama derivative comes from R2 or a configurable asset base URL.
 - Poster/highlight image remains visible while the viewer initializes.
 - `Back to gallery` returns focus to the selected card.
-- `Details` can show place, date, altitude, location source, and the Maps
-  action.
-- No latitude/longitude value appears anywhere in the built output.
+- `Details` can show place, captured date and time, altitude, coordinates, and
+  the Maps action.
+- No latitude/longitude value finer than three decimal places appears anywhere
+  in the built output, in the panel or in a Maps URL.
+- `Back to gallery` cancels any load still in flight rather than letting it
+  finish into a hidden shell.
 - Reduced-motion users do not get animated camera movement.
 - Build still passes with JavaScript disabled, showing gallery cards and
   fallback images.

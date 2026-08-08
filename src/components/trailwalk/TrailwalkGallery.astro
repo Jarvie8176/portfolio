@@ -1,7 +1,10 @@
 ---
 import {
+    formatBytes,
+    formatCapturedDate,
+    formatCapturedDateTime,
+    formatCoordinates,
     getTrailwalkMapsAction,
-    locationSourceLabels,
     trailwalkGalleryItems,
     type TrailwalkGalleryItem,
 } from "../../data/trailwalkGallery";
@@ -34,13 +37,52 @@ const assetUrl = (key: string) => `${assetBase}/${key}`;
 const serializeGalleryData = (value: unknown) =>
     JSON.stringify(value).replaceAll("<", "\\u003c");
 
-const resolveAssets = (item: TrailwalkGalleryItem) => ({
-    highlight: assetUrl(item.assets.highlight),
-    highlight2x: item.assets.highlight2x
-        ? assetUrl(item.assets.highlight2x)
-        : undefined,
+const resolvePanorama = (tier: TrailwalkGalleryItem["assets"]["panorama"]) => ({
+    url: assetUrl(tier.key),
+    sizeLabel: formatBytes(tier.bytes),
+});
+
+/**
+ * Widths the card is actually asked to fill, from the rendered box rather than
+ * from the grid definition — the page applies `zoom: 1.25`, so the element is a
+ * quarter larger than the CSS that describes it, and a `sizes` written from the
+ * stylesheet would under-serve every candidate by that much.
+ *
+ *   >= 1719px   inner hits its 1100px cap, so the card stops growing: 443px
+ *   >=  921px   three columns, measured 25.5vw (367px at 1440, 256px at 1024)
+ *   >=  761px   one column, 80vw
+ *   below       one column, zoom drops to 1, 84vw
+ */
+const highlightSizes =
+    "(min-width: 1719px) 443px, (min-width: 921px) 25.5vw, (min-width: 761px) 80vw, 84vw";
+
+// Only consulted by a browser that ignores srcset. Anything that can render
+// this page's `:has()` layout picks from the candidate list instead, so the
+// middle tier is here to keep that fallback sane, not to be the common case.
+const highlightFallbackWidth = 800;
+
+const resolveHighlights = (item: TrailwalkGalleryItem) => {
+    const candidates = item.assets.highlights.map((highlight) => ({
+        width: highlight.width,
+        url: assetUrl(highlight.key),
+    }));
+    const fallback =
+        candidates.find(({ width }) => width === highlightFallbackWidth) ??
+        candidates[candidates.length - 1];
+
+    return {
+        src: fallback.url,
+        srcset: candidates.map(({ url, width }) => `${url} ${width}w`).join(", "),
+    };
+};
+
+// Split from the viewer's assets on purpose. The cards are rendered here, so
+// their thumbnail URLs have no reason to appear in the serialized payload as
+// well; the viewer never reads them.
+const resolveViewerAssets = (item: TrailwalkGalleryItem) => ({
     poster: assetUrl(item.assets.poster),
-    panorama: assetUrl(item.assets.panorama),
+    panorama: resolvePanorama(item.assets.panorama),
+    panoramaHd: resolvePanorama(item.assets.panoramaHd),
     fallbackHighlight: placeholderImage,
 });
 
@@ -50,8 +92,9 @@ const galleryItems = trailwalkGalleryItems.map((item) => ({
     title: item.title,
     shortPlace: item.shortPlace,
     terrainTag: item.terrainTag,
-    capturedLabel: item.capturedLabel,
-    assets: resolveAssets(item),
+    capturedLabel: formatCapturedDate(item.capturedAt),
+    highlight: resolveHighlights(item),
+    poster: assetUrl(item.assets.poster),
 }));
 
 // TODO(test): no coverage. See tests/TODO.md T3 — the serialized payload must
@@ -67,12 +110,13 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
     id: item.id,
     title: item.title,
     locationLabel: item.locationLabel,
-    capturedLabel: item.capturedLabel,
+    capturedLabel: formatCapturedDateTime(item.capturedAt),
     altitudeMeters: item.altitudeMeters,
-    assets: resolveAssets(item),
+    assets: resolveViewerAssets(item),
     initialView: item.initialView,
-    coordinateLabel: "Approximate area only",
-    locationSourceLabel: locationSourceLabels[item.locationSource],
+    coordinateLabel: item.coordinates
+        ? formatCoordinates(item.coordinates)
+        : "Not recorded",
     mapsAction: getTrailwalkMapsAction(item),
 }));
 ---
@@ -102,19 +146,17 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
                 galleryItems.map((item) => (
                     <a
                         class="trailwalk-gallery__card"
-                        href={item.assets.poster}
+                        href={item.poster}
                         data-trailwalk-card
                         data-trailwalk-id={item.id}
                     >
                         <span class="trailwalk-gallery__image-wrap">
                             <img
-                                src={item.assets.highlight}
-                                srcset={
-                                    item.assets.highlight2x
-                                        ? `${item.assets.highlight} 1200w, ${item.assets.highlight2x} 2400w`
-                                        : undefined
-                                }
-                                sizes="(min-width: 1310px) 355px, (min-width: 921px) 28vw, 84vw"
+                                src={item.highlight.src}
+                                srcset={item.highlight.srcset}
+                                sizes={highlightSizes}
+                                width="1200"
+                                height="675"
                                 alt=""
                                 loading="lazy"
                                 decoding="async"
@@ -152,6 +194,16 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
                 <div class="trailwalk-viewer__actions">
                     <button type="button" data-trailwalk-back>
                         Back to gallery
+                    </button>
+                    <button
+                        type="button"
+                        aria-pressed="false"
+                        data-trailwalk-hd-toggle
+                    >
+                        HD sample
+                        <span
+                            class="trailwalk-viewer__hd-size"
+                            data-trailwalk-hd-size></span>
                     </button>
                     <button
                         type="button"
@@ -279,7 +331,9 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
 
     .trailwalk-gallery__image-wrap {
         display: block;
-        aspect-ratio: 1.75;
+        /* Matches the 16:9 thumbnails exactly. At 1.75 the card cropped a
+           sliver off a frame that was chosen deliberately. */
+        aspect-ratio: 16 / 9;
         background:
             linear-gradient(135deg, rgba(46, 94, 62, 0.14), rgba(59, 122, 138, 0.12)),
             var(--tw-sand);
@@ -395,10 +449,22 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
         outline: none;
     }
 
-    .trailwalk-viewer__actions button[aria-expanded="true"] {
+    .trailwalk-viewer__actions button[aria-expanded="true"],
+    .trailwalk-viewer__actions button[aria-pressed="true"] {
         background: var(--tw-forest);
         border-color: var(--tw-forest);
         color: #fff;
+    }
+
+    /* The size sits inside the control rather than beside it: the cost of
+       pressing the button belongs to the button. */
+    .trailwalk-viewer__hd-size {
+        font-weight: 500;
+        opacity: 0.72;
+    }
+
+    .trailwalk-viewer__hd-size:empty {
+        display: none;
     }
 
     .trailwalk-viewer__layout {
@@ -409,6 +475,9 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
     }
 
     .trailwalk-viewer__layout:has(.trailwalk-viewer__details:not([hidden])) {
+        /* Not wider: the panel is now open by default, so every pixel it takes
+           is taken from the sphere on every visit. At 1024px the stage is
+           already down to ~350px. */
         grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
     }
 
@@ -487,7 +556,12 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
 
     .trailwalk-viewer__details dl {
         display: grid;
-        grid-template-columns: 120px minmax(0, 1fr);
+        grid-template-columns: 100px minmax(0, 1fr);
+        /* The label is 12px and the value is 14px with a 21px line box, so
+           stretching both to the row top left the two texts sitting 3.2px
+           apart on every row. Aligning the first baselines is the fix that does
+           not depend on either font's metrics. */
+        align-items: baseline;
         gap: 12px 14px;
         margin: 0;
     }

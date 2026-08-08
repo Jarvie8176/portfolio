@@ -12,9 +12,10 @@ Each gap is marked with a `TODO(test)` comment at the site it protects.
 
 ## Priority
 
-T1-T4 encode safety properties: the failure mode is a silently broken or
-over-publishing build, not a visible error. They are worth a runner on their
-own. T5-T7 are behavioural and need a DOM, so they are cheaper to defer.
+T1-T4 and T8 encode safety properties: the failure mode is a silently broken,
+over-publishing, or quietly wrong build, not a visible error. They are worth a
+runner on their own, and T1-T4 and T8 need no DOM. T5-T7, T9 and T10 are behavioural
+and need a DOM, so they are cheaper to defer.
 
 ## Gaps
 
@@ -52,14 +53,23 @@ the regression guard for that direction.
 Assert: the set of keys in each serialized item equals the expected allowlist
 exactly. A new key must fail the test rather than ship.
 
-### T4 — no Maps URL can carry a coordinate pair
+### T4 — nothing published carries a coordinate finer than three places
 
-`src/data/trailwalkGallery.ts`, `getTrailwalkMapsAction`
+`src/data/trailwalkGallery.ts`, `getTrailwalkMapsAction`, `formatCoordinates`
 
-Assert: for every item in `trailwalkGalleryItems`, the decoded `href` query
-contains no `lat,lon` pair. Pair with a scan of the built HTML for
-high-precision decimals so the property is checked end to end, not just at the
-function boundary.
+The gallery now publishes coordinates, rounded to three decimal places. The
+property that replaced "no coordinates at all" is a precision ceiling, and it
+has to hold at both ends: the number written into the source file and the
+number that reaches the page.
+
+Assert: for every item in `trailwalkGalleryItems`, neither the decoded `href`
+query nor the rendered coordinate label contains a decimal with more than three
+places. Pair with a scan of the built HTML for the same pattern, so a future
+change that rounds at render time instead of at authoring time still fails.
+
+Assert also that the label and the link agree: both must resolve to the same
+position, and an item with no `coordinates` must render `Not recorded` and fall
+back to the place-name query.
 
 ### T5 — a failed panorama load leaves the poster visible
 
@@ -89,7 +99,65 @@ Assert: after a rejection, the next call retries instead of returning the
 cached rejected promise. Without this, one transient failure disables the
 gallery for the rest of the page's life.
 
+### T8 — the captured label does not depend on the reader's time zone
+
+`src/data/trailwalkGallery.ts`, `readCapturedAt`
+
+`capturedAt` is a wall-clock reading with no UTC offset. Formatting it through
+`Date` would resolve it against the reader's zone, so the same photo would
+report a different hour in Berlin than in St. John's — silently, and only for
+readers the author is unlikely to be one of.
+
+Assert: with `TZ` set to at least `UTC`, `America/St_Johns` and
+`Asia/Shanghai`, `formatCapturedDateTime` returns byte-identical output. Assert
+also that a `capturedAt` carrying an offset or a `Z` is rejected rather than
+quietly accepted, since accepting it would reintroduce the conversion.
+
+### T9 — a failed HD swap does not leave the control lying
+
+`src/components/trailwalk/TrailwalkViewer.client.ts`, `swapPanoramaTier`
+
+Checked once by hand, in a browser, with the HD request aborted: the control
+returned to off, stayed usable, the standard texture stayed on screen, and the
+status said so. Nothing keeps that true.
+
+Assert: with a `setPanorama` that rejects for the HD URL only, `aria-pressed`
+returns to `"false"`, the button is re-enabled, `data-viewer-ready` stays
+`"true"`, and the status names the failure. The point is the invariant that the
+control describes the tier actually displayed, not merely that it does not
+throw.
+
+### T10 — leaving the viewer cancels work still in flight
+
+`src/components/trailwalk/TrailwalkViewer.client.ts`, the `Back to gallery`
+handler
+
+`destroyViewer()` on its own only cancels a load that has already built its
+viewer. A load still inside its dynamic import has nothing to destroy, so
+before the token bump it went on to construct a viewer and download a panorama
+— up to 42 MB on the HD tier — into a shell the reader had already left.
+Reproduced by holding the viewer chunk and pressing Back inside that window:
+the panorama was fetched, a canvas appeared in the hidden shell, and
+`data-viewer-ready` was set to `"true"`.
+
+Assert: with the viewer chunk delayed and Back pressed before it resolves, no
+panorama request is made, no canvas is created, and `data-viewer-ready` stays
+`"false"`. Assert the other half too, since a cancellation boundary is easy to
+make too wide: selecting again after Back must still load, and the HD
+preference must survive the round trip.
+
 ## Not covered here
 
 Real-device gyroscope behaviour needs a secure context and a physical sensor.
-It stays manual.
+It stays manual, and that now includes the default-on start.
+
+A headless browser can be made to answer the plugin's support probe by
+dispatching a synthetic `deviceorientation` event, and doing so does show the
+default-on path completing without a user gesture. It is not a test, though:
+headless Chromium also emits its own null-data `deviceorientation` event, and
+whichever arrives first wins, so the probe passes about four times in five. The
+race is in the harness, not in the code — both branches behave correctly, since
+a reading with no `alpha` is exactly the "no usable sensor" case the start is
+supposed to skip. What still cannot be observed here is the branch that
+matters most: whether a device requiring an explicit motion permission grants
+it outside a gesture. It does not, which is why the navbar control has to stay.
