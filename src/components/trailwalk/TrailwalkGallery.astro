@@ -1,0 +1,533 @@
+---
+import {
+    getTrailwalkMapsAction,
+    locationSourceLabels,
+    trailwalkGalleryItems,
+} from "../../data/trailwalkGallery";
+
+const assetBase = (
+    import.meta.env.TRAILWALK_ASSET_BASE_URL ??
+    import.meta.env.PUBLIC_TRAILWALK_ASSET_BASE_URL ??
+    import.meta.env.PUBLIC_TRAILWALK_ASSET_BASE ??
+    import.meta.env.PUBLIC_PORTFOLIO_MEDIA_BASE ??
+    ""
+).replace(/\/$/, "");
+const placeholderImage = "/assets/project-covers/trailwalk-shoreline.jpg";
+const assetUrl = (key: string) => (assetBase ? `${assetBase}/${key}` : `/${key}`);
+
+const galleryItems = trailwalkGalleryItems.map((item) => {
+    const mapsAction = getTrailwalkMapsAction(item);
+    const highlight = assetUrl(item.assets.highlight);
+    const highlight2x = item.assets.highlight2x
+        ? assetUrl(item.assets.highlight2x)
+        : undefined;
+    const poster = assetUrl(item.assets.poster);
+    const panorama = assetUrl(item.assets.panorama);
+
+    return {
+        ...item,
+        assets: {
+            highlight,
+            highlight2x,
+            poster,
+            panorama,
+            fallbackHighlight: placeholderImage,
+        },
+        coordinateLabel: "Approximate area only",
+        locationSourceLabel: locationSourceLabels[item.locationSource],
+        mapsAction,
+    };
+});
+---
+
+<section
+    class="trailwalk-gallery"
+    id="gallery"
+    aria-labelledby="trailwalk-gallery-title"
+    data-trailwalk-gallery
+>
+    <div class="trailwalk-gallery__inner">
+        <div class="trailwalk-gallery__heading">
+            <p class="section-kicker">Field Gallery</p>
+            <h2 id="trailwalk-gallery-title">See Trailwalk in action</h2>
+            <p>
+                Select a real field sample to open a draggable 360-degree trail
+                view.
+            </p>
+        </div>
+
+        <div class="trailwalk-gallery__grid" aria-label="Trailwalk field samples">
+            {
+                galleryItems.map((item) => (
+                    <a
+                        class="trailwalk-gallery__card"
+                        href={item.assets.poster}
+                        data-trailwalk-card
+                        data-trailwalk-id={item.id}
+                    >
+                        <span class="trailwalk-gallery__image-wrap">
+                            <img
+                                src={assetBase ? item.assets.highlight : placeholderImage}
+                                srcset={
+                                    assetBase && item.assets.highlight2x
+                                        ? `${item.assets.highlight2x} 2x`
+                                        : undefined
+                                }
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </span>
+                        <span class="trailwalk-gallery__card-body">
+                            <span class="trailwalk-gallery__card-meta">
+                                <span>{item.terrainTag}</span>
+                                <span>{item.capturedLabel}</span>
+                            </span>
+                            <span class="trailwalk-gallery__card-title">
+                                {item.title}
+                            </span>
+                            <span class="trailwalk-gallery__card-place">
+                                {item.shortPlace}
+                            </span>
+                        </span>
+                    </a>
+                ))
+            }
+        </div>
+
+        <section
+            class="trailwalk-viewer"
+            aria-live="polite"
+            aria-labelledby="trailwalk-viewer-title"
+            data-trailwalk-viewer-shell
+            hidden
+        >
+            <div class="trailwalk-viewer__bar">
+                <div>
+                    <p class="trailwalk-viewer__eyebrow">Selected 360 sample</p>
+                    <h3 id="trailwalk-viewer-title" data-trailwalk-viewer-title>
+                    </h3>
+                </div>
+                <div class="trailwalk-viewer__actions">
+                    <button type="button" data-trailwalk-back>
+                        Back to gallery
+                    </button>
+                    <button
+                        type="button"
+                        aria-expanded="false"
+                        data-trailwalk-details-toggle
+                    >
+                        Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="trailwalk-viewer__layout">
+                <div class="trailwalk-viewer__stage">
+                    <img
+                        class="trailwalk-viewer__poster"
+                        src={placeholderImage}
+                        alt=""
+                        data-trailwalk-poster
+                    />
+                    <div
+                        class="trailwalk-viewer__canvas"
+                        data-trailwalk-viewer
+                    >
+                    </div>
+                    <p class="trailwalk-viewer__status" data-trailwalk-status>
+                    </p>
+                </div>
+
+                <aside
+                    class="trailwalk-viewer__details"
+                    aria-label="Field details"
+                    data-trailwalk-details-panel
+                    hidden
+                >
+                </aside>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/json" data-trailwalk-gallery-data set:html={JSON.stringify(galleryItems)} />
+</section>
+
+<script>
+    import { initializeTrailwalkGallery } from "../trailwalk/TrailwalkViewer.client";
+
+    const root = document.querySelector("[data-trailwalk-gallery]");
+    const dataNode = root?.querySelector("[data-trailwalk-gallery-data]");
+
+    if (root instanceof HTMLElement && dataNode?.textContent) {
+        initializeTrailwalkGallery(root, JSON.parse(dataNode.textContent));
+    }
+</script>
+
+<style is:global>
+    .trailwalk-gallery {
+        padding: var(--tw-section-y) var(--tw-section-x);
+        background: var(--tw-bg);
+    }
+
+    .trailwalk-gallery__inner {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .trailwalk-gallery__heading {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.7fr);
+        gap: 56px;
+        margin-bottom: 44px;
+        padding-top: 46px;
+        border-top: 1px solid var(--tw-divider);
+    }
+
+    .trailwalk-gallery__heading .section-kicker {
+        grid-column: 1 / -1;
+        margin-bottom: -38px;
+    }
+
+    .trailwalk-gallery__heading h2 {
+        margin-bottom: 0;
+    }
+
+    .trailwalk-gallery__heading p:not(.section-kicker) {
+        align-self: end;
+        margin-bottom: 4px;
+        color: var(--tw-secondary);
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .trailwalk-gallery__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .trailwalk-gallery__card {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--tw-divider);
+        border-radius: 8px;
+        background: var(--tw-bg-alt);
+        color: var(--tw-text);
+        text-decoration: none;
+    }
+
+    .trailwalk-gallery__card:hover,
+    .trailwalk-gallery__card:focus-visible,
+    .trailwalk-gallery__card[aria-current="true"] {
+        border-color: rgba(46, 94, 62, 0.42);
+        color: var(--tw-text);
+        outline: none;
+    }
+
+    .trailwalk-gallery__card:focus-visible {
+        box-shadow: 0 0 0 3px rgba(46, 94, 62, 0.16);
+    }
+
+    .trailwalk-gallery__image-wrap {
+        display: block;
+        aspect-ratio: 1.75;
+        background:
+            linear-gradient(135deg, rgba(46, 94, 62, 0.14), rgba(59, 122, 138, 0.12)),
+            var(--tw-sand);
+    }
+
+    .trailwalk-gallery__image-wrap img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .trailwalk-gallery__card-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 8px;
+        padding: 18px;
+    }
+
+    .trailwalk-gallery__card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        color: var(--tw-lake);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.35;
+        text-transform: uppercase;
+    }
+
+    .trailwalk-gallery__card-title {
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 21px;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    .trailwalk-gallery__card-place {
+        margin-top: auto;
+        color: var(--tw-secondary);
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    .trailwalk-viewer {
+        grid-column: 1 / -1;
+        min-width: 0;
+        max-width: 100%;
+        margin-top: 34px;
+        overflow: hidden;
+        border: 1px solid var(--tw-divider);
+        border-radius: 8px;
+        background: var(--tw-bg-alt);
+        scroll-margin-top: 88px;
+    }
+
+    .trailwalk-viewer[hidden],
+    .trailwalk-viewer__details[hidden] {
+        display: none;
+    }
+
+    .trailwalk-viewer__bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--tw-divider);
+    }
+
+    .trailwalk-viewer__eyebrow {
+        margin-bottom: 5px;
+        color: var(--tw-lake);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .trailwalk-viewer h3 {
+        margin: 0;
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 25px;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .trailwalk-viewer__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .trailwalk-viewer__actions button {
+        min-height: 40px;
+        border: 1px solid var(--tw-divider);
+        border-radius: 999px;
+        background: var(--tw-bg);
+        color: var(--tw-forest);
+        cursor: pointer;
+        font: 700 13px/1 var(--tw-sans);
+        padding: 0 16px;
+    }
+
+    .trailwalk-viewer__actions button:hover,
+    .trailwalk-viewer__actions button:focus-visible {
+        border-color: rgba(46, 94, 62, 0.38);
+        outline: none;
+    }
+
+    .trailwalk-viewer__actions button[aria-expanded="true"] {
+        background: var(--tw-forest);
+        border-color: var(--tw-forest);
+        color: #fff;
+    }
+
+    .trailwalk-viewer__layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        min-width: 0;
+    }
+
+    .trailwalk-viewer__layout:has(.trailwalk-viewer__details:not([hidden])) {
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    }
+
+    .trailwalk-viewer__stage {
+        position: relative;
+        min-width: 0;
+        max-width: 100%;
+        min-height: 360px;
+        overflow: hidden;
+        background: #151711;
+        aspect-ratio: 16 / 9;
+    }
+
+    .trailwalk-viewer__poster,
+    .trailwalk-viewer__canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .trailwalk-viewer__poster {
+        object-fit: cover;
+        opacity: 1;
+        transition: opacity 180ms ease;
+    }
+
+    .trailwalk-viewer[data-viewer-ready="true"] .trailwalk-viewer__poster {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .trailwalk-viewer__canvas {
+        z-index: 1;
+    }
+
+    .trailwalk-viewer__canvas > *,
+    .trailwalk-viewer__canvas canvas {
+        max-width: 100%;
+    }
+
+    .trailwalk-viewer__status {
+        position: absolute;
+        left: 18px;
+        bottom: 16px;
+        z-index: 2;
+        max-width: min(420px, calc(100% - 36px));
+        margin: 0;
+        border-radius: 999px;
+        background: rgba(14, 31, 22, 0.78);
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 12px;
+        line-height: 1.45;
+        padding: 8px 12px;
+    }
+
+    .trailwalk-viewer__status:empty {
+        display: none;
+    }
+
+    .trailwalk-viewer__details {
+        padding: 22px;
+        border-left: 1px solid var(--tw-divider);
+        background: var(--tw-bg);
+    }
+
+    .trailwalk-viewer__details h4 {
+        margin: 0 0 18px;
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 22px;
+        font-weight: 500;
+    }
+
+    .trailwalk-viewer__details dl {
+        display: grid;
+        grid-template-columns: 120px minmax(0, 1fr);
+        gap: 12px 14px;
+        margin: 0;
+    }
+
+    .trailwalk-viewer__details dt {
+        color: var(--tw-tertiary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .trailwalk-viewer__details dd {
+        min-width: 0;
+        margin: 0;
+        color: var(--tw-secondary);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .trailwalk-viewer__map-link {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 20px;
+        color: var(--tw-forest);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 920px) {
+        .trailwalk-gallery__heading,
+        .trailwalk-gallery__grid,
+        .trailwalk-viewer__layout,
+        .trailwalk-viewer__layout:has(.trailwalk-viewer__details:not([hidden])) {
+            grid-template-columns: 1fr;
+        }
+
+        .trailwalk-gallery__heading {
+            gap: 18px;
+        }
+
+        .trailwalk-gallery__heading .section-kicker {
+            grid-column: auto;
+            margin-bottom: 0;
+        }
+
+        .trailwalk-viewer__details {
+            border-top: 1px solid var(--tw-divider);
+            border-left: 0;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .trailwalk-gallery__grid {
+            gap: 14px;
+        }
+
+        .trailwalk-viewer__bar {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .trailwalk-viewer__actions,
+        .trailwalk-viewer__actions button {
+            width: 100%;
+        }
+
+        .trailwalk-viewer__stage {
+            width: 100%;
+            min-height: 260px;
+            aspect-ratio: 4 / 3;
+        }
+
+        .trailwalk-viewer__details dl {
+            grid-template-columns: 1fr;
+            gap: 5px 0;
+        }
+
+        .trailwalk-viewer__details dd {
+            margin-bottom: 10px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .trailwalk-viewer__poster {
+            transition: none;
+        }
+    }
+</style>
