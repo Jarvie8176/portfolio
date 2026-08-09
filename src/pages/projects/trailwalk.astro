@@ -224,28 +224,44 @@ const faqs = [
             </section>
 
             <section class="problem-section" id="problem">
-                <div class="text-column">
-                    <h2>Being separated from the outdoors is a shared experience</h2>
-                    <p class="body-copy">
-                        For some, getting outdoors takes support: age, mobility,
-                        recovery, energy, or the realities of care settings. For
-                        others, the barrier comes with the season: winter,
-                        storms, smoke, or unsafe trail conditions. And sometimes
-                        the places that matter are simply too far away to return
-                        to often.
-                    </p>
-                    <p class="body-copy">
-                        My mother and grandmother love being outdoors too. But
-                        in their 60s and 80s, a long trip to visit the trails
-                        here in BC is not always a realistic option.
-                    </p>
-                    <p class="pull-quote">
-                        Unlike VR walking games or generated worlds, Trailwalk
-                        starts with real places: spatial outdoor sound and
-                        immersive 360-degree capture that help people stay
-                        connected to trails at a pace and posture that works for
-                        them.
-                    </p>
+                <div class="problem-inner">
+                    <div class="text-column">
+                        <h2>
+                            Being separated from the outdoors is a shared
+                            experience
+                        </h2>
+                        <p class="body-copy">
+                            For some, getting outdoors takes support: age,
+                            mobility, recovery, energy, or the realities of care
+                            settings. For others, the barrier comes with the
+                            season: winter, storms, smoke, or unsafe trail
+                            conditions. And sometimes the places that matter are
+                            simply too far away to return to often.
+                        </p>
+                        <p class="body-copy">
+                            My mother and grandmother love being outdoors too.
+                            But in their 60s and 80s, a long trip to visit the
+                            trails here in BC is not always a realistic option.
+                        </p>
+                        <p class="pull-quote">
+                            Unlike VR walking games or generated worlds,
+                            Trailwalk starts with real places: spatial outdoor
+                            sound and immersive 360-degree capture that help
+                            people stay connected to trails at a pace and
+                            posture that works for them.
+                        </p>
+                    </div>
+                    <figure class="problem-photo">
+                        <img
+                            src="/assets/project-covers/trailwalk-family-outdoors.webp"
+                            width="1200"
+                            height="1432"
+                            alt="Two older family members visiting a forest canopy walkway in BC"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                        <figcaption>Family visit in BC, 2023</figcaption>
+                    </figure>
                 </div>
             </section>
 
@@ -856,6 +872,37 @@ const faqs = [
         max-width: 660px;
     }
 
+    .problem-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 0.98fr) minmax(320px, 0.72fr);
+        gap: clamp(36px, 5vw, 72px);
+        max-width: 1100px;
+        margin: 0 auto;
+        align-items: center;
+    }
+
+    .problem-photo {
+        margin: 0;
+    }
+
+    .problem-photo img {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 620px;
+        border-radius: 8px;
+        object-fit: cover;
+        object-position: center;
+        box-shadow: 0 20px 48px rgba(31, 35, 29, 0.12);
+    }
+
+    .problem-photo figcaption {
+        margin-top: 12px;
+        color: var(--tw-tertiary);
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
     .wide-column {
         max-width: 1100px;
         margin: 0 auto;
@@ -1283,10 +1330,15 @@ const faqs = [
         }
 
         .experience-grid,
+        .problem-inner,
         .origin-inner,
         .audience-grid {
             grid-template-columns: 1fr;
             gap: 28px;
+        }
+
+        .problem-photo {
+            max-width: 520px;
         }
 
         .button {
