@@ -2,12 +2,13 @@
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
 import { deployment, displayHost } from "../../data/site";
 
-// Updates can be injected at build time; see src/data/site.ts. Founder contact
-// links remain stable in uninjected builds.
+// Development links can be injected at build time; see src/data/site.ts.
+// Founder contact and Patreon links remain stable in uninjected builds.
 const updateHref = deployment.updatesUrl;
 const updateLabel = displayHost(updateHref);
 const founderLinksHref = "https://fnpg.me/";
 const founderLinkedInHref = "https://www.linkedin.com/in/jiawei-kong-235a4254";
+const patreonHref = "https://www.patreon.com/cw/fnpg";
 const shorelineTrailHref =
     "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
 const saintAnthonyViewHref =
@@ -175,11 +176,14 @@ const faqs = [
                         been separated from the outdoors.
                     </p>
                     <div class="hero-actions" aria-label="Trailwalk actions">
-                        {updateHref && (
-                            <a class="button button-light" href={updateHref}>
-                                Stay Updated
-                            </a>
-                        )}
+                        <a
+                            class="button button-light"
+                            href={patreonHref}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Stay Updated
+                        </a>
                         <a
                             class="button button-ghost"
                             href={founderLinksHref}
@@ -371,7 +375,7 @@ const faqs = [
                     <div class="loop-actions" aria-label="Trailwalk updates">
                         <a
                             class="button button-light"
-                            href={founderLinksHref}
+                            href={patreonHref}
                             target="_blank"
                             rel="noreferrer"
                         >
@@ -385,8 +389,8 @@ const faqs = [
                     </div>
                     <p class="fine-print">
                         {updateLabel
-                            ? `Follow ${updateLabel} for development notes.`
-                            : "Development notes and updates are published as the prototype progresses."}
+                            ? `Follow Patreon for project updates, or ${updateLabel} for development notes.`
+                            : "Follow Patreon for project updates as the prototype progresses."}
                     </p>
                 </div>
             </section>
