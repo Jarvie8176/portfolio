@@ -245,6 +245,38 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
     </div>
 
     <script type="application/json" data-trailwalk-gallery-data set:html={serializeGalleryData(publicPayload)} />
+    <script is:inline>
+        (() => {
+            const script = document.currentScript;
+            const root = script?.closest("[data-trailwalk-gallery]");
+
+            root?.addEventListener(
+                "click",
+                (event) => {
+                    const target = event.target;
+                    const card =
+                        target instanceof Element
+                            ? target.closest("[data-trailwalk-card]")
+                            : null;
+
+                    if (
+                        !card ||
+                        event.defaultPrevented ||
+                        event.button !== 0 ||
+                        event.metaKey ||
+                        event.ctrlKey ||
+                        event.shiftKey ||
+                        event.altKey
+                    ) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                },
+                { capture: true },
+            );
+        })();
+    </script>
 </section>
 
 <script>
