@@ -4,6 +4,10 @@ This repository has no test runner. Nothing here runs; this file is a stub that
 records which behaviours are currently unverified and what each one should
 assert, so the gaps are visible in review instead of implied.
 
+`browser/` holds the checks that were actually used by hand. They are not wired
+to anything and are not a runner — they are the scripts a runner would wrap, and
+several of the gaps below are half-covered by one of them today.
+
 Every item below was checked by hand once during the Trailwalk gallery review.
 A manual check is not a guard: none of these would fail visibly if the code
 regressed, and several protect a property that is only observable in production.
