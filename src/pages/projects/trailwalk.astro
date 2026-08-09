@@ -2,13 +2,16 @@
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
 import { deployment, displayHost } from "../../data/site";
 
-// Development links can be injected at build time; see src/data/site.ts.
-// Founder contact and Patreon links remain stable in uninjected builds.
+// Email and development links can be injected at build time; see src/data/site.ts.
+// Founder contact links remain stable in uninjected builds.
+const contactEmail = deployment.contactEmail;
+const updatesEmailHref = contactEmail
+    ? `mailto:${contactEmail}?subject=Trailwalk%20updates`
+    : undefined;
 const updateHref = deployment.updatesUrl;
 const updateLabel = displayHost(updateHref);
 const founderLinksHref = "https://fnpg.me/";
 const founderLinkedInHref = "https://www.linkedin.com/in/jiawei-kong-235a4254";
-const patreonHref = "https://www.patreon.com/cw/fnpg";
 const shorelineTrailHref =
     "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
 const saintAnthonyViewHref =
@@ -22,7 +25,7 @@ const navItems = [
     { href: "#audience", label: "Who It Helps" },
     { href: "#faq", label: "FAQ" },
     { href: "#contact", label: "Contact" },
-    { href: "#stay-in-the-loop", label: "Stay Updated" },
+    { href: "#stay-in-the-loop", label: "Request Updates" },
 ];
 
 const experienceItems = [
@@ -184,14 +187,14 @@ const faqs = [
                         been separated from the outdoors.
                     </p>
                     <div class="hero-actions" aria-label="Trailwalk actions">
-                        <a
-                            class="button button-light"
-                            href={patreonHref}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            Stay Updated
-                        </a>
+                        {updatesEmailHref && (
+                            <a
+                                class="button button-light"
+                                href={updatesEmailHref}
+                            >
+                                Request updates
+                            </a>
+                        )}
                         <a
                             class="button button-ghost"
                             href={founderLinksHref}
@@ -384,14 +387,14 @@ const faqs = [
                         community updates.
                     </p>
                     <div class="loop-actions" aria-label="Trailwalk updates">
-                        <a
-                            class="button button-light"
-                            href={patreonHref}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            Request updates
-                        </a>
+                        {updatesEmailHref && (
+                            <a
+                                class="button button-light"
+                                href={updatesEmailHref}
+                            >
+                                Request updates
+                            </a>
+                        )}
                         {updateHref && (
                             <a class="button button-ghost" href={updateHref}>
                                 See development in action
@@ -399,9 +402,13 @@ const faqs = [
                         )}
                     </div>
                     <p class="fine-print">
-                        {updateLabel
-                            ? `Follow Patreon for project updates, or ${updateLabel} for development notes.`
-                            : "Follow Patreon for project updates as the prototype progresses."}
+                        {contactEmail && updateLabel
+                            ? `Email us for updates, or follow ${updateLabel} for development notes.`
+                            : contactEmail
+                              ? "Email us to request updates as the prototype progresses."
+                              : updateLabel
+                                ? `Follow ${updateLabel} for development notes.`
+                                : "Development notes and updates are published as the prototype progresses."}
                     </p>
                 </div>
             </section>
