@@ -21,7 +21,7 @@ const navItems = [
     { href: "#origin", label: "Origin Story" },
     { href: "#gallery", label: "Gallery" },
     { href: "#experience", label: "The Experience" },
-    { href: "#audience", label: "Staying Connected" },
+    { href: "#audience", label: "Who It Helps" },
     { href: "#faq", label: "FAQ" },
     { href: "#contact", label: "Contact" },
     { href: "#stay-in-the-loop", label: "Stay Updated" },
@@ -127,7 +127,10 @@ const faqs = [
                 {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
             </nav>
             <details class="mobile-nav">
-                <summary>Sections</summary>
+                <summary aria-label="Trailwalk sections">
+                    <span class="mobile-nav__icon" aria-hidden="true"></span>
+                    <span class="sr-only">Sections</span>
+                </summary>
                 <nav aria-label="Trailwalk mobile sections">
                     {
                         navItems.map((item) => (
@@ -285,7 +288,7 @@ const faqs = [
 
             <section class="audience-section" id="audience">
                 <div class="wide-column">
-                    <h2>Staying connected to real places</h2>
+                    <h2>Who Trailwalk helps</h2>
                     <div class="audience-grid">
                         {
                             audiences.map((audience) => (
@@ -488,6 +491,17 @@ const faqs = [
 
     .mobile-nav {
         display: none;
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
     }
 
     .hero {
@@ -1041,36 +1055,63 @@ const faqs = [
         .mobile-nav summary {
             display: inline-flex;
             min-height: 38px;
+            width: 42px;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 8px 14px;
+            padding: 0;
             border: 1px solid var(--tw-divider);
             border-radius: 999px;
             background: rgba(248, 245, 239, 0.9);
             color: var(--tw-secondary);
             cursor: pointer;
-            font-size: 11px;
-            font-weight: 700;
-            line-height: 1;
             list-style: none;
-            text-transform: uppercase;
         }
 
         .mobile-nav summary::-webkit-details-marker {
             display: none;
         }
 
-        .mobile-nav summary::after {
-            content: "+";
-            color: var(--tw-lake);
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 0.9;
+        .mobile-nav__icon,
+        .mobile-nav__icon::before,
+        .mobile-nav__icon::after {
+            display: block;
+            width: 16px;
+            height: 2px;
+            border-radius: 999px;
+            background: var(--tw-lake);
         }
 
-        .mobile-nav[open] summary::after {
-            content: "-";
+        .mobile-nav__icon {
+            position: relative;
+        }
+
+        .mobile-nav__icon::before,
+        .mobile-nav__icon::after {
+            content: "";
+            position: absolute;
+            left: 0;
+        }
+
+        .mobile-nav__icon::before {
+            top: -5px;
+        }
+
+        .mobile-nav__icon::after {
+            top: 5px;
+        }
+
+        .mobile-nav[open] .mobile-nav__icon {
+            background: transparent;
+        }
+
+        .mobile-nav[open] .mobile-nav__icon::before {
+            top: 0;
+            transform: rotate(45deg);
+        }
+
+        .mobile-nav[open] .mobile-nav__icon::after {
+            top: 0;
+            transform: rotate(-45deg);
         }
 
         .mobile-nav nav {
