@@ -30,26 +30,57 @@ const experienceItems = [
     {
         number: "03",
         title: "At Your Own Pace",
-        body: "Walk with support, sit comfortably, or use a wheelchair. Every session adapts as you walk.",
+        body: "Walk with support, sit comfortably, or use a wheelchair. Built for different paces and ways of moving.",
     },
 ];
 
 const audiences = [
     {
-        title: "Older Adults",
-        body: "Reconnect with outdoor places from home or community settings, safely and at your own comfort level.",
+        title: "When getting outdoors takes support",
+        body: "For people whose age, recovery, mobility, energy, or support needs make outdoor trails harder to reach.",
     },
     {
-        title: "People with Mobility Challenges",
-        body: "Experience trails that would be physically inaccessible, at your own pace.",
+        title: "When care happens indoors",
+        body: "Bring real outdoor places into homes, care settings, and shared community spaces.",
     },
     {
-        title: "Caregivers & Families",
-        body: "Share a meaningful, low-stress outdoor experience with someone you care for.",
+        title: "When weather closes the trail",
+        body: "Stay connected to familiar paths through winter, storms, smoke, or unsafe conditions.",
     },
     {
-        title: "Community Partners",
-        body: "Recreation centers, accessibility organizations, and senior programs can bring immersive nature walks to the people they serve.",
+        title: "When distance gets in the way",
+        body: "Return to real places when time, geography, or circumstance makes going back difficult.",
+    },
+    {
+        title: "For shared walks",
+        body: "Give families, caregivers, and friends a calmer way to experience outdoor places together.",
+    },
+    {
+        title: "For community programs",
+        body: "Help recreation, accessibility, and senior programs offer real nature-based experiences indoors.",
+    },
+];
+
+const faqs = [
+    {
+        question: "Does this replace going outside?",
+        answer: "No. Trailwalk encourages outdoor access whenever it is possible. It helps people stay connected to outdoor places when going outside is hard, unsafe, or not possible.",
+    },
+    {
+        question: "How is this different from 360 videos online?",
+        answer: "Sound. Each trail is recorded on location in spatial audio, carrying the soundscape captured on that trail.",
+    },
+    {
+        question: "Do I have to be able to walk?",
+        answer: "No. Walk with support, sit comfortably, or use a wheelchair.",
+    },
+    {
+        question: "Where are the trails?",
+        answer: "Real trails walked and captured across Canada: from Metro Vancouver, BC to Gros Morne and the Newfoundland coast, and Cape Breton Island, NS.",
+    },
+    {
+        question: "Can I try it now?",
+        answer: "Trailwalk is at concept stage with a working technical demo. Get in touch and we'll include you when demo sessions open.",
     },
 ];
 ---
@@ -62,7 +93,7 @@ const audiences = [
         <title>Trailwalk — Walking in Nature is not a privilege</title>
         <meta
             name="description"
-            content="Trailwalk brings real outdoor trails into safe indoor settings through immersive 360-degree trail walks and spatial outdoor sound."
+            content="Trailwalk helps people stay connected to real outdoor places through immersive 360-degree trail walks and spatial outdoor sound."
         />
         <meta
             property="og:title"
@@ -90,7 +121,8 @@ const audiences = [
                 <a href="#origin">Origin Story</a>
                 <a href="#gallery">Gallery</a>
                 <a href="#experience">The Experience</a>
-                <a href="#audience">Who It's For</a>
+                <a href="#audience">Staying Connected</a>
+                <a href="#faq">FAQ</a>
                 <a href="#contact">Contact</a>
                 <a href="#stay-in-the-loop">Stay Updated</a>
             </nav>
@@ -152,20 +184,21 @@ const audiences = [
 
             <section class="problem-section" id="problem">
                 <div class="text-column">
-                    <h2>Many people can't simply go outside</h2>
+                    <h2>Being separated from the outdoors is a shared experience</h2>
                     <p class="body-copy">
-                        For millions of older adults, people with mobility
-                        challenges, and those in care settings, stepping onto a
-                        forest trail can become a complex decision. Weather,
-                        distance, terrain, physical limitations, and safety
-                        concerns keep people indoors: separated from the natural
-                        places that sustain wellbeing, memory, and connection.
+                        For some, getting outdoors takes support: age, mobility,
+                        recovery, energy, or the realities of care settings. For
+                        others, the barrier comes with the season: winter,
+                        storms, smoke, or unsafe trail conditions. And sometimes
+                        the places that matter are simply too far away to return
+                        to often.
                     </p>
                     <p class="pull-quote">
-                        Unlike VR walking games or generated outdoor worlds,
-                        Trailwalk starts with real places: immersive 360-degree
-                        capture and spatial outdoor sound that reconnect people
-                        with trails at a pace and posture that works for them.
+                        Unlike VR walking games or generated worlds, Trailwalk
+                        starts with real places: spatial outdoor sound and
+                        immersive 360-degree capture that help people stay
+                        connected to trails at a pace and posture that works for
+                        them.
                     </p>
                 </div>
             </section>
@@ -242,7 +275,7 @@ const audiences = [
 
             <section class="audience-section" id="audience">
                 <div class="wide-column">
-                    <h2>Built with and for</h2>
+                    <h2>Staying connected to real places</h2>
                     <div class="audience-grid">
                         {
                             audiences.map((audience) => (
@@ -250,6 +283,22 @@ const audiences = [
                                     <h3>{audience.title}</h3>
                                     <p>{audience.body}</p>
                                 </article>
+                            ))
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <section class="faq-section" id="faq">
+                <div class="wide-column">
+                    <h2>Questions people ask</h2>
+                    <div class="faq-list">
+                        {
+                            faqs.map((faq) => (
+                                <details class="faq-item">
+                                    <summary>{faq.question}</summary>
+                                    <p>{faq.answer}</p>
+                                </details>
                             ))
                         }
                     </div>
@@ -312,7 +361,7 @@ const audiences = [
                     </div>
                     <p class="fine-print">
                         {contactEmail && updateLabel
-                            ? `Email us for updates, or visit ${updateLabel} to follow development notes.`
+                            ? `Email us for updates, or follow ${updateLabel} for development notes.`
                             : "Development notes and updates are published as the prototype progresses."}
                     </p>
                 </div>
@@ -563,6 +612,7 @@ const audiences = [
     .problem-section,
     .origin-section,
     .experience-section,
+    .faq-section,
     .contact-section {
         padding: var(--tw-section-y) var(--tw-section-x);
         background: var(--tw-bg);
@@ -666,7 +716,8 @@ const audiences = [
     }
 
     .experience-section h2,
-    .audience-section h2 {
+    .audience-section h2,
+    .faq-section h2 {
         margin-bottom: 72px;
     }
 
@@ -738,6 +789,60 @@ const audiences = [
 
     .audience-card h3 {
         margin-bottom: 10px;
+    }
+
+    .faq-section {
+        padding-top: calc(var(--tw-section-y) * 0.85);
+    }
+
+    .faq-list {
+        border-top: 1px solid var(--tw-divider);
+    }
+
+    .faq-item {
+        border-bottom: 1px solid var(--tw-divider);
+    }
+
+    .faq-item summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 76px;
+        color: var(--tw-text);
+        cursor: pointer;
+        font-family: var(--tw-serif);
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.25;
+        list-style: none;
+        text-wrap: balance;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq-item summary::after {
+        content: "+";
+        flex: 0 0 auto;
+        color: var(--tw-lake);
+        font-family: var(--tw-sans);
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1;
+    }
+
+    .faq-item[open] summary::after {
+        content: "-";
+    }
+
+    .faq-item p {
+        max-width: 680px;
+        margin: -6px 0 28px;
+        color: var(--tw-secondary);
+        font-size: 16px;
+        line-height: 1.75;
     }
 
     .contact-card {
@@ -896,8 +1001,13 @@ const audiences = [
         }
 
         .feature h3,
-        .audience-card h3 {
+        .audience-card h3,
+        .faq-item summary {
             font-size: 20px;
+        }
+
+        .faq-section h2 {
+            margin-bottom: 40px;
         }
 
         .loop-inner h2 {
