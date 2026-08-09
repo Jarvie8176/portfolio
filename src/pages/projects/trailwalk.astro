@@ -2,15 +2,12 @@
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
 import { deployment, displayHost } from "../../data/site";
 
-// Injected at build time; see src/data/site.ts. Absent in an uninjected build,
-// so every use below is conditional and the page degrades to having no contact
-// or updates affordance rather than to a placeholder address.
-const contactEmail = deployment.contactEmail;
-const contactHref = contactEmail
-    ? `mailto:${contactEmail}?subject=Trailwalk%20contact`
-    : undefined;
+// Updates can be injected at build time; see src/data/site.ts. Founder contact
+// links remain stable in uninjected builds.
 const updateHref = deployment.updatesUrl;
 const updateLabel = displayHost(updateHref);
+const founderLinksHref = "https://fnpg.me/";
+const founderLinkedInHref = "https://www.linkedin.com/in/jiawei-kong-235a4254";
 const shorelineTrailHref =
     "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
 const saintAnthonyViewHref =
@@ -183,11 +180,14 @@ const faqs = [
                                 Stay Updated
                             </a>
                         )}
-                        {contactHref && (
-                            <a class="button button-ghost" href={contactHref}>
-                                Get in Touch
-                            </a>
-                        )}
+                        <a
+                            class="button button-ghost"
+                            href={founderLinksHref}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Get in Touch
+                        </a>
                     </div>
                 </div>
             </section>
@@ -324,12 +324,24 @@ const faqs = [
                         and anyone generally interested in accessible nature to
                         shape what the product becomes next.
                     </p>
-                    {contactHref && (
-                        <a class="button button-primary" href={contactHref}>
-                            Contact Us <span aria-hidden="true">→</span>
+                    <div class="contact-actions">
+                        <a
+                            class="button button-primary"
+                            href={founderLinksHref}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Founder links <span aria-hidden="true">→</span>
                         </a>
-                    )}
-                    {contactEmail && <p class="email-note">{contactEmail}</p>}
+                        <a
+                            class="button button-secondary"
+                            href={founderLinkedInHref}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            LinkedIn <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
                 </div>
             </section>
 
@@ -357,11 +369,14 @@ const faqs = [
                         community updates.
                     </p>
                     <div class="loop-actions" aria-label="Trailwalk updates">
-                        {contactHref && (
-                            <a class="button button-light" href={contactHref}>
-                                Request updates
-                            </a>
-                        )}
+                        <a
+                            class="button button-light"
+                            href={founderLinksHref}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Request updates
+                        </a>
                         {updateHref && (
                             <a class="button button-ghost" href={updateHref}>
                                 See development in action
@@ -369,8 +384,8 @@ const faqs = [
                         )}
                     </div>
                     <p class="fine-print">
-                        {contactEmail && updateLabel
-                            ? `Email us for updates, or follow ${updateLabel} for development notes.`
+                        {updateLabel
+                            ? `Follow ${updateLabel} for development notes.`
                             : "Development notes and updates are published as the prototype progresses."}
                     </p>
                 </div>
@@ -892,10 +907,25 @@ const faqs = [
         color: #fff;
     }
 
-    .email-note {
-        margin: 16px 0 0;
-        color: var(--tw-tertiary);
-        font-size: 14px;
+    .button-secondary {
+        min-height: 54px;
+        padding: 16px 32px;
+        border: 1px solid var(--tw-divider);
+        background: transparent;
+        color: var(--tw-forest);
+        font-size: 16px;
+    }
+
+    .button-secondary:hover {
+        border-color: rgba(46, 94, 62, 0.42);
+        color: var(--tw-forest-hover);
+    }
+
+    .contact-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
     }
 
     .partner-note {
