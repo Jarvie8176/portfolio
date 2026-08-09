@@ -202,6 +202,9 @@ const faqs = [
                         </a>
                     </div>
                 </div>
+                <p class="hero-footnote">
+                    Photo: Lone Shieling Loop, Pleasant Bay, NS
+                </p>
             </section>
 
             <section class="problem-section" id="problem">
@@ -621,6 +624,21 @@ const faqs = [
         position: relative;
         z-index: 1;
         max-width: 780px;
+    }
+
+    .hero-footnote {
+        position: absolute;
+        right: var(--tw-section-x);
+        bottom: 26px;
+        z-index: 1;
+        max-width: min(420px, calc(100% - (var(--tw-section-x) * 2)));
+        margin: 0;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0;
+        line-height: 1.35;
+        text-align: right;
     }
 
     h1,
@@ -1211,6 +1229,15 @@ const faqs = [
 
         .hero {
             min-height: 88svh;
+            padding-bottom: 72px;
+        }
+
+        .hero-footnote {
+            right: auto;
+            bottom: 20px;
+            left: 12px;
+            max-width: calc(100% - 24px);
+            text-align: left;
         }
 
         h1 {
