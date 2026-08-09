@@ -1118,68 +1118,12 @@ const faqs = [
         position: relative;
         overflow: hidden;
         padding: var(--tw-section-y) var(--tw-section-x);
-        background:
-            linear-gradient(
-                112deg,
-                rgba(35, 70, 50, 0.78) 0%,
-                rgba(35, 70, 50, 0.34) 18%,
-                transparent 18%,
-                transparent 100%
-            ),
-            linear-gradient(
-                292deg,
-                rgba(31, 106, 132, 0.42) 0%,
-                rgba(31, 106, 132, 0.22) 20%,
-                transparent 20%,
-                transparent 100%
-            ),
-            var(--tw-dark);
-    }
-
-    .loop-section::before {
-        position: absolute;
-        inset: -18% -10%;
-        background:
-            linear-gradient(
-                124deg,
-                transparent 0%,
-                transparent 23%,
-                rgba(235, 222, 196, 0.1) 23%,
-                rgba(235, 222, 196, 0.1) 33%,
-                transparent 33%,
-                transparent 100%
-            ),
-            linear-gradient(
-                124deg,
-                transparent 0%,
-                transparent 47%,
-                rgba(91, 130, 80, 0.16) 47%,
-                rgba(91, 130, 80, 0.16) 61%,
-                transparent 61%,
-                transparent 100%
-            ),
-            linear-gradient(
-                304deg,
-                transparent 0%,
-                transparent 34%,
-                rgba(95, 143, 158, 0.12) 34%,
-                rgba(95, 143, 158, 0.12) 47%,
-                transparent 47%,
-                transparent 100%
-            );
-        content: "";
-        pointer-events: none;
-        transform: translateX(-4%);
-    }
-
-    .loop-contours {
-        z-index: 1;
-        opacity: 0.78;
+        background: var(--tw-dark);
     }
 
     .loop-inner {
         position: relative;
-        z-index: 2;
+        z-index: 1;
         max-width: 620px;
         margin: 0 auto;
         text-align: center;
