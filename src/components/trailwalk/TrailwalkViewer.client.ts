@@ -210,6 +210,16 @@ export const initializeTrailwalkGallery = (
         );
     };
 
+    cards.forEach((card) => {
+        const fallbackHref = card.getAttribute("href");
+
+        if (fallbackHref) {
+            card.dataset.trailwalkFallbackHref = fallbackHref;
+        }
+
+        card.setAttribute("href", "#trailwalk-viewer-title");
+    });
+
     const setBusy = (value: boolean) => {
         busy = value;
         syncHdControl();
@@ -452,8 +462,10 @@ export const initializeTrailwalkGallery = (
 
     cards.forEach((card) => {
         card.addEventListener("click", (event) => {
-            // Leave modified and non-primary clicks to the browser so the card
-            // can still be opened in a new tab or window.
+            // Leave modified and non-primary clicks to the browser. In the
+            // enhanced UI the href has already been rewritten to the in-page
+            // viewer target, so even an unhandled modified click stays on this
+            // page instead of opening the poster image.
             if (
                 event.button !== 0 ||
                 event.metaKey ||
@@ -464,6 +476,8 @@ export const initializeTrailwalkGallery = (
                 return;
             }
 
+            event.preventDefault();
+
             const id = card.dataset.trailwalkId;
             const item = id ? itemsById.get(id) : undefined;
 
@@ -471,9 +485,8 @@ export const initializeTrailwalkGallery = (
                 return;
             }
 
-            event.preventDefault();
             void selectItem(item, card);
-        });
+        }, { capture: true });
     });
 
     hdToggle.addEventListener("click", () => {
