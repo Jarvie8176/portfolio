@@ -116,8 +116,16 @@ const faqs = [
     </head>
     <body>
         <div class="accent-bar" aria-hidden="true"></div>
-        <header class="page-nav" aria-label="Trailwalk sections">
-            <a class="nav-brand" href="#hero">Trailwalk</a>
+        <header class="page-nav" aria-label="Trailwalk navigation">
+            <div class="nav-identity">
+                <a class="nav-home" href="/" aria-label="Back to portfolio home">
+                    <span aria-hidden="true">←</span>
+                    <span>Portfolio</span>
+                </a>
+                <a class="nav-brand" href="#hero" aria-current="page">
+                    Trailwalk
+                </a>
+            </div>
             <nav class="page-nav__links">
                 {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
             </nav>
@@ -477,7 +485,40 @@ const faqs = [
         backdrop-filter: blur(16px);
     }
 
+    .nav-identity {
+        display: inline-flex;
+        min-width: 0;
+        align-items: center;
+        gap: 12px;
+        white-space: nowrap;
+    }
+
+    .nav-home {
+        order: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--tw-tertiary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .nav-home:hover {
+        color: var(--tw-forest);
+    }
+
+    .nav-identity::after {
+        order: 1;
+        width: 1px;
+        height: 20px;
+        background: var(--tw-divider);
+        content: "";
+    }
+
     .nav-brand {
+        order: 2;
         color: var(--tw-text);
         font-family: var(--tw-serif);
         font-size: 18px;
