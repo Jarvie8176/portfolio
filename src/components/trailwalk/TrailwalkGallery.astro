@@ -260,7 +260,7 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
 
 <style is:global>
     .trailwalk-gallery {
-        padding: var(--tw-section-y) var(--tw-section-x);
+        padding: clamp(44px, 5vw, 72px) var(--tw-section-x) var(--tw-section-y);
         background: var(--tw-bg);
         scroll-margin-top: 88px;
     }
@@ -275,8 +275,7 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
         grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.7fr);
         gap: 56px;
         margin-bottom: 44px;
-        padding-top: 46px;
-        border-top: 1px solid var(--tw-divider);
+        padding-top: 0;
     }
 
     .trailwalk-gallery__heading .section-kicker {
