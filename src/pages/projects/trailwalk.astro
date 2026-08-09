@@ -68,15 +68,11 @@ const faqs = [
     },
     {
         question: "How is this different from 360 videos online?",
-        answer: "Sound. Each trail is recorded on location in spatial audio, carrying the soundscape captured on that trail.",
+        answer: "Trailwalk combines high-quality spatial audio, community trails that local people walk every day, and playback that can follow your walking speed.",
     },
     {
         question: "Do I have to be able to walk?",
-        answer: "No. Walk with support, sit comfortably, or use a wheelchair.",
-    },
-    {
-        question: "Where are the trails?",
-        answer: "Real trails walked and captured across Canada: from Metro Vancouver, BC to Gros Morne and the Newfoundland coast, and Cape Breton Island, NS.",
+        answer: "No. Walk with support, sit comfortably, use a wheelchair, or control playback manually. We hope the experience feels atmospheric and meditative, not demanding.",
     },
     {
         question: "Can I try it now?",
@@ -458,6 +454,7 @@ const faqs = [
 
     .page-nav nav {
         display: flex;
+        min-width: 0;
         flex-wrap: wrap;
         justify-content: flex-end;
         gap: clamp(12px, 1.8vw, 28px);
@@ -962,21 +959,69 @@ const faqs = [
         font-size: 12px;
     }
 
+    @media (max-width: 1080px) {
+        .page-nav {
+            gap: 18px;
+            padding-right: clamp(20px, 4vw, 56px);
+            padding-left: clamp(20px, 4vw, 56px);
+        }
+
+        .nav-brand {
+            flex: 0 0 auto;
+        }
+
+        .page-nav nav {
+            flex: 1 1 auto;
+            flex-wrap: nowrap;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+            scroll-padding-inline: clamp(20px, 4vw, 56px);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page-nav nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .page-nav nav a {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+    }
+
     @media (max-width: 760px) {
         .page-nav {
-            position: static;
-            align-items: flex-start;
-            flex-direction: column;
-            padding-top: 18px;
-            padding-bottom: 18px;
+            position: sticky;
+            align-items: center;
+            gap: 12px;
+            min-height: 0;
+            padding: 10px 12px;
+            overflow: hidden;
         }
 
         body {
             zoom: 1;
         }
 
+        .nav-brand {
+            font-size: 16px;
+        }
+
         .page-nav nav {
-            justify-content: flex-start;
+            gap: 8px;
+            padding: 0 2px 2px 0;
+        }
+
+        .page-nav nav a {
+            padding: 8px 11px;
+            border: 1px solid var(--tw-divider);
+            border-radius: 999px;
+            background: rgba(248, 245, 239, 0.86);
+            color: var(--tw-secondary);
+            font-size: 11px;
+            line-height: 1;
         }
 
         .hero {
