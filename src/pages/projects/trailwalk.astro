@@ -29,17 +29,14 @@ const navItems = [
 
 const experienceItems = [
     {
-        number: "01",
         title: "Real Trails, Coast to Coast",
         body: "From the Pacific coast to the Easternmost Point of Canada, we have walked and captured terabytes of high-fidelity walking experiences across Metro Vancouver, BC, Cape Spear, NL, Gros Morne National Park, NL, Cape Breton Island, NS, and more.",
     },
     {
-        number: "02",
         title: "The Sound of Being There",
         body: "Birds, water, wind, footsteps: recorded in spatial audio so the world feels present around you.",
     },
     {
-        number: "03",
         title: "At Your Own Pace",
         body: "Walk with support, sit comfortably, or use a wheelchair. Built for different paces and ways of moving.",
     },
@@ -275,7 +272,6 @@ const faqs = [
                         {
                             experienceItems.map((item) => (
                                 <article class="feature">
-                                    <span>{item.number}</span>
                                     <div aria-hidden="true" />
                                     <h3>{item.title}</h3>
                                     <p>{item.body}</p>
@@ -522,7 +518,7 @@ const faqs = [
     }
 
     .hero-photo {
-        background-image: url("/assets/project-covers/trailwalk-forest-path.webp");
+        background-image: url("/assets/project-covers/trailwalk-hero-background.webp");
         background-position: center;
         background-size: cover;
         filter: saturate(0.95) contrast(0.96);
@@ -760,13 +756,6 @@ const faqs = [
         display: flex;
         flex-direction: column;
         gap: 14px;
-    }
-
-    .feature span {
-        color: var(--tw-lake);
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0;
     }
 
     .feature div {
