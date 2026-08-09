@@ -2,13 +2,16 @@
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
 import { deployment, displayHost } from "../../data/site";
 
-// Development links can be injected at build time; see src/data/site.ts.
-// Founder contact and Patreon links remain stable in uninjected builds.
+// Email and development links can be injected at build time; see src/data/site.ts.
+// Founder contact links remain stable in uninjected builds.
+const contactEmail = deployment.contactEmail;
+const updatesEmailHref = contactEmail
+    ? `mailto:${contactEmail}?subject=Trailwalk%20updates`
+    : undefined;
 const updateHref = deployment.updatesUrl;
 const updateLabel = displayHost(updateHref);
 const founderLinksHref = "https://fnpg.me/";
 const founderLinkedInHref = "https://www.linkedin.com/in/jiawei-kong-235a4254";
-const patreonHref = "https://www.patreon.com/cw/fnpg";
 const shorelineTrailHref =
     "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
 const saintAnthonyViewHref =
@@ -22,7 +25,7 @@ const navItems = [
     { href: "#audience", label: "Who It Helps" },
     { href: "#faq", label: "FAQ" },
     { href: "#contact", label: "Contact" },
-    { href: "#stay-in-the-loop", label: "Stay Updated" },
+    { href: "#stay-in-the-loop", label: "Request Updates" },
 ];
 
 const experienceItems = [
@@ -184,14 +187,14 @@ const faqs = [
                         been separated from the outdoors.
                     </p>
                     <div class="hero-actions" aria-label="Trailwalk actions">
-                        <a
-                            class="button button-light"
-                            href={patreonHref}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            Stay Updated
-                        </a>
+                        {updatesEmailHref && (
+                            <a
+                                class="button button-light"
+                                href={updatesEmailHref}
+                            >
+                                Request updates
+                            </a>
+                        )}
                         <a
                             class="button button-ghost"
                             href={founderLinksHref}
@@ -384,14 +387,14 @@ const faqs = [
                         community updates.
                     </p>
                     <div class="loop-actions" aria-label="Trailwalk updates">
-                        <a
-                            class="button button-light"
-                            href={patreonHref}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            Request updates
-                        </a>
+                        {updatesEmailHref && (
+                            <a
+                                class="button button-light"
+                                href={updatesEmailHref}
+                            >
+                                Request updates
+                            </a>
+                        )}
                         {updateHref && (
                             <a class="button button-ghost" href={updateHref}>
                                 See development in action
@@ -399,9 +402,13 @@ const faqs = [
                         )}
                     </div>
                     <p class="fine-print">
-                        {updateLabel
-                            ? `Follow Patreon for project updates, or ${updateLabel} for development notes.`
-                            : "Follow Patreon for project updates as the prototype progresses."}
+                        {contactEmail && updateLabel
+                            ? `Email us for updates, or follow ${updateLabel} for development notes.`
+                            : contactEmail
+                              ? "Email us to request updates as the prototype progresses."
+                              : updateLabel
+                                ? `Follow ${updateLabel} for development notes.`
+                                : "Development notes and updates are published as the prototype progresses."}
                     </p>
                 </div>
             </section>
@@ -490,6 +497,7 @@ const faqs = [
 
     .nav-identity {
         display: inline-flex;
+        flex: 0 0 auto;
         min-width: 0;
         align-items: center;
         gap: 12px;
@@ -550,6 +558,102 @@ const faqs = [
 
     .mobile-nav {
         display: none;
+        position: relative;
+        flex: 0 0 auto;
+        margin-left: auto;
+    }
+
+    .mobile-nav summary {
+        display: inline-flex;
+        min-height: 38px;
+        width: 42px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid var(--tw-divider);
+        border-radius: 999px;
+        background: rgba(248, 245, 239, 0.9);
+        color: var(--tw-secondary);
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .mobile-nav summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .mobile-nav__icon,
+    .mobile-nav__icon::before,
+    .mobile-nav__icon::after {
+        display: block;
+        width: 16px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--tw-lake);
+    }
+
+    .mobile-nav__icon {
+        position: relative;
+    }
+
+    .mobile-nav__icon::before,
+    .mobile-nav__icon::after {
+        content: "";
+        position: absolute;
+        left: 0;
+    }
+
+    .mobile-nav__icon::before {
+        top: -5px;
+    }
+
+    .mobile-nav__icon::after {
+        top: 5px;
+    }
+
+    .mobile-nav[open] .mobile-nav__icon {
+        background: transparent;
+    }
+
+    .mobile-nav[open] .mobile-nav__icon::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+
+    .mobile-nav[open] .mobile-nav__icon::after {
+        top: 0;
+        transform: rotate(-45deg);
+    }
+
+    .mobile-nav nav {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        display: grid;
+        width: min(76vw, 280px);
+        padding: 8px;
+        border: 1px solid var(--tw-divider);
+        border-radius: 8px;
+        background: rgba(248, 245, 239, 0.98);
+        box-shadow: 0 18px 42px rgba(14, 31, 22, 0.14);
+    }
+
+    .mobile-nav nav a {
+        display: block;
+        min-height: 42px;
+        padding: 13px 14px;
+        border-radius: 6px;
+        color: var(--tw-secondary);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .mobile-nav nav a:hover {
+        background: var(--tw-bg-alt);
+        color: var(--tw-forest);
     }
 
     .sr-only {
@@ -1073,35 +1177,19 @@ const faqs = [
         font-size: 12px;
     }
 
-    @media (max-width: 1080px) {
+    @media (max-width: 1400px) {
         .page-nav {
             gap: 18px;
             padding-right: clamp(20px, 4vw, 56px);
             padding-left: clamp(20px, 4vw, 56px);
         }
 
-        .nav-brand {
-            flex: 0 0 auto;
-        }
-
         .page-nav__links {
-            flex: 1 1 auto;
-            flex-wrap: nowrap;
-            gap: 14px;
-            overflow-x: auto;
-            padding-bottom: 2px;
-            scrollbar-width: none;
-            scroll-padding-inline: clamp(20px, 4vw, 56px);
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .page-nav__links::-webkit-scrollbar {
             display: none;
         }
 
-        .page-nav__links a {
-            flex: 0 0 auto;
-            white-space: nowrap;
+        .mobile-nav {
+            display: block;
         }
     }
 
@@ -1121,110 +1209,6 @@ const faqs = [
 
         .nav-brand {
             font-size: 16px;
-        }
-
-        .page-nav__links {
-            display: none;
-        }
-
-        .mobile-nav {
-            display: block;
-            position: relative;
-            flex: 0 0 auto;
-            margin-left: auto;
-        }
-
-        .mobile-nav summary {
-            display: inline-flex;
-            min-height: 38px;
-            width: 42px;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            border: 1px solid var(--tw-divider);
-            border-radius: 999px;
-            background: rgba(248, 245, 239, 0.9);
-            color: var(--tw-secondary);
-            cursor: pointer;
-            list-style: none;
-        }
-
-        .mobile-nav summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .mobile-nav__icon,
-        .mobile-nav__icon::before,
-        .mobile-nav__icon::after {
-            display: block;
-            width: 16px;
-            height: 2px;
-            border-radius: 999px;
-            background: var(--tw-lake);
-        }
-
-        .mobile-nav__icon {
-            position: relative;
-        }
-
-        .mobile-nav__icon::before,
-        .mobile-nav__icon::after {
-            content: "";
-            position: absolute;
-            left: 0;
-        }
-
-        .mobile-nav__icon::before {
-            top: -5px;
-        }
-
-        .mobile-nav__icon::after {
-            top: 5px;
-        }
-
-        .mobile-nav[open] .mobile-nav__icon {
-            background: transparent;
-        }
-
-        .mobile-nav[open] .mobile-nav__icon::before {
-            top: 0;
-            transform: rotate(45deg);
-        }
-
-        .mobile-nav[open] .mobile-nav__icon::after {
-            top: 0;
-            transform: rotate(-45deg);
-        }
-
-        .mobile-nav nav {
-            position: absolute;
-            top: calc(100% + 10px);
-            right: 0;
-            display: grid;
-            width: min(76vw, 280px);
-            padding: 8px;
-            border: 1px solid var(--tw-divider);
-            border-radius: 8px;
-            background: rgba(248, 245, 239, 0.98);
-            box-shadow: 0 18px 42px rgba(14, 31, 22, 0.14);
-        }
-
-        .mobile-nav nav a {
-            display: block;
-            min-height: 42px;
-            padding: 13px 14px;
-            border-radius: 6px;
-            color: var(--tw-secondary);
-            font-size: 12px;
-            font-weight: 700;
-            line-height: 1;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-
-        .mobile-nav nav a:hover {
-            background: var(--tw-bg-alt);
-            color: var(--tw-forest);
         }
 
         .hero {
