@@ -39,6 +39,76 @@ serving side (private host, pull-based):
   production promotion is deliberately a manual invocation of the same
   pipeline and is not wired up yet.
 
+## Cloudflare Pages Candidate
+
+Cloudflare Pages is the preferred production target once `portfolio.fnpg.me` is
+ready to move out of the private host pipeline. Use the Pages Git integration
+for the first project, not Direct Upload, so GitHub PRs get preview deployments,
+deployment checks, and branch-aware production promotion. Cloudflare documents
+that Git integration and Direct Upload are one-way project choices, so starting
+with Git integration avoids recreating the project later.
+
+Project shape:
+
+```
+GitHub repo: Jarvie8176/portfolio
+production branch: main
+preview branches: dev and pull requests
+build command: npm ci && npm run build
+build output directory: dist
+```
+
+Required Pages environment variables:
+
+```
+NODE_VERSION=24
+TRAILWALK_ASSET_BASE_URL=https://media.fnpg.me
+SITE_URL=https://portfolio.fnpg.me
+PORTFOLIO_UMAMI_SCRIPT_URL=<public umami script URL>
+PORTFOLIO_UMAMI_WEBSITE_ID=<umami website uuid>
+PORTFOLIO_UMAMI_DOMAINS=portfolio.fnpg.me
+```
+
+Optional Pages environment variables:
+
+```
+PORTFOLIO_CONTACT_EMAIL=<public contact address>
+PORTFOLIO_UPDATES_URL=<public updates URL>
+PORTFOLIO_UMAMI_TAG=prod
+```
+
+Cutover plan:
+
+1. Create the Pages project from GitHub with production branch `main`, preview
+   builds enabled for `dev` and PR branches, and output directory `dist`.
+2. Add the environment variables above in Pages production and preview
+   environments. Preview may keep `SITE_URL` unset if the artifact should remain
+   origin-free; production must set it before sitemap/canonical verification.
+3. Deploy to the temporary `*.pages.dev` URL and verify the Trailwalk page,
+   R2 media loads from `media.fnpg.me`, Umami script renders only when configured,
+   and no raw media URLs or unapproved exact coordinates appear in public HTML.
+4. Attach `portfolio.fnpg.me` through the Pages Custom domains flow. Do not add
+   only a manual CNAME; Cloudflare warns that skipping the Pages association can
+   produce a 522.
+5. Re-run production smoke checks on `https://portfolio.fnpg.me/` and
+   `https://portfolio.fnpg.me/projects/trailwalk/`, then freeze or retire the
+   old homelab production route if one exists.
+
+Rollback is Pages deployment rollback to the previous successful deployment.
+Keep the current pull-based dev preview until the Pages production route has
+served at least one verified release on the custom domain.
+
+Reference docs:
+
+- Cloudflare Pages Git integration:
+  <https://developers.cloudflare.com/pages/configuration/git-integration/>
+- Cloudflare Pages GitHub integration:
+  <https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/>
+- Cloudflare Pages Direct Upload:
+  <https://developers.cloudflare.com/pages/get-started/direct-upload/>
+- Cloudflare Pages custom domains:
+  <https://developers.cloudflare.com/pages/configuration/custom-domains/>
+
 ## Analytics
 
 See [analytics.md](./analytics.md) for the event taxonomy and privacy boundary.
