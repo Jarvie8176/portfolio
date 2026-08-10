@@ -1,0 +1,682 @@
+---
+import {
+    formatBytes,
+    formatCapturedDateTime,
+    formatCoordinates,
+    getTrailwalkMapsAction,
+    trailwalkGalleryItems,
+    type TrailwalkGalleryItem,
+} from "../../data/trailwalkGallery";
+import { deployment } from "../../data/site";
+
+const assetBase = deployment.assetBaseUrl;
+
+// TODO(test): no coverage. See tests/TODO.md T1 — a build without
+// TRAILWALK_ASSET_BASE_URL must exit non-zero. Verified by hand only, so
+// deleting this block would go unnoticed until production.
+// Fail closed. Unlike the contact and updates values in src/data/site.ts, this
+// one cannot degrade to nothing: without it every poster and panorama URL
+// points at a path that ships in neither public/ nor dist/, so the gallery
+// builds clean and every card opens to a 404. Deployment is the wrong place to
+// catch that.
+if (!assetBase) {
+    throw new Error(
+        "TRAILWALK_ASSET_BASE_URL is not set. The Trailwalk gallery needs the public base URL its media is served from; building without one produces a gallery whose posters and panoramas all 404. See src/data/site.ts.",
+    );
+}
+
+const placeholderImage = "/assets/project-covers/trailwalk-shoreline.jpg";
+const assetUrl = (key: string) => `${assetBase}/${key}`;
+
+// TODO(test): no coverage. See tests/TODO.md T2 — a title containing
+// "</script>" must not close the data script element. This is the whole
+// reason the function exists and nothing checks it.
+// `set:html` does not escape, so a future title or place name containing
+// "</script>" would break out of the JSON script element.
+const serializeGalleryData = (value: unknown) =>
+    JSON.stringify(value).replaceAll("<", "\\u003c");
+
+const resolvePanorama = (tier: TrailwalkGalleryItem["assets"]["panorama"]) => ({
+    url: assetUrl(tier.key),
+    sizeLabel: formatBytes(tier.bytes),
+});
+
+/**
+ * Widths the card is actually asked to fill, from the rendered box rather than
+ * from the grid definition — the page applies `zoom: 1.25`, so the element is a
+ * quarter larger than the CSS that describes it, and a `sizes` written from the
+ * stylesheet would under-serve every candidate by that much.
+ *
+ *   >= 1719px   inner hits its 1100px cap, so the card stops growing: 443px
+ *   >=  921px   three columns, measured 25.5vw (367px at 1440, 256px at 1024)
+ *   >=  761px   one column, 80vw
+ *   below       one column, zoom drops to 1, 84vw
+ */
+const highlightSizes =
+    "(min-width: 1719px) 443px, (min-width: 921px) 25.5vw, (min-width: 761px) 80vw, 84vw";
+
+// Only consulted by a browser that ignores srcset. Anything that can render
+// this page's `:has()` layout picks from the candidate list instead, so the
+// middle tier is here to keep that fallback sane, not to be the common case.
+const highlightFallbackWidth = 800;
+
+const resolveHighlights = (item: TrailwalkGalleryItem) => {
+    const candidates = item.assets.highlights.map((highlight) => ({
+        width: highlight.width,
+        url: assetUrl(highlight.key),
+    }));
+    const fallback =
+        candidates.find(({ width }) => width === highlightFallbackWidth) ??
+        candidates[candidates.length - 1];
+
+    return {
+        src: fallback.url,
+        srcset: candidates.map(({ url, width }) => `${url} ${width}w`).join(", "),
+    };
+};
+
+// Split from the viewer's assets on purpose. The cards are rendered here, so
+// their thumbnail URLs have no reason to appear in the serialized payload as
+// well; the viewer never reads them.
+const resolveViewerAssets = (item: TrailwalkGalleryItem) => ({
+    poster: assetUrl(item.assets.poster),
+    panorama: resolvePanorama(item.assets.panorama),
+    panoramaHd: resolvePanorama(item.assets.panoramaHd),
+    fallbackHighlight: placeholderImage,
+});
+
+// Rendered server-side into the card markup. Never serialized.
+const galleryItems = trailwalkGalleryItems.map((item) => ({
+    id: item.id,
+    title: item.title,
+    place: item.place,
+    terrainTag: item.terrainTag,
+    highlight: resolveHighlights(item),
+    poster: assetUrl(item.assets.poster),
+}));
+
+// TODO(test): no coverage. See tests/TODO.md T3 — the serialized payload must
+// contain no key outside this allowlist. Without that assertion, a future
+// `...item` regression reopens the exact leak class this replaced.
+// Publication is opt-in. Spreading `...item` into the payload below would mean
+// any field added to TrailwalkGalleryItem later is published to the browser by
+// default, which is the wrong direction for a public repository: the safe case
+// should be the one that requires no action. Only what the viewer actually
+// reads is listed here, so a new private field stays server-side until someone
+// adds it on purpose.
+const publicPayload = trailwalkGalleryItems.map((item) => ({
+    id: item.id,
+    title: item.title,
+    locationLabel: item.place,
+    capturedLabel: formatCapturedDateTime(item.capturedAt),
+    altitudeMeters: item.altitudeMeters,
+    assets: resolveViewerAssets(item),
+    initialView: item.initialView,
+    coordinateLabel: item.coordinates
+        ? formatCoordinates(item.coordinates)
+        : "Not recorded",
+    coordinateMode: item.coordinates ? "approx" : "none",
+    mapsAction: getTrailwalkMapsAction(item),
+}));
+---
+
+<section
+    class="trailwalk-gallery"
+    id="gallery"
+    aria-labelledby="trailwalk-gallery-title"
+    data-trailwalk-gallery
+>
+    <div class="trailwalk-gallery__inner">
+        <div class="trailwalk-gallery__heading">
+            <p class="section-kicker">Field Gallery</p>
+            <h2 id="trailwalk-gallery-title">See Trailwalk in action</h2>
+            <p>
+                Select a real field sample to open a draggable 360-degree trail
+                view.
+            </p>
+        </div>
+
+        <div
+            class="trailwalk-gallery__grid"
+            role="group"
+            aria-label="Trailwalk field samples"
+        >
+            {
+                galleryItems.map((item) => (
+                    <a
+                        class="trailwalk-gallery__card"
+                        href={item.poster}
+                        data-trailwalk-card
+                        data-trailwalk-id={item.id}
+                    >
+                        <span class="trailwalk-gallery__image-wrap">
+                            <img
+                                src={item.highlight.src}
+                                srcset={item.highlight.srcset}
+                                sizes={highlightSizes}
+                                width="1200"
+                                height="675"
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </span>
+                        <span class="trailwalk-gallery__card-body">
+                            <span class="trailwalk-gallery__card-meta">
+                                <span>{item.terrainTag}</span>
+                            </span>
+                            <span class="trailwalk-gallery__card-title">
+                                {item.title}
+                            </span>
+                            <span class="trailwalk-gallery__card-place">
+                                {item.place}
+                            </span>
+                        </span>
+                    </a>
+                ))
+            }
+        </div>
+
+        <section
+            class="trailwalk-viewer"
+            aria-labelledby="trailwalk-viewer-title"
+            data-trailwalk-viewer-shell
+            hidden
+        >
+            <div class="trailwalk-viewer__bar">
+                <div>
+                    <p class="trailwalk-viewer__eyebrow">Selected 360 sample</p>
+                    <h3 id="trailwalk-viewer-title" data-trailwalk-viewer-title>
+                    </h3>
+                </div>
+                <div class="trailwalk-viewer__actions">
+                    <button type="button" data-trailwalk-back>
+                        Back to gallery
+                    </button>
+                    <button
+                        type="button"
+                        aria-pressed="false"
+                        data-trailwalk-hd-toggle
+                    >
+                        HD sample
+                        <span
+                            class="trailwalk-viewer__hd-size"
+                            data-trailwalk-hd-size></span>
+                    </button>
+                    <button
+                        type="button"
+                        aria-expanded="false"
+                        data-trailwalk-details-toggle
+                    >
+                        Details
+                    </button>
+                </div>
+            </div>
+
+            <div class="trailwalk-viewer__layout">
+                <div class="trailwalk-viewer__stage">
+                    <img
+                        class="trailwalk-viewer__poster"
+                        src={placeholderImage}
+                        alt=""
+                        data-trailwalk-poster
+                    />
+                    <div
+                        class="trailwalk-viewer__canvas"
+                        data-trailwalk-viewer
+                    >
+                    </div>
+                    <p
+                        class="trailwalk-viewer__status"
+                        aria-live="polite"
+                        data-trailwalk-status
+                    >
+                    </p>
+                </div>
+
+                <aside
+                    class="trailwalk-viewer__details"
+                    aria-label="Field details"
+                    data-trailwalk-details-panel
+                    hidden
+                >
+                </aside>
+            </div>
+        </section>
+    </div>
+
+    <script type="application/json" data-trailwalk-gallery-data set:html={serializeGalleryData(publicPayload)} />
+    <script is:inline>
+        (() => {
+            const script = document.currentScript;
+            const root = script?.closest("[data-trailwalk-gallery]");
+
+            root?.addEventListener(
+                "click",
+                (event) => {
+                    const target = event.target;
+                    const card =
+                        target instanceof Element
+                            ? target.closest("[data-trailwalk-card]")
+                            : null;
+
+                    if (
+                        !card ||
+                        event.defaultPrevented ||
+                        event.button !== 0 ||
+                        event.metaKey ||
+                        event.ctrlKey ||
+                        event.shiftKey ||
+                        event.altKey
+                    ) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                },
+                { capture: true },
+            );
+        })();
+    </script>
+</section>
+
+<script>
+    import { initializeTrailwalkGallery } from "../trailwalk/TrailwalkViewer.client";
+
+    const root = document.querySelector("[data-trailwalk-gallery]");
+    const dataNode = root?.querySelector("[data-trailwalk-gallery-data]");
+
+    if (root instanceof HTMLElement && dataNode?.textContent) {
+        initializeTrailwalkGallery(root, JSON.parse(dataNode.textContent));
+    }
+</script>
+
+<style is:global>
+    .trailwalk-gallery {
+        padding: clamp(44px, 5vw, 72px) var(--tw-section-x) var(--tw-section-y);
+        background: var(--tw-bg);
+        scroll-margin-top: 88px;
+    }
+
+    .trailwalk-gallery__inner {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .trailwalk-gallery__heading {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.7fr);
+        gap: 56px;
+        margin-bottom: 44px;
+        padding-top: 0;
+    }
+
+    .trailwalk-gallery__heading .section-kicker {
+        grid-column: 1 / -1;
+        margin-bottom: -38px;
+    }
+
+    .trailwalk-gallery__heading h2 {
+        margin-bottom: 0;
+    }
+
+    .trailwalk-gallery__heading p:not(.section-kicker) {
+        align-self: end;
+        margin-bottom: 4px;
+        color: var(--tw-secondary);
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .trailwalk-gallery__grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .trailwalk-gallery__card {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--tw-divider);
+        border-radius: 8px;
+        background: var(--tw-bg-alt);
+        color: var(--tw-text);
+        text-decoration: none;
+    }
+
+    .trailwalk-gallery__card:hover,
+    .trailwalk-gallery__card:focus-visible,
+    .trailwalk-gallery__card[aria-current="true"] {
+        border-color: rgba(46, 94, 62, 0.42);
+        color: var(--tw-text);
+        outline: none;
+    }
+
+    .trailwalk-gallery__card:focus-visible {
+        box-shadow: 0 0 0 3px rgba(46, 94, 62, 0.16);
+    }
+
+    .trailwalk-gallery__image-wrap {
+        display: block;
+        /* Matches the 16:9 thumbnails exactly. At 1.75 the card cropped a
+           sliver off a frame that was chosen deliberately. */
+        aspect-ratio: 16 / 9;
+        background:
+            linear-gradient(135deg, rgba(46, 94, 62, 0.14), rgba(59, 122, 138, 0.12)),
+            var(--tw-sand);
+    }
+
+    .trailwalk-gallery__image-wrap img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .trailwalk-gallery__card-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 8px;
+        padding: 18px;
+    }
+
+    .trailwalk-gallery__card-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        color: var(--tw-lake);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0;
+        line-height: 1.35;
+        text-transform: uppercase;
+    }
+
+    .trailwalk-gallery__card-title {
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 21px;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    .trailwalk-gallery__card-place {
+        margin-top: auto;
+        color: var(--tw-secondary);
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    .trailwalk-viewer {
+        grid-column: 1 / -1;
+        min-width: 0;
+        max-width: 100%;
+        margin-top: 34px;
+        overflow: hidden;
+        border: 1px solid var(--tw-divider);
+        border-radius: 8px;
+        background: var(--tw-bg-alt);
+        scroll-margin-top: 88px;
+    }
+
+    .trailwalk-viewer[hidden],
+    .trailwalk-viewer__details[hidden] {
+        display: none;
+    }
+
+    .trailwalk-viewer__bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--tw-divider);
+    }
+
+    .trailwalk-viewer__eyebrow {
+        margin-bottom: 5px;
+        color: var(--tw-lake);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .trailwalk-viewer h3 {
+        margin: 0;
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 25px;
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+    .trailwalk-viewer__actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .trailwalk-viewer__actions button {
+        min-height: 40px;
+        border: 1px solid var(--tw-divider);
+        border-radius: 999px;
+        background: var(--tw-bg);
+        color: var(--tw-forest);
+        cursor: pointer;
+        font: 700 13px/1 var(--tw-sans);
+        padding: 0 16px;
+    }
+
+    .trailwalk-viewer__actions button:hover,
+    .trailwalk-viewer__actions button:focus-visible {
+        border-color: rgba(46, 94, 62, 0.38);
+        outline: none;
+    }
+
+    .trailwalk-viewer__actions button[aria-expanded="true"],
+    .trailwalk-viewer__actions button[aria-pressed="true"] {
+        background: var(--tw-forest);
+        border-color: var(--tw-forest);
+        color: #fff;
+    }
+
+    /* The size sits inside the control rather than beside it: the cost of
+       pressing the button belongs to the button. */
+    .trailwalk-viewer__hd-size {
+        font-weight: 500;
+        opacity: 0.72;
+    }
+
+    .trailwalk-viewer__hd-size:empty {
+        display: none;
+    }
+
+    .trailwalk-viewer__layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        min-width: 0;
+    }
+
+    .trailwalk-viewer__layout:has(.trailwalk-viewer__details:not([hidden])) {
+        /* Not wider: the panel is now open by default, so every pixel it takes
+           is taken from the sphere on every visit. At 1024px the stage is
+           already down to ~350px. */
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    }
+
+    .trailwalk-viewer__stage {
+        position: relative;
+        min-width: 0;
+        max-width: 100%;
+        min-height: 360px;
+        overflow: hidden;
+        background: #151711;
+        aspect-ratio: 16 / 9;
+    }
+
+    .trailwalk-viewer__poster,
+    .trailwalk-viewer__canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .trailwalk-viewer__poster {
+        object-fit: cover;
+        opacity: 1;
+        transition: opacity 180ms ease;
+    }
+
+    .trailwalk-viewer[data-viewer-ready="true"] .trailwalk-viewer__poster {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .trailwalk-viewer__canvas {
+        z-index: 1;
+    }
+
+    .trailwalk-viewer__canvas > *,
+    .trailwalk-viewer__canvas canvas {
+        max-width: 100%;
+    }
+
+    .trailwalk-viewer__status {
+        position: absolute;
+        left: 18px;
+        bottom: 16px;
+        z-index: 2;
+        max-width: min(420px, calc(100% - 36px));
+        margin: 0;
+        border-radius: 999px;
+        background: rgba(14, 31, 22, 0.78);
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 12px;
+        line-height: 1.45;
+        padding: 8px 12px;
+    }
+
+    .trailwalk-viewer__status:empty {
+        display: none;
+    }
+
+    .trailwalk-viewer__details {
+        padding: 22px;
+        border-left: 1px solid var(--tw-divider);
+        background: var(--tw-bg);
+    }
+
+    .trailwalk-viewer__details h4 {
+        margin: 0 0 18px;
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 22px;
+        font-weight: 500;
+    }
+
+    .trailwalk-viewer__details dl {
+        display: grid;
+        grid-template-columns: 100px minmax(0, 1fr);
+        /* The label is 12px and the value is 14px with a 21px line box, so
+           stretching both to the row top left the two texts sitting 3.2px
+           apart on every row. Aligning the first baselines is the fix that does
+           not depend on either font's metrics. */
+        align-items: baseline;
+        gap: 12px 14px;
+        margin: 0;
+    }
+
+    .trailwalk-viewer__details dt {
+        color: var(--tw-tertiary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .trailwalk-viewer__details dd {
+        min-width: 0;
+        margin: 0;
+        color: var(--tw-secondary);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .trailwalk-viewer__map-link {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 20px;
+        color: var(--tw-forest);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 920px) {
+        .trailwalk-gallery__heading,
+        .trailwalk-gallery__grid,
+        .trailwalk-viewer__layout,
+        .trailwalk-viewer__layout:has(.trailwalk-viewer__details:not([hidden])) {
+            grid-template-columns: 1fr;
+        }
+
+        .trailwalk-gallery__heading {
+            gap: 18px;
+        }
+
+        .trailwalk-gallery__heading .section-kicker {
+            grid-column: auto;
+            margin-bottom: 0;
+        }
+
+        .trailwalk-viewer__details {
+            border-top: 1px solid var(--tw-divider);
+            border-left: 0;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .trailwalk-gallery__grid {
+            gap: 14px;
+        }
+
+        .trailwalk-viewer__bar {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .trailwalk-viewer__actions,
+        .trailwalk-viewer__actions button {
+            width: 100%;
+        }
+
+        .trailwalk-viewer__stage {
+            width: 100%;
+            min-height: 260px;
+            aspect-ratio: 4 / 3;
+        }
+
+        .trailwalk-viewer__details dl {
+            grid-template-columns: 1fr;
+            gap: 5px 0;
+        }
+
+        .trailwalk-viewer__details dd {
+            margin-bottom: 10px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .trailwalk-viewer__poster {
+            transition: none;
+        }
+    }
+</style>
