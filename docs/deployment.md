@@ -15,6 +15,7 @@ serving side (private host, pull-based):
   → fetch source and build locally
       dev:  SITE_URL unset  → artifact carries no real domain
       prod: SITE_URL=<origin> injected at build time (manual step)
+      optional: PORTFOLIO_UMAMI_* values inject privacy-friendly analytics
   → content-policy gate: pattern grep over the staged build output
       (the pattern list is private; that is why it is not a CI step here)
   → releases/<sha> + atomic symlink swap to `current`
@@ -37,3 +38,31 @@ serving side (private host, pull-based):
 - **Dev vs prod**: dev deploys are automatic on merge (short poll interval);
   production promotion is deliberately a manual invocation of the same
   pipeline and is not wired up yet.
+
+## Analytics
+
+See [analytics.md](./analytics.md) for the event taxonomy and privacy boundary.
+Umami is optional and injected at build time. The tracker is omitted unless both
+the script URL and website id are present:
+
+```
+PORTFOLIO_UMAMI_SCRIPT_URL=<public umami script URL>
+PORTFOLIO_UMAMI_WEBSITE_ID=<umami website uuid>
+PORTFOLIO_UMAMI_DOMAINS=<optional comma-separated domains>
+PORTFOLIO_UMAMI_TAG=<optional dev/prod tag>
+```
+
+The shorter `UMAMI_*` names are also accepted as fallbacks, but deploy-side
+configuration should prefer the `PORTFOLIO_UMAMI_*` names so every injected
+value has an explicit portfolio owner.
+
+The public footer discloses analytics only when the tracker is actually
+rendered. Trailwalk records low-cardinality product events such as CTA clicks,
+FAQ toggles, gallery selections, viewer load/error, HD toggle, details toggle,
+maps link opens, and viewer back. It deliberately does not send exact
+coordinates, maps URLs, location provenance, sensor readings, or custom user
+identifiers.
+
+If the tracker URL or host URL adds a public host to the artifact, the serving
+side content-policy allowlist must include that exact host. Do not weaken the
+redline pattern for this.

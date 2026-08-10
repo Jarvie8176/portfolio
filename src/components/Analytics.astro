@@ -1,0 +1,17 @@
+---
+import { deployment } from '../data/site';
+
+const analytics = deployment.analytics;
+---
+
+{
+  analytics.enabled && (
+    <script
+      defer
+      src={analytics.scriptUrl}
+      data-website-id={analytics.websiteId}
+      data-domains={analytics.domains}
+      data-tag={analytics.tag}
+    />
+  )
+}
