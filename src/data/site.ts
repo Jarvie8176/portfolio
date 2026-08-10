@@ -9,6 +9,11 @@ export const site = {
 
 const env = (key: string) => process.env[key]?.trim() || undefined;
 
+const analyticsScriptUrl =
+  env('PORTFOLIO_UMAMI_SCRIPT_URL') ?? env('UMAMI_SCRIPT_URL');
+const analyticsWebsiteId =
+  env('PORTFOLIO_UMAMI_WEBSITE_ID') ?? env('UMAMI_WEBSITE_ID');
+
 /**
  * Hostnames and addresses are injected at build time, never committed.
  *
@@ -29,6 +34,17 @@ export const deployment = {
   updatesUrl: env('PORTFOLIO_UPDATES_URL'),
   /** Base URL for Trailwalk gallery media. Required; the gallery fails closed. */
   assetBaseUrl: env('TRAILWALK_ASSET_BASE_URL')?.replace(/\/$/, ''),
+  analytics: {
+    /** Public Umami script URL. Omitted when unset. */
+    scriptUrl: analyticsScriptUrl,
+    /** Public Umami website id. Omitted when unset. */
+    websiteId: analyticsWebsiteId,
+    /** Optional comma-separated domain allowlist for the tracker. */
+    domains: env('PORTFOLIO_UMAMI_DOMAINS') ?? env('UMAMI_DOMAINS'),
+    /** Optional Umami tag for separating dev/prod or campaigns. */
+    tag: env('PORTFOLIO_UMAMI_TAG') ?? env('UMAMI_TAG'),
+    enabled: Boolean(analyticsScriptUrl && analyticsWebsiteId),
+  },
 };
 
 /** Host of a deployment URL, for use as link text. */

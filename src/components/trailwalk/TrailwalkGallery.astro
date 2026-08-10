@@ -115,6 +115,7 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
     coordinateLabel: item.coordinates
         ? formatCoordinates(item.coordinates)
         : "Not recorded",
+    coordinateMode: item.coordinates ? "approx" : "none",
     mapsAction: getTrailwalkMapsAction(item),
 }));
 ---

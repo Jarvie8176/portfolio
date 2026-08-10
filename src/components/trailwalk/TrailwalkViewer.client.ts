@@ -34,11 +34,23 @@ type PublicTrailwalkItem = {
         zoom?: number;
     };
     coordinateLabel: string;
+    coordinateMode: "approx" | "none";
     mapsAction: {
         label: string;
         href: string;
     };
 };
+
+type TrailwalkAnalyticsValue = string | number | boolean;
+type TrailwalkAnalyticsData = Record<string, TrailwalkAnalyticsValue>;
+
+declare global {
+    interface Window {
+        umami?: {
+            track?: (eventName: string, data?: TrailwalkAnalyticsData) => void;
+        };
+    }
+}
 
 let viewerCssPromise: Promise<void> | null = null;
 
@@ -116,6 +128,13 @@ const nextFrame = () =>
         requestAnimationFrame(() => resolve());
     });
 
+const trackTrailwalk = (
+    eventName: string,
+    data: TrailwalkAnalyticsData = {},
+) => {
+    window.umami?.track?.(eventName, data);
+};
+
 export const initializeTrailwalkGallery = (
     root: HTMLElement,
     items: PublicTrailwalkItem[],
@@ -189,6 +208,8 @@ export const initializeTrailwalkGallery = (
 
     const panoramaFor = (item: PublicTrailwalkItem) =>
         hdEnabled ? item.assets.panoramaHd : item.assets.panorama;
+
+    const activeTier = () => (hdEnabled ? "hd" : "standard");
 
     const syncHdControl = () => {
         const item = selectedItem;
@@ -277,6 +298,9 @@ export const initializeTrailwalkGallery = (
         }
 
         await gyroscope.start();
+        trackTrailwalk("trailwalk_gyroscope_start", {
+            sample_id: selectedItem?.id ?? "unknown",
+        });
     };
 
     const loadViewer = async (
@@ -347,6 +371,11 @@ export const initializeTrailwalkGallery = (
 
         viewerShell.dataset.viewerReady = "true";
         setStatus("");
+        trackTrailwalk("trailwalk_viewer_ready", {
+            sample_id: item.id,
+            tier: activeTier(),
+            phase: "initial_load",
+        });
 
         void startGyroscope(viewer, GyroscopePlugin, currentToken).catch(
             () => {},
@@ -393,11 +422,21 @@ export const initializeTrailwalkGallery = (
             }
 
             setStatus("");
+            trackTrailwalk("trailwalk_viewer_ready", {
+                sample_id: item.id,
+                tier: activeTier(),
+                phase: "tier_swap",
+            });
         } catch {
             if (currentToken !== selectionToken) {
                 return;
             }
 
+            trackTrailwalk("trailwalk_viewer_error", {
+                sample_id: item.id,
+                tier: activeTier(),
+                phase: "tier_swap",
+            });
             // The control must not claim a tier the viewer is not showing, so
             // the state goes back to whatever survived the failure.
             hdEnabled = !hdEnabled;
@@ -422,6 +461,12 @@ export const initializeTrailwalkGallery = (
         trigger.setAttribute("aria-current", "true");
         activeCard = trigger;
         selectedItem = item;
+        trackTrailwalk("trailwalk_gallery_select", {
+            sample_id: item.id,
+            viewer_layout: inlineViewer.matches ? "inline" : "below_grid",
+            reduced_motion: reducedMotion,
+            tier: activeTier(),
+        });
 
         placeViewer(trigger);
         viewerShell.hidden = false;
@@ -446,6 +491,11 @@ export const initializeTrailwalkGallery = (
             await loadViewer(item, currentToken);
         } catch {
             if (currentToken === selectionToken) {
+                trackTrailwalk("trailwalk_viewer_error", {
+                    sample_id: item.id,
+                    tier: activeTier(),
+                    phase: "initial_load",
+                });
                 // Tear the viewer down so its own error overlay stops covering
                 // the poster the message points at.
                 destroyViewer();
@@ -496,6 +546,10 @@ export const initializeTrailwalkGallery = (
 
         hdEnabled = !hdEnabled;
         syncHdControl();
+        trackTrailwalk("trailwalk_hd_toggle", {
+            sample_id: selectedItem.id,
+            next_tier: activeTier(),
+        });
         void swapPanoramaTier();
     });
 
@@ -504,7 +558,29 @@ export const initializeTrailwalkGallery = (
             return;
         }
 
-        setDetailsOpen(Boolean(detailsPanel.hidden));
+        const open = Boolean(detailsPanel.hidden);
+        setDetailsOpen(open);
+        trackTrailwalk("trailwalk_details_toggle", {
+            sample_id: selectedItem.id,
+            state: open ? "open" : "close",
+        });
+    });
+
+    detailsPanel.addEventListener("click", (event) => {
+        const target = event.target;
+        const mapLink =
+            target instanceof Element
+                ? target.closest(".trailwalk-viewer__map-link")
+                : null;
+
+        if (!selectedItem || !mapLink) {
+            return;
+        }
+
+        trackTrailwalk("trailwalk_maps_open", {
+            sample_id: selectedItem.id,
+            coordinate_mode: selectedItem.coordinateMode,
+        });
     });
 
     backButton.addEventListener("click", () => {
@@ -516,6 +592,12 @@ export const initializeTrailwalkGallery = (
         // built its viewer; one still inside its dynamic import has nothing to
         // destroy, so it goes on to construct a viewer and download a panorama
         // — up to 42 MB on the HD tier — into a shell the reader has left.
+        if (selectedItem) {
+            trackTrailwalk("trailwalk_viewer_back", {
+                sample_id: selectedItem.id,
+            });
+        }
+
         selectionToken += 1;
         selectedItem = null;
 

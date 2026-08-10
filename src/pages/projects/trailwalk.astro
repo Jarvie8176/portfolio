@@ -1,4 +1,5 @@
 ---
+import Analytics from "../../components/Analytics.astro";
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
 import { deployment, displayHost } from "../../data/site";
 
@@ -18,14 +19,18 @@ const saintAnthonyViewHref =
     "https://www.google.com/maps/search/?api=1&query=iceberg%20view%20mountain%20viewpoint%20Saint%20Anthony%20NL";
 
 const navItems = [
-    { href: "#problem", label: "The Problem" },
-    { href: "#origin", label: "Origin Story" },
-    { href: "#gallery", label: "Gallery" },
-    { href: "#experience", label: "The Experience" },
-    { href: "#audience", label: "Who It Helps" },
-    { href: "#faq", label: "FAQ" },
-    { href: "#contact", label: "Contact" },
-    { href: "#stay-in-the-loop", label: "Request Updates" },
+    { href: "#problem", label: "The Problem", analyticsId: "problem" },
+    { href: "#origin", label: "Origin Story", analyticsId: "origin" },
+    { href: "#gallery", label: "Gallery", analyticsId: "gallery" },
+    { href: "#experience", label: "The Experience", analyticsId: "experience" },
+    { href: "#audience", label: "Who It Helps", analyticsId: "audience" },
+    { href: "#faq", label: "FAQ", analyticsId: "faq" },
+    { href: "#contact", label: "Contact", analyticsId: "contact" },
+    {
+        href: "#stay-in-the-loop",
+        label: "Request Updates",
+        analyticsId: "request_updates",
+    },
 ];
 
 const experienceItems = [
@@ -72,18 +77,22 @@ const audiences = [
 
 const faqs = [
     {
+        analyticsId: "replace_outdoors",
         question: "Does this replace going outside?",
         answer: "No. Trailwalk encourages outdoor access whenever it is possible. It helps people stay connected to outdoor places when going outside is hard, unsafe, or not possible.",
     },
     {
+        analyticsId: "different_360",
         question: "How is this different from 360 videos online?",
         answer: "Trailwalk combines high-quality spatial audio, community trails that local people walk every day, and playback that can follow your walking speed.",
     },
     {
+        analyticsId: "able_to_walk",
         question: "Do I have to be able to walk?",
         answer: "No. Walk with support, sit comfortably, use a wheelchair, or control playback manually. We hope the experience feels atmospheric and meditative, not demanding.",
     },
     {
+        analyticsId: "try_now",
         question: "Can I try it now?",
         answer: "Trailwalk is at concept stage with a working technical demo. Get in touch and we'll include you when demo sessions open.",
     },
@@ -116,21 +125,47 @@ const faqs = [
             href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap"
             rel="stylesheet"
         />
+        <Analytics />
     </head>
     <body>
         <div class="accent-bar" aria-hidden="true"></div>
         <header class="page-nav" aria-label="Trailwalk navigation">
             <div class="nav-identity">
-                <a class="nav-home" href="/" aria-label="Back to portfolio home">
+                <a
+                    class="nav-home"
+                    href="/"
+                    aria-label="Back to portfolio home"
+                    data-umami-event="trailwalk_nav_click"
+                    data-umami-event-section="portfolio_home"
+                    data-umami-event-placement="header"
+                >
                     <span aria-hidden="true">←</span>
                     <span>Portfolio</span>
                 </a>
-                <a class="nav-brand" href="#hero" aria-current="page">
+                <a
+                    class="nav-brand"
+                    href="#hero"
+                    aria-current="page"
+                    data-umami-event="trailwalk_nav_click"
+                    data-umami-event-section="hero"
+                    data-umami-event-placement="header"
+                >
                     Trailwalk
                 </a>
             </div>
             <nav class="page-nav__links">
-                {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+                {
+                    navItems.map((item) => (
+                        <a
+                            href={item.href}
+                            data-umami-event="trailwalk_nav_click"
+                            data-umami-event-section={item.analyticsId}
+                            data-umami-event-placement="header"
+                        >
+                            {item.label}
+                        </a>
+                    ))
+                }
             </nav>
             <details class="mobile-nav">
                 <summary aria-label="Trailwalk sections">
@@ -140,7 +175,14 @@ const faqs = [
                 <nav aria-label="Trailwalk mobile sections">
                     {
                         navItems.map((item) => (
-                            <a href={item.href}>{item.label}</a>
+                            <a
+                                href={item.href}
+                                data-umami-event="trailwalk_nav_click"
+                                data-umami-event-section={item.analyticsId}
+                                data-umami-event-placement="mobile_menu"
+                            >
+                                {item.label}
+                            </a>
                         ))
                     }
                 </nav>
@@ -206,6 +248,9 @@ const faqs = [
                             <a
                                 class="button button-light"
                                 href={updatesEmailHref}
+                                data-umami-event="trailwalk_cta_click"
+                                data-umami-event-cta="request_updates"
+                                data-umami-event-placement="hero"
                             >
                                 Request updates
                             </a>
@@ -213,6 +258,9 @@ const faqs = [
                         <a
                             class="button button-ghost"
                             href="#contact"
+                            data-umami-event="trailwalk_cta_click"
+                            data-umami-event-cta="get_in_touch"
+                            data-umami-event-placement="hero"
                         >
                             Get in Touch
                         </a>
@@ -356,7 +404,10 @@ const faqs = [
                     <div class="faq-list">
                         {
                             faqs.map((faq) => (
-                                <details class="faq-item">
+                                <details
+                                    class="faq-item"
+                                    data-trailwalk-faq={faq.analyticsId}
+                                >
                                     <summary>{faq.question}</summary>
                                     <p>{faq.answer}</p>
                                 </details>
@@ -382,6 +433,9 @@ const faqs = [
                             href={founderLinksHref}
                             target="_blank"
                             rel="noreferrer"
+                            data-umami-event="trailwalk_cta_click"
+                            data-umami-event-cta="founder_links"
+                            data-umami-event-placement="contact"
                         >
                             Founder links <span aria-hidden="true">→</span>
                         </a>
@@ -390,6 +444,9 @@ const faqs = [
                             href={founderLinkedInHref}
                             target="_blank"
                             rel="noreferrer"
+                            data-umami-event="trailwalk_cta_click"
+                            data-umami-event-cta="linkedin"
+                            data-umami-event-placement="contact"
                         >
                             LinkedIn <span aria-hidden="true">→</span>
                         </a>
@@ -425,12 +482,21 @@ const faqs = [
                             <a
                                 class="button button-light"
                                 href={updatesEmailHref}
+                                data-umami-event="trailwalk_cta_click"
+                                data-umami-event-cta="request_updates"
+                                data-umami-event-placement="stay_in_loop"
                             >
                                 Request updates
                             </a>
                         )}
                         {updateHref && (
-                            <a class="button button-ghost" href={updateHref}>
+                            <a
+                                class="button button-ghost"
+                                href={updateHref}
+                                data-umami-event="trailwalk_cta_click"
+                                data-umami-event-cta="development_notes"
+                                data-umami-event-placement="stay_in_loop"
+                            >
                                 See development in action
                             </a>
                         )}
@@ -450,8 +516,45 @@ const faqs = [
 
         <footer class="trail-footer">
             <span>Trailwalk</span>
+            {
+                deployment.analytics.enabled && (
+                    <span class="trail-footer__tracker">
+                        Privacy-friendly analytics measure page visits and demo interest.
+                    </span>
+                )
+            }
             <span>© 2026 · Concept Stage</span>
         </footer>
+        <script>
+            const trackTrailwalkEvent = (
+                name: string,
+                data: Record<string, string>,
+            ) => {
+                const umami = (
+                    window as Window & {
+                        umami?: {
+                            track?: (
+                                eventName: string,
+                                data?: Record<string, string>,
+                            ) => void;
+                        };
+                    }
+                ).umami;
+
+                umami?.track?.(name, data);
+            };
+
+            document
+                .querySelectorAll<HTMLDetailsElement>("[data-trailwalk-faq]")
+                .forEach((details) => {
+                    details.addEventListener("toggle", () => {
+                        trackTrailwalkEvent("trailwalk_faq_toggle", {
+                            question: details.dataset.trailwalkFaq ?? "unknown",
+                            state: details.open ? "open" : "close",
+                        });
+                    });
+                });
+        </script>
     </body>
 </html>
 
@@ -1244,6 +1347,13 @@ const faqs = [
         font-family: var(--tw-serif);
         font-size: 15px;
         font-weight: 500;
+    }
+
+    .trail-footer__tracker {
+        color: rgba(255, 255, 255, 0.34);
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: center;
     }
 
     .trail-footer span:last-child {
