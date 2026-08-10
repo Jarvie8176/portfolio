@@ -124,7 +124,8 @@ Fields:
 Fields:
 
 - `sample_id`: public gallery item id
-- `coordinate_mode`: `approx` or `none`
+- `coordinate_mode`: `approx` or `none`, derived server-side from whether the
+  public gallery payload has approximate coordinates
 
 `trailwalk_viewer_back`
 

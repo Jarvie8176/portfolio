@@ -34,6 +34,7 @@ type PublicTrailwalkItem = {
         zoom?: number;
     };
     coordinateLabel: string;
+    coordinateMode: "approx" | "none";
     mapsAction: {
         label: string;
         href: string;
@@ -209,9 +210,6 @@ export const initializeTrailwalkGallery = (
         hdEnabled ? item.assets.panoramaHd : item.assets.panorama;
 
     const activeTier = () => (hdEnabled ? "hd" : "standard");
-
-    const coordinateModeFor = (item: PublicTrailwalkItem) =>
-        item.coordinateLabel === "Not recorded" ? "none" : "approx";
 
     const syncHdControl = () => {
         const item = selectedItem;
@@ -581,7 +579,7 @@ export const initializeTrailwalkGallery = (
 
         trackTrailwalk("trailwalk_maps_open", {
             sample_id: selectedItem.id,
-            coordinate_mode: coordinateModeFor(selectedItem),
+            coordinate_mode: selectedItem.coordinateMode,
         });
     });
 
