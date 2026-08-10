@@ -24,6 +24,16 @@ export interface Project {
   coverImage: string;
   coverPosition?: string;
   href?: string;
+  /**
+   * This project has its own hand-designed concept page at
+   * `src/pages/projects/<id>.astro`, so the generic `[id]` template must not
+   * also generate that route.
+   *
+   * Trailwalk is the first; the intent is that every project eventually gets a
+   * page designed for what it actually is, and `[id].astro` is the interim
+   * template for the ones that do not have one yet.
+   */
+  conceptPage?: true;
 }
 
 export const practiceLabels: Record<Practice, string> = {
@@ -87,6 +97,7 @@ export const projects: Project[] = [
   },
   {
     id: 'trailwalk',
+    conceptPage: true,
     title: 'Trailwalk',
     role: 'Lead Embodied Work',
     statusCode: 'prototype',

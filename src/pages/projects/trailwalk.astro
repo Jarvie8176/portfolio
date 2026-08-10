@@ -1,0 +1,1477 @@
+---
+import Analytics from "../../components/Analytics.astro";
+import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
+import { deployment, displayHost } from "../../data/site";
+
+// Email and development links can be injected at build time; see src/data/site.ts.
+// Founder contact links remain stable in uninjected builds.
+const contactEmail = deployment.contactEmail;
+const updatesEmailHref = contactEmail
+    ? `mailto:${contactEmail}?subject=Trailwalk%20updates`
+    : undefined;
+const updateHref = deployment.updatesUrl;
+const updateLabel = displayHost(updateHref);
+const founderLinksHref = "https://fnpg.me/";
+const founderLinkedInHref = "https://www.linkedin.com/in/jiawei-kong-235a4254";
+const shorelineTrailHref =
+    "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
+const saintAnthonyViewHref =
+    "https://www.google.com/maps/search/?api=1&query=iceberg%20view%20mountain%20viewpoint%20Saint%20Anthony%20NL";
+
+const navItems = [
+    { href: "#problem", label: "The Problem", analyticsId: "problem" },
+    { href: "#origin", label: "Origin Story", analyticsId: "origin" },
+    { href: "#gallery", label: "Gallery", analyticsId: "gallery" },
+    { href: "#experience", label: "The Experience", analyticsId: "experience" },
+    { href: "#audience", label: "Who It Helps", analyticsId: "audience" },
+    { href: "#faq", label: "FAQ", analyticsId: "faq" },
+    { href: "#contact", label: "Contact", analyticsId: "contact" },
+    {
+        href: "#stay-in-the-loop",
+        label: "Request Updates",
+        analyticsId: "request_updates",
+    },
+];
+
+const experienceItems = [
+    {
+        title: "Real Trails, Coast to Coast",
+        body: "From the Pacific coast to the Easternmost Point of Canada, we have walked and captured terabytes of high-fidelity walking experiences across Metro Vancouver, BC, Cape Spear, NL, Gros Morne National Park, NL, Cape Breton Island, NS, and more.",
+    },
+    {
+        title: "The Sound of Being There",
+        body: "Birds, water, wind, footsteps: recorded in spatial audio so the world feels present around you.",
+    },
+    {
+        title: "At Your Own Pace",
+        body: "Walk with support, sit comfortably, or use a wheelchair. Built for different paces and ways of moving.",
+    },
+];
+
+const audiences = [
+    {
+        title: "When getting outdoors takes support",
+        body: "For people whose age, recovery, mobility, energy, or support needs make outdoor trails harder to reach.",
+    },
+    {
+        title: "When care happens indoors",
+        body: "Bring real outdoor places into homes, care settings, and shared community spaces.",
+    },
+    {
+        title: "When weather closes the trail",
+        body: "Stay connected to familiar paths through winter, storms, smoke, or unsafe conditions.",
+    },
+    {
+        title: "When distance gets in the way",
+        body: "Return to real places when time, geography, or circumstance makes going back difficult.",
+    },
+    {
+        title: "For shared walks",
+        body: "Give families, caregivers, and friends a calmer way to experience outdoor places together.",
+    },
+    {
+        title: "For community programs",
+        body: "Help recreation, accessibility, and senior programs offer real nature-based experiences indoors.",
+    },
+];
+
+const faqs = [
+    {
+        analyticsId: "replace_outdoors",
+        question: "Does this replace going outside?",
+        answer: "No. Trailwalk encourages outdoor access whenever it is possible. It helps people stay connected to outdoor places when going outside is hard, unsafe, or not possible.",
+    },
+    {
+        analyticsId: "different_360",
+        question: "How is this different from 360 videos online?",
+        answer: "Trailwalk combines high-quality spatial audio, community trails that local people walk every day, and playback that can follow your walking speed.",
+    },
+    {
+        analyticsId: "able_to_walk",
+        question: "Do I have to be able to walk?",
+        answer: "No. Walk with support, sit comfortably, use a wheelchair, or control playback manually. We hope the experience feels atmospheric and meditative, not demanding.",
+    },
+    {
+        analyticsId: "try_now",
+        question: "Can I try it now?",
+        answer: "Trailwalk is at concept stage with a working technical demo. Get in touch and we'll include you when demo sessions open.",
+    },
+];
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Trailwalk — Walking in Nature is not a privilege</title>
+        <meta
+            name="description"
+            content="Trailwalk helps people stay connected to real outdoor places through immersive 360-degree trail walks and spatial outdoor sound."
+        />
+        <meta
+            property="og:title"
+            content="Trailwalk — Walking in Nature is not a privilege"
+        />
+        <meta
+            property="og:description"
+            content="Immersive 360-degree trail walks for everyone who has been separated from the outdoors."
+        />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <Analytics />
+    </head>
+    <body>
+        <div class="accent-bar" aria-hidden="true"></div>
+        <header class="page-nav" aria-label="Trailwalk navigation">
+            <div class="nav-identity">
+                <a
+                    class="nav-home"
+                    href="/"
+                    aria-label="Back to portfolio home"
+                    data-umami-event="trailwalk_nav_click"
+                    data-umami-event-section="portfolio_home"
+                    data-umami-event-placement="header"
+                >
+                    <span aria-hidden="true">←</span>
+                    <span>Portfolio</span>
+                </a>
+                <a
+                    class="nav-brand"
+                    href="#hero"
+                    aria-current="page"
+                    data-umami-event="trailwalk_nav_click"
+                    data-umami-event-section="hero"
+                    data-umami-event-placement="header"
+                >
+                    Trailwalk
+                </a>
+            </div>
+            <nav class="page-nav__links">
+                {
+                    navItems.map((item) => (
+                        <a
+                            href={item.href}
+                            data-umami-event="trailwalk_nav_click"
+                            data-umami-event-section={item.analyticsId}
+                            data-umami-event-placement="header"
+                        >
+                            {item.label}
+                        </a>
+                    ))
+                }
+            </nav>
+            <details class="mobile-nav">
+                <summary aria-label="Trailwalk sections">
+                    <span class="mobile-nav__icon" aria-hidden="true"></span>
+                    <span class="sr-only">Sections</span>
+                </summary>
+                <nav aria-label="Trailwalk mobile sections">
+                    {
+                        navItems.map((item) => (
+                            <a
+                                href={item.href}
+                                data-umami-event="trailwalk_nav_click"
+                                data-umami-event-section={item.analyticsId}
+                                data-umami-event-placement="mobile_menu"
+                            >
+                                {item.label}
+                            </a>
+                        ))
+                    }
+                </nav>
+            </details>
+        </header>
+
+        <main>
+            <section class="hero" id="hero" aria-labelledby="hero-title">
+                <div class="hero-photo" aria-hidden="true"></div>
+                <video
+                    class="hero-video"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    preload="metadata"
+                    poster="/assets/project-covers/trailwalk-hero-background.webp"
+                    aria-hidden="true"
+                >
+                    <source
+                        src="/assets/project-covers/trailwalk-hero-loop.mp4"
+                        type="video/mp4"
+                    />
+                </video>
+                <div class="hero-overlay" aria-hidden="true"></div>
+                <svg
+                    class="contours"
+                    viewBox="0 0 1440 900"
+                    preserveAspectRatio="none"
+                    fill="none"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M-50,140 C200,120 480,200 740,170 S1120,120 1500,175"
+                    ></path>
+                    <path
+                        d="M-50,260 C280,240 520,310 780,278 S1160,235 1500,285"
+                    ></path>
+                    <path
+                        d="M-50,400 C180,380 460,450 730,420 S1080,375 1500,425"
+                    ></path>
+                    <path
+                        d="M-50,530 C320,510 560,575 830,545 S1240,500 1500,550"
+                    ></path>
+                    <path
+                        d="M-50,660 C200,645 500,710 800,680 S1120,640 1500,685"
+                    ></path>
+                    <path
+                        d="M-50,780 C260,765 540,810 840,785 S1200,750 1500,790"
+                    ></path>
+                </svg>
+
+                <div class="hero-inner">
+                    <h1 id="hero-title">
+                        Walking in Nature<br />is not a privilege
+                    </h1>
+                    <p>
+                        Immersive 360-degree trail walks for everyone who has
+                        been separated from the outdoors.
+                    </p>
+                    <div class="hero-actions" aria-label="Trailwalk actions">
+                        {updatesEmailHref && (
+                            <a
+                                class="button button-light"
+                                href={updatesEmailHref}
+                                data-umami-event="trailwalk_cta_click"
+                                data-umami-event-cta="request_updates"
+                                data-umami-event-placement="hero"
+                            >
+                                Request updates
+                            </a>
+                        )}
+                        <a
+                            class="button button-ghost"
+                            href="#contact"
+                            data-umami-event="trailwalk_cta_click"
+                            data-umami-event-cta="get_in_touch"
+                            data-umami-event-placement="hero"
+                        >
+                            Get in Touch
+                        </a>
+                    </div>
+                </div>
+                <p class="hero-footnote">
+                    Lone Shieling Trail, Pleasant Bay, NS
+                </p>
+            </section>
+
+            <section class="problem-section" id="problem">
+                <div class="problem-inner">
+                    <div class="text-column">
+                        <h2>
+                            Being separated from the outdoors is a shared
+                            experience
+                        </h2>
+                        <p class="body-copy">
+                            For some, getting outdoors takes support: age,
+                            mobility, recovery, energy, or the realities of care
+                            settings. For others, the barrier comes with the
+                            season: winter, storms, smoke, or unsafe trail
+                            conditions. And sometimes the places that matter are
+                            simply too far away to return to often.
+                        </p>
+                        <p class="body-copy">
+                            My mother and grandmother love being outdoors too.
+                            But in their 60s and 80s, a long trip to visit the
+                            trails here in BC is not always a realistic option.
+                        </p>
+                        <p class="pull-quote">
+                            Unlike VR walking games or generated worlds,
+                            Trailwalk starts with real places: spatial outdoor
+                            sound and immersive 360-degree capture that help
+                            people stay connected to trails at a pace and
+                            posture that works for them.
+                        </p>
+                    </div>
+                    <figure class="problem-photo">
+                        <img
+                            src="/assets/project-covers/trailwalk-family-outdoors.webp"
+                            width="1200"
+                            height="1432"
+                            alt="Two older family members visiting a forest canopy walkway in BC"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                        <figcaption>Family visit in BC, 2023</figcaption>
+                    </figure>
+                </div>
+            </section>
+
+            <section
+                class="origin-section"
+                id="origin"
+                aria-labelledby="origin-title"
+            >
+                <div class="origin-inner">
+                    <div>
+                        <p class="section-kicker">Field Origin</p>
+                        <h2 id="origin-title">Born from real walks</h2>
+                    </div>
+                    <div class="origin-copy">
+                        <p>
+                            Trailwalk began with field walks in real weather:
+                            rain through forest canopy, wet leaves underfoot,
+                            gravel, puddles, and the quiet shift that happens
+                            when movement and sound pull attention back into the
+                            body.
+                        </p>
+                        <p>
+                            The early insight came before perfect fidelity: even
+                            rough 360-degree footage in a headset, paired with
+                            walking and outdoor sound, could help the body
+                            remember the feeling of being outside.
+                        </p>
+                        <p class="origin-note">
+                            Field samples include an afternoon walk on <a
+                                href={shorelineTrailHref}
+                                target="_blank"
+                                rel="noreferrer"
+                                >Shoreline Trail in Port Moody, BC</a
+                            > and <a
+                                href={saintAnthonyViewHref}
+                                target="_blank"
+                                rel="noreferrer"
+                                >an iceberg view from a mountain viewpoint in
+                                Saint Anthony, NL</a
+                            >.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <TrailwalkGallery />
+
+            <div class="waveform-wrap" aria-hidden="true">
+                <svg viewBox="0 0 200 20" class="waveform" fill="none">
+                    <path
+                        d="M0,10 L28,10 L36,3 L44,17 L52,6 L60,14 L68,4 L76,16 L84,8 L92,12 L100,10 L200,10"
+                    ></path>
+                </svg>
+            </div>
+
+            <section class="experience-section" id="experience">
+                <div class="wide-column">
+                    <h2>Real trails, brought indoors</h2>
+                    <div class="experience-grid">
+                        {
+                            experienceItems.map((item) => (
+                                <article class="feature">
+                                    <div aria-hidden="true" />
+                                    <h3>{item.title}</h3>
+                                    <p>{item.body}</p>
+                                </article>
+                            ))
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <section class="audience-section" id="audience">
+                <div class="wide-column">
+                    <h2>Who Trailwalk helps</h2>
+                    <div class="audience-grid">
+                        {
+                            audiences.map((audience) => (
+                                <article class="audience-card">
+                                    <h3>{audience.title}</h3>
+                                    <p>{audience.body}</p>
+                                </article>
+                            ))
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <section class="faq-section" id="faq">
+                <div class="wide-column">
+                    <h2>Questions people ask</h2>
+                    <div class="faq-list">
+                        {
+                            faqs.map((faq) => (
+                                <details
+                                    class="faq-item"
+                                    data-trailwalk-faq={faq.analyticsId}
+                                >
+                                    <summary>{faq.question}</summary>
+                                    <p>{faq.answer}</p>
+                                </details>
+                            ))
+                        }
+                    </div>
+                </div>
+            </section>
+
+            <section class="contact-section" id="contact">
+                <div class="contact-card">
+                    <h2>Help shape what this becomes</h2>
+                    <p class="body-copy">
+                        Trailwalk is in its earliest stage with a working
+                        technical demo. We are inviting older adults,
+                        caregivers, accessibility partners, community programs,
+                        and anyone generally interested in accessible nature to
+                        shape what the product becomes next.
+                    </p>
+                    <div class="contact-actions">
+                        <a
+                            class="button button-primary"
+                            href={founderLinksHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            data-umami-event="trailwalk_cta_click"
+                            data-umami-event-cta="founder_links"
+                            data-umami-event-placement="contact"
+                        >
+                            Founder links <span aria-hidden="true">→</span>
+                        </a>
+                        <a
+                            class="button button-secondary"
+                            href={founderLinkedInHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            data-umami-event="trailwalk_cta_click"
+                            data-umami-event-cta="linkedin"
+                            data-umami-event-placement="contact"
+                        >
+                            LinkedIn <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="loop-section" id="stay-in-the-loop">
+                <svg
+                    class="contours loop-contours"
+                    viewBox="0 0 1440 500"
+                    preserveAspectRatio="none"
+                    fill="none"
+                    aria-hidden="true"
+                >
+                    <path d="M-50,80 C300,60 600,130 900,95 S1300,55 1500,105"
+                    ></path>
+                    <path
+                        d="M-50,220 C200,200 500,270 800,240 S1200,195 1500,250"
+                    ></path>
+                    <path
+                        d="M-50,370 C250,355 550,410 850,385 S1250,350 1500,395"
+                    ></path>
+                </svg>
+                <div class="loop-inner">
+                    <h2>Stay in the loop</h2>
+                    <p>
+                        Trail captures, demo invitations, research notes, and
+                        community updates.
+                    </p>
+                    <div class="loop-actions" aria-label="Trailwalk updates">
+                        {updatesEmailHref && (
+                            <a
+                                class="button button-light"
+                                href={updatesEmailHref}
+                                data-umami-event="trailwalk_cta_click"
+                                data-umami-event-cta="request_updates"
+                                data-umami-event-placement="stay_in_loop"
+                            >
+                                Request updates
+                            </a>
+                        )}
+                        {updateHref && (
+                            <a
+                                class="button button-ghost"
+                                href={updateHref}
+                                data-umami-event="trailwalk_cta_click"
+                                data-umami-event-cta="development_notes"
+                                data-umami-event-placement="stay_in_loop"
+                            >
+                                See development in action
+                            </a>
+                        )}
+                    </div>
+                    <p class="fine-print">
+                        {contactEmail && updateLabel
+                            ? `Email us for updates, or follow ${updateLabel} for development notes.`
+                            : contactEmail
+                              ? "Email us to request updates as the prototype progresses."
+                              : updateLabel
+                                ? `Follow ${updateLabel} for development notes.`
+                                : "Development notes and updates are published as the prototype progresses."}
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="trail-footer">
+            <span>Trailwalk</span>
+            {
+                deployment.analytics.enabled && (
+                    <span class="trail-footer__tracker">
+                        Privacy-friendly analytics measure page visits and demo interest.
+                    </span>
+                )
+            }
+            <span>© 2026 · Concept Stage</span>
+        </footer>
+        <script>
+            const trackTrailwalkEvent = (
+                name: string,
+                data: Record<string, string>,
+            ) => {
+                const umami = (
+                    window as Window & {
+                        umami?: {
+                            track?: (
+                                eventName: string,
+                                data?: Record<string, string>,
+                            ) => void;
+                        };
+                    }
+                ).umami;
+
+                umami?.track?.(name, data);
+            };
+
+            document
+                .querySelectorAll<HTMLDetailsElement>("[data-trailwalk-faq]")
+                .forEach((details) => {
+                    details.addEventListener("toggle", () => {
+                        trackTrailwalkEvent("trailwalk_faq_toggle", {
+                            question: details.dataset.trailwalkFaq ?? "unknown",
+                            state: details.open ? "open" : "close",
+                        });
+                    });
+                });
+        </script>
+    </body>
+</html>
+
+<style is:global>
+    :root {
+        --tw-bg: #f8f5ef;
+        --tw-bg-alt: #f2efe9;
+        --tw-text: #2c2b28;
+        --tw-secondary: #6b6860;
+        --tw-tertiary: #9b9488;
+        --tw-forest: #2e5e3e;
+        --tw-forest-hover: #24502f;
+        --tw-lake: #3b7a8a;
+        --tw-divider: #e2ddd4;
+        --tw-wave: #d4cfc4;
+        --tw-dark: #1c3728;
+        --tw-darkest: #0e1f16;
+        --tw-footer: #152b1f;
+        --tw-sand: #ebe6db;
+        --tw-serif: "Lora", Georgia, serif;
+        --tw-sans:
+            "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --tw-section-y: clamp(80px, 10vw, 148px);
+        --tw-section-x: clamp(32px, 8vw, 160px);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    html {
+        background: var(--tw-bg);
+        scroll-behavior: smooth;
+    }
+
+    body {
+        margin: 0;
+        background: var(--tw-bg);
+        color: var(--tw-text);
+        font-family: var(--tw-sans);
+        zoom: 1.25;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+        color: var(--tw-forest);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #3a7a4f;
+    }
+
+    .accent-bar {
+        height: 3px;
+        background: linear-gradient(
+            90deg,
+            var(--tw-forest) 0%,
+            var(--tw-lake) 100%
+        );
+    }
+
+    .page-nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 64px;
+        padding: 0 var(--tw-section-x);
+        border-bottom: 1px solid rgba(226, 221, 212, 0.72);
+        background: rgba(248, 245, 239, 0.92);
+        backdrop-filter: blur(16px);
+    }
+
+    .nav-identity {
+        display: inline-flex;
+        flex: 0 0 auto;
+        min-width: 0;
+        align-items: center;
+        gap: 12px;
+        white-space: nowrap;
+    }
+
+    .nav-home {
+        order: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--tw-tertiary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .nav-home:hover {
+        color: var(--tw-forest);
+    }
+
+    .nav-identity::after {
+        order: 1;
+        width: 1px;
+        height: 20px;
+        background: var(--tw-divider);
+        content: "";
+    }
+
+    .nav-brand {
+        order: 2;
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .page-nav__links {
+        display: flex;
+        min-width: 0;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: clamp(12px, 1.8vw, 28px);
+    }
+
+    .page-nav__links a {
+        color: var(--tw-tertiary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .page-nav__links a:hover {
+        color: var(--tw-forest);
+    }
+
+    .mobile-nav {
+        display: none;
+        position: relative;
+        flex: 0 0 auto;
+        margin-left: auto;
+    }
+
+    .mobile-nav summary {
+        display: inline-flex;
+        min-height: 38px;
+        width: 42px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid var(--tw-divider);
+        border-radius: 999px;
+        background: rgba(248, 245, 239, 0.9);
+        color: var(--tw-secondary);
+        cursor: pointer;
+        list-style: none;
+    }
+
+    .mobile-nav summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .mobile-nav__icon,
+    .mobile-nav__icon::before,
+    .mobile-nav__icon::after {
+        display: block;
+        width: 16px;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--tw-lake);
+    }
+
+    .mobile-nav__icon {
+        position: relative;
+    }
+
+    .mobile-nav__icon::before,
+    .mobile-nav__icon::after {
+        content: "";
+        position: absolute;
+        left: 0;
+    }
+
+    .mobile-nav__icon::before {
+        top: -5px;
+    }
+
+    .mobile-nav__icon::after {
+        top: 5px;
+    }
+
+    .mobile-nav[open] .mobile-nav__icon {
+        background: transparent;
+    }
+
+    .mobile-nav[open] .mobile-nav__icon::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+
+    .mobile-nav[open] .mobile-nav__icon::after {
+        top: 0;
+        transform: rotate(-45deg);
+    }
+
+    .mobile-nav nav {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        display: grid;
+        width: min(76vw, 280px);
+        padding: 8px;
+        border: 1px solid var(--tw-divider);
+        border-radius: 8px;
+        background: rgba(248, 245, 239, 0.98);
+        box-shadow: 0 18px 42px rgba(14, 31, 22, 0.14);
+    }
+
+    .mobile-nav nav a {
+        display: block;
+        min-height: 42px;
+        padding: 13px 14px;
+        border-radius: 6px;
+        color: var(--tw-secondary);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .mobile-nav nav a:hover {
+        background: var(--tw-bg-alt);
+        color: var(--tw-forest);
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .hero {
+        position: relative;
+        min-height: calc(100svh - 64px);
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        padding: 80px var(--tw-section-x);
+        background: #14130f;
+    }
+
+    .hero-photo,
+    .hero-video,
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .hero-photo {
+        background-image: url("/assets/project-covers/trailwalk-hero-background.webp");
+        background-position: center;
+        background-size: cover;
+        filter: saturate(0.95) contrast(0.96);
+        opacity: 1;
+    }
+
+    .hero-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        filter: saturate(0.95) contrast(0.96);
+    }
+
+    .hero-overlay {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(20, 19, 15, 0.82) 0%,
+                rgba(20, 19, 15, 0.58) 42%,
+                rgba(20, 19, 15, 0.18) 100%
+            ),
+            linear-gradient(
+                0deg,
+                rgba(20, 19, 15, 0.32) 0%,
+                rgba(20, 19, 15, 0.02) 58%
+            );
+    }
+
+    .contours {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .contours path {
+        stroke: rgba(255, 255, 255, 0.028);
+        stroke-width: 1.1;
+    }
+
+    .contours path:nth-child(odd) {
+        stroke-opacity: 1;
+    }
+
+    .hero-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 780px;
+    }
+
+    .hero-footnote {
+        position: absolute;
+        right: var(--tw-section-x);
+        bottom: 26px;
+        z-index: 1;
+        max-width: min(420px, calc(100% - (var(--tw-section-x) * 2)));
+        margin: 0;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0;
+        line-height: 1.35;
+        text-align: right;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+        margin-top: 0;
+    }
+
+    h1 {
+        margin-bottom: 32px;
+        color: #fff;
+        font-family: var(--tw-serif);
+        font-size: 72px;
+        font-weight: 400;
+        letter-spacing: 0;
+        line-height: 1.08;
+        text-wrap: balance;
+    }
+
+    .hero-inner > p {
+        max-width: 540px;
+        margin-bottom: 52px;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 19px;
+        font-weight: 400;
+        line-height: 1.65;
+    }
+
+    .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .button {
+        display: inline-flex;
+        min-height: 52px;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border-radius: 100px;
+        font-family: var(--tw-sans);
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1;
+        text-decoration: none;
+    }
+
+    .button-light {
+        padding: 15px 34px;
+        background: #fff;
+        color: var(--tw-darkest);
+    }
+
+    .button-light:hover {
+        background: var(--tw-sand);
+        color: var(--tw-darkest);
+    }
+
+    .button-ghost {
+        padding: 15px 34px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .button-ghost:hover {
+        border-color: rgba(255, 255, 255, 0.45);
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+    }
+
+    .problem-section,
+    .origin-section,
+    .experience-section,
+    .faq-section,
+    .contact-section {
+        padding: var(--tw-section-y) var(--tw-section-x);
+        background: var(--tw-bg);
+    }
+
+    .text-column {
+        max-width: 660px;
+    }
+
+    .problem-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 0.98fr) minmax(320px, 0.72fr);
+        gap: clamp(36px, 5vw, 72px);
+        max-width: 1100px;
+        margin: 0 auto;
+        align-items: center;
+    }
+
+    .problem-photo {
+        margin: 0;
+    }
+
+    .problem-photo img {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 620px;
+        border-radius: 8px;
+        object-fit: cover;
+        object-position: center;
+        box-shadow: 0 20px 48px rgba(31, 35, 29, 0.12);
+    }
+
+    .problem-photo figcaption {
+        margin-top: 12px;
+        color: var(--tw-tertiary);
+        font-size: 12px;
+        line-height: 1.45;
+    }
+
+    .wide-column {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 42px;
+        font-weight: 400;
+        line-height: 1.18;
+        letter-spacing: 0;
+        text-wrap: balance;
+    }
+
+    .problem-section h2 {
+        margin-bottom: 32px;
+    }
+
+    .origin-section {
+        padding-top: 0;
+    }
+
+    .origin-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 56px;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 46px 0;
+        border-top: 1px solid var(--tw-divider);
+        border-bottom: 1px solid var(--tw-divider);
+    }
+
+    .section-kicker {
+        margin-bottom: 18px;
+        color: var(--tw-lake);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .origin-copy p {
+        margin-bottom: 20px;
+        color: var(--tw-secondary);
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+    .origin-copy p:last-child {
+        margin-bottom: 0;
+    }
+
+    .origin-note {
+        color: var(--tw-forest);
+        font-weight: 600;
+    }
+
+    .body-copy {
+        color: var(--tw-secondary);
+        font-family: var(--tw-sans);
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+    .pull-quote {
+        max-width: 540px;
+        margin-bottom: 0;
+        color: var(--tw-forest);
+        font-family: var(--tw-serif);
+        font-size: 20px;
+        font-style: italic;
+        line-height: 1.55;
+    }
+
+    .waveform-wrap {
+        padding: 0 var(--tw-section-x);
+        background: var(--tw-bg);
+    }
+
+    .waveform {
+        display: block;
+        width: clamp(100px, 16vw, 180px);
+        height: 20px;
+    }
+
+    .waveform path {
+        stroke: var(--tw-wave);
+        stroke-width: 1.2;
+        stroke-linecap: round;
+    }
+
+    .experience-section h2,
+    .audience-section h2,
+    .faq-section h2 {
+        margin-bottom: 72px;
+    }
+
+    .experience-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 56px;
+    }
+
+    .feature {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .feature div {
+        width: 100%;
+        height: 1px;
+        background: var(--tw-divider);
+    }
+
+    .feature h3,
+    .audience-card h3 {
+        margin: 6px 0 0;
+        color: var(--tw-text);
+        font-family: var(--tw-serif);
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.25;
+        text-wrap: balance;
+    }
+
+    .feature p,
+    .audience-card p {
+        margin-bottom: 0;
+        color: var(--tw-secondary);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .audience-section {
+        padding: var(--tw-section-y) var(--tw-section-x);
+        background: var(--tw-bg-alt);
+    }
+
+    .audience-section h2 {
+        margin-bottom: 56px;
+    }
+
+    .audience-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
+    }
+
+    .audience-card {
+        min-width: 0;
+        padding: 36px 40px;
+        border-radius: 10px;
+        background: var(--tw-bg);
+    }
+
+    .audience-card h3 {
+        margin-bottom: 10px;
+    }
+
+    .faq-section {
+        padding-top: calc(var(--tw-section-y) * 0.85);
+    }
+
+    .faq-list {
+        border-top: 1px solid var(--tw-divider);
+    }
+
+    .faq-item {
+        border-bottom: 1px solid var(--tw-divider);
+    }
+
+    .faq-item summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 76px;
+        color: var(--tw-text);
+        cursor: pointer;
+        font-family: var(--tw-serif);
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.25;
+        list-style: none;
+        text-wrap: balance;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq-item summary::after {
+        content: "+";
+        flex: 0 0 auto;
+        color: var(--tw-lake);
+        font-family: var(--tw-sans);
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 1;
+    }
+
+    .faq-item[open] summary::after {
+        content: "-";
+    }
+
+    .faq-item p {
+        max-width: 680px;
+        margin: -6px 0 28px;
+        color: var(--tw-secondary);
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .contact-card {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .contact-card h2 {
+        margin-bottom: 24px;
+    }
+
+    .contact-card .body-copy {
+        margin-bottom: 44px;
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .button-primary {
+        min-height: 54px;
+        padding: 16px 40px;
+        background: var(--tw-forest);
+        color: #fff;
+        font-size: 16px;
+    }
+
+    .button-primary:hover {
+        background: var(--tw-forest-hover);
+        color: #fff;
+    }
+
+    .button-secondary {
+        min-height: 54px;
+        padding: 16px 32px;
+        border: 1px solid var(--tw-divider);
+        background: transparent;
+        color: var(--tw-forest);
+        font-size: 16px;
+    }
+
+    .button-secondary:hover {
+        border-color: rgba(46, 94, 62, 0.42);
+        color: var(--tw-forest-hover);
+    }
+
+    .contact-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+    }
+
+    .partner-note {
+        margin-top: 52px;
+        padding-top: 32px;
+        border-top: 1px solid var(--tw-divider);
+    }
+
+    .partner-note p {
+        margin-bottom: 8px;
+        color: var(--tw-secondary);
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .partner-note a {
+        color: var(--tw-forest);
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .loop-section {
+        position: relative;
+        overflow: hidden;
+        padding: var(--tw-section-y) var(--tw-section-x);
+        background: var(--tw-dark);
+    }
+
+    .loop-inner {
+        position: relative;
+        z-index: 1;
+        max-width: 620px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .loop-inner h2 {
+        margin-bottom: 16px;
+        color: #fff;
+        font-size: 36px;
+    }
+
+    .loop-inner p {
+        margin-bottom: 36px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .loop-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
+    }
+
+    .loop-inner .fine-print {
+        margin: 18px 0 0;
+        color: rgba(255, 255, 255, 0.28);
+        font-size: 12px;
+    }
+
+    .trail-footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 36px var(--tw-section-x);
+        background: var(--tw-footer);
+    }
+
+    .trail-footer span:first-child {
+        color: rgba(255, 255, 255, 0.5);
+        font-family: var(--tw-serif);
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .trail-footer__tracker {
+        color: rgba(255, 255, 255, 0.34);
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .trail-footer span:last-child {
+        color: rgba(255, 255, 255, 0.25);
+        font-size: 12px;
+    }
+
+    @media (max-width: 1400px) {
+        .page-nav {
+            gap: 18px;
+            padding-right: clamp(20px, 4vw, 56px);
+            padding-left: clamp(20px, 4vw, 56px);
+        }
+
+        .page-nav__links {
+            display: none;
+        }
+
+        .mobile-nav {
+            display: block;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .page-nav {
+            position: sticky;
+            align-items: center;
+            gap: 12px;
+            min-height: 0;
+            padding: 10px 12px;
+            overflow: visible;
+        }
+
+        body {
+            zoom: 1;
+        }
+
+        .nav-brand {
+            font-size: 16px;
+        }
+
+        .hero {
+            min-height: 88svh;
+            padding-bottom: 72px;
+        }
+
+        .hero-footnote {
+            right: auto;
+            bottom: 20px;
+            left: 12px;
+            max-width: calc(100% - 24px);
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 44px;
+        }
+
+        .hero-inner > p,
+        .body-copy {
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 32px;
+        }
+
+        .pull-quote {
+            font-size: 18px;
+        }
+
+        .feature h3,
+        .audience-card h3,
+        .faq-item summary {
+            font-size: 20px;
+        }
+
+        .faq-section h2 {
+            margin-bottom: 40px;
+        }
+
+        .loop-inner h2 {
+            font-size: 30px;
+        }
+
+        .experience-grid,
+        .problem-inner,
+        .origin-inner,
+        .audience-grid {
+            grid-template-columns: 1fr;
+            gap: 28px;
+        }
+
+        .problem-photo {
+            max-width: 520px;
+        }
+
+        .button {
+            width: 100%;
+        }
+
+        .audience-card {
+            padding: 30px 28px;
+        }
+
+        .trail-footer {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        .hero-video {
+            display: none;
+        }
+    }
+</style>
