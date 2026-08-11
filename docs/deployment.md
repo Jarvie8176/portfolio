@@ -57,6 +57,16 @@ origin stays discoverable from repo activity. The privacy boundary rests on the
 custom domain, `noindex`/robots on non-production URLs, and the pre-deploy
 artifact scan — not on the origin hostname.
 
+Environments:
+
+- **dev** auto-deploys to the private-network host (tailnet-only, `noindex`) on
+  merge to `dev`. This is the existing pull-based pipeline and stays private; it
+  is not a Cloudflare Pages preview, so Pages public previews are disabled.
+- **prod** auto-deploys the `main` branch to Cloudflare Pages, served on the
+  production custom domain. Pages is production-only: preview deployments and PR
+  comments are turned off so nothing from a branch or PR reaches a public
+  `*.pages.dev` URL.
+
 Project shape:
 
 ```
@@ -116,23 +126,20 @@ Rollback is Pages deployment rollback to the previous successful deployment.
 Keep the current pull-based dev preview until the Pages production route has
 served at least one verified release on the custom domain.
 
-Pre-deploy gating (open — required before Pages is the sole production path):
-the pull-based pipeline above re-gates every artifact with the private redline
-patterns before the atomic swap. Pages Git integration builds and deploys
-straight from the public repo with no equivalent pre-deploy gate — the
-redline / coordinate / raw-media scan in step 3 currently runs only after the
-deploy is already live, so the first bad `main` push can be public before it is
-scanned. The private patterns cannot live in the public build, so production
-must not auto-deploy ungated. Resolve by one of:
+Pre-deploy gating (open — required before content changes flow to `main`):
+`main` auto-deploys to the public production origin, so the redline / coordinate
+/ raw-media scan must pass **before** a change reaches `main` — Pages builds from
+the public repo and cannot run the private patterns itself, and the step 3 scan
+otherwise runs only after the deploy is already live. Because production
+auto-deploy is a requirement, the gate moves to the merge boundary: run the
+private redline scan as a **required status check on pull requests into `main`**,
+executed on a private tailnet self-hosted runner that holds the pattern list.
+That keeps the gate mechanical and pre-deploy (pre-merge) without putting the
+private patterns in the public build.
 
-- disable production auto-deploy on the Pages project and trigger production
-  from a private gated job (build → redline scan → `wrangler` / Pages deploy
-  hook), keeping preview builds for PRs; or
-- keep production on the pull-based gated pipeline and use Pages for preview
-  only.
-
-Until this is resolved, Pages production is deployed but not gate-verified;
-treat it as such and do not retire the pull-based production path.
+Until that required check is wired, a change merged to `main` reaches the public
+site ungated; do not merge content changes to `main` before the check is in
+place, and keep the pull-based path as the gated reference.
 
 Reference docs:
 
