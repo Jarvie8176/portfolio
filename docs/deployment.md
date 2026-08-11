@@ -41,32 +41,41 @@ serving side (private host, pull-based):
 
 ## Cloudflare Pages Candidate
 
-Cloudflare Pages is the preferred production target once `portfolio.fnpg.me` is
-ready to move out of the private host pipeline. Use the Pages Git integration
-for the first project, not Direct Upload, so GitHub PRs get preview deployments,
-deployment checks, and branch-aware production promotion. Cloudflare documents
-that Git integration and Direct Upload are one-way project choices, so starting
-with Git integration avoids recreating the project later.
+Cloudflare Pages is the preferred production target once the production custom
+domain is ready to move out of the private host pipeline. Use the Pages Git
+integration for the first project, not Direct Upload, so GitHub PRs get preview
+deployments, deployment checks, and branch-aware production promotion. Cloudflare
+documents that Git integration and Direct Upload are one-way project choices, so
+starting with Git integration avoids recreating the project later.
+
+The project name is the global `*.pages.dev` subdomain, unique across all of
+Cloudflare — a brandable name may already be taken and also makes the origin URL
+mirror the site. Use a non-guessable project name (for example a random hex
+string) so the `*.pages.dev` origin does not advertise the site; reach production
+only through the custom domain. This preserves the domain-decoupling property
+above: the production origin still lives only in serving-side (Pages)
+configuration, never in the repo.
 
 Project shape:
 
 ```
 GitHub repo: Jarvie8176/portfolio
+project name: non-guessable (e.g. random hex) — sets the *.pages.dev origin
 production branch: main
 preview branches: dev and pull requests
 build command: npm ci && npm run build
 build output directory: dist
 ```
 
-Required Pages environment variables:
+Required Pages environment variables (values set in Pages config, not the repo):
 
 ```
 NODE_VERSION=24
-TRAILWALK_ASSET_BASE_URL=https://media.fnpg.me
-SITE_URL=https://portfolio.fnpg.me
+TRAILWALK_ASSET_BASE_URL=<public asset base URL>
+SITE_URL=<production origin>
 PORTFOLIO_UMAMI_SCRIPT_URL=<public umami script URL>
 PORTFOLIO_UMAMI_WEBSITE_ID=<umami website uuid>
-PORTFOLIO_UMAMI_DOMAINS=portfolio.fnpg.me
+PORTFOLIO_UMAMI_DOMAINS=<production domain>
 ```
 
 Optional Pages environment variables:
@@ -79,20 +88,22 @@ PORTFOLIO_UMAMI_TAG=prod
 
 Cutover plan:
 
-1. Create the Pages project from GitHub with production branch `main`, preview
-   builds enabled for `dev` and PR branches, and output directory `dist`.
+1. Create the Pages project from GitHub with a non-guessable project name,
+   production branch `main`, preview builds enabled for `dev` and PR branches,
+   and output directory `dist`.
 2. Add the environment variables above in Pages production and preview
    environments. Preview may keep `SITE_URL` unset if the artifact should remain
    origin-free; production must set it before sitemap/canonical verification.
 3. Deploy to the temporary `*.pages.dev` URL and verify the Trailwalk page,
-   R2 media loads from `media.fnpg.me`, Umami script renders only when configured,
-   and no raw media URLs or unapproved exact coordinates appear in public HTML.
-4. Attach `portfolio.fnpg.me` through the Pages Custom domains flow. Do not add
-   only a manual CNAME; Cloudflare warns that skipping the Pages association can
-   produce a 522.
-5. Re-run production smoke checks on `https://portfolio.fnpg.me/` and
-   `https://portfolio.fnpg.me/projects/trailwalk/`, then freeze or retire the
-   old homelab production route if one exists.
+   R2 media loads from the asset base URL, the Umami script renders only when
+   configured, and no raw media URLs or unapproved exact coordinates appear in
+   public HTML.
+4. Attach the production custom domain through the Pages Custom domains flow. Do
+   not add only a manual CNAME; Cloudflare warns that skipping the Pages
+   association can produce a 522.
+5. Re-run production smoke checks on the production origin (`/` and
+   `/projects/trailwalk/`), then freeze or retire the old private-host production
+   route if one exists.
 
 Rollback is Pages deployment rollback to the previous successful deployment.
 Keep the current pull-based dev preview until the Pages production route has
