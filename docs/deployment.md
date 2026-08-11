@@ -49,12 +49,13 @@ documents that Git integration and Direct Upload are one-way project choices, so
 starting with Git integration avoids recreating the project later.
 
 The project name is the global `*.pages.dev` subdomain, unique across all of
-Cloudflare — a brandable name may already be taken and also makes the origin URL
+Cloudflare — a brandable name may already be taken and makes the origin hostname
 mirror the site. Use a non-guessable project name (for example a random hex
-string) so the `*.pages.dev` origin does not advertise the site; reach production
-only through the custom domain. This preserves the domain-decoupling property
-above: the production origin still lives only in serving-side (Pages)
-configuration, never in the repo.
+string) to avoid a brand-shaped `*.pages.dev` hostname. This is not origin
+secrecy: Cloudflare posts preview and branch-preview URLs into public PRs, so the
+origin stays discoverable from repo activity. The privacy boundary rests on the
+custom domain, `noindex`/robots on non-production URLs, and the pre-deploy
+artifact scan — not on the origin hostname.
 
 Project shape:
 
@@ -71,8 +72,14 @@ Required Pages environment variables (values set in Pages config, not the repo):
 
 ```
 NODE_VERSION=24
-TRAILWALK_ASSET_BASE_URL=<public asset base URL>
-SITE_URL=<production origin>
+TRAILWALK_ASSET_BASE_URL=<public asset base URL>   # build fails closed without it
+SITE_URL=<production origin>                        # production only
+```
+
+Required only when production analytics is enabled — omit otherwise; the tracker
+is fail-closed and the build deploys without it:
+
+```
 PORTFOLIO_UMAMI_SCRIPT_URL=<public umami script URL>
 PORTFOLIO_UMAMI_WEBSITE_ID=<umami website uuid>
 PORTFOLIO_UMAMI_DOMAINS=<production domain>
@@ -108,6 +115,24 @@ Cutover plan:
 Rollback is Pages deployment rollback to the previous successful deployment.
 Keep the current pull-based dev preview until the Pages production route has
 served at least one verified release on the custom domain.
+
+Pre-deploy gating (open — required before Pages is the sole production path):
+the pull-based pipeline above re-gates every artifact with the private redline
+patterns before the atomic swap. Pages Git integration builds and deploys
+straight from the public repo with no equivalent pre-deploy gate — the
+redline / coordinate / raw-media scan in step 3 currently runs only after the
+deploy is already live, so the first bad `main` push can be public before it is
+scanned. The private patterns cannot live in the public build, so production
+must not auto-deploy ungated. Resolve by one of:
+
+- disable production auto-deploy on the Pages project and trigger production
+  from a private gated job (build → redline scan → `wrangler` / Pages deploy
+  hook), keeping preview builds for PRs; or
+- keep production on the pull-based gated pipeline and use Pages for preview
+  only.
+
+Until this is resolved, Pages production is deployed but not gate-verified;
+treat it as such and do not retire the pull-based production path.
 
 Reference docs:
 
