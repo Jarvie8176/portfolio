@@ -101,18 +101,18 @@ const statusClass: Record<Project['statusCode'], string> = {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.4rem 1rem;
+    gap: 0.5rem 1.25rem;
     margin-bottom: clamp(2rem, 5vw, 3rem);
-    border: 1px solid var(--worlds);
+    border: 2px solid var(--worlds);
     border-radius: 4px;
-    padding: 0.85rem 1.1rem;
-    background: color-mix(in srgb, var(--worlds) 7%, transparent);
+    padding: 1.25rem 1.5rem;
+    background: color-mix(in srgb, var(--worlds) 8%, transparent);
   }
 
   .wip-callout span {
     color: var(--worlds);
     font-family: var(--mono);
-    font-size: 0.72rem;
+    font-size: 0.95rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -122,8 +122,8 @@ const statusClass: Record<Project['statusCode'], string> = {
     margin: 0;
     color: var(--ink);
     font-family: var(--sans);
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 1.15rem;
+    line-height: 1.55;
   }
 
   .project-hero {
