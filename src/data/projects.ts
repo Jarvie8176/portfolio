@@ -64,10 +64,11 @@ export const projects: Project[] = [
     title: 'Yaaa',
     role: 'Assistant Operating Layer',
     statusCode: 'integration',
-    statusLabel: 'Integration in progress',
+    statusLabel: 'Partially live',
     primary: 'systems',
     secondary: 'embodied',
     topic: 'Self-owned assistant layer',
+    conceptPage: true,
     summary:
       'A local-first, federated assistant architecture: self-hostable AI orchestration for auditability and harness-agnostic memory synchronization.',
     existsNow: 'Architecture is accepted and several organs exist.',
