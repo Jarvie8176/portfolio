@@ -32,6 +32,12 @@ const channels: Channel[] = [
     external: false,
     copyable: true,
   },
+  deployment.signalUrl && {
+    label: 'Signal',
+    value: 'Signal',
+    href: deployment.signalUrl,
+    external: true,
+  },
   deployment.schedulingUrl && {
     label: 'Book a call',
     value: displayLink(deployment.schedulingUrl) ?? 'Scheduling',
