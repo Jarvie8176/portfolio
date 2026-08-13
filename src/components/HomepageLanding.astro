@@ -19,21 +19,6 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 ---
 
 <main class:list={['landing', { 'landing-work': isWorkPage }]}>
-  {!isWorkPage && (
-    <div class="cover-band" id="cover" aria-hidden="true">
-      <div class="cover-track">
-        {homepage.gallery.map((slice) => (
-          <div class="cover-slice" style={materialStyle(slice.material)}>
-            <div class="slice-caption">
-              <span>{slice.project}</span>
-              <em>{slice.tagline}</em>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )}
-
   <section class="hero" aria-labelledby="hero-title">
     <div class="section-inner">
       <h1 id="hero-title">
@@ -52,7 +37,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
   <section class="section compass-section" aria-labelledby="practices-label">
     <div class="section-inner">
-      <div class="section-label" id="practices-label">{homepage.practicesLabel}</div>
+      <div class="section-label" id="practices-label">{homepage.topicsLabel}</div>
       <div class="compass-grid">
         {homepage.practices.map((practice) => (
           <a
@@ -145,64 +130,9 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     margin: 0;
   }
 
-  /* S0 — cover gallery: slanted gradient bands, no photography */
-  .cover-band {
-    height: 560px;
-    overflow: hidden;
-    border-bottom: 1px solid var(--rule);
-    background: var(--paper);
-  }
-
-  .cover-track {
-    display: flex;
-    gap: 3px;
-    height: 100%;
-    margin: 0 -4%;
-    transform: skewX(-5deg);
-  }
-
-  .cover-slice {
-    position: relative;
-    flex: 1;
-    min-width: 0;
-    background: linear-gradient(180deg, var(--m-from), var(--m-to));
-  }
-
-  .slice-caption {
-    position: absolute;
-    right: 18px;
-    bottom: 40px;
-    left: var(--caption-left, 30px);
-    display: grid;
-    gap: 5px;
-    transform: skewX(5deg);
-  }
-
-  /* the first slice bleeds off the left viewport edge; keep its caption visible */
-  .cover-slice:first-child {
-    --caption-left: 135px;
-  }
-
-  .slice-caption span {
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    line-height: 1.2;
-    text-transform: uppercase;
-  }
-
-  .slice-caption em {
-    color: rgba(255, 255, 255, 0.38);
-    font-size: 11px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 1.35;
-  }
-
   /* Hero */
   .hero {
-    padding: 50px 0 92px;
+    padding: 50px 0 70px;
   }
 
   .hero h1 {
@@ -214,8 +144,8 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
   }
 
   .bridge {
-    max-width: 576px;
-    margin-top: 26px;
+    max-width: 650px;
+    margin-top: 27px;
     color: var(--ink-soft);
     font-size: 18px;
     line-height: 1.6;
@@ -225,7 +155,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    margin-top: 44px;
+    margin-top: 14px;
   }
 
   .button {
@@ -270,7 +200,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
   /* Section scaffolding */
   .section {
-    padding: 72px 0;
+    padding: 70px 0;
   }
 
   .section-label {
@@ -285,7 +215,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
   /* S1 — practice compass */
   .compass-section {
-    padding-top: 96px;
+    padding-top: 70px;
   }
 
   .compass-grid {
@@ -331,13 +261,13 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
   .compass-panel .lead {
     color: var(--ink-soft);
-    font-size: 15px;
+    font-size: 18px;
     line-height: 1.35;
   }
 
   .compass-panel .meaning {
     color: var(--ink-soft);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.35;
   }
 
@@ -350,12 +280,13 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
   /* S2 — selected work index */
   .work-section {
-    padding-top: 68px;
+    padding-top: 70px;
+    padding-bottom: 60px;
   }
 
   .work-groups {
     display: grid;
-    gap: 96px;
+    gap: 52px;
   }
 
   .group-head {
@@ -386,10 +317,11 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 36px;
-    margin-top: 34px;
+    margin-top: 24px;
   }
 
   .project-card {
+    min-height: 450px;
     display: grid;
     grid-template-rows: 200px auto;
     background: var(--surface);
@@ -443,7 +375,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
   /* S4 — contact */
   .contact-section {
-    padding: 90px 0 100px;
+    padding: 60px 0 100px;
   }
 
   .invite {
@@ -454,7 +386,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
   }
 
   .contact-section .cta-row {
-    margin-top: 56px;
+    margin-top: 72px;
   }
 
   @media (max-width: 1080px) {
@@ -480,28 +412,6 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
   @media (max-width: 760px) {
     .section-inner {
       padding: 0 20px;
-    }
-
-    .cover-band {
-      height: auto;
-    }
-
-    .cover-track {
-      flex-direction: column;
-      gap: 2px;
-      margin: 0;
-      transform: none;
-    }
-
-    .cover-slice {
-      min-height: 76px;
-    }
-
-    .slice-caption {
-      right: 20px;
-      bottom: 14px;
-      left: 20px;
-      transform: none;
     }
 
     .hero {
