@@ -6,12 +6,6 @@ export interface Material {
   to: string;
 }
 
-export interface GallerySlice {
-  project: string;
-  tagline: string;
-  material: Material;
-}
-
 export interface PracticePanel {
   id: PracticeId;
   title: string;
@@ -44,33 +38,6 @@ const materials: Record<string, Material> = {
 };
 
 export const homepage = {
-  gallery: [
-    {
-      project: 'amanuensis',
-      tagline: 'A signal filter for dense information streams',
-      material: materials.amanuensis,
-    },
-    {
-      project: 'Yaaa',
-      tagline: 'Local-first agent federation',
-      material: materials.yaaa,
-    },
-    {
-      project: 'Beagle',
-      tagline: 'Memory and attention support',
-      material: materials.beagle,
-    },
-    {
-      project: 'Trailwalk',
-      tagline: 'Immersive walking',
-      material: materials.trailwalk,
-    },
-    {
-      project: 'commonplace',
-      tagline: 'World exploration with an AI agent',
-      material: materials.commonplace,
-    },
-  ] satisfies GallerySlice[],
   hero: {
     h1: 'Exploring what remains irreducible in the age of Generative AI',
     bridge:
@@ -80,15 +47,16 @@ export const homepage = {
       { label: 'Contact', href: '#contact' },
     ],
   },
-  practicesLabel: 'Three practices',
+  topicsLabel: 'Topics',
   practices: [
     {
       id: 'systems',
       title: 'Systems',
-      lead: 'When AI needs to answer to the person it serves.',
+      lead:
+        'Engineering foundations and practices to support trackable design, iterations, ownership.',
       meaning:
         'The building blocks underneath the rest of this work: reusable assistant architectures that concrete tools and worlds are built on.',
-      related: 'amanuensis · Yaaa',
+      related: 'Amanuensis · Yaaa',
     },
     {
       id: 'embodied-life',
@@ -101,7 +69,7 @@ export const homepage = {
     {
       id: 'inhabited-worlds',
       title: 'Inhabited Worlds',
-      lead: 'When worlds are shared before they are solved.',
+      lead: 'How we share and experience, and engage with the world',
       meaning:
         'Studying the relationship and otherness in encounters between humans, AI agents, and other creatures, and what those encounters come to mean for us.',
       related: 'commonplace',
@@ -112,13 +80,13 @@ export const homepage = {
       id: 'systems',
       label: 'Systems',
       thesis: {
-        claim: 'Privacy and control start in the architecture.',
-        body: 'Systems that act for you should keep your data yours, stay inspectable, and move with you.',
+        claim: 'Ownership lives in the architecture.',
+        body: 'Personal AI should keep information flow, memory, orchestration, and delivery inspectable and portable, so models, providers, and tools can change without taking control away from the person.',
       },
       projects: [
         {
           id: 'amanuensis',
-          name: 'amanuensis',
+          name: 'Amanuensis',
           introduction:
             'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information (work email, to-dos, appointments) and ambient information (flyers, newsletters, weather alerts, RSS feeds), then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
           href: '/projects/amanuensis/',
@@ -138,7 +106,7 @@ export const homepage = {
       id: 'embodied-life',
       label: 'Embodied Life',
       thesis: {
-        claim: 'Good support leaves you in charge.',
+        claim: 'Enablement, not replacement.',
         body: "Technology should lower the barriers of memory, attention, and mobility, and leave every decision in the person's hands.",
       },
       projects: [
@@ -165,14 +133,14 @@ export const homepage = {
       label: 'Inhabited Worlds',
       thesis: {
         claim: 'Worlds are made of relationships.',
-        body: 'Relationships with agents, strangers, and places matter in themselves, irreducible to any outcome.',
+        body: 'Relationships among people, AI agents, machines, and other beings shape how a world is shared and experienced, irreducible to any outcome.',
       },
       projects: [
         {
           id: 'commonplace',
           name: 'commonplace',
           introduction:
-            'Research into human–AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
+            'Research into human-AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
           href: '/projects/commonplace/',
           material: materials.commonplace,
         },
