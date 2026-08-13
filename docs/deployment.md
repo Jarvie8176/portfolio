@@ -39,6 +39,119 @@ serving side (private host, pull-based):
   production promotion is deliberately a manual invocation of the same
   pipeline and is not wired up yet.
 
+## Cloudflare Pages Candidate
+
+Cloudflare Pages is the preferred production target once the production custom
+domain is ready to move out of the private host pipeline. Use the Pages Git
+integration for the first project, not Direct Upload, so GitHub PRs get preview
+deployments, deployment checks, and branch-aware production promotion. Cloudflare
+documents that Git integration and Direct Upload are one-way project choices, so
+starting with Git integration avoids recreating the project later.
+
+The project name is the global `*.pages.dev` subdomain, unique across all of
+Cloudflare — a brandable name may already be taken and makes the origin hostname
+mirror the site. Use a non-guessable project name (for example a random hex
+string) to avoid a brand-shaped `*.pages.dev` hostname. This is not origin
+secrecy: Cloudflare posts preview and branch-preview URLs into public PRs, so the
+origin stays discoverable from repo activity. The privacy boundary rests on the
+custom domain, `noindex`/robots on non-production URLs, and the pre-deploy
+artifact scan — not on the origin hostname.
+
+Environments:
+
+- **dev** auto-deploys to the private-network host (tailnet-only, `noindex`) on
+  merge to `dev`. This is the existing pull-based pipeline and stays private; it
+  is not a Cloudflare Pages preview, so Pages public previews are disabled.
+- **prod** auto-deploys the `main` branch to Cloudflare Pages, served on the
+  production custom domain. Pages is production-only: preview deployments and PR
+  comments are turned off so nothing from a branch or PR reaches a public
+  `*.pages.dev` URL.
+
+Project shape:
+
+```
+GitHub repo: Jarvie8176/portfolio
+project name: non-guessable (e.g. random hex) — sets the *.pages.dev origin
+production branch: main
+preview branches: dev and pull requests
+build command: npm ci && npm run build
+build output directory: dist
+```
+
+Required Pages environment variables (values set in Pages config, not the repo):
+
+```
+NODE_VERSION=24
+TRAILWALK_ASSET_BASE_URL=<public asset base URL>   # build fails closed without it
+SITE_URL=<production origin>                        # production only
+```
+
+Required only when production analytics is enabled — omit otherwise; the tracker
+is fail-closed and the build deploys without it:
+
+```
+PORTFOLIO_UMAMI_SCRIPT_URL=<public umami script URL>
+PORTFOLIO_UMAMI_WEBSITE_ID=<umami website uuid>
+PORTFOLIO_UMAMI_DOMAINS=<production domain>
+```
+
+Optional Pages environment variables:
+
+```
+PORTFOLIO_CONTACT_EMAIL=<public contact address>
+PORTFOLIO_UPDATES_URL=<public updates URL>
+PORTFOLIO_UMAMI_TAG=prod
+```
+
+Cutover plan:
+
+1. Create the Pages project from GitHub with a non-guessable project name,
+   production branch `main`, preview builds enabled for `dev` and PR branches,
+   and output directory `dist`.
+2. Add the environment variables above in Pages production and preview
+   environments. Preview may keep `SITE_URL` unset if the artifact should remain
+   origin-free; production must set it before sitemap/canonical verification.
+3. Deploy to the temporary `*.pages.dev` URL and verify the Trailwalk page,
+   R2 media loads from the asset base URL, the Umami script renders only when
+   configured, and no raw media URLs or unapproved exact coordinates appear in
+   public HTML.
+4. Attach the production custom domain through the Pages Custom domains flow. Do
+   not add only a manual CNAME; Cloudflare warns that skipping the Pages
+   association can produce a 522.
+5. Re-run production smoke checks on the production origin (`/` and
+   `/projects/trailwalk/`), then freeze or retire the old private-host production
+   route if one exists.
+
+Rollback is Pages deployment rollback to the previous successful deployment.
+Keep the current pull-based dev preview until the Pages production route has
+served at least one verified release on the custom domain.
+
+Pre-deploy gating (open — required before content changes flow to `main`):
+`main` auto-deploys to the public production origin, so the redline / coordinate
+/ raw-media scan must pass **before** a change reaches `main` — Pages builds from
+the public repo and cannot run the private patterns itself, and the step 3 scan
+otherwise runs only after the deploy is already live. Because production
+auto-deploy is a requirement, the gate moves to the merge boundary: run the
+private redline scan as a **required status check on pull requests into `main`**,
+executed on a private tailnet self-hosted runner that holds the pattern list.
+That keeps the gate mechanical and pre-deploy (pre-merge) without putting the
+private patterns in the public build.
+
+Until that required check is wired, a change merged to `main` reaches the public
+site ungated; do not merge content changes to `main` before the check is in
+place, and keep the pull-based path as the gated reference.
+
+Reference docs:
+
+- Cloudflare Pages Git integration:
+  <https://developers.cloudflare.com/pages/configuration/git-integration/>
+- Cloudflare Pages GitHub integration:
+  <https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/>
+- Cloudflare Pages Direct Upload:
+  <https://developers.cloudflare.com/pages/get-started/direct-upload/>
+- Cloudflare Pages custom domains:
+  <https://developers.cloudflare.com/pages/configuration/custom-domains/>
+
 ## Analytics
 
 See [analytics.md](./analytics.md) for the event taxonomy and privacy boundary.
