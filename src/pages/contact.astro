@@ -7,6 +7,8 @@ interface Channel {
   value: string;
   href: string;
   external: boolean;
+  /** Email renders its address with a copy button; link rows hide the URL. */
+  copyable?: boolean;
 }
 
 /** Compact display form of a URL: host without www, plus any path. */
@@ -28,6 +30,7 @@ const channels: Channel[] = [
     value: deployment.contactEmail,
     href: `mailto:${deployment.contactEmail}`,
     external: false,
+    copyable: true,
   },
   deployment.schedulingUrl && {
     label: 'Book a call',
@@ -68,20 +71,37 @@ const channels: Channel[] = [
       <p class="role">{site.role}</p>
 
       <ul class="channel-list">
-        {channels.map((channel) => (
-          <li>
-            <a
-              class="channel"
-              href={channel.href}
-              rel={channel.external ? 'me noopener' : undefined}
-              target={channel.external ? '_blank' : undefined}
-            >
-              <span class="channel-label">{channel.label}</span>
-              <span class="channel-value">{channel.value}</span>
-              <span class="channel-arrow" aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
-        ))}
+        {channels.map((channel) =>
+          channel.copyable ? (
+            <li>
+              <div class="channel">
+                <span class="channel-label">{channel.label}</span>
+                <span class="channel-value selectable">{channel.value}</span>
+                <span class="channel-actions">
+                  <button class="copy-btn" type="button" data-copy={channel.value}>
+                    Copy
+                  </button>
+                  <a class="channel-arrow" href={channel.href} aria-label={`${channel.label}: write to ${channel.value}`}>
+                    <span aria-hidden="true">&rarr;</span>
+                  </a>
+                </span>
+              </div>
+            </li>
+          ) : (
+            <li>
+              <a
+                class="channel"
+                href={channel.href}
+                rel={channel.external ? 'me noopener' : undefined}
+                target={channel.external ? '_blank' : undefined}
+              >
+                <span class="channel-label">{channel.label}</span>
+                <span class="channel-value" aria-hidden="true"></span>
+                <span class="channel-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          )
+        )}
       </ul>
 
       <a class="back-link" href="/#work">View Work</a>
@@ -153,6 +173,49 @@ const channels: Channel[] = [
     padding: 20px 4px;
     border-bottom: 1px solid var(--rule);
     text-decoration: none;
+    user-select: none;
+  }
+
+  .channel-value.selectable {
+    user-select: text;
+  }
+
+  .channel-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .copy-btn {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--ink);
+    padding: 0 12px;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--worlds);
+    color: var(--worlds);
+  }
+
+  .copy-btn:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 4px;
+  }
+
+  .copy-btn.done {
+    border-color: var(--embodied);
+    color: var(--embodied);
   }
 
   .channel:hover .channel-value,
@@ -223,3 +286,34 @@ const channels: Channel[] = [
     }
   }
 </style>
+
+<script>
+  // Clipboard API needs a secure context; the execCommand path covers plain
+  // HTTP previews.
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('.copy-btn')) {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy ?? '';
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        ok = document.execCommand('copy');
+        ta.remove();
+      }
+      btn.textContent = ok ? 'Copied' : 'Copy failed';
+      btn.classList.toggle('done', ok);
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('done');
+      }, 1600);
+    });
+  }
+</script>
