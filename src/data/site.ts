@@ -1,9 +1,9 @@
 export const site = {
   name: 'J. Kong',
-  homeTitle: 'Exploring what cannot be reduced in the age of GenAI',
+  homeTitle: 'Exploring what remains irreducible in the age of Generative AI',
   description:
-    'A portfolio of systems, embodied life, and inhabited worlds that resist being flattened into tasks, data, or generated output.',
-  role: 'Research engineer working across AI systems, embodied media, and public-world observation.',
+    'A portfolio of systems, embodied life, and inhabited worlds for agency, shared worlds, and personal AI infrastructure.',
+  role: 'Research engineer working across AI systems, embodied media, and public observation.',
   githubUrl: 'https://github.com/Jarvie8176',
 };
 

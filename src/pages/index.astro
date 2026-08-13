@@ -1,9 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import CoverGallery from '../components/CoverGallery.astro';
-import PracticeIndex from '../components/PracticeIndex.astro';
-import ProjectSections from '../components/ProjectSections.astro';
-import { projects } from '../data/projects';
+import HomepageLanding from '../components/HomepageLanding.astro';
 import { site } from '../data/site';
 ---
 
@@ -12,16 +9,5 @@ import { site } from '../data/site';
   description={site.description}
   wide
 >
-  <PracticeIndex projects={projects} />
-
-  <main id="work" class="home">
-    <CoverGallery projects={projects} />
-    <ProjectSections />
-  </main>
+  <HomepageLanding />
 </Base>
-
-<style>
-  .home {
-    background: var(--paper);
-  }
-</style>
