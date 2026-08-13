@@ -108,9 +108,9 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 <style>
   .landing {
     /* board geometry is authored at 1440 with 72px margins; zoom scales the
-       whole composition ~110% and --max compensates so margins stay 72px */
-    --max: 1242px;
-    zoom: 1.1;
+       whole composition ~120% and --max compensates so margins stay 72px */
+    --max: 1144px;
+    zoom: 1.2;
     color: var(--ink);
     background: var(--paper);
     font-family: var(--sans);
@@ -393,7 +393,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     margin-top: 72px;
   }
 
-  @media (max-width: 1188px) {
+  @media (max-width: 1296px) {
     .compass-grid {
       grid-template-columns: 1fr;
     }
@@ -412,13 +412,13 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     }
   }
 
-  @media (max-width: 990px) {
+  @media (max-width: 1080px) {
     .project-grid {
       grid-template-columns: 1fr;
     }
   }
 
-  @media (max-width: 836px) {
+  @media (max-width: 912px) {
     .section-inner {
       padding: 0 20px;
     }
