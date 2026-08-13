@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { deployment, displayHost, site } from '../data/site';
+import { deployment, site } from '../data/site';
 
 interface Channel {
   label: string;
@@ -8,6 +8,18 @@ interface Channel {
   href: string;
   external: boolean;
 }
+
+/** Compact display form of a URL: host without www, plus any path. */
+const displayLink = (url: string | undefined) => {
+  if (!url) return undefined;
+  try {
+    const u = new URL(url);
+    const path = u.pathname === '/' ? '' : u.pathname.replace(/\/$/, '');
+    return u.host.replace(/^www\./, '') + path;
+  } catch {
+    return undefined;
+  }
+};
 
 /** Channels come from deploy-time env injection; absent values render nothing. */
 const channels: Channel[] = [
@@ -19,20 +31,26 @@ const channels: Channel[] = [
   },
   deployment.schedulingUrl && {
     label: 'Book a call',
-    value: displayHost(deployment.schedulingUrl) ?? 'Scheduling',
+    value: displayLink(deployment.schedulingUrl) ?? 'Scheduling',
     href: deployment.schedulingUrl,
     external: true,
   },
   deployment.linkedinUrl && {
     label: 'LinkedIn',
-    value: displayHost(deployment.linkedinUrl) ?? 'Profile',
+    value: displayLink(deployment.linkedinUrl) ?? 'Profile',
     href: deployment.linkedinUrl,
     external: true,
   },
   {
     label: 'GitHub',
-    value: displayHost(site.githubUrl) ?? 'GitHub',
+    value: displayLink(site.githubUrl) ?? 'GitHub',
     href: site.githubUrl,
+    external: true,
+  },
+  {
+    label: 'GitHub · AI agent',
+    value: displayLink(site.agentGithubUrl) ?? 'GitHub',
+    href: site.agentGithubUrl,
     external: true,
   },
 ].filter(Boolean) as Channel[];
