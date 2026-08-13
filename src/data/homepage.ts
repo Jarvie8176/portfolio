@@ -1,30 +1,76 @@
-export type TopicId = 'systems' | 'embodied-life' | 'inhabited-worlds';
+export type PracticeId = 'systems' | 'embodied-life' | 'inhabited-worlds';
 
-export interface TopicPanel {
-  id: TopicId;
+/** Two-stop vertical gradient standing in for project material imagery. */
+export interface Material {
+  from: string;
+  to: string;
+}
+
+export interface GallerySlice {
+  project: string;
+  tagline: string;
+  material: Material;
+}
+
+export interface PracticePanel {
+  id: PracticeId;
   title: string;
   lead: string;
   meaning: string;
-  projects: string[];
+  related: string;
 }
 
-export interface HomepageProject {
+export interface WorkProject {
   id: string;
   name: string;
-  topic: TopicId;
   introduction: string;
-  asset: string;
   href: string;
+  material: Material;
 }
 
 export interface WorkGroup {
-  id: TopicId;
-  name: string;
-  thesis: [string, string];
-  projects: string[];
+  id: PracticeId;
+  label: string;
+  thesis: { claim: string; body: string };
+  projects: WorkProject[];
 }
 
+const materials: Record<string, Material> = {
+  amanuensis: { from: '#2d4a70', to: '#1a3050' },
+  yaaa: { from: '#4268a0', to: '#2f507a' },
+  beagle: { from: '#5a6a4a', to: '#3d4d30' },
+  trailwalk: { from: '#738262', to: '#545f42' },
+  commonplace: { from: '#7a5040', to: '#4d3020' },
+};
+
 export const homepage = {
+  gallery: [
+    {
+      project: 'amanuensis',
+      tagline: 'A signal filter for dense information streams',
+      material: materials.amanuensis,
+    },
+    {
+      project: 'Yaaa',
+      tagline: 'Local-first agent federation',
+      material: materials.yaaa,
+    },
+    {
+      project: 'Beagle',
+      tagline: 'Memory and attention support',
+      material: materials.beagle,
+    },
+    {
+      project: 'Trailwalk',
+      tagline: 'Immersive walking',
+      material: materials.trailwalk,
+    },
+    {
+      project: 'commonplace',
+      tagline: 'World exploration with an AI agent',
+      material: materials.commonplace,
+    },
+  ] satisfies GallerySlice[],
   hero: {
     h1: 'Exploring what remains irreducible in the age of Generative AI',
     bridge:
@@ -34,15 +80,15 @@ export const homepage = {
       { label: 'Contact', href: '#contact' },
     ],
   },
-  topics: [
+  practicesLabel: 'Three practices',
+  practices: [
     {
       id: 'systems',
       title: 'Systems',
-      lead:
-        'Engineering foundations and practices to support trackable design, iterations, ownership.',
+      lead: 'When AI needs to answer to the person it serves.',
       meaning:
         'The building blocks underneath the rest of this work: reusable assistant architectures that concrete tools and worlds are built on.',
-      projects: ['Amanuensis', 'Yaaa'],
+      related: 'amanuensis · Yaaa',
     },
     {
       id: 'embodied-life',
@@ -50,44 +96,87 @@ export const homepage = {
       lead: 'When memory, attention, or mobility set the terms.',
       meaning:
         'Technology that lowers barriers: support for memory, attention, and mobility that widens what a person can notice, remember, and reach.',
-      projects: ['Beagle', 'Trailwalk'],
+      related: 'Beagle · Trailwalk',
     },
     {
       id: 'inhabited-worlds',
       title: 'Inhabited Worlds',
-      lead: 'How we share and experience, and engage with the world',
+      lead: 'When worlds are shared before they are solved.',
       meaning:
         'Studying the relationship and otherness in encounters between humans, AI agents, and other creatures, and what those encounters come to mean for us.',
-      projects: ['commonplace'],
+      related: 'commonplace',
     },
-  ] satisfies TopicPanel[],
+  ] satisfies PracticePanel[],
   workGroups: [
     {
       id: 'systems',
-      name: 'Systems',
-      thesis: [
-        'Ownership lives in the architecture.',
-        'Personal AI should keep information flow, memory, orchestration, and delivery inspectable and portable, so models, providers, and tools can change without taking control away from the person.',
+      label: 'Systems',
+      thesis: {
+        claim: 'Privacy and control start in the architecture.',
+        body: 'Systems that act for you should keep your data yours, stay inspectable, and move with you.',
+      },
+      projects: [
+        {
+          id: 'amanuensis',
+          name: 'amanuensis',
+          introduction:
+            'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information (work email, to-dos, appointments) and ambient information (flyers, newsletters, weather alerts, RSS feeds), then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
+          href: '/projects/amanuensis/',
+          material: materials.amanuensis,
+        },
+        {
+          id: 'yaaa',
+          name: 'Yaaa',
+          introduction:
+            'A local-first, federated assistant architecture: self-hostable AI orchestration for auditability and harness-agnostic memory synchronization.',
+          href: '/projects/yaaa/',
+          material: materials.yaaa,
+        },
       ],
-      projects: ['amanuensis', 'yaaa'],
     },
     {
       id: 'embodied-life',
-      name: 'Embodied Life',
-      thesis: [
-        'Enablement, not replacement.',
-        "Technology should lower the barriers of memory, attention, and mobility, and leave every decision in the person's hands.",
+      label: 'Embodied Life',
+      thesis: {
+        claim: 'Good support leaves you in charge.',
+        body: "Technology should lower the barriers of memory, attention, and mobility, and leave every decision in the person's hands.",
+      },
+      projects: [
+        {
+          id: 'beagle',
+          name: 'Beagle',
+          introduction:
+            'A cognitive-support agent concept for people facing memory or attention barriers: an always-on assistant that logs, tracks, and reminds, so the person can make informed decisions even when being informed is a challenge.',
+          href: '/projects/beagle/',
+          material: materials.beagle,
+        },
+        {
+          id: 'trailwalk',
+          name: 'Trailwalk',
+          introduction:
+            'A VR walking prototype built from real 360-degree trail video and spatial audio, designed to make outdoor places more accessible from indoor community settings.',
+          href: '/projects/trailwalk/',
+          material: materials.trailwalk,
+        },
       ],
-      projects: ['beagle', 'trailwalk'],
     },
     {
       id: 'inhabited-worlds',
-      name: 'Inhabited Worlds',
-      thesis: [
-        'Worlds are made of relationships.',
-        'Relationships among people, AI agents, machines, and other beings shape how a world is shared and experienced, irreducible to any outcome.',
+      label: 'Inhabited Worlds',
+      thesis: {
+        claim: 'Worlds are made of relationships.',
+        body: 'Relationships with agents, strangers, and places matter in themselves, irreducible to any outcome.',
+      },
+      projects: [
+        {
+          id: 'commonplace',
+          name: 'commonplace',
+          introduction:
+            'Research into human–AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
+          href: '/projects/commonplace/',
+          material: materials.commonplace,
+        },
       ],
-      projects: ['commonplace'],
     },
   ] satisfies WorkGroup[],
   contact: {
@@ -99,55 +188,3 @@ export const homepage = {
     ],
   },
 };
-
-export const homepageProjects: HomepageProject[] = [
-  {
-    id: 'amanuensis',
-    name: 'Amanuensis',
-    topic: 'systems',
-    introduction:
-      'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information (work email, to-dos, appointments) and ambient information (flyers, newsletters, weather alerts, RSS feeds), then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
-    asset: '/assets/project-covers/amanuensis-trace.svg',
-    href: '/projects/amanuensis/',
-  },
-  {
-    id: 'yaaa',
-    name: 'Yaaa',
-    topic: 'systems',
-    introduction:
-      'A local-first, federated assistant architecture: self-hostable AI orchestration for auditability and harness-agnostic memory synchronization.',
-    asset: '/assets/project-covers/yaaa-layer-map.svg',
-    href: '/projects/yaaa/',
-  },
-  {
-    id: 'beagle',
-    name: 'Beagle',
-    topic: 'embodied-life',
-    introduction:
-      'A cognitive-support agent concept for people facing memory or attention barriers: an always-on assistant that logs, tracks, and reminds, so the person can make informed decisions even when being informed is a challenge.',
-    asset: '/assets/project-covers/beagle-logbook.svg',
-    href: '/projects/beagle/',
-  },
-  {
-    id: 'trailwalk',
-    name: 'Trailwalk',
-    topic: 'embodied-life',
-    introduction:
-      'A VR walking prototype built from real 360-degree trail video and spatial audio, designed to make outdoor places more accessible from indoor community settings.',
-    asset: '/assets/project-covers/trailwalk-shoreline.webp',
-    href: '/projects/trailwalk/',
-  },
-  {
-    id: 'commonplace',
-    name: 'commonplace',
-    topic: 'inhabited-worlds',
-    introduction:
-      'Research into human-AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
-    asset: '/assets/project-covers/commonplace-bridge.svg',
-    href: '/projects/commonplace/',
-  },
-];
-
-export const homepageProjectById = Object.fromEntries(
-  homepageProjects.map((project) => [project.id, project])
-) as Record<string, HomepageProject>;
