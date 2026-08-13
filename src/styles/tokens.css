@@ -63,7 +63,7 @@
   --col-main: 42rem;       /* ~68ch at body size            */
   --col-note: 14rem;       /* margin-note rail              */
   --radius:   3px;
-  --site-header-min: 52px;
+  --site-header-min: 56px;
   --practice-index-height: 3.2rem;
   --project-section-offset: calc(var(--site-header-min) + var(--practice-index-height) + 2rem);
 }
