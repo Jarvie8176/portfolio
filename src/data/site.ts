@@ -30,6 +30,10 @@ const analyticsWebsiteId =
 export const deployment = {
   /** Public contact address. Omitted from the page when unset. */
   contactEmail: env('PORTFOLIO_CONTACT_EMAIL'),
+  /** Scheduling link (e.g. Calendly). Omitted from the page when unset. */
+  schedulingUrl: env('PORTFOLIO_SCHEDULING_URL'),
+  /** LinkedIn profile URL. Omitted from the page when unset. */
+  linkedinUrl: env('PORTFOLIO_LINKEDIN_URL'),
   /** Where readers follow development notes. Omitted from the page when unset. */
   updatesUrl: env('PORTFOLIO_UPDATES_URL'),
   /** Base URL for Trailwalk gallery media. Required; the gallery fails closed. */

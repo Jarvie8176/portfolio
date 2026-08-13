@@ -18,14 +18,14 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
   `--m-from: ${from}; --m-to: ${to};`;
 ---
 
-<main class:list={['landing', { 'landing-work': isWorkPage }]}>
+<main class="landing">
   <section class="hero" aria-labelledby="hero-title">
     <div class="section-inner">
       <h1 id="hero-title">
         {isWorkPage ? 'Selected work across systems, bodies, and worlds.' : homepage.hero.h1}
       </h1>
       <p class="bridge">{homepage.hero.bridge}</p>
-      <div class="cta-row" aria-label="Hero actions">
+      <div class="cta-row" role="group" aria-label="Hero actions">
         {homepage.hero.ctas.map((cta) => (
           <a class:list={['button', cta.label === 'Contact' && 'secondary']} href={cta.href}>
             {cta.label}
@@ -46,7 +46,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
             aria-label={`${practice.title}: ${practice.lead}`}
           >
             <div class="compass-copy">
-              <h3>{practice.title}</h3>
+              <h2>{practice.title}</h2>
               <p class="lead">{practice.lead}</p>
               <p class="meaning">{practice.meaning}</p>
             </div>
@@ -64,7 +64,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
           <section class="work-group" id={group.id} aria-labelledby={`${group.id}-label`}>
             <div class:list={['group-head', practiceClass[group.id]]}>
               <span class="section-label group-label" id={`${group.id}-label`}>{group.label}</span>
-              <h3 class="thesis-claim">{group.thesis.claim}</h3>
+              <h2 class="thesis-claim">{group.thesis.claim}</h2>
               <p class="thesis-body">{group.thesis.body}</p>
             </div>
             <div class="project-grid">
@@ -74,12 +74,13 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
                     class="project-media"
                     href={project.href}
                     style={materialStyle(project.material)}
-                    aria-label={`${project.name} project`}
+                    tabindex="-1"
+                    aria-hidden="true"
                   ></a>
                   <div class="project-copy">
-                    <h4><a href={project.href}>{project.name}</a></h4>
+                    <h3><a href={project.href}>{project.name}</a></h3>
                     <p>{project.introduction}</p>
-                    <a class="project-link" href={project.href}>View <span aria-hidden="true">&rarr;</span></a>
+                    <a class="project-link" href={project.href} tabindex="-1" aria-hidden="true">View <span>&rarr;</span></a>
                   </div>
                 </article>
               ))}
@@ -93,7 +94,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
   <section class="contact-section" id="contact" aria-labelledby="contact-title">
     <div class="section-inner">
       <p class="invite" id="contact-title">{homepage.contact.invitation}</p>
-      <div class="cta-row" aria-label="Contact actions">
+      <div class="cta-row" role="group" aria-label="Contact actions">
         {homepage.contact.ctas.map((cta) => (
           <a class:list={['button', cta.label === 'View Work' && 'quiet']} href={cta.href}>
             {cta.label}
@@ -106,7 +107,10 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
 <style>
   .landing {
-    --max: 1296px;
+    /* board geometry is authored at 1440 with 72px margins; zoom scales the
+       whole composition ~110% and --max compensates so margins stay 72px */
+    --max: 1242px;
+    zoom: 1.1;
     color: var(--ink);
     background: var(--paper);
     font-family: var(--sans);
@@ -124,8 +128,8 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
   }
 
   h1,
+  h2,
   h3,
-  h4,
   p {
     margin: 0;
   }
@@ -206,7 +210,7 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
   .section-label {
     display: block;
     color: var(--ink-soft);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.12em;
     line-height: 1.2;
@@ -248,10 +252,10 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
 
   .compass-copy {
     display: grid;
-    gap: 18px;
+    grid-template-rows: minmax(54px, auto) minmax(108px, auto) auto;
   }
 
-  .compass-panel h3 {
+  .compass-panel h2 {
     color: var(--ink);
     font-size: 28px;
     font-weight: 700;
@@ -339,19 +343,19 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     padding: 28px;
   }
 
-  .project-copy h4 {
+  .project-copy h3 {
     font-size: 21px;
     font-weight: 700;
     letter-spacing: 0;
     line-height: 1.2;
   }
 
-  .project-copy h4 a {
+  .project-copy h3 a {
     color: var(--ink);
     text-decoration: none;
   }
 
-  .project-copy h4 a:hover {
+  .project-copy h3 a:hover {
     color: var(--worlds);
   }
 
@@ -389,9 +393,14 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     margin-top: 72px;
   }
 
-  @media (max-width: 1080px) {
+  @media (max-width: 1188px) {
     .compass-grid {
       grid-template-columns: 1fr;
+    }
+
+    .compass-copy {
+      grid-template-rows: auto;
+      gap: 18px;
     }
 
     .compass-panel {
@@ -403,13 +412,13 @@ const materialStyle = ({ from, to }: { from: string; to: string }) =>
     }
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 990px) {
     .project-grid {
       grid-template-columns: 1fr;
     }
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 836px) {
     .section-inner {
       padding: 0 20px;
     }

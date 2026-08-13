@@ -64,8 +64,7 @@
   --col-note: 14rem;       /* margin-note rail              */
   --radius:   3px;
   --site-header-min: 56px;
-  --practice-index-height: 3.2rem;
-  --project-section-offset: calc(var(--site-header-min) + var(--practice-index-height) + 2rem);
+  --project-section-offset: calc(var(--site-header-min) + 1rem);
 }
 
 /* ============================================================
@@ -324,7 +323,8 @@ a:hover { color: var(--stamp); }
 }
 
 .page--wide .site-foot {
-  padding-inline: clamp(1.5rem, 4vw, 4rem);
+  /* 5vw = 72px at the 1440 design width; keeps the footer on the landing's content margin */
+  padding-inline: max(1.5rem, 5vw);
 }
 
 .meta-row {
