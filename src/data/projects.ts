@@ -20,7 +20,6 @@ export interface Project {
   why: string;
   unresolved: string;
   evidence: string;
-  materialLabel: string;
   coverImage: string;
   coverPosition?: string;
   href?: string;
@@ -45,19 +44,19 @@ export const practiceLabels: Record<Practice, string> = {
 export const projects: Project[] = [
   {
     id: 'amanuensis',
-    title: 'amanuensis',
+    title: 'Amanuensis',
     role: 'Systems Case',
     statusCode: 'operational',
     statusLabel: 'In use',
     primary: 'systems',
     secondary: 'worlds',
     topic: 'Attention filtering',
-    summary: 'A system for gathering information, reducing noise, and showing what matters.',
+    summary:
+      'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information and ambient information, then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
     existsNow: 'Read, reason, and push kits are in use for a digest loop.',
     why: 'It keeps attention from being spent on every incoming signal.',
     unresolved: 'Public release posture and broader adapter shape remain open.',
     evidence: 'Digest loop, triage policy seam, delivery ledger',
-    materialLabel: 'Read/reason/push trace',
     coverImage: '/assets/project-covers/amanuensis-trace.svg',
   },
   {
@@ -69,12 +68,12 @@ export const projects: Project[] = [
     primary: 'systems',
     secondary: 'embodied',
     topic: 'Self-owned assistant layer',
-    summary: 'A self-owned assistant layer that connects memory, conversation, action, surfaces, and safety.',
+    summary:
+      'A local-first, federated assistant architecture: self-hostable AI orchestration for auditability and harness-agnostic memory synchronization.',
     existsNow: 'Architecture is accepted and several organs exist.',
     why: 'It asks how an assistant can stay auditable and under human authority.',
     unresolved: 'The full assistant loop and high-sensitivity safety path are not closed.',
     evidence: 'Capability map and binding plan',
-    materialLabel: 'Assistant layer map',
     coverImage: '/assets/project-covers/yaaa-layer-map.svg',
   },
   {
@@ -86,12 +85,12 @@ export const projects: Project[] = [
     primary: 'embodied',
     secondary: 'systems',
     topic: 'Memory support as care',
-    summary: 'A memory helper that turns daily audio into notes, reminders, and traces the user can keep.',
+    summary:
+      'A cognitive-support agent concept for people facing memory or attention barriers: an always-on assistant that logs, tracks, and reminds, so the person can make informed decisions even when being informed is a challenge.',
     existsNow: 'The product shape, roadmap, and feasibility gates are defined.',
     why: 'It treats memory support as care without handing authority to the machine.',
     unresolved: 'Recorder export, local extraction quality, and compute budget still need proof.',
     evidence: 'Nightly walking-skeleton plan',
-    materialLabel: 'Daily logbook pipeline',
     coverImage: '/assets/project-covers/beagle-logbook.svg',
     href: '/projects/beagle/',
   },
@@ -105,12 +104,12 @@ export const projects: Project[] = [
     primary: 'embodied',
     secondary: 'worlds',
     topic: 'Outdoor access through embodied media',
-    summary: 'A VR walking project that brings real outdoor trails to people who cannot easily walk outside.',
+    summary:
+      'A VR walking prototype built from real 360-degree trail video and spatial audio, designed to make outdoor places more accessible from indoor community settings.',
     existsNow: 'Core playback, spatial audio, speed-source, and media-pipeline questions have working spikes.',
     why: 'It asks what place, motion, and outdoor memory mean when the body cannot easily reach the trail.',
     unresolved: 'Quest playback, audio-rate architecture, and comfort validation remain open.',
     evidence: '360 trail capture, spatial audio, walking-pad speed trace',
-    materialLabel: '360 trail capture panel',
     coverImage: '/assets/project-covers/trailwalk-shoreline.webp',
     coverPosition: '50% 46%',
   },
@@ -123,30 +122,12 @@ export const projects: Project[] = [
     primary: 'worlds',
     secondary: 'systems',
     topic: 'Co-presence beyond task success',
-    summary: 'A shared research world where a human and an AI agent live alongside each other, exploring co-dwelling, curiosity, and shared agency beyond task success.',
+    summary:
+      'Research into human-AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
     existsNow: 'The bridge contract and deterministic toy world are implemented.',
     why: 'It studies agency, curiosity, and co-presence beyond reward optimization.',
     unresolved: 'The full logbook, drive layer, and orchestration loop are still in progress.',
     evidence: 'SyntheticBridge run and logbook trace',
-    materialLabel: 'Bridge trace',
     coverImage: '/assets/project-covers/commonplace-bridge.svg',
-  },
-  {
-    id: 'open-world-notes',
-    title: 'Notes of Open World Observations',
-    role: 'Inhabited Worlds Anchor',
-    statusCode: 'archive',
-    statusLabel: 'Ongoing archive',
-    primary: 'worlds',
-    secondary: 'embodied',
-    topic: 'Public-world observation',
-    summary: '"I record moments worth remembering." An ongoing instant-photo exchange project exploring public encounters, refusal, the ethics of the gaze, and the small knots left in ordinary days.',
-    existsNow: 'A public photo-and-caption practice is ongoing.',
-    why: 'It keeps encounters, refusals, animals, objects, and memory gaps visible.',
-    unresolved: 'A gallery requires image-level visibility review before publication.',
-    evidence: 'Photo captions, collection fragments, visibility notes',
-    materialLabel: 'Public-world photo strip',
-    coverImage: '/assets/project-covers/open-world-rain.webp',
-    coverPosition: '48% 62%',
   },
 ];
