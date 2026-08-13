@@ -11,6 +11,12 @@ interface Channel {
   copyable?: boolean;
 }
 
+/** Reverse + base64: keeps addresses and URLs out of the raw HTML so
+ * non-JS scrapers (the bulk of harvesters) never see them. Real hrefs and
+ * visible text are restored client-side on first user interaction. */
+const obfuscate = (value: string) =>
+  Buffer.from([...value].reverse().join(''), 'utf8').toString('base64');
+
 /** Compact display form of a URL: host without www, plus any path. */
 const displayLink = (url: string | undefined) => {
   if (!url) return undefined;
@@ -97,8 +103,8 @@ const channels: Channel[] = [
             <li>
               <div class="channel">
                 <span class="channel-label">{channel.label}</span>
-                <span class="channel-value selectable">{channel.value}</span>
-                <button class="copy-btn" type="button" data-copy={channel.value}>
+                <span class="channel-value selectable" data-o={obfuscate(channel.value)}></span>
+                <button class="copy-btn" type="button" data-o={obfuscate(channel.value)}>
                   Copy
                 </button>
               </div>
@@ -107,12 +113,13 @@ const channels: Channel[] = [
             <li>
               <a
                 class="channel"
-                href={channel.href}
+                href="#"
+                data-o={obfuscate(channel.href)}
                 rel={channel.external ? 'me noopener' : undefined}
                 target={channel.external ? '_blank' : undefined}
               >
                 <span class="channel-label">{channel.label}</span>
-                <span class="channel-leader" aria-hidden="true"></span>
+                <span class="channel-value"></span>
                 <span class="channel-arrow" aria-hidden="true">&rarr;</span>
               </a>
             </li>
@@ -202,7 +209,6 @@ const channels: Channel[] = [
     padding: 15px 4px;
     border-bottom: 1px solid var(--rule);
     text-decoration: none;
-    user-select: none;
   }
 
   a.channel:hover,
@@ -215,14 +221,6 @@ const channels: Channel[] = [
   a.channel:focus-visible .channel-label,
   a.channel:focus-visible .channel-arrow {
     color: var(--worlds);
-  }
-
-  .channel-leader {
-    border-bottom: 1px dotted var(--rule-hard);
-  }
-
-  .channel-value.selectable {
-    user-select: text;
   }
 
   .copy-btn {
@@ -328,11 +326,47 @@ const channels: Channel[] = [
 </style>
 
 <script>
+  // Counterpart of the build-time obfuscation: values are restored only on
+  // the first user interaction (with a timed fallback), so raw-HTML scrapers
+  // and render-and-dump headless crawls never see addresses or URLs.
+  const decode = (s: string) => [...atob(s)].reverse().join('');
+
+  const displayLink = (url: string) => {
+    try {
+      const u = new URL(url);
+      const path = u.pathname === '/' ? '' : u.pathname.replace(/\/$/, '');
+      return u.host.replace(/^www\./, '') + path;
+    } catch {
+      return url;
+    }
+  };
+
+  let hydrated = false;
+  const hydrate = () => {
+    if (hydrated) return;
+    hydrated = true;
+    for (const a of document.querySelectorAll<HTMLAnchorElement>('a.channel[data-o]')) {
+      const url = decode(a.dataset.o ?? '');
+      a.href = url;
+      const slot = a.querySelector('.channel-value');
+      if (slot) slot.textContent = displayLink(url);
+    }
+    for (const el of document.querySelectorAll<HTMLElement>('.channel-value.selectable[data-o]')) {
+      el.textContent = decode(el.dataset.o ?? '');
+    }
+  };
+
+  const events = ['pointermove', 'pointerdown', 'touchstart', 'keydown', 'scroll'];
+  for (const ev of events) {
+    addEventListener(ev, hydrate, { once: true, passive: true });
+  }
+  setTimeout(hydrate, 6000);
+
   // Clipboard API needs a secure context; the execCommand path covers plain
   // HTTP previews.
   for (const btn of document.querySelectorAll<HTMLButtonElement>('.copy-btn')) {
     btn.addEventListener('click', async () => {
-      const text = btn.dataset.copy ?? '';
+      const text = decode(btn.dataset.o ?? '');
       let ok = false;
       try {
         await navigator.clipboard.writeText(text);
