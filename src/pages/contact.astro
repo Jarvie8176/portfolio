@@ -1,74 +1,207 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site } from '../data/site';
+import { deployment, displayHost, site } from '../data/site';
+
+interface Channel {
+  label: string;
+  value: string;
+  href: string;
+  external: boolean;
+}
+
+/** Channels come from deploy-time env injection; absent values render nothing. */
+const channels: Channel[] = [
+  deployment.contactEmail && {
+    label: 'Email',
+    value: deployment.contactEmail,
+    href: `mailto:${deployment.contactEmail}`,
+    external: false,
+  },
+  deployment.schedulingUrl && {
+    label: 'Book a call',
+    value: displayHost(deployment.schedulingUrl) ?? 'Scheduling',
+    href: deployment.schedulingUrl,
+    external: true,
+  },
+  deployment.linkedinUrl && {
+    label: 'LinkedIn',
+    value: displayHost(deployment.linkedinUrl) ?? 'Profile',
+    href: deployment.linkedinUrl,
+    external: true,
+  },
+  {
+    label: 'GitHub',
+    value: displayHost(site.githubUrl) ?? 'GitHub',
+    href: site.githubUrl,
+    external: true,
+  },
+].filter(Boolean) as Channel[];
 ---
 
 <Base
   title={`${site.name} · Contact`}
   description="Contact and source links for J. Kong."
+  wide
 >
   <main class="contact-page" aria-labelledby="contact-title">
-    <section class="contact-card">
-      <span>Contact</span>
+    <div class="contact-inner">
+      <span class="page-label">Contact</span>
       <h1 id="contact-title">{site.name}</h1>
-      <p>{site.role}</p>
-      <a class="contact-link" href={site.githubUrl} rel="me noopener" target="_blank">GitHub</a>
-    </section>
+      <p class="role">{site.role}</p>
+
+      <ul class="channel-list">
+        {channels.map((channel) => (
+          <li>
+            <a
+              class="channel"
+              href={channel.href}
+              rel={channel.external ? 'me noopener' : undefined}
+              target={channel.external ? '_blank' : undefined}
+            >
+              <span class="channel-label">{channel.label}</span>
+              <span class="channel-value">{channel.value}</span>
+              <span class="channel-arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <a class="back-link" href="/#work">View Work</a>
+    </div>
   </main>
 </Base>
 
 <style>
   .contact-page {
-    min-height: calc(100svh - var(--site-header-min) - 6rem);
-    display: grid;
-    align-items: center;
-    padding: clamp(4rem, 10vw, 8rem) 0;
+    --max: 1242px;
+    zoom: 1.1;
+    min-height: calc(100svh - var(--site-header-min) - 10rem);
+    color: var(--ink);
+    background: var(--paper);
+    font-family: var(--sans);
   }
 
-  .contact-card {
-    max-width: 36rem;
+  .contact-page a:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 4px;
   }
 
-  .contact-card span {
-    color: var(--ink-faint);
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    font-weight: 800;
+  .contact-inner {
+    width: min(var(--max), 100%);
+    margin: 0 auto;
+    padding: 70px 32px 100px;
+  }
+
+  .page-label {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
     letter-spacing: 0.12em;
+    line-height: 1.2;
     text-transform: uppercase;
   }
 
-  .contact-card h1 {
-    margin: 1rem 0 0;
+  h1 {
+    margin: 24px 0 0;
     color: var(--ink);
-    font-family: var(--serif);
-    font-size: clamp(2.6rem, 6vw, 4.8rem);
-    font-weight: 600;
+    font-size: 46px;
+    font-weight: 700;
     letter-spacing: 0;
-    line-height: 1.02;
+    line-height: 1.18;
   }
 
-  .contact-card p {
-    margin: 1.25rem 0 0;
+  .role {
+    max-width: 650px;
+    margin: 18px 0 0;
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .channel-list {
+    max-width: 650px;
+    margin: 48px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule-hard);
+  }
+
+  .channel {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 4px;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+  }
+
+  .channel:hover .channel-value,
+  .channel:hover .channel-arrow {
+    color: var(--worlds);
+  }
+
+  .channel-label {
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .channel-value {
+    overflow-wrap: anywhere;
     color: var(--ink);
-    font-family: var(--sans);
-    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-    line-height: 1.7;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
   }
 
-  .contact-link {
+  .channel-arrow {
+    color: var(--ink-soft);
+    font-size: 16px;
+  }
+
+  .back-link {
     display: inline-flex;
-    margin-top: 1.75rem;
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    margin-top: 48px;
+    border: 1px solid var(--rule);
+    padding: 0 26px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1;
     text-decoration: none;
     text-transform: uppercase;
   }
 
-  .contact-link:hover {
-    color: var(--stamp);
+  .back-link:hover {
+    border-color: var(--worlds);
+    color: var(--worlds);
+  }
+
+  @media (max-width: 836px) {
+    .contact-inner {
+      padding: 44px 20px 72px;
+    }
+
+    h1 {
+      font-size: 34px;
+    }
+
+    .role {
+      font-size: 17px;
+    }
+
+    .channel {
+      grid-template-columns: 110px minmax(0, 1fr) auto;
+      gap: 12px;
+    }
   }
 </style>

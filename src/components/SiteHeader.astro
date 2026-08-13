@@ -9,10 +9,9 @@ const isContactPath = pathname === '/contact/';
 <header class="site-header">
   <a class="site-brand" href="/" aria-label={`${site.name} home`}>
     <strong>{site.name}</strong>
-    <span>human + engineering portfolio</span>
   </a>
   <nav class="site-nav" aria-label="Primary">
-    <a href="/work/" aria-current={isWorkPath ? 'page' : undefined}>Work</a>
+    <a href="/#work" aria-current={isWorkPath ? 'page' : undefined}>Work</a>
     <a href="/contact/" aria-current={isContactPath ? 'page' : undefined}>Contact</a>
   </nav>
 </header>
@@ -47,12 +46,6 @@ const isContactPath = pathname === '/contact/';
     line-height: 1.1;
   }
 
-  .site-brand span {
-    color: var(--ink-soft);
-    font-size: 12px;
-    line-height: 1.2;
-  }
-
   .site-nav {
     flex: 0 0 auto;
     display: flex;
@@ -62,6 +55,7 @@ const isContactPath = pathname === '/contact/';
   }
 
   .site-nav a {
+    padding: 1rem 0.25rem;
     color: var(--ink);
     font-size: 14px;
     font-weight: 650;
@@ -82,10 +76,6 @@ const isContactPath = pathname === '/contact/';
   @media (max-width: 760px) {
     .site-header {
       padding: 0 18px;
-    }
-
-    .site-brand span {
-      display: none;
     }
   }
 </style>
