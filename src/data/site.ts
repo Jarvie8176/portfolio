@@ -34,6 +34,8 @@ export const deployment = {
   schedulingUrl: env('PORTFOLIO_SCHEDULING_URL'),
   /** LinkedIn profile URL. Omitted from the page when unset. */
   linkedinUrl: env('PORTFOLIO_LINKEDIN_URL'),
+  /** Signal contact link (signal.me). Omitted from the page when unset. */
+  signalUrl: env('PORTFOLIO_SIGNAL_URL'),
   /** Where readers follow development notes. Omitted from the page when unset. */
   updatesUrl: env('PORTFOLIO_UPDATES_URL'),
   /** Base URL for Trailwalk gallery media. Required; the gallery fails closed. */
