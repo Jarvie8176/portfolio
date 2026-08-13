@@ -1,0 +1,12 @@
+{
+  "color": {
+    "paper-2": { "$type": "color", "$value": "{color.surface}", "$description": "legacy alias" },
+    "paper-3": { "$type": "color", "$value": "{color.surface-quiet}", "$description": "legacy alias" },
+    "line": { "$type": "color", "$value": "{color.rule}", "$description": "legacy alias" },
+    "line-hard": { "$type": "color", "$value": "{color.rule-hard}", "$description": "legacy alias" },
+    "stamp": { "$type": "color", "$value": "{color.worlds}", "$description": "status stamps, marks" },
+    "accent": { "$type": "color", "$value": "{color.systems}", "$description": "links, interactive" },
+    "live": { "$type": "color", "$value": "{color.embodied}", "$description": "live/verified state" },
+    "open": { "$type": "color", "$value": "{color.systems}", "$description": "open-question state" }
+  }
+}
