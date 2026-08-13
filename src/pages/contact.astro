@@ -68,7 +68,22 @@ const channels: Channel[] = [
     <div class="contact-inner">
       <span class="page-label">Contact</span>
       <h1 id="contact-title">{site.name}</h1>
-      <p class="role">{site.role}</p>
+      <div class="intro">
+        <p>
+          Software engineer and independent researcher exploring how technology
+          shapes agency, access, attention, and memory.
+        </p>
+        <p>
+          My work spans auditable AI systems, embodied media, and photographic
+          encounters in public life.
+        </p>
+        <p>Based in Vancouver; relocating to Tokyo in late 2026.</p>
+      </div>
+
+      <p class="lead-in">
+        For engineering work, research or product collaboration, or a
+        conversation about one of these projects:
+      </p>
 
       <ul class="channel-list">
         {channels.map((channel) =>
@@ -77,14 +92,9 @@ const channels: Channel[] = [
               <div class="channel">
                 <span class="channel-label">{channel.label}</span>
                 <span class="channel-value selectable">{channel.value}</span>
-                <span class="channel-actions">
-                  <button class="copy-btn" type="button" data-copy={channel.value}>
-                    Copy
-                  </button>
-                  <a class="channel-arrow" href={channel.href} aria-label={`${channel.label}: write to ${channel.value}`}>
-                    <span aria-hidden="true">&rarr;</span>
-                  </a>
-                </span>
+                <button class="copy-btn" type="button" data-copy={channel.value}>
+                  Copy
+                </button>
               </div>
             </li>
           ) : (
@@ -96,7 +106,7 @@ const channels: Channel[] = [
                 target={channel.external ? '_blank' : undefined}
               >
                 <span class="channel-label">{channel.label}</span>
-                <span class="channel-value" aria-hidden="true"></span>
+                <span class="channel-leader" aria-hidden="true"></span>
                 <span class="channel-arrow" aria-hidden="true">&rarr;</span>
               </a>
             </li>
@@ -149,41 +159,64 @@ const channels: Channel[] = [
     line-height: 1.18;
   }
 
-  .role {
+  .intro {
     max-width: 650px;
-    margin: 18px 0 0;
+    margin-top: 18px;
+  }
+
+  .intro p {
+    margin: 14px 0 0;
     color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .lead-in {
+    max-width: 650px;
+    margin: 36px 0 0;
+    color: var(--ink);
     font-size: 18px;
     line-height: 1.6;
   }
 
   .channel-list {
     max-width: 650px;
-    margin: 48px 0 0;
+    margin: 20px 0 0;
     padding: 0;
     list-style: none;
     border-top: 1px solid var(--rule-hard);
   }
 
   .channel {
+    min-height: 64px;
     display: grid;
     grid-template-columns: 140px minmax(0, 1fr) auto;
     align-items: center;
     gap: 18px;
-    padding: 20px 4px;
+    padding: 15px 4px;
     border-bottom: 1px solid var(--rule);
     text-decoration: none;
     user-select: none;
   }
 
-  .channel-value.selectable {
-    user-select: text;
+  a.channel:hover,
+  a.channel:focus-visible {
+    background: var(--paper-3);
   }
 
-  .channel-actions {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
+  a.channel:hover .channel-label,
+  a.channel:hover .channel-arrow,
+  a.channel:focus-visible .channel-label,
+  a.channel:focus-visible .channel-arrow {
+    color: var(--worlds);
+  }
+
+  .channel-leader {
+    border-bottom: 1px dotted var(--rule-hard);
+  }
+
+  .channel-value.selectable {
+    user-select: text;
   }
 
   .copy-btn {
@@ -276,7 +309,8 @@ const channels: Channel[] = [
       font-size: 34px;
     }
 
-    .role {
+    .intro p,
+    .lead-in {
       font-size: 17px;
     }
 
