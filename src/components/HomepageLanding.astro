@@ -1,0 +1,588 @@
+---
+import {
+  homepage,
+  homepageProjectById,
+  type TopicId,
+} from '../data/homepage';
+
+interface Props {
+  mode?: 'home' | 'work';
+}
+
+const { mode = 'home' } = Astro.props as Props;
+const isWorkPage = mode === 'work';
+
+const topicClass: Record<TopicId, string> = {
+  systems: 'topic-systems',
+  'embodied-life': 'topic-embodied',
+  'inhabited-worlds': 'topic-worlds',
+};
+---
+
+<main class:list={['landing', { 'landing-work': isWorkPage }]}>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <p class="eyebrow">Portfolio</p>
+      <h1 id="hero-title">{isWorkPage ? 'Selected work across systems, bodies, and worlds.' : homepage.hero.h1}</h1>
+      <p class="hero-bridge">{homepage.hero.bridge}</p>
+      <div class="hero-actions" aria-label="Primary actions">
+        {homepage.hero.ctas.map((cta) => (
+          <a class:list={['button', cta.label === 'Contact' && 'button-secondary']} href={cta.href}>
+            {cta.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <nav class="topic-strip" aria-label="Topics">
+    {homepage.topics.map((topic) => (
+      <a class:list={['topic-strip-link', topicClass[topic.id]]} href={`#${topic.id}`}>
+        <span></span>
+        {topic.title}
+      </a>
+    ))}
+  </nav>
+
+  <section class="topics-section" aria-labelledby="topics-title">
+    <div class="section-head">
+      <p class="eyebrow">Topics</p>
+      <h2 id="topics-title">Three ways into the work.</h2>
+    </div>
+
+    <div class="topic-grid">
+      {homepage.topics.map((topic, index) => (
+        <article class:list={['topic-panel', topicClass[topic.id]]}>
+          <p class="topic-index">{String(index + 1).padStart(2, '0')}</p>
+          <h3>{topic.title}</h3>
+          <p class="topic-lead">{topic.lead}</p>
+          <p class="topic-meaning">{topic.meaning}</p>
+          <div class="related-list" aria-label={`${topic.title} projects`}>
+            {topic.projects.map((project) => <span>{project}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="work-index" id="work" aria-labelledby="work-title">
+    <div class="section-head">
+      <p class="eyebrow">Selected Work Index</p>
+      <h2 id="work-title">Five current projects, grouped by topic.</h2>
+    </div>
+
+    <div class="work-groups">
+      {homepage.workGroups.map((group) => (
+        <section class:list={['work-group', topicClass[group.id]]} id={group.id} aria-labelledby={`${group.id}-title`}>
+          <div class="group-label">
+            <p class="eyebrow">Topic</p>
+            <h3 id={`${group.id}-title`}>{group.name}</h3>
+            <p>
+              <strong>{group.thesis[0]}</strong>
+              {` ${group.thesis[1]}`}
+            </p>
+          </div>
+
+          <div class="project-list">
+            {group.projects.map((projectId) => {
+              const project = homepageProjectById[projectId];
+              return (
+                <article class="project-card" id={project.id}>
+                  <a class="project-media" href={project.href} aria-label={`${project.name} project`}>
+                    <img src={project.asset} alt="" loading="lazy" />
+                  </a>
+                  <div class="project-copy">
+                    <h4><a href={project.href}>{project.name}</a></h4>
+                    <p>{project.introduction}</p>
+                    <a class="project-link" href={project.href}>View <span aria-hidden="true">&rarr;</span></a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <section class="contact-band" id="contact" aria-labelledby="contact-title">
+    <div>
+      <p class="eyebrow">Contact</p>
+      <h2 id="contact-title">{homepage.contact.invitation}</h2>
+    </div>
+    <div class="contact-actions" aria-label="Contact actions">
+      {homepage.contact.ctas.map((cta) => (
+        <a class:list={['button', cta.label === 'View Work' && 'button-secondary']} href={cta.href}>
+          {cta.label}
+        </a>
+      ))}
+    </div>
+  </section>
+</main>
+
+<style>
+  .landing {
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--surface) 80%, var(--paper)) 0, var(--paper) 34rem);
+    color: var(--ink);
+  }
+
+  .hero,
+  .topics-section,
+  .work-index,
+  .contact-band {
+    padding-inline: clamp(1.25rem, 4vw, 4rem);
+  }
+
+  .hero {
+    min-height: min(720px, calc(100svh - var(--site-header-min) - 3.25rem));
+    display: grid;
+    align-items: end;
+    padding-top: clamp(4.75rem, 11vh, 8rem);
+    padding-bottom: clamp(4rem, 9vh, 6.5rem);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .landing-work .hero {
+    min-height: auto;
+    padding-top: clamp(4rem, 9vw, 7rem);
+    padding-bottom: clamp(3rem, 7vw, 5rem);
+  }
+
+  .hero-inner,
+  .section-head,
+  .topic-grid,
+  .work-groups,
+  .contact-band {
+    width: min(100%, 1180px);
+    margin-inline: auto;
+  }
+
+  .hero-inner {
+    display: grid;
+    gap: 1.35rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    color: var(--ink-faint);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .hero h1,
+  .section-head h2,
+  .contact-band h2 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-weight: 650;
+    letter-spacing: 0;
+  }
+
+  .hero h1 {
+    max-width: 980px;
+    font-size: clamp(3rem, 8vw, 6.8rem);
+    line-height: 0.98;
+  }
+
+  .hero-bridge {
+    max-width: 760px;
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: clamp(1.05rem, 1.8vw, 1.38rem);
+    line-height: 1.62;
+  }
+
+  .hero-actions,
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    padding: 0 1.1rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .button:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .button-secondary {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .button-secondary:hover {
+    background: var(--paper-3);
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .topic-strip {
+    position: sticky;
+    top: var(--site-header-min);
+    z-index: 42;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter: blur(18px);
+  }
+
+  .topic-strip-link {
+    min-width: 0;
+    min-height: 3.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-right: 1px solid var(--rule);
+    color: currentColor;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .topic-strip-link:last-child {
+    border-right: 0;
+  }
+
+  .topic-strip-link span {
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
+
+  .topic-strip-link:hover {
+    background: color-mix(in srgb, currentColor 9%, var(--surface));
+  }
+
+  .topic-systems { color: var(--systems); }
+  .topic-embodied { color: var(--embodied); }
+  .topic-worlds { color: var(--worlds); }
+
+  .topics-section {
+    padding-top: clamp(4.5rem, 9vw, 7rem);
+    padding-bottom: clamp(4rem, 8vw, 6rem);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .section-head {
+    display: grid;
+    gap: 0.85rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .section-head h2 {
+    max-width: 680px;
+    font-size: clamp(2rem, 4.2vw, 3.4rem);
+    line-height: 1.05;
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--rule);
+    background: var(--rule);
+  }
+
+  .topic-panel {
+    min-width: 0;
+    min-height: 23rem;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: clamp(1.25rem, 2.5vw, 1.8rem);
+    background:
+      linear-gradient(145deg, color-mix(in srgb, currentColor 7%, transparent), transparent 58%),
+      var(--surface);
+  }
+
+  .topic-index,
+  .related-list span {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .topic-index {
+    margin: 0;
+    color: currentColor;
+  }
+
+  .topic-panel h3 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.25rem);
+    font-weight: 650;
+    line-height: 1.05;
+  }
+
+  .topic-lead,
+  .topic-meaning {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.62;
+  }
+
+  .topic-lead {
+    font-weight: 650;
+  }
+
+  .topic-meaning {
+    color: var(--ink-soft);
+  }
+
+  .related-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.35rem;
+  }
+
+  .related-list span {
+    border: 1px solid color-mix(in srgb, currentColor 42%, transparent);
+    border-radius: 999px;
+    padding: 0.38rem 0.6rem 0.34rem;
+    background: color-mix(in srgb, currentColor 7%, transparent);
+    color: currentColor;
+  }
+
+  .work-index {
+    padding-top: clamp(4.5rem, 9vw, 7rem);
+    padding-bottom: clamp(4.5rem, 9vw, 7rem);
+  }
+
+  .work-groups {
+    display: grid;
+    gap: clamp(3rem, 7vw, 5.75rem);
+  }
+
+  .work-group {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.36fr) minmax(0, 0.64fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+    padding-top: clamp(1.5rem, 4vw, 2.6rem);
+    border-top: 2px solid currentColor;
+  }
+
+  .group-label {
+    position: sticky;
+    top: calc(var(--site-header-min) + 4.25rem);
+    display: grid;
+    gap: 1rem;
+  }
+
+  .group-label h3 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 650;
+    line-height: 1.05;
+  }
+
+  .group-label p:last-child {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: clamp(1rem, 1.4vw, 1.12rem);
+    line-height: 1.68;
+  }
+
+  .group-label strong {
+    color: var(--ink);
+    font-weight: 750;
+  }
+
+  .project-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .project-card {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.38fr) minmax(0, 0.62fr);
+    gap: clamp(1rem, 2.8vw, 1.6rem);
+    align-items: stretch;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .project-media {
+    min-width: 0;
+    min-height: 13rem;
+    display: block;
+    background:
+      linear-gradient(145deg, color-mix(in srgb, currentColor 9%, transparent), transparent 58%),
+      var(--paper-3);
+  }
+
+  .project-media img {
+    width: 100%;
+    height: 100%;
+    min-height: 13rem;
+    display: block;
+    object-fit: cover;
+    filter: saturate(0.94);
+  }
+
+  .project-copy {
+    min-width: 0;
+    display: grid;
+    align-content: center;
+    gap: 0.85rem;
+    padding: clamp(1.2rem, 2.5vw, 1.75rem);
+  }
+
+  .project-copy h4 {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(1.45rem, 2.3vw, 1.9rem);
+    font-weight: 650;
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+  }
+
+  .project-copy h4 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .project-copy h4 a:hover {
+    color: currentColor;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+  }
+
+  .project-copy p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+    line-height: 1.64;
+  }
+
+  .project-link {
+    color: currentColor;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .project-link:hover {
+    color: var(--stamp);
+  }
+
+  .contact-band {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: end;
+    padding-top: clamp(3rem, 7vw, 4.75rem);
+    padding-bottom: clamp(3.5rem, 8vw, 5.5rem);
+    border-top: 1px solid var(--rule-hard);
+  }
+
+  .contact-band h2 {
+    max-width: 760px;
+    margin-top: 0.85rem;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.12;
+  }
+
+  .contact-actions {
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 920px) {
+    .topic-grid,
+    .work-group,
+    .contact-band {
+      grid-template-columns: 1fr;
+    }
+
+    .group-label {
+      position: static;
+    }
+
+    .contact-actions {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .hero {
+      min-height: auto;
+      align-items: start;
+      padding-top: 3.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.55rem, 16vw, 4rem);
+      line-height: 1;
+    }
+
+    .topic-strip {
+      top: 0;
+      grid-template-columns: 1fr;
+      position: static;
+    }
+
+    .topic-strip-link {
+      min-height: 2.8rem;
+      justify-content: flex-start;
+      padding-inline: 1.25rem;
+      border-right: 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .project-card {
+      grid-template-columns: 1fr;
+    }
+
+    .project-media,
+    .project-media img {
+      min-height: 12rem;
+    }
+  }
+</style>
