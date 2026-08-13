@@ -5,6 +5,7 @@ export const site = {
     'A portfolio of systems, embodied life, and inhabited worlds for agency, shared worlds, and personal AI infrastructure.',
   githubUrl: 'https://github.com/Jarvie8176',
   agentGithubUrl: 'https://github.com/cyber-ayi',
+  repoUrl: 'https://github.com/Jarvie8176/portfolio',
 };
 
 const env = (key: string) => process.env[key]?.trim() || undefined;
