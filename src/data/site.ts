@@ -3,7 +3,6 @@ export const site = {
   homeTitle: 'Exploring what remains irreducible in the age of Generative AI',
   description:
     'A portfolio of systems, embodied life, and inhabited worlds for agency, shared worlds, and personal AI infrastructure.',
-  role: 'Research engineer working across AI systems, embodied media, and public observation.',
   githubUrl: 'https://github.com/Jarvie8176',
   agentGithubUrl: 'https://github.com/cyber-ayi',
 };
