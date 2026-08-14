@@ -5,10 +5,12 @@ import { deployment, site } from '../data/site';
 interface Channel {
   label: string;
   value: string;
-  href: string;
-  external: boolean;
-  /** Email renders its address with a copy button. */
+  href?: string;
+  external?: boolean;
+  /** Copy-only channels render their value with a copy button. */
   copyable?: boolean;
+  /** Text copied to the clipboard; defaults to the displayed value. */
+  copyValue?: string;
   /** Copy-only contact values stay out of raw HTML until hydration. */
   obfuscated?: boolean;
 }
@@ -43,9 +45,10 @@ const channels: Channel[] = [
   },
   deployment.signalUrl && {
     label: 'Signal',
-    value: displayLink(deployment.signalUrl) ?? 'Signal',
-    href: deployment.signalUrl,
-    external: true,
+    value: deployment.signalUrl,
+    copyValue: deployment.signalUrl,
+    copyable: true,
+    obfuscated: true,
   },
   deployment.schedulingUrl && {
     label: 'Book a call',
@@ -107,7 +110,7 @@ const channels: Channel[] = [
               <div class="channel">
                 <span class="channel-label">{channel.label}</span>
                 <span class="channel-value selectable" data-o={obfuscate(channel.value)}></span>
-                <button class="copy-btn" type="button" data-o={obfuscate(channel.value)}>
+                <button class="copy-btn" type="button" data-o={obfuscate(channel.copyValue ?? channel.value)}>
                   Copy
                 </button>
               </div>
