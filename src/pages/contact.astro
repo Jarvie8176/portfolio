@@ -7,7 +7,7 @@ interface Channel {
   value: string;
   href?: string;
   external?: boolean;
-  /** Copy-only channels render their value with a copy button. */
+  /** Copy-only channels render a short name with a copy button. */
   copyable?: boolean;
   /** Text copied to the clipboard; defaults to the displayed value. */
   copyValue?: string;
@@ -37,15 +37,16 @@ const displayLink = (url: string | undefined) => {
 const channels: Channel[] = [
   deployment.contactEmail && {
     label: 'Email',
-    value: deployment.contactEmail,
+    value: 'Email address',
     href: `mailto:${deployment.contactEmail}`,
     external: false,
     copyable: true,
+    copyValue: deployment.contactEmail,
     obfuscated: true,
   },
   deployment.signalUrl && {
     label: 'Signal',
-    value: deployment.signalUrl,
+    value: 'Signal contact link',
     copyValue: deployment.signalUrl,
     copyable: true,
     obfuscated: true,
@@ -109,7 +110,7 @@ const channels: Channel[] = [
             <li>
               <div class="channel">
                 <span class="channel-label">{channel.label}</span>
-                <span class="channel-value selectable" data-o={obfuscate(channel.value)}></span>
+                <span class="channel-value channel-value-copy">{channel.value}</span>
                 <button class="copy-btn" type="button" data-o={obfuscate(channel.copyValue ?? channel.value)}>
                   Copy
                 </button>
@@ -236,6 +237,7 @@ const channels: Channel[] = [
     min-height: 34px;
     display: inline-flex;
     align-items: center;
+    gap: 8px;
     border: 1px solid var(--ink);
     padding: 0 12px;
     background: transparent;
@@ -247,6 +249,15 @@ const channels: Channel[] = [
     line-height: 1;
     text-transform: uppercase;
     cursor: pointer;
+  }
+
+  .copy-btn::before {
+    width: 11px;
+    height: 13px;
+    display: block;
+    border: 1px solid currentColor;
+    box-shadow: 3px -3px 0 -1px var(--paper), 3px -3px 0 0 currentColor;
+    content: '';
   }
 
   .copy-btn:hover {
@@ -284,6 +295,10 @@ const channels: Channel[] = [
     font-size: 16px;
     font-weight: 500;
     line-height: 1.4;
+  }
+
+  .channel-value-copy {
+    color: var(--ink-soft);
   }
 
   .channel-arrow {
@@ -367,9 +382,6 @@ const channels: Channel[] = [
       a.href = url;
       const slot = a.querySelector('.channel-value');
       if (slot) slot.textContent = displayLink(url);
-    }
-    for (const el of document.querySelectorAll<HTMLElement>('.channel-value.selectable[data-o]')) {
-      el.textContent = decode(el.dataset.o ?? '');
     }
   };
 
