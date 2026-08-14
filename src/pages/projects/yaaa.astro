@@ -104,6 +104,7 @@ const openQuestions = [
     <section class="hero" aria-labelledby="project-title">
       <div class="hero-copy">
         <div class="badge-row" aria-label="Project status">
+          <span class="wip-badge">WIP</span>
           <span class="status-badge">Partially live</span>
           <span class="mode-tag">Systems</span>
           <span class="mode-tag mode-tag-secondary">Embodied Life</span>
@@ -467,6 +468,7 @@ const openQuestions = [
   /* ---------- shared micro-type ---------- */
 
   .status-badge,
+  .wip-badge,
   .mode-tag,
   .eyebrow,
   .status-line,
@@ -531,6 +533,16 @@ const openQuestions = [
     border: 1px solid var(--systems);
     border-radius: 3px;
     color: var(--systems);
+  }
+
+  .wip-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.55rem;
+    padding: 0 0.55rem;
+    border-radius: 3px;
+    background: var(--ink);
+    color: var(--paper);
   }
 
   .mode-tag {
