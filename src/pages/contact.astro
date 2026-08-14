@@ -7,16 +7,15 @@ interface Channel {
   value: string;
   href: string;
   external: boolean;
-  /** Email renders its address with a copy button; link rows hide the URL. */
+  /** Email renders its address with a copy button. */
   copyable?: boolean;
-  /** Deploy-injected values stay out of raw HTML until hydration. */
+  /** Copy-only contact values stay out of raw HTML until hydration. */
   obfuscated?: boolean;
 }
 
 /** Reverse codepoints + UTF-8 base64: keeps addresses and URLs out of the raw
- * HTML so non-JS scrapers (the bulk of harvesters) never see them. Real hrefs
- * and visible text are restored client-side on first user interaction. The
- * client decode mirrors this exactly; see the decode note below. */
+ * HTML so non-JS scrapers (the bulk of harvesters) never see them. The client
+ * decode mirrors this exactly; see the decode note below. */
 const obfuscate = (value: string) =>
   Buffer.from([...value].reverse().join(''), 'utf8').toString('base64');
 
@@ -44,24 +43,21 @@ const channels: Channel[] = [
   },
   deployment.signalUrl && {
     label: 'Signal',
-    value: 'Signal',
+    value: displayLink(deployment.signalUrl) ?? 'Signal',
     href: deployment.signalUrl,
     external: true,
-    obfuscated: true,
   },
   deployment.schedulingUrl && {
     label: 'Book a call',
     value: displayLink(deployment.schedulingUrl) ?? 'Scheduling',
     href: deployment.schedulingUrl,
     external: true,
-    obfuscated: true,
   },
   deployment.linkedinUrl && {
     label: 'LinkedIn',
     value: displayLink(deployment.linkedinUrl) ?? 'Profile',
     href: deployment.linkedinUrl,
     external: true,
-    obfuscated: true,
   },
   {
     label: 'GitHub',
