@@ -11,9 +11,10 @@ interface Channel {
   copyable?: boolean;
 }
 
-/** Reverse + base64: keeps addresses and URLs out of the raw HTML so
- * non-JS scrapers (the bulk of harvesters) never see them. Real hrefs and
- * visible text are restored client-side on first user interaction. */
+/** Reverse codepoints + UTF-8 base64: keeps addresses and URLs out of the raw
+ * HTML so non-JS scrapers (the bulk of harvesters) never see them. Real hrefs
+ * and visible text are restored client-side on first user interaction. The
+ * client decode mirrors this exactly; see the decode note below. */
 const obfuscate = (value: string) =>
   Buffer.from([...value].reverse().join(''), 'utf8').toString('base64');
 
@@ -328,8 +329,16 @@ const channels: Channel[] = [
 <script>
   // Counterpart of the build-time obfuscation: values are restored only on
   // the first user interaction (with a timed fallback), so raw-HTML scrapers
-  // and render-and-dump headless crawls never see addresses or URLs.
-  const decode = (s: string) => [...atob(s)].reverse().join('');
+  // and headless crawls that render but do not interact or wait see labels
+  // only. A crawler that executes JS and idles past the fallback still gets
+  // them; this raises the cost, it is not an absolute barrier.
+  // Mirror of the build-side encode (Buffer.from(reversed, 'utf8') -> base64):
+  // base64 -> bytes -> UTF-8 decode -> reverse codepoints, so non-ASCII values
+  // round-trip correctly.
+  const decode = (s: string) => {
+    const bytes = Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+    return [...new TextDecoder().decode(bytes)].reverse().join('');
+  };
 
   const displayLink = (url: string) => {
     try {
