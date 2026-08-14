@@ -13,6 +13,7 @@ interface Props {
 }
 const { title, description, ogType = 'website', wide = false } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const commitUrl = build.version === 'local' ? undefined : `${site.repoUrl}/commit/${build.version}`;
 ---
 <!doctype html>
 <html lang="en">
@@ -47,7 +48,21 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
         <span class="meta-row">
           {!wide && deployment.analytics.enabled && <span class="meta">Privacy-friendly analytics</span>}
           <span class="meta"><a href={site.repoUrl} rel="noopener" target="_blank">GitHub</a></span>
-          {!wide && <span class="meta version-tag" aria-label={`Version ${build.version}`}>v{build.version}</span>}
+          {
+            commitUrl ? (
+              <a
+                class="meta version-tag"
+                href={commitUrl}
+                rel="noopener"
+                target="_blank"
+                aria-label={`Commit ${build.version}`}
+              >
+                v{build.version}
+              </a>
+            ) : (
+              <span class="meta version-tag" aria-label={`Version ${build.version}`}>v{build.version}</span>
+            )
+          }
         </span>
       </footer>
     </div>
