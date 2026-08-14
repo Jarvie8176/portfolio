@@ -57,10 +57,10 @@ const commitUrl = build.version === 'local' ? undefined : `${site.repoUrl}/commi
                 target="_blank"
                 aria-label={`Commit ${build.version}`}
               >
-                v{build.version}
+                {build.version}
               </a>
             ) : (
-              <span class="meta version-tag" aria-label={`Version ${build.version}`}>v{build.version}</span>
+              <span class="meta version-tag" aria-label={`Version ${build.version}`}>{build.version}</span>
             )
           }
         </span>
