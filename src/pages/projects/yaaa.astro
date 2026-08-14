@@ -27,7 +27,7 @@ const organs = [
   },
   {
     name: 'Remember',
-    body: 'Keep operator context in human-readable, git-backed memory that can be reviewed and diffed.',
+    body: 'Keep personal context in human-readable, git-backed memory that can be reviewed and diffed.',
   },
   {
     name: 'Reason',
@@ -76,7 +76,7 @@ const statusRows = [
     organ: 'Act',
     status: 'gate verified',
     state: 'partial',
-    note: 'The fail-closed gate and dispatcher are verified; real procedures are pending.',
+    note: 'The fail-closed gate and dispatcher are verified; production procedures are pending.',
   },
   {
     organ: 'Converse',
@@ -111,11 +111,10 @@ const openQuestions = [
         <p class="eyebrow">Yet Another AI Assistant</p>
         <h1 id="project-title">an operating layer for an assistant you own</h1>
         <p class="summary">
-          A local-first, federated assistant architecture: self-hostable AI
-          orchestration for auditability and harness-agnostic memory
-          synchronization.
+          A local-first, federated assistant architecture for auditable memory,
+          sensitive-data routing, and harness-agnostic orchestration.
         </p>
-        <p class="status-line">accepted architecture · built organs · pending bindings</p>
+        <p class="status-line">mapped architecture · built organs · pending bindings</p>
       </div>
 
       <figure
@@ -147,8 +146,8 @@ const openQuestions = [
         <div class="two-column">
           <p class="lead">
             Consumer assistants optimize for convenience first. The price is
-            authority: what gets remembered, where data routes, what a tool is
-            allowed to do all end up owned by the vendor.
+            authority: memory, routing, and tool permissions all end up owned
+            by the vendor.
           </p>
           <div class="body-stack">
             <p>
@@ -178,7 +177,7 @@ const openQuestions = [
             <p>
               Each organ keeps its own runtime and cadence. The assistant layer
               binds them through memory, conversation, surface, and governance
-              instead of replacing them with one mega-process.
+              instead of replacing them with one central process.
             </p>
           </div>
           <div>
@@ -223,7 +222,7 @@ const openQuestions = [
             <svg
               viewBox="0 0 1040 500"
               role="img"
-              aria-label="Architecture map. Read side, asynchronous on timers: sources flow into ingest, then an item store, then triage, then a triage store. Binding column: a git memory ledger and a surface and push organ attach to the binding layer. Write side, gated: the binding layer connects to the conversation harness, which sends intent and arguments to the dispatcher, then the procedure manifest, then a fail-closed gate; only what passes the gate reaches a procedure."
+              aria-label="Architecture map. Read side, asynchronous on timers: sources flow into ingest, then an item store, then triage, then a triage store. Binding column: a git memory ledger and a surface and push organ attach to the binding layer. Write side, gated: the binding layer connects to the conversation harness, which sends intent and arguments to the dispatcher, then the procedure manifest, then a fail-closed gate; only passed work reaches a procedure."
             >
               <defs>
                 <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -353,9 +352,9 @@ const openQuestions = [
         </div>
         <p class="status-intro">
           Status language is kept deliberately narrow: live means running and
-          evidenced for at least one real path, partial means components exist
-          but the job is not end-to-end, pending means design exists but no
-          operational path yet.
+          backed by evidence for at least one real path, partial means
+          components exist but the job is not end-to-end, pending means design
+          exists but no operational path yet.
         </p>
         <dl class="status-ledger">
           {statusRows.map((row) => (
@@ -390,9 +389,10 @@ const openQuestions = [
             <p>
               Every assistant-initiated side effect flows through a single gated
               dispatcher. The conversation harness supplies intent and arguments;
-              the gate enforces policy. The dispatcher is procedure-count
-              independent, so replacing the harness never means rebuilding the
-              write logic, and no harness carries bespoke authority of its own.
+              the gate enforces policy. The dispatcher does not depend on how
+              many procedures exist, so replacing the harness never means
+              rebuilding the write logic, and no harness carries bespoke
+              authority of its own.
             </p>
             <p>
               Delivery has the same shape. Every outgoing message passes one
@@ -422,7 +422,7 @@ const openQuestions = [
             </p>
             <p>
               The same discipline draws the public boundary. The architecture is
-              accepted and some organs are live; the assistant is not shipped and
+              mapped and some organs are live; the assistant is not shipped and
               its high-sensitivity path is not yet proven end-to-end. The status
               above says partial because the evidence does.
             </p>
