@@ -28,11 +28,16 @@ const statusClass: Record<Project['statusCode'], string> = {
 ---
 
 <Base
-  title={`${site.name} — ${project.title}`}
+  title={`${site.name} · ${project.title}`}
   description={project.summary}
   ogType="article"
 >
   <main class={`project-detail practice-${project.primary}`}>
+    <aside class="wip-callout" role="note" aria-label="Work in progress">
+      <span>Work in progress</span>
+      <p>This page is an early draft; its content is still being filled in.</p>
+    </aside>
+
     <section class="project-hero" aria-labelledby="project-title">
       <div class="project-heading">
         <div class="badge-row">
@@ -86,9 +91,39 @@ const statusClass: Record<Project['statusCode'], string> = {
 
   .project-hero,
   .project-ledger,
-  .back-link {
+  .back-link,
+  .wip-callout {
     max-width: 68rem;
     margin-inline: auto;
+  }
+
+  .wip-callout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.25rem;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+    border: 2px solid var(--worlds);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    background: color-mix(in srgb, var(--worlds) 8%, transparent);
+  }
+
+  .wip-callout span {
+    color: var(--worlds);
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .wip-callout p {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1.15rem;
+    line-height: 1.55;
   }
 
   .project-hero {

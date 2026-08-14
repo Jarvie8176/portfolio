@@ -35,5 +35,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      # The committed design-token CSS must be regenerable byte-clean from the
+      # token source, not just consumable — otherwise a hand-edit or a stale
+      # commit passes unnoticed.
+      - run: npm run tokens:build
+      - run: git diff --exit-code src/styles/tokens.generated.css
       - run: npm run build
       - run: test -f dist/index.html

@@ -1,9 +1,5 @@
 ---
-import {
-  homepage,
-  homepageProjectById,
-  type TopicId,
-} from '../data/homepage';
+import { homepage, type PracticeId } from '../data/homepage';
 
 interface Props {
   mode?: 'home' | 'work';
@@ -12,28 +8,24 @@ interface Props {
 const { mode = 'home' } = Astro.props as Props;
 const isWorkPage = mode === 'work';
 
-const topicClass: Record<TopicId, string> = {
+const practiceClass: Record<PracticeId, string> = {
   systems: 'systems',
   'embodied-life': 'embodied',
   'inhabited-worlds': 'worlds',
 };
+
+const materialStyle = ({ from, to }: { from: string; to: string }) =>
+  `--m-from: ${from}; --m-to: ${to};`;
 ---
 
-<main class:list={['landing', { 'landing-work': isWorkPage }]}>
-  <nav class="topic-strip" aria-label="Topics">
-    {homepage.topics.map((topic) => (
-      <a href={`#${topic.id}`}>{topic.title}</a>
-    ))}
-  </nav>
-
-  <section class="hero" id="cover" aria-labelledby="hero-title">
-    <div class="hero-copy">
-      <span class="eyebrow">J. Kong Portfolio</span>
+<main class="landing">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="section-inner">
       <h1 id="hero-title">
         {isWorkPage ? 'Selected work across systems, bodies, and worlds.' : homepage.hero.h1}
       </h1>
-      <p>{homepage.hero.bridge}</p>
-      <div class="hero-actions" aria-label="Hero actions">
+      <p class="bridge">{homepage.hero.bridge}</p>
+      <div class="cta-row" role="group" aria-label="Hero actions">
         {homepage.hero.ctas.map((cta) => (
           <a class:list={['button', cta.label === 'Contact' && 'secondary']} href={cta.href}>
             {cta.label}
@@ -43,71 +35,55 @@ const topicClass: Record<TopicId, string> = {
     </div>
   </section>
 
-  <section class="section" id="topics" aria-labelledby="topics-title">
+  <section class="section compass-section" aria-labelledby="practices-label">
     <div class="section-inner">
-      <div class="section-kicker">Topics</div>
-      <div class="section-title-row">
-        <h2 id="topics-title">Follow the topic that brought you here.</h2>
-        <p>The work can be entered through systems, embodied support, and shared worlds.</p>
-      </div>
-
-      <div class="topic-grid">
-        {homepage.topics.map((topic, index) => (
+      <div class="section-label" id="practices-label">{homepage.topicsLabel}</div>
+      <div class="compass-grid">
+        {homepage.practices.map((practice) => (
           <a
-            class:list={['topic-panel', topicClass[topic.id]]}
-            href={`#${topic.id}`}
-            aria-label={`${topic.title}: ${topic.lead}`}
+            class:list={['compass-panel', practiceClass[practice.id]]}
+            href={`#${practice.id}`}
+            aria-label={`${practice.title}: ${practice.lead}`}
           >
-            <div class="topic-copy">
-              <span class="topic-index">{String(index + 1).padStart(2, '0')} / {topic.title}</span>
-              <h3>{topic.lead}</h3>
-              <p>{topic.meaning}</p>
+            <div class="compass-copy">
+              <h2>{practice.title}</h2>
+              <p class="lead">{practice.lead}</p>
+              <p class="meaning">{practice.meaning}</p>
             </div>
-            <div class="related" aria-label={`${topic.title} projects`}>
-              {topic.projects.map((project) => <span class="tag">{project}</span>)}
-            </div>
+            <span class="compass-projects">{practice.related}</span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section work-section" id="work" aria-labelledby="work-title">
+  <section class="section work-section" id="work" aria-label="Selected work">
     <div class="section-inner">
-      <div class="section-kicker">Selected work</div>
-      <div class="section-title-row">
-        <h2 id="work-title">Selected Work Index</h2>
-        <p>Five current projects, grouped by topic.</p>
-      </div>
-
       <div class="work-groups">
         {homepage.workGroups.map((group) => (
-          <section class="work-group" id={group.id} aria-labelledby={`${group.id}-title`}>
-            <div class:list={['group-label', topicClass[group.id]]}>
-              <span>Topic</span>
-              <h3 id={`${group.id}-title`}>{group.name}</h3>
-              <p>
-                <strong>{group.thesis[0]}</strong>
-                {` ${group.thesis[1]}`}
-              </p>
+          <section class="work-group" id={group.id} aria-labelledby={`${group.id}-label`}>
+            <div class:list={['group-head', practiceClass[group.id]]}>
+              <span class="section-label group-label" id={`${group.id}-label`}>{group.label}</span>
+              <h2 class="thesis-claim">{group.thesis.claim}</h2>
+              <p class="thesis-body">{group.thesis.body}</p>
             </div>
-
-            <div class="project-list">
-              {group.projects.map((projectId) => {
-                const project = homepageProjectById[projectId];
-                return (
-                  <article class="project-card" id={project.id}>
-                    <a class="project-media" href={project.href} aria-label={`${project.name} project`}>
-                      <img src={project.asset} alt="" loading="lazy" />
-                    </a>
-                    <div class="project-copy">
-                      <h4><a href={project.href}>{project.name}</a></h4>
-                      <p>{project.introduction}</p>
-                      <a class="project-link" href={project.href}>View <span aria-hidden="true">&rarr;</span></a>
-                    </div>
-                  </article>
-                );
-              })}
+            <div class="project-grid">
+              {group.projects.map((project) => (
+                <article class="project-card" id={project.id}>
+                  <a
+                    class="project-media"
+                    href={project.href}
+                    style={materialStyle(project.material)}
+                    tabindex="-1"
+                    aria-hidden="true"
+                  ></a>
+                  <div class="project-copy">
+                    <h3><a href={project.href}>{project.name}</a></h3>
+                    <p>{project.introduction}</p>
+                    <a class="project-link" href={project.href} tabindex="-1" aria-hidden="true">View <span>&rarr;</span></a>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
         ))}
@@ -116,12 +92,11 @@ const topicClass: Record<TopicId, string> = {
   </section>
 
   <section class="contact-section" id="contact" aria-labelledby="contact-title">
-    <div class="contact-panel">
-      <span class="eyebrow">Contact</span>
-      <p id="contact-title">{homepage.contact.invitation}</p>
-      <div class="hero-actions" aria-label="Contact actions">
+    <div class="section-inner">
+      <p class="invite" id="contact-title">{homepage.contact.invitation}</p>
+      <div class="cta-row" role="group" aria-label="Contact actions">
         {homepage.contact.ctas.map((cta) => (
-          <a class:list={['button', cta.label === 'View Work' && 'secondary']} href={cta.href}>
+          <a class:list={['button', cta.label === 'View Work' && 'quiet']} href={cta.href}>
             {cta.label}
           </a>
         ))}
@@ -132,9 +107,10 @@ const topicClass: Record<TopicId, string> = {
 
 <style>
   .landing {
-    --max: 1180px;
-    --header-h: var(--site-header-min);
-    min-height: 100vh;
+    /* board geometry is authored at 1440 with 72px margins; zoom scales the
+       whole composition ~120% and --max compensates so margins stay 72px */
+    --max: 1144px;
+    zoom: 1.2;
     color: var(--ink);
     background: var(--paper);
     font-family: var(--sans);
@@ -145,448 +121,255 @@ const topicClass: Record<TopicId, string> = {
     outline-offset: 4px;
   }
 
-  .topic-strip {
-    position: sticky;
-    top: var(--header-h);
-    z-index: 45;
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    padding: 9px 20px;
-    border-bottom: 1px solid rgba(27, 29, 31, 0.1);
-    background: rgba(252, 251, 247, 0.82);
-    backdrop-filter: blur(10px);
-  }
-
-  .topic-strip a {
-    min-height: 32px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    padding: 0 10px;
-    color: var(--ink-soft);
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
-    text-decoration: none;
-  }
-
-  .topic-strip a::before {
-    content: "";
-    width: 8px;
-    height: 8px;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    background: currentColor;
-  }
-
-  .topic-strip a:nth-child(1) { color: var(--systems); }
-  .topic-strip a:nth-child(2) { color: var(--embodied); }
-  .topic-strip a:nth-child(3) { color: var(--worlds); }
-
-  .topic-strip a:hover {
-    color: var(--worlds);
-    border-color: rgba(27, 29, 31, 0.16);
-    background: rgba(252, 251, 247, 0.88);
-  }
-
-  .hero {
-    position: relative;
-    min-height: 640px;
-    display: grid;
-    align-items: center;
-    overflow: hidden;
-    padding: 96px 32px 84px;
-    border-bottom: 1px solid var(--rule-hard);
-    background:
-      linear-gradient(90deg, rgba(246, 247, 245, 1) 0%, rgba(246, 247, 245, 0.95) 58%, rgba(237, 241, 237, 0.86) 100%),
-      repeating-linear-gradient(90deg, rgba(27, 29, 31, 0.07) 0 1px, transparent 1px 24px);
-  }
-
-  .landing-work .hero {
-    min-height: 420px;
-  }
-
-  .systems { color: var(--systems); }
-  .embodied { color: var(--embodied); }
-  .worlds { color: var(--worlds); }
-
-  .hero-copy {
-    position: relative;
-    z-index: 3;
-    width: min(760px, calc(100% - 128px));
-    margin: 0 auto 0 64px;
-  }
-
-  .eyebrow {
-    min-height: 26px;
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid currentColor;
-    border-radius: 4px;
-    padding: 0 8px;
-    color: var(--worlds);
-    background: rgba(246, 247, 245, 0.72);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1;
-    text-transform: uppercase;
+  .section-inner {
+    width: min(var(--max), 100%);
+    margin: 0 auto;
+    padding: 0 32px;
   }
 
   h1,
   h2,
   h3,
   p {
-    margin-top: 0;
+    margin: 0;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 50px 0 70px;
   }
 
   .hero h1 {
-    margin: 18px 0 18px;
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 64px;
+    max-width: 720px;
+    font-size: 46px;
     font-weight: 700;
     letter-spacing: 0;
-    line-height: 1.02;
+    line-height: 1.18;
   }
 
-  .hero-copy p {
-    max-width: 620px;
-    margin-bottom: 26px;
-    color: var(--ink);
-    font-size: 21px;
-    line-height: 1.58;
+  .bridge {
+    max-width: 650px;
+    margin-top: 27px;
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1.6;
   }
 
-  .hero-actions {
+  .cta-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 16px;
+    margin-top: 14px;
   }
 
   .button {
-    min-height: 44px;
+    min-height: 48px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border: 1px solid var(--ink);
-    border-radius: 999px;
-    padding: 0 18px;
+    padding: 0 26px;
     background: var(--ink);
-    color: var(--surface);
-    font-size: 14px;
-    font-weight: 700;
+    color: var(--paper);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     line-height: 1;
     text-decoration: none;
+    text-transform: uppercase;
   }
 
   .button:hover {
     border-color: var(--worlds);
     background: var(--worlds);
-    color: var(--surface);
+    color: var(--paper);
   }
 
-  .button.secondary {
-    background: rgba(252, 251, 247, 0.8);
+  .button.secondary,
+  .button.quiet {
+    background: transparent;
     color: var(--ink);
   }
 
-  .button.secondary:hover {
-    background: var(--surface);
+  .button.quiet {
+    border-color: var(--rule);
+  }
+
+  .button.secondary:hover,
+  .button.quiet:hover {
+    border-color: var(--worlds);
+    background: transparent;
     color: var(--worlds);
   }
 
+  /* Section scaffolding */
   .section {
-    padding: 84px 32px;
-    border-bottom: 1px solid var(--rule);
+    padding: 70px 0;
   }
 
-  .section-inner {
-    width: min(var(--max), 100%);
-    margin: 0 auto;
-  }
-
-  .section-kicker {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 24px;
+  .section-label {
+    display: block;
     color: var(--ink-soft);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: uppercase;
-  }
-
-  .section-kicker::after {
-    content: "";
-    flex: 1;
-    border-top: 1px dotted var(--rule-hard);
-  }
-
-  .section-title-row {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.55fr);
-    gap: 48px;
-    align-items: start;
-    margin-bottom: 34px;
-  }
-
-  .section-title-row h2 {
-    margin: 0;
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 38px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.1;
-  }
-
-  .section-title-row p {
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 16px;
-    line-height: 1.7;
-  }
-
-  .topic-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1px;
-    border: 1px solid var(--ink);
-    background: var(--ink);
-  }
-
-  .topic-panel {
-    position: relative;
-    min-height: 280px;
-    display: grid;
-    align-content: space-between;
-    gap: 28px;
-    overflow: hidden;
-    padding: 28px;
-    background: var(--surface);
-    color: currentColor;
-    text-decoration: none;
-  }
-
-  .topic-panel::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(130deg, currentColor, transparent 52%),
-      repeating-linear-gradient(135deg, rgba(27, 29, 31, 0.08) 0 1px, transparent 1px 18px);
-    opacity: 0.1;
-    transition: opacity 160ms ease;
-  }
-
-  .topic-panel:hover::before,
-  .topic-panel:focus-visible::before {
-    opacity: 0.23;
-  }
-
-  .topic-panel:hover .related,
-  .topic-panel:focus-visible .related {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .topic-copy {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    gap: 14px;
-  }
-
-  .topic-index {
-    color: currentColor;
-    font-size: 12px;
-    font-weight: 700;
-  }
-
-  .topic-panel h3 {
-    margin: 0;
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.12;
-  }
-
-  .topic-panel p {
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 16px;
-    line-height: 1.55;
-  }
-
-  .related {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    opacity: 0.82;
-    transform: translateY(4px);
-    transition:
-      opacity 160ms ease,
-      transform 160ms ease;
-  }
-
-  .tag {
-    min-height: 24px;
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid rgba(27, 29, 31, 0.22);
-    border-radius: 999px;
-    padding: 0 8px;
-    background: rgba(252, 251, 247, 0.74);
-    color: var(--ink);
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .work-section {
-    padding-top: 88px;
-  }
-
-  .work-groups {
-    display: grid;
-    gap: 64px;
-  }
-
-  .work-group {
-    display: grid;
-    grid-template-columns: 260px minmax(0, 1fr);
-    gap: 36px;
-    align-items: start;
-  }
-
-  .group-label {
-    position: sticky;
-    top: 118px;
-    display: grid;
-    gap: 12px;
-  }
-
-  .group-label span {
-    color: var(--ink-soft);
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
     line-height: 1.2;
     text-transform: uppercase;
   }
 
-  .group-label h3 {
-    margin: 0;
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 25px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.14;
+  /* S1 — practice compass */
+  .compass-section {
+    padding-top: 70px;
   }
 
-  .group-label p {
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 14px;
-    line-height: 1.55;
-  }
-
-  .group-label strong {
-    color: var(--ink);
-    font-weight: 700;
-  }
-
-  .project-list {
+  .compass-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 34px;
   }
 
-  .project-card {
-    min-height: 220px;
+  .compass-panel {
+    min-height: 380px;
     display: grid;
-    grid-template-columns: 132px minmax(0, 1fr);
-    gap: 18px;
-    border: 1px solid rgba(27, 29, 31, 0.22);
-    border-radius: 6px;
-    padding: 16px;
-    background: rgba(252, 251, 247, 0.72);
+    align-content: space-between;
+    gap: 28px;
+    border-left: 4px solid currentColor;
+    padding: 40px;
+    background: var(--surface);
+    text-decoration: none;
+    transition: background 160ms ease;
   }
 
-  .project-media {
-    position: relative;
-    min-height: 188px;
-    overflow: hidden;
-    border: 1px solid rgba(27, 29, 31, 0.18);
-    border-radius: 4px;
+  .compass-panel:hover,
+  .compass-panel:focus-visible {
     background: var(--paper-3);
   }
 
-  .project-media img {
-    width: 100%;
-    height: 100%;
-    min-height: 188px;
-    display: block;
-    object-fit: cover;
+  .systems { color: var(--systems); }
+  .embodied { color: var(--embodied); }
+  .worlds { color: var(--worlds); }
+
+  .compass-copy {
+    display: grid;
+    grid-template-rows: minmax(54px, auto) minmax(108px, auto) auto;
   }
 
-  .project-media::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(180deg, transparent 20%, rgba(27, 29, 31, 0.08)),
-      repeating-linear-gradient(90deg, rgba(27, 29, 31, 0.08) 0 1px, transparent 1px 18px);
-    pointer-events: none;
+  .compass-panel h2 {
+    color: var(--ink);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.2;
+  }
+
+  .compass-panel .lead {
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .compass-panel .meaning {
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .compass-projects {
+    color: currentColor;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  /* S2 — selected work index */
+  .work-section {
+    padding-top: 70px;
+    padding-bottom: 60px;
+  }
+
+  .work-groups {
+    display: grid;
+    gap: 52px;
+  }
+
+  .group-head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .group-label {
+    color: currentColor;
+  }
+
+  .thesis-claim {
+    color: var(--ink);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+
+  .thesis-body {
+    max-width: 680px;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 36px;
+    margin-top: 24px;
+  }
+
+  .project-card {
+    min-height: 450px;
+    display: grid;
+    grid-template-rows: 200px auto;
+    background: var(--surface);
+  }
+
+  .project-media {
+    display: block;
+    background: linear-gradient(180deg, var(--m-from), var(--m-to));
   }
 
   .project-copy {
-    min-width: 0;
     display: grid;
     align-content: start;
-    gap: 10px;
+    gap: 14px;
+    padding: 28px;
   }
 
-  .project-copy h4 {
-    margin: 0;
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 24px;
+  .project-copy h3 {
+    font-size: 21px;
     font-weight: 700;
     letter-spacing: 0;
-    line-height: 1.1;
+    line-height: 1.2;
   }
 
-  .project-copy h4 a {
-    color: inherit;
+  .project-copy h3 a {
+    color: var(--ink);
     text-decoration: none;
   }
 
-  .project-copy h4 a:hover {
+  .project-copy h3 a:hover {
     color: var(--worlds);
   }
 
   .project-copy p {
-    margin: 0;
     color: var(--ink);
     font-size: 15px;
-    line-height: 1.55;
+    line-height: 1.5;
   }
 
   .project-link {
-    margin-top: 6px;
-    color: var(--systems);
+    justify-self: start;
+    color: var(--accent);
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: none;
   }
 
@@ -594,104 +377,79 @@ const topicClass: Record<TopicId, string> = {
     color: var(--worlds);
   }
 
+  /* S4 — contact */
   .contact-section {
-    padding: 92px 32px 108px;
-    background: var(--surface);
+    padding: 60px 0 100px;
   }
 
-  .contact-panel {
-    width: min(820px, 100%);
-    display: grid;
-    justify-items: center;
-    gap: 24px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .contact-panel p {
-    margin: 0;
+  .invite {
+    max-width: 604px;
     color: var(--ink);
-    font-size: 24px;
-    line-height: 1.45;
+    font-size: 22px;
+    line-height: 1.35;
   }
 
-  @media (max-width: 1080px) {
-    .hero h1 {
-      font-size: 52px;
-    }
+  .contact-section .cta-row {
+    margin-top: 72px;
+  }
 
-    .section-title-row,
-    .work-group {
+  @media (max-width: 1296px) {
+    .compass-grid {
       grid-template-columns: 1fr;
     }
 
-    .group-label {
-      position: static;
-      max-width: 560px;
-    }
-
-    .topic-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .topic-panel {
-      min-height: 220px;
-    }
-  }
-
-  @media (max-width: 760px) {
-    .topic-strip {
-      display: none;
-    }
-
-    .hero {
-      min-height: auto;
-      padding: 64px 20px 58px;
-    }
-
-    .hero-copy {
-      width: auto;
-      margin: 0;
-    }
-
-    .hero h1 {
-      font-size: 42px;
-      line-height: 1.04;
-    }
-
-    .hero-copy p {
-      font-size: 18px;
-      line-height: 1.58;
-    }
-
-    .section,
-    .contact-section {
-      padding: 64px 20px;
-    }
-
-    .section-title-row {
+    .compass-copy {
+      grid-template-rows: auto;
       gap: 18px;
     }
 
-    .section-title-row h2 {
-      font-size: 31px;
+    .compass-panel {
+      min-height: 0;
     }
 
-    .project-list {
+    .hero h1 {
+      font-size: 38px;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .project-grid {
       grid-template-columns: 1fr;
     }
+  }
 
-    .project-card {
-      grid-template-columns: 1fr;
+  @media (max-width: 912px) {
+    .section-inner {
+      padding: 0 20px;
     }
 
-    .project-media,
-    .project-media img {
-      min-height: 170px;
+    .hero {
+      padding: 44px 0 64px;
     }
 
-    .contact-panel p {
-      font-size: 21px;
+    .hero h1 {
+      font-size: 34px;
+      line-height: 1.16;
+    }
+
+    .bridge {
+      font-size: 17px;
+    }
+
+    .section {
+      padding: 56px 0;
+    }
+
+    .compass-panel {
+      padding: 28px;
+    }
+
+    .work-groups {
+      gap: 72px;
+    }
+
+    .invite {
+      font-size: 20px;
     }
   }
 
@@ -699,7 +457,6 @@ const topicClass: Record<TopicId, string> = {
     .landing *,
     .landing *::before,
     .landing *::after {
-      scroll-behavior: auto !important;
       transition: none !important;
     }
   }

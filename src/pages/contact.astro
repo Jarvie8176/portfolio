@@ -1,74 +1,402 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site } from '../data/site';
+import { deployment, site } from '../data/site';
+
+interface Channel {
+  label: string;
+  value: string;
+  href: string;
+  external: boolean;
+  /** Email renders its address with a copy button; link rows hide the URL. */
+  copyable?: boolean;
+}
+
+/** Reverse codepoints + UTF-8 base64: keeps addresses and URLs out of the raw
+ * HTML so non-JS scrapers (the bulk of harvesters) never see them. Real hrefs
+ * and visible text are restored client-side on first user interaction. The
+ * client decode mirrors this exactly; see the decode note below. */
+const obfuscate = (value: string) =>
+  Buffer.from([...value].reverse().join(''), 'utf8').toString('base64');
+
+/** Compact display form of a URL: host without www, plus any path. */
+const displayLink = (url: string | undefined) => {
+  if (!url) return undefined;
+  try {
+    const u = new URL(url);
+    const path = u.pathname === '/' ? '' : u.pathname.replace(/\/$/, '');
+    return u.host.replace(/^www\./, '') + path;
+  } catch {
+    return undefined;
+  }
+};
+
+/** Channels come from deploy-time env injection; absent values render nothing. */
+const channels: Channel[] = [
+  deployment.contactEmail && {
+    label: 'Email',
+    value: deployment.contactEmail,
+    href: `mailto:${deployment.contactEmail}`,
+    external: false,
+    copyable: true,
+  },
+  deployment.signalUrl && {
+    label: 'Signal',
+    value: 'Signal',
+    href: deployment.signalUrl,
+    external: true,
+  },
+  deployment.schedulingUrl && {
+    label: 'Book a call',
+    value: displayLink(deployment.schedulingUrl) ?? 'Scheduling',
+    href: deployment.schedulingUrl,
+    external: true,
+  },
+  deployment.linkedinUrl && {
+    label: 'LinkedIn',
+    value: displayLink(deployment.linkedinUrl) ?? 'Profile',
+    href: deployment.linkedinUrl,
+    external: true,
+  },
+  {
+    label: 'GitHub',
+    value: displayLink(site.githubUrl) ?? 'GitHub',
+    href: site.githubUrl,
+    external: true,
+  },
+  {
+    label: 'GitHub · AI agent',
+    value: displayLink(site.agentGithubUrl) ?? 'GitHub',
+    href: site.agentGithubUrl,
+    external: true,
+  },
+].filter(Boolean) as Channel[];
 ---
 
 <Base
-  title={`${site.name} — Contact`}
+  title={`${site.name} · Contact`}
   description="Contact and source links for J. Kong."
+  wide
 >
   <main class="contact-page" aria-labelledby="contact-title">
-    <section class="contact-card">
-      <span>Contact</span>
+    <div class="contact-inner">
+      <span class="page-label">Contact</span>
       <h1 id="contact-title">{site.name}</h1>
-      <p>{site.role}</p>
-      <a class="contact-link" href={site.githubUrl} rel="me noopener" target="_blank">GitHub</a>
-    </section>
+      <div class="intro">
+        <p>
+          Software engineer and independent researcher exploring how technology
+          shapes agency, access, attention, and memory.
+        </p>
+        <p>
+          My work spans auditable AI systems, embodied media, and photographic
+          encounters in public life.
+        </p>
+        <p>Based in Vancouver; relocating to Tokyo in late 2026.</p>
+      </div>
+
+      <p class="lead-in">
+        For engineering work, research or product collaboration, or a
+        conversation about one of these projects:
+      </p>
+
+      <ul class="channel-list">
+        {channels.map((channel) =>
+          channel.copyable ? (
+            <li>
+              <div class="channel">
+                <span class="channel-label">{channel.label}</span>
+                <span class="channel-value selectable" data-o={obfuscate(channel.value)}></span>
+                <button class="copy-btn" type="button" data-o={obfuscate(channel.value)}>
+                  Copy
+                </button>
+              </div>
+            </li>
+          ) : (
+            <li>
+              <a
+                class="channel"
+                href="#"
+                data-o={obfuscate(channel.href)}
+                rel={channel.external ? 'me noopener' : undefined}
+                target={channel.external ? '_blank' : undefined}
+              >
+                <span class="channel-label">{channel.label}</span>
+                <span class="channel-value"></span>
+                <span class="channel-arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </li>
+          )
+        )}
+      </ul>
+
+      <a class="back-link" href="/#work">View Work</a>
+    </div>
   </main>
 </Base>
 
 <style>
   .contact-page {
-    min-height: calc(100svh - var(--site-header-min) - 6rem);
-    display: grid;
-    align-items: center;
-    padding: clamp(4rem, 10vw, 8rem) 0;
+    --max: 1144px;
+    zoom: 1.2;
+    min-height: calc(100svh - var(--site-header-min) - 10rem);
+    color: var(--ink);
+    background: var(--paper);
+    font-family: var(--sans);
   }
 
-  .contact-card {
-    max-width: 36rem;
+  .contact-page a:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 4px;
   }
 
-  .contact-card span {
-    color: var(--ink-faint);
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    font-weight: 800;
+  .contact-inner {
+    width: min(var(--max), 100%);
+    margin: 0 auto;
+    padding: 70px 32px 100px;
+  }
+
+  .page-label {
+    display: block;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
     letter-spacing: 0.12em;
+    line-height: 1.2;
     text-transform: uppercase;
   }
 
-  .contact-card h1 {
-    margin: 1rem 0 0;
+  h1 {
+    margin: 24px 0 0;
     color: var(--ink);
-    font-family: var(--serif);
-    font-size: clamp(2.6rem, 6vw, 4.8rem);
-    font-weight: 600;
+    font-size: 46px;
+    font-weight: 700;
     letter-spacing: 0;
-    line-height: 1.02;
+    line-height: 1.18;
   }
 
-  .contact-card p {
-    margin: 1.25rem 0 0;
+  .intro {
+    max-width: 650px;
+    margin-top: 18px;
+  }
+
+  .intro p {
+    margin: 14px 0 0;
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .lead-in {
+    max-width: 650px;
+    margin: 36px 0 0;
     color: var(--ink);
-    font-family: var(--sans);
-    font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-    line-height: 1.7;
+    font-size: 18px;
+    line-height: 1.6;
   }
 
-  .contact-link {
+  .channel-list {
+    max-width: 650px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--rule-hard);
+  }
+
+  .channel {
+    min-height: 64px;
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px;
+    padding: 15px 4px;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+  }
+
+  a.channel:hover,
+  a.channel:focus-visible {
+    background: var(--paper-3);
+  }
+
+  a.channel:hover .channel-label,
+  a.channel:hover .channel-arrow,
+  a.channel:focus-visible .channel-label,
+  a.channel:focus-visible .channel-arrow {
+    color: var(--worlds);
+  }
+
+  .copy-btn {
+    min-height: 34px;
     display: inline-flex;
-    margin-top: 1.75rem;
-    color: var(--accent);
-    font-family: var(--mono);
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
+    align-items: center;
+    border: 1px solid var(--ink);
+    padding: 0 12px;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--worlds);
+    color: var(--worlds);
+  }
+
+  .copy-btn:focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 4px;
+  }
+
+  .copy-btn.done {
+    border-color: var(--embodied);
+    color: var(--embodied);
+  }
+
+  .channel:hover .channel-value,
+  .channel:hover .channel-arrow {
+    color: var(--worlds);
+  }
+
+  .channel-label {
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .channel-value {
+    overflow-wrap: anywhere;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .channel-arrow {
+    color: var(--ink-soft);
+    font-size: 16px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    margin-top: 48px;
+    border: 1px solid var(--rule);
+    padding: 0 26px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1;
     text-decoration: none;
     text-transform: uppercase;
   }
 
-  .contact-link:hover {
-    color: var(--stamp);
+  .back-link:hover {
+    border-color: var(--worlds);
+    color: var(--worlds);
+  }
+
+  @media (max-width: 912px) {
+    .contact-inner {
+      padding: 44px 20px 72px;
+    }
+
+    h1 {
+      font-size: 34px;
+    }
+
+    .intro p,
+    .lead-in {
+      font-size: 17px;
+    }
+
+    .channel {
+      grid-template-columns: 110px minmax(0, 1fr) auto;
+      gap: 12px;
+    }
   }
 </style>
+
+<script>
+  // Counterpart of the build-time obfuscation: values are restored only on
+  // the first user interaction (with a timed fallback), so raw-HTML scrapers
+  // and headless crawls that render but do not interact or wait see labels
+  // only. A crawler that executes JS and idles past the fallback still gets
+  // them; this raises the cost, it is not an absolute barrier.
+  // Mirror of the build-side encode (Buffer.from(reversed, 'utf8') -> base64):
+  // base64 -> bytes -> UTF-8 decode -> reverse codepoints, so non-ASCII values
+  // round-trip correctly.
+  const decode = (s: string) => {
+    const bytes = Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+    return [...new TextDecoder().decode(bytes)].reverse().join('');
+  };
+
+  const displayLink = (url: string) => {
+    try {
+      const u = new URL(url);
+      const path = u.pathname === '/' ? '' : u.pathname.replace(/\/$/, '');
+      return u.host.replace(/^www\./, '') + path;
+    } catch {
+      return url;
+    }
+  };
+
+  let hydrated = false;
+  const hydrate = () => {
+    if (hydrated) return;
+    hydrated = true;
+    for (const a of document.querySelectorAll<HTMLAnchorElement>('a.channel[data-o]')) {
+      const url = decode(a.dataset.o ?? '');
+      a.href = url;
+      const slot = a.querySelector('.channel-value');
+      if (slot) slot.textContent = displayLink(url);
+    }
+    for (const el of document.querySelectorAll<HTMLElement>('.channel-value.selectable[data-o]')) {
+      el.textContent = decode(el.dataset.o ?? '');
+    }
+  };
+
+  const events = ['pointermove', 'pointerdown', 'touchstart', 'keydown', 'scroll'];
+  for (const ev of events) {
+    addEventListener(ev, hydrate, { once: true, passive: true });
+  }
+  setTimeout(hydrate, 6000);
+
+  // Clipboard API needs a secure context; the execCommand path covers plain
+  // HTTP previews.
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('.copy-btn')) {
+    btn.addEventListener('click', async () => {
+      const text = decode(btn.dataset.o ?? '');
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        ok = document.execCommand('copy');
+        ta.remove();
+      }
+      btn.textContent = ok ? 'Copied' : 'Copy failed';
+      btn.classList.toggle('done', ok);
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('done');
+      }, 1600);
+    });
+  }
+</script>
