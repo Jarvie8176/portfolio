@@ -36,8 +36,8 @@
   --sp-5: 5rem; /** penpot:spacing */
   --col-main: 42rem; /** penpot:sizing */
   --col-note: 14rem; /** penpot:sizing */
-  --site-header-min: 56px; /** penpot:sizing */
-  --radius: 3px; /** penpot:borderRadius */
+  --site-header-min: 64px; /** penpot:sizing */
+  --radius: 0; /** penpot:borderRadius */
   --paper-2: var(--surface); /** legacy alias */
   --paper-3: var(--surface-quiet); /** legacy alias */
   --line: var(--rule); /** legacy alias */

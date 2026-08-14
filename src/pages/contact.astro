@@ -9,6 +9,8 @@ interface Channel {
   external: boolean;
   /** Email renders its address with a copy button; link rows hide the URL. */
   copyable?: boolean;
+  /** Deploy-injected values stay out of raw HTML until hydration. */
+  obfuscated?: boolean;
 }
 
 /** Reverse codepoints + UTF-8 base64: keeps addresses and URLs out of the raw
@@ -38,24 +40,28 @@ const channels: Channel[] = [
     href: `mailto:${deployment.contactEmail}`,
     external: false,
     copyable: true,
+    obfuscated: true,
   },
   deployment.signalUrl && {
     label: 'Signal',
     value: 'Signal',
     href: deployment.signalUrl,
     external: true,
+    obfuscated: true,
   },
   deployment.schedulingUrl && {
     label: 'Book a call',
     value: displayLink(deployment.schedulingUrl) ?? 'Scheduling',
     href: deployment.schedulingUrl,
     external: true,
+    obfuscated: true,
   },
   deployment.linkedinUrl && {
     label: 'LinkedIn',
     value: displayLink(deployment.linkedinUrl) ?? 'Profile',
     href: deployment.linkedinUrl,
     external: true,
+    obfuscated: true,
   },
   {
     label: 'GitHub',
@@ -114,13 +120,15 @@ const channels: Channel[] = [
             <li>
               <a
                 class="channel"
-                href="#"
-                data-o={obfuscate(channel.href)}
+                href={channel.obfuscated ? '#' : channel.href}
+                data-o={channel.obfuscated ? obfuscate(channel.href) : undefined}
                 rel={channel.external ? 'me noopener' : undefined}
                 target={channel.external ? '_blank' : undefined}
               >
                 <span class="channel-label">{channel.label}</span>
-                <span class="channel-value"></span>
+                <span class="channel-value">
+                  {channel.obfuscated ? '' : channel.value}
+                </span>
                 <span class="channel-arrow" aria-hidden="true">&rarr;</span>
               </a>
             </li>
@@ -167,6 +175,7 @@ const channels: Channel[] = [
   h1 {
     margin: 24px 0 0;
     color: var(--ink);
+    font-family: var(--serif);
     font-size: 46px;
     font-weight: 700;
     letter-spacing: 0;

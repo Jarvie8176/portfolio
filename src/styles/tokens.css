@@ -63,7 +63,7 @@ a:hover { color: var(--stamp); }
 }
 
 /* ============================================================
-   Stamp — project status marks
+   Stamp - project status marks
    Usage: <span class="stamp">concept</span>
    States: .stamp--concept (default) .stamp--proto .stamp--live
            .stamp--research .stamp--fieldwork
@@ -106,7 +106,7 @@ a:hover { color: var(--stamp); }
 .rule--hard  { border-top-color: var(--line-hard); }
 
 /* ============================================================
-   Section label:  01 — Problem
+   Section label:  01 - Problem
    ============================================================ */
 
 .sec {
@@ -272,8 +272,19 @@ a:hover { color: var(--stamp); }
 }
 
 .page--wide .site-foot {
-  /* 5vw = 72px at the 1440 design width; keeps the footer on the landing's content margin */
-  padding-inline: max(1.5rem, 5vw);
+  margin: 0;
+  padding: 25px max(32px, 5vw) 94px;
+  border-top-color: var(--rule);
+}
+
+.page--wide .site-foot .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.page--wide .site-foot .meta-row .meta {
+  font-size: 12px;
 }
 
 .meta-row {

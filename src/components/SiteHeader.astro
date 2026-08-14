@@ -26,10 +26,8 @@ const isContactPath = pathname === '/contact/';
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    padding: 0 32px;
-    border-bottom: 1px solid rgba(27, 29, 31, 0.14);
-    background: rgba(246, 247, 245, 0.92);
-    backdrop-filter: blur(10px);
+    padding: 0 max(32px, 5vw);
+    background: var(--paper);
   }
 
   .site-brand {
@@ -41,9 +39,10 @@ const isContactPath = pathname === '/contact/';
   }
 
   .site-brand strong {
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.1;
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.2;
   }
 
   .site-nav {
@@ -58,7 +57,7 @@ const isContactPath = pathname === '/contact/';
     padding: 1rem 0.25rem;
     color: var(--ink);
     font-size: 14px;
-    font-weight: 650;
+    font-weight: 500;
     text-decoration: none;
   }
 
@@ -75,7 +74,7 @@ const isContactPath = pathname === '/contact/';
 
   @media (max-width: 760px) {
     .site-header {
-      padding: 0 18px;
+      padding: 0 20px;
     }
   }
 </style>

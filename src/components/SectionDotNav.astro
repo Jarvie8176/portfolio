@@ -1,0 +1,266 @@
+---
+interface Item {
+  id: string;
+  label: string;
+  accent?: 'ink' | 'muted' | 'systems' | 'embodied' | 'worlds';
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props as Props;
+---
+
+<nav class="dot-nav" aria-label="Page sections">
+  {items.map((item) => (
+    <a
+      href={`#${item.id}`}
+      aria-label={item.label}
+      data-accent={item.accent ?? 'ink'}
+    >
+      <span>{item.label}</span>
+    </a>
+  ))}
+</nav>
+
+<style>
+  .dot-nav {
+    position: fixed;
+    top: 50%;
+    right: clamp(18px, 2vw, 28px);
+    z-index: 40;
+    display: grid;
+    gap: 16px;
+    transform: translateY(-50%);
+  }
+
+  .dot-nav::before {
+    content: "";
+    position: absolute;
+    inset: -22px -18px -22px -84px;
+  }
+
+  .dot-nav a {
+    --dot-accent: var(--ink);
+    position: relative;
+    width: 12px;
+    height: 12px;
+    display: block;
+    border: 1.5px solid var(--rule-hard);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition:
+      border-color 160ms ease,
+      background 160ms ease,
+      transform 160ms ease;
+  }
+
+  .dot-nav:hover a {
+    transform: scale(1.24);
+  }
+
+  .dot-nav a[data-accent="muted"] {
+    --dot-accent: var(--rule-hard);
+  }
+
+  .dot-nav a[data-accent="systems"] {
+    --dot-accent: var(--systems);
+  }
+
+  .dot-nav a[data-accent="embodied"] {
+    --dot-accent: var(--embodied);
+  }
+
+  .dot-nav a[data-accent="worlds"] {
+    --dot-accent: var(--worlds);
+  }
+
+  .dot-nav a[aria-current="true"] {
+    border-color: var(--dot-accent);
+    background: var(--dot-accent);
+  }
+
+  .dot-nav a:hover,
+  .dot-nav a:focus-visible,
+  .dot-nav a[data-section-flash="true"] {
+    border-color: var(--dot-accent);
+    background: var(--dot-accent);
+    transform: scale(1.32);
+  }
+
+  .dot-nav span {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 10px);
+    padding: 4px 0 4px 10px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--paper) 88%, transparent) 16px,
+      color-mix(in srgb, var(--paper) 94%, transparent)
+    );
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(6px, -50%);
+    color: var(--dot-accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-shadow:
+      0 1px 0 var(--paper),
+      1px 0 0 var(--paper);
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+
+  .dot-nav a:hover span,
+  .dot-nav a:focus-visible span,
+  .dot-nav:hover a[aria-current="true"] span,
+  .dot-nav a[data-section-flash="true"] span {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  @media (max-width: 912px) {
+    .dot-nav {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot-nav a,
+    .dot-nav span {
+      transition: none;
+    }
+
+    .dot-nav:hover a,
+    .dot-nav a:hover,
+    .dot-nav a:focus-visible,
+    .dot-nav a[data-section-flash="true"] {
+      transform: none;
+    }
+
+    .dot-nav span {
+      transform: translate(0, -50%);
+    }
+  }
+</style>
+
+<script>
+  const dotLinks = [...document.querySelectorAll<HTMLAnchorElement>('.dot-nav a')];
+  const sections = dotLinks
+    .map((link) => document.getElementById(link.hash.slice(1)))
+    .filter((section): section is HTMLElement => Boolean(section));
+
+  let currentId = '';
+  let frame = 0;
+  let flashTimer = 0;
+  let sectionStops: Array<{ id: string; top: number }> = [];
+
+  const clearFlash = () => {
+    window.clearTimeout(flashTimer);
+    for (const link of dotLinks) {
+      link.removeAttribute('data-section-flash');
+    }
+  };
+
+  const setCurrent = (id: string, flash = false) => {
+    if (id === currentId) {
+      return;
+    }
+
+    currentId = id;
+    clearFlash();
+
+    for (const link of dotLinks) {
+      const isCurrent = link.hash === `#${id}`;
+      if (isCurrent) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+      if (isCurrent && flash) {
+        link.dataset.sectionFlash = 'true';
+      }
+    }
+
+    if (flash) {
+      flashTimer = window.setTimeout(clearFlash, 2000);
+    }
+  };
+
+  const measureSections = () => {
+    sectionStops = sections
+      .map((section) => ({
+        id: section.id,
+        top: section.getBoundingClientRect().top + window.scrollY,
+      }))
+      .sort((a, b) => a.top - b.top);
+  };
+
+  const getActiveSectionId = () => {
+    if (!sectionStops.length) {
+      measureSections();
+    }
+
+    const pageBottom = window.scrollY + window.innerHeight;
+    if (pageBottom >= document.documentElement.scrollHeight - 2) {
+      return sectionStops.at(-1)?.id;
+    }
+
+    const activationY = window.scrollY + window.innerHeight * 0.38;
+    let active = sectionStops[0];
+
+    for (const stop of sectionStops) {
+      if (stop.top <= activationY) {
+        active = stop;
+      }
+    }
+
+    return active?.id;
+  };
+
+  const updateCurrentFromPosition = (flash = true) => {
+    const activeId = getActiveSectionId();
+    if (activeId) {
+      setCurrent(activeId, flash);
+    }
+  };
+
+  const requestUpdate = () => {
+    if (frame) {
+      return;
+    }
+
+    frame = window.requestAnimationFrame(() => {
+      frame = 0;
+      updateCurrentFromPosition();
+    });
+  };
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', () => {
+    measureSections();
+    requestUpdate();
+  });
+  window.addEventListener('hashchange', () => {
+    measureSections();
+    requestUpdate();
+  });
+  window.addEventListener('load', () => {
+    measureSections();
+    updateCurrentFromPosition(false);
+  });
+
+  if (sections.length) {
+    measureSections();
+    updateCurrentFromPosition(false);
+  }
+</script>
