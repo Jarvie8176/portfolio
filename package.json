@@ -11,10 +11,13 @@
     "preview": "astro preview",
     "astro": "astro",
     "typecheck": "astro sync && tsc --noEmit -p tsconfig.json",
-    "tokens:build": "node tokens/build.mjs"
+    "tokens:build": "node tokens/build.mjs",
+    "diagram:derive": "node scripts/diagram/canvas-to-mermaid.mjs src/diagrams/yaaa.canvas src/diagrams/yaaa.mmd",
+    "diagram:gate": "node scripts/diagram/render-and-gate.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
+    "d3": "^7.9.0",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@photo-sphere-viewer/core": "5.15.1",
@@ -24,6 +27,7 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "style-dictionary": "^5.5.1",
     "typescript": "^7.0.2"
   }

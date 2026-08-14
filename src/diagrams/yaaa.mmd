@@ -1,0 +1,48 @@
+flowchart LR
+  subgraph grp_l1 ["L1 - Broad read side"]
+    sources("sources")
+    normalize("normalize")
+    owned_records["owned records"]
+    context_candidate("context candidate")
+  end
+  subgraph grp_l2 ["L2 - Binding layer"]
+    policy_router("reason - policy router")
+    owned_memory_ledger["remember"]
+    converse("converse")
+  end
+  subgraph grp_l3 ["L3 - Nested ReAct"]
+    reason("reason")
+    act("act")
+    observe("observe")
+    reflect("reflect")
+  end
+  subgraph grp_l4 ["L4 - Gated action"]
+    side_effect_intent("side-effect intent")
+    procedure_manifest("procedure manifest")
+    fail_closed_gate{{"fail-closed gate"}}
+    execute_refuse("execute - refuse")
+  end
+  subgraph grp_l5 ["L5 - Governance foundation"]
+    run_traces["run traces"]
+    review{"review"}
+    promote("promote - deploy")
+  end
+
+  sources --> normalize
+  normalize --> owned_records
+  owned_records --> context_candidate
+  context_candidate ==>|bind| owned_memory_ledger
+  policy_router <--> owned_memory_ledger
+  owned_memory_ledger <--> converse
+  converse -->|call| reason
+  reason --> act
+  act --> observe
+  observe --> reflect
+  reflect -.->|requests write| side_effect_intent
+  side_effect_intent --> procedure_manifest
+  procedure_manifest --> fail_closed_gate
+  fail_closed_gate --> execute_refuse
+  execute_refuse -.->|trace| run_traces
+  run_traces --> review
+  review --> promote
+  promote ==>|reviewed feedback| owned_memory_ledger

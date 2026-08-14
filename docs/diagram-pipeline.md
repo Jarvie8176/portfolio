@@ -1,0 +1,267 @@
+# Portfolio diagram pipeline
+
+Status: spec (interface freeze) - v0.1
+Scope: shared, reusable architecture-diagram system for every project concept
+page (Yaaa, Amanuensis, Beagle, commonplace, ...). One engine, one canvas per
+project.
+
+## Why this exists
+
+Each project concept page needs a bespoke architecture figure that:
+
+- expresses a **deliberate composition** (e.g. Yaaa's broad-read / narrow-write
+  funnel), not a generic auto-layout graph;
+- uses a **semantic visual language** (shape grammar + color-by-role);
+- supports **interactive semantic zoom**: a high-level view that zooms into
+  per-layer detail (polished visualization);
+- ships **accessible and fast** on a static Astro site (works with no JS, then
+  progressively enhances);
+- stays **verifiable** against a single source of truth so figures cannot
+  silently drift from the intended structure.
+
+No single off-the-shelf tool covers all of this, so the pipeline composes
+open pieces around one source of truth.
+
+## Layers (locked decisions)
+
+| Layer | Choice | Role |
+|---|---|---|
+| **L0 data/logic SoT** | **JSON Canvas** (`.canvas`, one per project) | typed nodes + edges + **deliberate positions**, editable WYSIWYG (Obsidian) |
+| **job-A acceptance** | **Mermaid**, derived from the canvas | structural correctness check; renders natively in GitHub for review |
+| **L1+L2 render + interaction** | **shared d3 component** (Astro island) | reads canvas JSON -> interactive SVG with semantic zoom |
+| **drift gate** | **content-parity check** (CI) | fails closed if the shipped SVG and the SoT disagree on nodes/edges |
+| **styling** | CSS + design tokens | tokens, reduced-motion, print/no-JS fallback |
+
+### The one hard guardrail
+
+**d3 renders the canvas's manual coordinates; it never runs auto-layout.**
+`d3-force`, `d3-hierarchy`, and any layout algorithm are prohibited for
+placement. Positions are authored by hand in the canvas (that is the whole
+point of the WYSIWYG choice). d3 is the render + interaction engine only:
+zoom, level-of-detail, transitions, styling. Violating this destroys the
+deliberate composition.
+
+## L0 - JSON Canvas authoring convention
+
+A project canvas is a standard JSON Canvas 1.0 file. We layer a small tag
+convention on top (all optional metadata lives in the node/edge `label` or a
+sidecar; see "encoding" below) so the render step can apply the shape grammar.
+
+### Node roles (`type`)
+
+| `type` | Shape rendered | Meaning |
+|---|---|---|
+| `store` | hard-edged rect (optional heavy left bar) | durable data / owned ledger / run traces |
+| `process` | rounded rect | a transform: sense, normalize, reason, converse |
+| `decision` | hexagon | routing / policy decision |
+| `gate` | octagon + lock glyph | fail-closed action boundary (focal) |
+| `container` | dashed rounded rect | a logical **layer** (also a Canvas group) |
+| `note` | plain text, no box | caption / reading rule |
+
+### Layers = Canvas groups
+
+Each architecture layer (e.g. Yaaa L1..L5) is a **JSON Canvas group node**.
+The group is both the visual dashed container AND the semantic-zoom target: the
+high-level view shows groups collapsed to a labeled region; zooming into a
+group reveals its member nodes (the per-layer detail graph).
+
+### Edge kinds (`edge-kind`)
+
+| `edge-kind` | Style | Meaning |
+|---|---|---|
+| `data` | solid + filled arrow | deterministic data / control transfer |
+| `authority` | thick solid | authority transition (durable memory / promotion) |
+| `async` | dashed | trace collection / background loop |
+| `sync` | double arrow | negotiated / two-way state |
+| `funnel` | converging pair | side-effect intent constrained before a write |
+
+### Encoding (how tags ride on stock JSON Canvas)
+
+JSON Canvas has no custom fields, so tags are encoded deterministically and
+losslessly:
+
+- **node `type`** -> encoded in the node `color` slot is NOT used for this
+  (color is reserved for the project accent). Instead the node `text` starts
+  with a hidden marker line `<!--type:gate,layer:L4-->` on its own line; the
+  render strips it. Rationale: survives round-trip through Obsidian, stays
+  visible/diffable in the raw file, needs no sidecar.
+- **edge `edge-kind`** -> encoded as a leading token in the edge `label`
+  (`authority: candidate -> memory`); render strips the `kind:` prefix.
+- **project accent** -> not stored in the canvas; injected by the render step
+  from the project's design token (see L1).
+
+A canvas authored with none of these markers still renders (defaults:
+`process` node, `data` edge) - the markers are progressive refinement, never a
+hard requirement to open the file.
+
+## job-A - Mermaid acceptance view
+
+A build script parses the canvas and emits `<project>.mmd` (a `flowchart`)
+capturing **nodes + edges + layer grouping only** - no positions, no styling.
+This is the structural contract:
+
+- committed next to the canvas, rendered natively in GitHub for PR review;
+- its node/edge set is the reference the drift gate checks the SVG against;
+- auto-derived, never hand-edited, so job-A can never silently drift from the
+  SoT.
+
+Layout in the mermaid view is auto (that is fine - it is an acceptance graph,
+not the presentation).
+
+## L1+L2 - the shared d3 component
+
+One component, used by every concept page.
+
+### Astro contract
+
+```
+<ProjectDiagram
+  canvas={"yaaa"}          {/* loads src/diagrams/yaaa.canvas          */}
+  accent={"systems"}       {/* token name: systems|embodied|worlds     */}
+  title={"..."}            {/* accessible figure name                  */}
+  interactive={true}       {/* false => static base SVG only, no island */}
+/>
+```
+
+### Two-phase render (this is how full d3 coexists with a no-JS baseline)
+
+1. **Build time (deterministic renderer, no d3).** During `astro build`, the
+   component calls `render.mjs` - a plain, dependency-free renderer - to emit a
+   **static inline SVG** of the high-level view from the canvas's manual
+   coordinates. This is what ships in the HTML: it is visible with **zero
+   JavaScript**, is crawlable, and paints on first load. It carries the full
+   `data-*` annotation set (see below). d3 is deliberately NOT used at build,
+   so the build stays d3-free and fast.
+2. **Runtime (progressive enhancement).** On concept pages, a lazily loaded
+   island imports d3 and **attaches to the already-present inline SVG**, adding
+   `d3-zoom` pan/zoom, semantic-zoom level-of-detail, and flow animation. If
+   the island never loads (no JS, slow net, error), the static high-level
+   figure remains fully usable.
+
+d3 is imported as the full bundle (deliberate: a shared, evolving component
+across many projects and diagram types; avoids per-diagram import churn). It is
+loaded **only** by the interactive island on concept pages, never on the
+landing or other routes, and never blocks first paint.
+
+### Semantic zoom / level-of-detail (LOD)
+
+- **Level 0 (default):** high-level view. Layer groups render as labeled dashed
+  regions; only cross-layer edges and headline nodes are shown.
+- **Level 1 (zoom in on a region):** `d3-zoom` transform crosses a scale
+  threshold for a group -> that group's member nodes and intra-layer edges fade
+  in; unrelated groups dim. This is the SoT "per-layer detail" (the second,
+  detailed graph) surfaced by zoom rather than a page swap.
+- **Level 2 (focus a node):** node hover/focus raises its connected flow and
+  opens its claim card.
+
+LOD is driven by the zoom scale and the group a node belongs to - all data
+already present in the canvas. No network fetch, no re-layout.
+
+### Data-* annotation contract (parity + a11y)
+
+Every rendered SVG (build-time and runtime) MUST annotate:
+
+```
+<g data-node="owned-memory-ledger" data-type="store" data-layer="L2">
+  <title>owned memory ledger</title> ...
+</g>
+<g data-edge="context-candidate->owned-memory-ledger" data-kind="authority"> ... </g>
+```
+
+- `data-node` / `data-edge` ids are the canvas node ids and `from->to` pairs.
+- `<title>` (and `aria-label` on the root `<svg role="img">`) give the
+  accessible name; these double as the parity anchors.
+- IDs are stable and kebab-cased from the canvas.
+
+## Drift gate (job-C verification)
+
+A deterministic CI script asserts **content parity** between the SoT and the
+shipped SVG. It checks presence, **not layout** - deliberate geometry is
+allowed to diverge; the node/edge *set* is not.
+
+Algorithm:
+
+1. Parse the canvas -> `model = {nodes, edges, layers}` (read dynamically from
+   the file; never a hard-coded expected list).
+2. Parse the build-time SVG -> `svg = {nodes, edges, layers}` from `data-*`.
+3. Diff and **fail** on any of:
+   - node in `model` missing from `svg`, or in `svg` not in `model`;
+   - edge mismatch (same rule);
+   - node whose `data-layer` disagrees with the canvas group.
+4. **Fail closed:** an SVG with zero `data-node` annotations is a FAIL
+   ("cannot be verified"), never a pass-on-empty.
+5. Labels normalized (trim/case) before comparison.
+
+Output lists exact missing/extra ids so the fix is mechanical.
+
+Scope limit (honest): the gate proves the figure carries the same *content* as
+the SoT. It does **not** prove the composition's *meaning* is right (an edge
+drawn backwards, a funnel narrowing the wrong way). The mermaid acceptance view
+rendered in the PR is the human cross-check for meaning.
+
+## Styling, a11y, motion
+
+- Colors come from design tokens; each project passes one **accent** token
+  (`systems` `#2c4e8a`, `embodied` `#657052`, `worlds` `#985e49`). Role
+  encoding (read/write/gate/...) uses a fixed semantic ramp shared across
+  projects; the accent tints the project-specific highlights.
+- `role="img"` + `aria-label` on the SVG; every node group has a `<title>`.
+- **Keyboard:** zoom and region focus MUST be reachable without a mouse
+  (tab to regions, +/- to zoom, 0 to reset). `d3-zoom` is pointer-first, so the
+  island adds explicit keyboard handlers and focus rings.
+- **Reduced motion:** with `prefers-reduced-motion`, flows resolve to their end
+  state, no looping and no auto-zoom; zoom remains available on explicit input.
+
+## Per-project mapping
+
+All four are node/edge flows, so the generic model covers them; each uses its
+project accent.
+
+| Project | Accent | Shape of the figure |
+|---|---|---|
+| Yaaa | `systems` | broad-read -> bind -> narrow-write funnel + governance foundation |
+| Amanuensis | `systems` | read -> triage -> rank -> deliver pipeline + delivery ledger |
+| Beagle | `embodied` | record -> track -> remind cognitive-support loop |
+| commonplace | `worlds` | bridge / toy-world co-presence architecture |
+
+## Repository layout
+
+```
+src/diagrams/<project>.canvas        # L0 SoT (one per project)
+src/diagrams/<project>.mmd           # derived acceptance view (generated)
+src/components/diagram/
+  ProjectDiagram.astro               # Astro contract + build-time SSR base SVG
+  render.ts                          # canvas JSON -> annotated SVG (shared)
+  island.ts                          # runtime d3 zoom/LOD/anim enhancement
+scripts/diagram/
+  canvas-to-mermaid.mjs              # job-A derive
+  parity-gate.mjs                    # drift gate (CI)
+docs/diagram-pipeline.md             # this spec
+```
+
+## Build vs adopt
+
+- **Adopt:** JSON Canvas format; canvas->mermaid derivation follows existing
+  community exporters (kept as a small in-repo script to avoid an Obsidian
+  runtime dependency in CI).
+- **Build (thin, in-repo):** the render step (canvas -> annotated styled SVG)
+  and the parity gate. No off-the-shelf tool produces the semantic shape
+  grammar + `data-*` contract we need, and both are small.
+- **Not used as ship path:** Penpot / draw.io / Figma remain optional
+  composition scratchpads only - their SVG export is not the annotated,
+  CSS-animatable artifact this pipeline requires.
+
+## Open questions (pre-implementation)
+
+1. Detail graphs: author per-layer detail as **nested group members in the one
+   canvas** (preferred - single file, zoom expands it) vs separate detail
+   canvases. Default: nested.
+2. Edge routing: v0.1 draws edges center-to-center (behind opaque nodes), so
+   long edges can visually cross unrelated boxes. Next iteration routes to box
+   boundaries and offsets the funnel pair. Positions themselves are refined in
+   Obsidian (WYSIWYG), not by an auto-layout pass.
+3. Whether to defer the d3 chunk with a dynamic `import()` until first
+   interaction (saves ~90 kB gz on load) vs eager module script. v0.1 is eager
+   (deferred module, non-blocking); revisit if load budget matters.
+4. Whether the parity gate also runs against the runtime-expanded detail level
+   or only the build-time base. Default: base only for v0.1; extend later.
