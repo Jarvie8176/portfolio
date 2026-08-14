@@ -1,0 +1,1305 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+
+const formulaLines = [
+  'the product experience of ChatGPT Agent',
+  '+ the self-hosted surface of Open WebUI and LibreChat',
+  '+ the memory ambition of Letta, Mem0, and Zep',
+  '+ the automation target of Home Assistant and n8n',
+  '+ a compensatory human-AI collaboration stance',
+  '= a self-owned assistant operating layer',
+];
+
+const stackRows = [
+  { name: 'Sense', state: 'partial', label: 'partial · live' },
+  { name: 'Remember', state: 'partial', label: 'substrate live' },
+  { name: 'Reason', state: 'partial', label: 'partial · live' },
+  { name: 'Converse', state: 'pending', label: 'pending' },
+  { name: 'Act', state: 'partial', label: 'gate verified', gated: true },
+  { name: 'Surface', state: 'live', label: 'live' },
+];
+
+const organs = [
+  {
+    name: 'Sense',
+    body: 'Normalize mail, feeds, notes, and other incoming sources into durable item stores with provenance.',
+  },
+  {
+    name: 'Remember',
+    body: 'Keep personal context in human-readable, git-backed memory that can be reviewed and diffed.',
+  },
+  {
+    name: 'Reason',
+    body: 'Triage, rank, summarize, and denoise, with sensitive work routed to local models.',
+  },
+  {
+    name: 'Converse',
+    body: 'The interactive natural-language loop: one of several processes, not the center of the system.',
+  },
+  {
+    name: 'Act',
+    body: 'Side effects, all of them, pass through a single gated procedure dispatcher.',
+  },
+  {
+    name: 'Surface',
+    body: 'Digest-first delivery through explicit gates, recorded in a ledger, quiet by default.',
+  },
+];
+
+const statusRows = [
+  {
+    organ: 'Surface',
+    status: 'live',
+    state: 'live',
+    note: 'Daily digest delivery has run in production since July 2026.',
+  },
+  {
+    organ: 'Sense',
+    status: 'partial, live',
+    state: 'partial',
+    note: 'Email ingestion is live; additional sources remain planned or gated.',
+  },
+  {
+    organ: 'Reason',
+    status: 'partial, live',
+    state: 'partial',
+    note: 'Digest triage is live; assistant multi-turn reasoning is future work.',
+  },
+  {
+    organ: 'Remember',
+    status: 'substrate live',
+    state: 'partial',
+    note: 'The memory authority exists; assistant read and write binding is pending.',
+  },
+  {
+    organ: 'Act',
+    status: 'gate verified',
+    state: 'partial',
+    note: 'The fail-closed gate and dispatcher are verified; production procedures are pending.',
+  },
+  {
+    organ: 'Converse',
+    status: 'pending',
+    state: 'pending',
+    note: 'The harness decision is open; a minimal single-turn slice is designed.',
+  },
+];
+
+const openQuestions = [
+  'Which conversation harness earns the seat? Any candidate that creates a second write path or a second memory ledger is disqualified.',
+  'How does memory binding land without a second ledger? Serving layers must stay rebuildable projections of the git-backed record.',
+  'When does the high-sensitivity path count as proven? Local routing is the chosen design; end-to-end evidence and leak detection are still being built.',
+  'Can self-improvement ever be on by default? Learning loops that mutate skills or memory without review are treated as fail-open, so they stay off or behind staged review.',
+];
+---
+
+<Base
+  title={`${site.name} · Yaaa`}
+  description="Yaaa is a self-owned assistant operating layer: a personal AI assistant assembled as a federation of small, auditable systems instead of a monolithic black box."
+  ogType="article"
+  wide
+>
+  <main class="yaaa-page">
+    <section class="hero" aria-labelledby="project-title">
+      <div class="hero-copy">
+        <div class="badge-row" aria-label="Project status">
+          <span class="status-badge">Partially live</span>
+          <span class="mode-tag">Systems</span>
+          <span class="mode-tag mode-tag-secondary">Embodied Life</span>
+        </div>
+        <p class="eyebrow">Yet Another AI Assistant</p>
+        <h1 id="project-title">an operating layer for an assistant you own</h1>
+        <p class="summary">
+          A local-first, federated assistant architecture for auditable memory,
+          sensitive-data routing, and harness-agnostic orchestration.
+        </p>
+        <p class="status-line">mapped architecture · built organs · pending bindings</p>
+      </div>
+
+      <figure
+        class="organ-stack"
+        role="img"
+        aria-label="Diagram of the six Yaaa organs on one binding bus: sense partial and live, remember substrate live, reason partial and live, converse pending, act gate verified, surface live"
+      >
+        <span class="stack-title">runtime loop</span>
+        <ul>
+          {stackRows.map((row) => (
+            <li data-state={row.state}>
+              <i class="stack-dot" aria-hidden="true"></i>
+              <b>{row.name}</b>
+              {row.gated && <span class="gate-chip">fail-closed</span>}
+              <em>{row.label}</em>
+            </li>
+          ))}
+        </ul>
+        <figcaption>Six organs, one binding layer, one write path.</figcaption>
+      </figure>
+    </section>
+
+    <div class="spine-wrap">
+      <section class="page-section" id="problem" aria-labelledby="problem-title">
+        <div class="section-label">
+          <span class="sec-no">01</span>
+          <h2 id="problem-title">Problem</h2>
+        </div>
+        <div class="two-column">
+          <p class="lead">
+            Consumer assistants optimize for convenience first. The price is
+            authority: memory, routing, and tool permissions all end up owned
+            by the vendor.
+          </p>
+          <div class="body-stack">
+            <p>
+              That trade is invisible until it matters. Memory lives in an opaque
+              store you cannot diff. Sensitive context rides to whichever model
+              the product prefers. Actions run on trust in a prompt.
+            </p>
+            <p>
+              Yaaa starts from the opposite end: an assistant for one person,
+              running on infrastructure that person owns, where every durable
+              change is reviewable and every side effect passes an explicit gate.
+              Ownership is not a feature toggle. It lives in the architecture.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-section" id="concept" aria-labelledby="concept-title">
+        <div class="section-label">
+          <span class="sec-no">02</span>
+          <h2 id="concept-title">Concept</h2>
+        </div>
+        <div class="concept-grid">
+          <div>
+            <p class="kicker">What it is</p>
+            <h3>A binding layer over federated organs.</h3>
+            <p>
+              Each organ keeps its own runtime and cadence. The assistant layer
+              binds them through memory, conversation, surface, and governance
+              instead of replacing them with one central process.
+            </p>
+          </div>
+          <div>
+            <p class="kicker">What it is not</p>
+            <h3>Not a monolith, and not finished.</h3>
+            <p>
+              Some organs are live, some are partial, and the full closed loop is
+              still being assembled. The name is deliberate: it earns the "yet
+              another" by what it refuses to centralize.
+            </p>
+          </div>
+        </div>
+        <div
+          class="formula"
+          role="img"
+          aria-label="Architecture formula: the product experience of ChatGPT Agent, plus the self-hosted surface of Open WebUI and LibreChat, plus the memory ambition of Letta, Mem0, and Zep, plus the automation target of Home Assistant and n8n, plus a compensatory human-AI collaboration stance, equals a self-owned assistant operating layer"
+        >
+          {formulaLines.map((line) => <span>{line}</span>)}
+        </div>
+        <p class="formula-note">
+          The difference is not that other systems lack memory, tools, or
+          automation. The difference is who owns the result: auditable memory,
+          local routing for sensitive work, and a single write boundary that
+          policy can actually enforce.
+        </p>
+        <p class="stance-note">
+          The collaboration stance comes from <em>Mind Guarding Mind: A Framework
+          for Compensatory Human-AI Collaboration</em> (Agents4Science 2025): the
+          human remains Guardian of Direction, the AI serves as Guardian of
+          Process. The paper informs the design philosophy; the system's safety
+          guarantees have to come from its own implementation.
+        </p>
+      </section>
+
+      <section class="page-section" id="how-it-works" aria-labelledby="loop-title">
+        <div class="section-label">
+          <span class="sec-no">03</span>
+          <h2 id="loop-title">How it works</h2>
+        </div>
+        <figure class="arch-map">
+          <div class="arch-scroll">
+            <svg
+              viewBox="0 0 1040 500"
+              role="img"
+              aria-label="Architecture map. Read side, asynchronous on timers: sources flow into ingest, then an item store, then triage, then a triage store. Binding column: a git memory ledger and a surface and push organ attach to the binding layer. Write side, gated: the binding layer connects to the conversation harness, which sends intent and arguments to the dispatcher, then the procedure manifest, then a fail-closed gate; only passed work reaches a procedure."
+            >
+              <defs>
+                <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0.5,0.5 L7.5,4 L0.5,7.5" fill="none" class="arr-head" />
+                </marker>
+              </defs>
+
+              <text class="col-head" x="170" y="32" text-anchor="middle">read side · async</text>
+              <text class="col-head" x="520" y="32" text-anchor="middle">binding</text>
+              <text class="col-head" x="850" y="32" text-anchor="middle">write side · gated</text>
+
+              <!-- animated flow overlays (behind nodes) -->
+              <path class="flow" d="M170,106 V384" />
+              <path class="flow" d="M270,245 H410" />
+              <path class="flow" d="M270,405 H410" />
+              <path class="flow" d="M520,271 V384" />
+              <path class="flow" d="M850,126 V324" />
+
+              <!-- read column -->
+              <g class="node store">
+                <rect x="74" y="60" width="200" height="42" rx="3" class="ghost" />
+                <rect x="70" y="64" width="200" height="42" rx="3" />
+                <text x="170" y="90" text-anchor="middle">sources</text>
+              </g>
+              <path class="edge" d="M170,106 V140" />
+              <g class="node">
+                <rect x="70" y="144" width="200" height="42" rx="3" />
+                <text x="170" y="170" text-anchor="middle">ingest</text>
+              </g>
+              <path class="edge" d="M170,186 V220" />
+              <g class="node store">
+                <rect x="74" y="220" width="200" height="42" rx="3" class="ghost" />
+                <rect x="70" y="224" width="200" height="42" rx="3" />
+                <text x="170" y="250" text-anchor="middle">item store</text>
+              </g>
+              <path class="edge" d="M170,266 V300" />
+              <g class="node">
+                <rect x="70" y="304" width="200" height="42" rx="3" />
+                <text x="170" y="330" text-anchor="middle">triage</text>
+              </g>
+              <path class="edge" d="M170,346 V380" />
+              <g class="node store">
+                <rect x="74" y="380" width="200" height="42" rx="3" class="ghost" />
+                <rect x="70" y="384" width="200" height="42" rx="3" />
+                <text x="170" y="410" text-anchor="middle">triage store</text>
+              </g>
+
+              <!-- binding column -->
+              <g class="node store">
+                <rect x="414" y="80" width="220" height="42" rx="3" class="ghost" />
+                <rect x="410" y="84" width="220" height="42" rx="3" />
+                <text x="520" y="110" text-anchor="middle">memory ledger · git</text>
+              </g>
+              <path class="edge two-way" d="M520,130 V215" />
+              <g class="node bind">
+                <rect x="410" y="219" width="220" height="52" rx="3" />
+                <text x="520" y="250" text-anchor="middle">binding layer</text>
+              </g>
+              <path class="edge" d="M520,271 V380" />
+              <g class="node">
+                <rect x="410" y="384" width="220" height="42" rx="3" />
+                <text x="520" y="410" text-anchor="middle">surface · push</text>
+              </g>
+
+              <path class="edge" d="M270,245 H406" />
+              <path class="edge" d="M270,405 H406" />
+              <path class="edge two-way" d="M634,245 H685 V105 H736" />
+
+              <!-- write column -->
+              <g class="node">
+                <rect x="740" y="84" width="220" height="42" rx="3" />
+                <text x="850" y="110" text-anchor="middle">conversation harness</text>
+              </g>
+              <path class="edge" d="M850,126 V160" />
+              <text class="edge-label" x="864" y="148">intent + args</text>
+              <g class="node">
+                <rect x="740" y="164" width="220" height="42" rx="3" />
+                <text x="850" y="190" text-anchor="middle">dispatcher</text>
+              </g>
+              <path class="edge" d="M850,206 V240" />
+              <g class="node">
+                <rect x="740" y="244" width="220" height="42" rx="3" />
+                <text x="850" y="270" text-anchor="middle">procedure manifest</text>
+              </g>
+              <path class="edge" d="M850,286 V320" />
+              <g class="node gate">
+                <rect x="740" y="324" width="220" height="46" rx="3" />
+                <text x="850" y="352" text-anchor="middle">fail-closed gate</text>
+              </g>
+              <path class="edge pass" d="M850,370 V404" />
+              <text class="edge-label" x="864" y="392">only what passes</text>
+              <g class="node">
+                <rect x="740" y="408" width="220" height="42" rx="3" />
+                <text x="850" y="434" text-anchor="middle">procedure</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption>Read side on timers · one binding layer · one gated write path.</figcaption>
+        </figure>
+        <div class="organ-grid">
+          {organs.map((organ, index) => (
+            <article>
+              <span class="organ-port">{String(index + 1).padStart(2, '0')} · {organ.name}</span>
+              <p>{organ.body}</p>
+            </article>
+          ))}
+        </div>
+        <p class="policy-note">
+          The read side runs asynchronously on timers; the conversation harness is
+          the interactive loop, not the only process. Reads skip the write gate
+          but are still an egress risk, so high-sensitivity reading requires
+          mode-aware accessors and leak guards on any path toward a cloud model.
+        </p>
+        <p class="policy-note">
+          There is a second loop above the first: observe runs, extract
+          candidates, distill them into artifacts, review by a human, promote
+          into the record, reconcile across harnesses, deploy. The assistant
+          learns by turning runs into auditable artifacts, not by silently
+          mutating an opaque model memory.
+        </p>
+      </section>
+
+      <section class="page-section" id="status" aria-labelledby="status-title">
+        <div class="section-label">
+          <span class="sec-no">04</span>
+          <h2 id="status-title">Current status</h2>
+        </div>
+        <p class="status-intro">
+          Status language is kept deliberately narrow: live means running and
+          backed by evidence for at least one real path, partial means
+          components exist but the job is not end-to-end, pending means design
+          exists but no operational path yet.
+        </p>
+        <dl class="status-ledger">
+          {statusRows.map((row) => (
+            <div>
+              <dt>
+                <span class="ledger-organ">{row.organ}</span>
+                <span class="state-chip" data-state={row.state}>{row.status}</span>
+              </dt>
+              <dd>{row.note}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="status-proof">
+          The read side of this loop is not hypothetical. Sense, reason,
+          and surface run in production as <a href="/projects/amanuensis/">amanuensis</a>,
+          the companion project that delivers a daily digest through this
+          architecture's gates.
+        </p>
+      </section>
+
+      <section class="page-section" id="case-examples" aria-labelledby="case-title">
+        <div class="section-label">
+          <span class="sec-no">05</span>
+          <h2 id="case-title">Case examples</h2>
+        </div>
+        <div class="case-grid">
+          <article>
+            <header>
+              <span>Architecture cut 01</span>
+            </header>
+            <h3>One write path, fail closed.</h3>
+            <p>
+              Every assistant-initiated side effect flows through a single gated
+              dispatcher. The conversation harness supplies intent and arguments;
+              the gate enforces policy. The dispatcher does not depend on how
+              many procedures exist, so replacing the harness never means
+              rebuilding the write logic, and no harness carries bespoke
+              authority of its own.
+            </p>
+            <p>
+              Delivery has the same shape. Every outgoing message passes one
+              shared admission check: an audience gate, so a channel only receives
+              items for its declared audience, and a sensitivity gate, so a
+              high-sensitivity item may reach only a non-cloud channel. When no such
+              channel exists, the item is refused, never silently rerouted.
+              Refusing delivery beats delivering to the wrong place.
+            </p>
+            <blockquote class="case-claim">The safety invariant is a mechanical branch, not a prompt.</blockquote>
+            <footer class="case-status">
+              Status: the base gate and dispatcher are verified and the delivery
+              boundary is live; real assistant procedures are still migrating
+              behind the gate.
+            </footer>
+          </article>
+          <article>
+            <header>
+              <span>Architecture cut 02</span>
+            </header>
+            <h3>Claims tied to evidence.</h3>
+            <p>
+              Every capability claim stays tied to implementation evidence.
+              Design documents carry evidence tables with checked-at dates and
+              confidence levels, and premises that were later refuted stay on
+              the record instead of being deleted.
+            </p>
+            <p>
+              The same discipline draws the public boundary. The architecture is
+              mapped and some organs are live; the assistant is not shipped and
+              its high-sensitivity path is not yet proven end-to-end. The status
+              above says partial because the evidence does.
+            </p>
+            <blockquote class="case-claim">Honesty is a mechanism, not a tone.</blockquote>
+            <footer class="case-status">
+              Status: the discipline is in force; it is what keeps the claims on
+              this page inside what the implementation can back.
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section class="page-section" id="open-questions" aria-labelledby="questions-title">
+        <div class="section-label">
+          <span class="sec-no">06</span>
+          <h2 id="questions-title">Open questions</h2>
+        </div>
+        <div class="question-list">
+          {openQuestions.map((question) => (
+            <p>
+              <span class="open-chip">open</span>
+              {question}
+            </p>
+          ))}
+        </div>
+      </section>
+    </div>
+
+    <p class="back-link"><a href="/work/#yaaa">Back to work index</a></p>
+  </main>
+</Base>
+
+<style>
+  .yaaa-page {
+    --page-max: 72rem;
+    --pad: clamp(1.5rem, 4vw, 4rem);
+    --spine-gap: 3rem;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  /* ---------- shared micro-type ---------- */
+
+  .status-badge,
+  .mode-tag,
+  .eyebrow,
+  .status-line,
+  .stack-title,
+  .organ-stack b,
+  .organ-stack em,
+  .gate-chip,
+  .section-label,
+  .kicker,
+  .organ-port,
+  .write-path,
+  .ledger-organ,
+  .state-chip,
+  .case-grid header span,
+  .case-status,
+  .open-chip,
+  .back-link {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  dd {
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- hero ---------- */
+
+  .hero {
+    min-height: calc(100svh - var(--site-header-min));
+    display: grid;
+    grid-template-columns: minmax(18rem, 1fr) minmax(17rem, 0.62fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: clamp(3rem, 7vw, 6rem) var(--pad);
+  }
+
+  .hero-copy {
+    min-width: 0;
+  }
+
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.55rem;
+    padding: 0 0.55rem;
+    border: 1px solid var(--systems);
+    border-radius: 3px;
+    color: var(--systems);
+  }
+
+  .mode-tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.55rem;
+    padding: 0 0.58rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--systems) 10%, transparent);
+    color: var(--systems);
+  }
+
+  .mode-tag-secondary {
+    background: color-mix(in srgb, var(--embodied) 10%, transparent);
+    color: var(--embodied);
+  }
+
+  .eyebrow {
+    margin: clamp(2rem, 5vw, 3.5rem) 0 0;
+    color: var(--ink-faint);
+  }
+
+  h1 {
+    max-width: 50rem;
+    margin: 0.75rem 0 0;
+    font-family: var(--serif);
+    font-size: clamp(2.45rem, 6.4vw, 5.4rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 0.98;
+  }
+
+  .summary {
+    max-width: 39rem;
+    margin: 1.45rem 0 0;
+    font-size: clamp(1.05rem, 1.5vw, 1.28rem);
+    line-height: 1.7;
+  }
+
+  .status-line {
+    margin: 1.35rem 0 0;
+    color: var(--stamp);
+  }
+
+  /* ---------- hero organ stack ---------- */
+
+  .organ-stack {
+    position: relative;
+    margin: 0;
+    min-width: 0;
+    padding: clamp(1.25rem, 2vw, 1.75rem);
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--systems) 4%, transparent) 0 1px,
+        transparent 1px 28px
+      ),
+      var(--surface);
+  }
+
+  .organ-stack::before {
+    content: "";
+    position: absolute;
+    inset: -0.85rem 0.85rem 0.85rem -0.85rem;
+    border: 1px solid color-mix(in srgb, var(--systems) 36%, transparent);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  .stack-title {
+    color: var(--stamp);
+  }
+
+  .organ-stack ul {
+    position: relative;
+    margin: 1.1rem 0 0;
+    padding: 0 0 0 1.1rem;
+    list-style: none;
+  }
+
+  /* the binding bus */
+  .organ-stack ul::before {
+    content: "";
+    position: absolute;
+    top: 0.75rem;
+    bottom: 0.75rem;
+    left: 0;
+    border-left: 2px solid var(--systems);
+  }
+
+  .organ-stack li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    margin-top: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--paper);
+  }
+
+  .organ-stack li:first-child {
+    margin-top: 0;
+  }
+
+  /* connector stub from bus to organ */
+  .organ-stack li::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -1.1rem;
+    width: 1.1rem;
+    border-top: 1px solid var(--systems);
+  }
+
+  .stack-dot {
+    flex: none;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+  }
+
+  li[data-state='live'] .stack-dot {
+    background: var(--live);
+  }
+
+  li[data-state='partial'] .stack-dot {
+    background: linear-gradient(90deg, var(--stamp) 50%, transparent 50%);
+    border: 1px solid var(--stamp);
+  }
+
+  li[data-state='pending'] .stack-dot {
+    border: 1px solid var(--ink-faint);
+  }
+
+  .organ-stack b {
+    color: var(--ink);
+  }
+
+  .organ-stack em {
+    margin-left: auto;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--ink-faint);
+  }
+
+  li[data-state='live'] em {
+    color: var(--live);
+  }
+
+  .gate-chip {
+    flex: none;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    background: var(--systems);
+    color: var(--paper);
+    font-size: 0.6rem;
+  }
+
+  .organ-stack figcaption {
+    margin-top: 1rem;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  /* ---------- spine ---------- */
+
+  .spine-wrap {
+    position: relative;
+  }
+
+  .spine-wrap::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(max((100% - var(--page-max)) / 2, 0px) + var(--pad) + 0.95rem);
+    border-left: 1px solid var(--rule-hard);
+  }
+
+  .page-section {
+    position: relative;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: clamp(3.5rem, 7vw, 5.8rem) var(--pad) clamp(3.5rem, 7vw, 5.8rem)
+      calc(var(--pad) + var(--spine-gap));
+    border-top: 1px solid var(--rule);
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    margin: 0 0 clamp(1.5rem, 3vw, 2.4rem) calc(-1 * var(--spine-gap));
+    color: var(--ink-faint);
+  }
+
+  .sec-no {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--systems);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--systems);
+  }
+
+  .section-label h2 {
+    margin: 0;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+  }
+
+  /* ---------- body copy ---------- */
+
+  .two-column {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.86fr) minmax(18rem, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .lead {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(1.55rem, 3vw, 2.45rem);
+    font-weight: 500;
+    line-height: 1.18;
+  }
+
+  .body-stack p,
+  .concept-grid p,
+  .formula-note,
+  .stance-note,
+  .policy-note,
+  .status-intro,
+  .status-ledger dd,
+  .status-proof,
+  .case-grid p,
+  .question-list p {
+    color: var(--ink-soft);
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
+    line-height: 1.72;
+  }
+
+  .body-stack p {
+    margin: 0;
+  }
+
+  .body-stack p + p {
+    margin-top: 1rem;
+  }
+
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .concept-grid > div {
+    padding-top: 1.35rem;
+    border-top: 1px solid var(--rule-hard);
+  }
+
+  .kicker {
+    margin: 0;
+    color: var(--systems);
+  }
+
+  .concept-grid h3,
+  .case-grid h3 {
+    margin: 0.65rem 0 0;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: clamp(1.45rem, 2vw, 2rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1.15;
+  }
+
+  .concept-grid p:not(.kicker) {
+    margin: 0.9rem 0 0;
+  }
+
+  /* ---------- formula ---------- */
+
+  .formula {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding: clamp(1.25rem, 2.3vw, 2rem);
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--systems) 4%, transparent) 0 1px,
+        transparent 1px 28px
+      ),
+      var(--surface);
+    font-family: var(--mono);
+    font-size: clamp(0.8rem, 1.1vw, 0.95rem);
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .formula span:last-child {
+    margin-top: 0.35rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--rule-hard);
+    color: var(--systems);
+    font-weight: 700;
+  }
+
+  .formula-note {
+    max-width: 47rem;
+    margin: 1.35rem 0 0;
+  }
+
+  .stance-note {
+    max-width: 47rem;
+    margin: 1rem 0 0;
+  }
+
+  /* ---------- how it works ---------- */
+
+  .organ-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--rule-hard);
+  }
+
+  .organ-grid article {
+    min-width: 0;
+    padding: clamp(1.25rem, 2.3vw, 2rem);
+    background: var(--surface);
+  }
+
+  .organ-port {
+    color: var(--systems);
+  }
+
+  .organ-grid p {
+    margin: 0.75rem 0 0;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.66;
+  }
+
+  .arch-map {
+    margin: 0 0 clamp(1.5rem, 3vw, 2.4rem);
+  }
+
+  .arch-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--systems) 4%, transparent) 0 1px,
+        transparent 1px 28px
+      ),
+      var(--surface);
+  }
+
+  .arch-scroll svg {
+    display: block;
+    min-width: 54rem;
+    width: 100%;
+    height: auto;
+    padding: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .arch-map figcaption {
+    margin-top: 0.75rem;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .arch-map .col-head,
+  .arch-map .edge-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--ink-faint);
+  }
+
+  .arch-map .node rect {
+    fill: var(--paper);
+    stroke: var(--rule-hard);
+    stroke-width: 1;
+  }
+
+  .arch-map .node rect.ghost {
+    fill: none;
+    stroke: color-mix(in srgb, var(--rule-hard) 55%, transparent);
+  }
+
+  .arch-map .node text {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--ink);
+  }
+
+  .arch-map .node.bind rect {
+    fill: color-mix(in srgb, var(--systems) 6%, var(--paper));
+    stroke: var(--systems);
+    stroke-width: 1.5;
+  }
+
+  .arch-map .node.bind text {
+    fill: var(--systems);
+  }
+
+  .arch-map .node.gate rect {
+    fill: var(--systems);
+    stroke: var(--systems);
+  }
+
+  .arch-map .node.gate text {
+    fill: var(--paper);
+  }
+
+  .arch-map .edge {
+    fill: none;
+    stroke: var(--rule-hard);
+    stroke-width: 1.5;
+    marker-end: url(#arr);
+  }
+
+  .arch-map .edge.two-way {
+    marker-start: url(#arr);
+  }
+
+  .arch-map .edge.pass {
+    stroke: var(--systems);
+  }
+
+  .arch-map .arr-head {
+    stroke: var(--rule-hard);
+    stroke-width: 1.5;
+  }
+
+  .arch-map .flow {
+    fill: none;
+    stroke: color-mix(in srgb, var(--systems) 55%, transparent);
+    stroke-width: 3;
+    stroke-dasharray: 3 9;
+    animation: yaaa-flow 1.6s linear infinite;
+  }
+
+  @keyframes yaaa-flow {
+    to {
+      stroke-dashoffset: -12;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arch-map .flow {
+      animation: none;
+      opacity: 0.35;
+    }
+  }
+
+  .policy-note {
+    max-width: 47rem;
+    margin: 1.35rem 0 0;
+  }
+
+  /* ---------- status ledger ---------- */
+
+  .status-intro {
+    max-width: 47rem;
+    margin: 0 0 clamp(1.5rem, 3vw, 2.4rem);
+  }
+
+  .status-ledger {
+    display: grid;
+    margin: 0;
+    border-top: 1px solid var(--rule-hard);
+    border-bottom: 1px solid var(--rule-hard);
+  }
+
+  .status-ledger div {
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.42fr) 1fr;
+    gap: clamp(1rem, 3vw, 3rem);
+    padding: 0.95rem 0;
+  }
+
+  .status-ledger div + div {
+    border-top: 1px solid var(--rule);
+  }
+
+  .status-ledger dt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+  }
+
+  .ledger-organ {
+    color: var(--ink);
+  }
+
+  .state-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.12rem 0.45rem;
+    border-radius: 3px;
+    font-size: 0.62rem;
+  }
+
+  .state-chip[data-state='live'] {
+    border: 1px solid var(--live);
+    color: var(--live);
+  }
+
+  .state-chip[data-state='partial'] {
+    border: 1px solid var(--stamp);
+    color: var(--stamp);
+  }
+
+  .state-chip[data-state='pending'] {
+    border: 1px dashed var(--ink-faint);
+    color: var(--ink-faint);
+  }
+
+  .status-ledger dd {
+    margin: 0;
+    align-self: center;
+  }
+
+  .status-proof {
+    max-width: 47rem;
+    margin: clamp(1.5rem, 3vw, 2.4rem) 0 0;
+  }
+
+  .status-proof a {
+    color: var(--accent);
+    text-underline-offset: 0.2em;
+  }
+
+  .status-proof a:hover {
+    color: var(--stamp);
+  }
+
+  /* ---------- case dossiers ---------- */
+
+  .case-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: stretch;
+  }
+
+  .case-grid article {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .case-grid header {
+    padding: 0.65rem clamp(1.25rem, 2.3vw, 2rem);
+    border-bottom: 1px solid var(--rule-hard);
+    background:
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--systems) 4%, transparent) 0 1px,
+        transparent 1px 28px
+      ),
+      var(--paper);
+  }
+
+  .case-grid header span {
+    color: var(--systems);
+  }
+
+  .case-grid h3 {
+    margin: 1.15rem 0 0;
+    padding-inline: clamp(1.25rem, 2.3vw, 2rem);
+  }
+
+  .case-grid p {
+    margin: 0.9rem 0 0;
+    padding-inline: clamp(1.25rem, 2.3vw, 2rem);
+  }
+
+  .case-claim {
+    margin: 1.15rem clamp(1.25rem, 2.3vw, 2rem) 1.35rem;
+    padding: 0.35rem 0 0.35rem 1rem;
+    border-left: 3px solid var(--systems);
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .case-status {
+    margin-top: auto;
+    padding: 0.85rem clamp(1.25rem, 2.3vw, 2rem);
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    line-height: 1.6;
+    font-size: 0.68rem;
+  }
+
+  .case-status::before {
+    content: "";
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.5rem;
+    border: 1px solid var(--stamp);
+    border-radius: 50%;
+    vertical-align: 0.02em;
+  }
+
+  /* padding rhythm inside dossier cards */
+  .case-grid article > p:first-of-type {
+    margin-top: 1rem;
+  }
+
+  /* ---------- open questions ---------- */
+
+  .question-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--rule);
+  }
+
+  .question-list p {
+    min-width: 0;
+    margin: 0;
+    padding: clamp(1.15rem, 2vw, 1.6rem);
+    background: var(--surface);
+  }
+
+  .open-chip {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0.6rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px dashed var(--open);
+    border-radius: 3px;
+    color: var(--open);
+    font-size: 0.6rem;
+    vertical-align: 0.14em;
+  }
+
+  /* ---------- back link ---------- */
+
+  .back-link {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: clamp(2rem, 4vw, 3rem) var(--pad) clamp(4rem, 8vw, 6rem);
+  }
+
+  .back-link a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .back-link a:hover {
+    color: var(--stamp);
+  }
+
+  /* ---------- responsive ---------- */
+
+  @media (max-width: 900px) {
+    .hero,
+    .two-column,
+    .concept-grid,
+    .case-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero {
+      min-height: auto;
+      align-items: start;
+    }
+
+    .organ-stack {
+      max-width: 28rem;
+    }
+
+    .spine-wrap::before {
+      display: none;
+    }
+
+    .page-section {
+      padding-left: var(--pad);
+    }
+
+    .section-label {
+      margin-left: 0;
+    }
+
+    .organ-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .status-ledger div,
+    .question-list {
+      grid-template-columns: 1fr;
+    }
+
+    .status-ledger div {
+      gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    h1 {
+      font-size: clamp(2.15rem, 13vw, 3.8rem);
+    }
+
+    .yaaa-page {
+      --pad: 1.25rem;
+    }
+
+    .organ-stack::before {
+      inset: -0.65rem 0.65rem 0.65rem -0.65rem;
+    }
+
+    .organ-stack li {
+      flex-wrap: wrap;
+    }
+
+    .organ-stack em {
+      flex-basis: 100%;
+      margin: 0.2rem 0 0;
+      padding-left: 1.1rem;
+    }
+  }
+</style>
