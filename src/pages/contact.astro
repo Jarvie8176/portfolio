@@ -1,10 +1,18 @@
 ---
+import { faGithub, faLinkedin, faSignalMessenger } from '@fortawesome/free-brands-svg-icons';
+import { faCalendarDays, faCopy, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Base from '../layouts/Base.astro';
 import { deployment, site } from '../data/site';
+
+interface ChannelIcon {
+  paths: string[];
+  viewBox: string;
+}
 
 interface Channel {
   label: string;
   value: string;
+  icon: ChannelIcon;
   href?: string;
   external?: boolean;
   /** Copy-only channels render a short name with a copy button. */
@@ -14,6 +22,25 @@ interface Channel {
   /** Copy-only contact values stay out of raw HTML until hydration. */
   obfuscated?: boolean;
 }
+
+const faIcon = (definition: {
+  icon: readonly [number, number, readonly string[], string, string | string[]];
+}): ChannelIcon => {
+  const [width, height, , , pathData] = definition.icon;
+  return {
+    paths: Array.isArray(pathData) ? pathData : [pathData],
+    viewBox: `0 0 ${width} ${height}`,
+  };
+};
+
+const icons = {
+  book: faIcon(faCalendarDays),
+  copy: faIcon(faCopy),
+  email: faIcon(faEnvelope),
+  github: faIcon(faGithub),
+  linkedin: faIcon(faLinkedin),
+  signal: faIcon(faSignalMessenger),
+};
 
 /** Reverse codepoints + UTF-8 base64: keeps addresses and URLs out of the raw
  * HTML so non-JS scrapers (the bulk of harvesters) never see them. The client
@@ -38,6 +65,7 @@ const channels: Channel[] = [
   deployment.contactEmail && {
     label: 'Email',
     value: 'Email address',
+    icon: icons.email,
     href: `mailto:${deployment.contactEmail}`,
     external: false,
     copyable: true,
@@ -47,6 +75,7 @@ const channels: Channel[] = [
   deployment.signalUrl && {
     label: 'Signal',
     value: 'Signal contact link',
+    icon: icons.signal,
     copyValue: deployment.signalUrl,
     copyable: true,
     obfuscated: true,
@@ -54,24 +83,28 @@ const channels: Channel[] = [
   deployment.schedulingUrl && {
     label: 'Book a call',
     value: displayLink(deployment.schedulingUrl) ?? 'Scheduling',
+    icon: icons.book,
     href: deployment.schedulingUrl,
     external: true,
   },
   deployment.linkedinUrl && {
     label: 'LinkedIn',
     value: displayLink(deployment.linkedinUrl) ?? 'Profile',
+    icon: icons.linkedin,
     href: deployment.linkedinUrl,
     external: true,
   },
   {
     label: 'GitHub',
     value: displayLink(site.githubUrl) ?? 'GitHub',
+    icon: icons.github,
     href: site.githubUrl,
     external: true,
   },
   {
     label: 'GitHub · AI agent',
     value: displayLink(site.agentGithubUrl) ?? 'GitHub',
+    icon: icons.github,
     href: site.agentGithubUrl,
     external: true,
   },
@@ -108,11 +141,26 @@ const channels: Channel[] = [
         {channels.map((channel) =>
           channel.copyable ? (
             <li>
-              <div class="channel">
-                <span class="channel-label">{channel.label}</span>
-                <span class="channel-value channel-value-copy">{channel.value}</span>
+              <div class="channel channel--copy">
+                <span class="channel-icon" aria-hidden="true">
+                  <svg viewBox={channel.icon.viewBox} focusable="false">
+                    {channel.icon.paths.map((path) => <path d={path} />)}
+                  </svg>
+                </span>
+                <span class="channel-copy">
+                  <span class="channel-label">{channel.label}</span>
+                  <span class="channel-value channel-value-copy">{channel.value}</span>
+                </span>
                 <button class="copy-btn" type="button" data-o={obfuscate(channel.copyValue ?? channel.value)}>
-                  Copy
+                  <svg
+                    class="copy-icon"
+                    aria-hidden="true"
+                    viewBox={icons.copy.viewBox}
+                    focusable="false"
+                  >
+                    {icons.copy.paths.map((path) => <path d={path} />)}
+                  </svg>
+                  <span class="copy-btn-label">Copy</span>
                 </button>
               </div>
             </li>
@@ -125,9 +173,16 @@ const channels: Channel[] = [
                 rel={channel.external ? 'me noopener' : undefined}
                 target={channel.external ? '_blank' : undefined}
               >
-                <span class="channel-label">{channel.label}</span>
-                <span class="channel-value">
-                  {channel.obfuscated ? '' : channel.value}
+                <span class="channel-icon" aria-hidden="true">
+                  <svg viewBox={channel.icon.viewBox} focusable="false">
+                    {channel.icon.paths.map((path) => <path d={path} />)}
+                  </svg>
+                </span>
+                <span class="channel-copy">
+                  <span class="channel-label">{channel.label}</span>
+                  <span class="channel-value">
+                    {channel.obfuscated ? '' : channel.value}
+                  </span>
                 </span>
                 <span class="channel-arrow" aria-hidden="true">&rarr;</span>
               </a>
@@ -213,9 +268,9 @@ const channels: Channel[] = [
   .channel {
     min-height: 64px;
     display: grid;
-    grid-template-columns: 140px minmax(0, 1fr) auto;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
     padding: 15px 4px;
     border-bottom: 1px solid var(--rule);
     text-decoration: none;
@@ -227,10 +282,34 @@ const channels: Channel[] = [
   }
 
   a.channel:hover .channel-label,
+  a.channel:hover .channel-icon,
   a.channel:hover .channel-arrow,
   a.channel:focus-visible .channel-label,
+  a.channel:focus-visible .channel-icon,
   a.channel:focus-visible .channel-arrow {
     color: var(--worlds);
+  }
+
+  .channel-icon {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+  }
+
+  .channel-icon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: currentColor;
+  }
+
+  .channel-copy {
+    min-width: 0;
+    display: grid;
+    gap: 4px;
   }
 
   .copy-btn {
@@ -251,13 +330,12 @@ const channels: Channel[] = [
     cursor: pointer;
   }
 
-  .copy-btn::before {
-    width: 11px;
+  .copy-icon {
+    width: 13px;
     height: 13px;
     display: block;
-    border: 1px solid currentColor;
-    box-shadow: 3px -3px 0 -1px var(--paper), 3px -3px 0 0 currentColor;
-    content: '';
+    fill: currentColor;
+    flex: 0 0 auto;
   }
 
   .copy-btn:hover {
@@ -282,9 +360,9 @@ const channels: Channel[] = [
 
   .channel-label {
     color: var(--ink-soft);
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     line-height: 1.2;
     text-transform: uppercase;
   }
@@ -343,7 +421,7 @@ const channels: Channel[] = [
     }
 
     .channel {
-      grid-template-columns: 110px minmax(0, 1fr) auto;
+      grid-template-columns: 28px minmax(0, 1fr) auto;
       gap: 12px;
     }
   }
@@ -396,6 +474,7 @@ const channels: Channel[] = [
   for (const btn of document.querySelectorAll<HTMLButtonElement>('.copy-btn')) {
     btn.addEventListener('click', async () => {
       const text = decode(btn.dataset.o ?? '');
+      const label = btn.querySelector<HTMLElement>('.copy-btn-label');
       let ok = false;
       try {
         await navigator.clipboard.writeText(text);
@@ -411,10 +490,10 @@ const channels: Channel[] = [
         ok = document.execCommand('copy');
         ta.remove();
       }
-      btn.textContent = ok ? 'Copied' : 'Copy failed';
+      if (label) label.textContent = ok ? 'Copied' : 'Copy failed';
       btn.classList.toggle('done', ok);
       setTimeout(() => {
-        btn.textContent = 'Copy';
+        if (label) label.textContent = 'Copy';
         btn.classList.remove('done');
       }, 1600);
     });
