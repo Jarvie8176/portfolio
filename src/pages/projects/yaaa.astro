@@ -23,7 +23,7 @@ const stackRows = [
 const organs = [
   {
     name: 'Sense',
-    body: 'Normalize incoming sources, mail, feeds, notes, into durable item stores with provenance.',
+    body: 'Normalize mail, feeds, notes, and other incoming sources into durable item stores with provenance.',
   },
   {
     name: 'Remember',
@@ -334,7 +334,7 @@ const openQuestions = [
         <p class="policy-note">
           The read side runs asynchronously on timers; the conversation harness is
           the interactive loop, not the only process. Reads skip the write gate
-          but are still an egress risk, so high-sensitive reading requires
+          but are still an egress risk, so high-sensitivity reading requires
           mode-aware accessors and leak guards on any path toward a cloud model.
         </p>
         <p class="policy-note">
@@ -398,7 +398,7 @@ const openQuestions = [
               Delivery has the same shape. Every outgoing message passes one
               shared admission check: an audience gate, so a channel only receives
               items for its declared audience, and a sensitivity gate, so a
-              high-sensitive item may reach only a non-cloud channel. When no such
+              high-sensitivity item may reach only a non-cloud channel. When no such
               channel exists, the item is refused, never silently rerouted.
               Refusing delivery beats delivering to the wrong place.
             </p>
@@ -413,23 +413,23 @@ const openQuestions = [
             <header>
               <span>Architecture cut 02</span>
             </header>
-            <h3>Claims under discipline.</h3>
+            <h3>Claims tied to evidence.</h3>
             <p>
-              The project keeps an internal truth ledger separate from its public
-              brief. Design documents carry evidence tables with checked-at dates
-              and confidence levels, and premises that were later refuted stay on
+              Every capability claim stays tied to implementation evidence.
+              Design documents carry evidence tables with checked-at dates and
+              confidence levels, and premises that were later refuted stay on
               the record instead of being deleted.
             </p>
             <p>
-              A standing do-not-claim list binds every public statement,
-              including this page: it may say the architecture is accepted and
-              some organs are live, and it may not say the assistant is shipped
-              or that its high-sensitivity path is proven end-to-end.
+              The same discipline draws the public boundary. The architecture is
+              accepted and some organs are live; the assistant is not shipped and
+              its high-sensitivity path is not yet proven end-to-end. The status
+              above says partial because the evidence does.
             </p>
             <blockquote class="case-claim">Honesty is a mechanism, not a tone.</blockquote>
             <footer class="case-status">
-              Status: the discipline is in force; it is why the ledger above
-              reads partial instead of impressive.
+              Status: the discipline is in force; it is what keeps the claims on
+              this page inside what the implementation can back.
             </footer>
           </article>
         </div>
@@ -1292,8 +1292,14 @@ const openQuestions = [
       inset: -0.65rem 0.65rem 0.65rem -0.65rem;
     }
 
+    .organ-stack li {
+      flex-wrap: wrap;
+    }
+
     .organ-stack em {
-      display: none;
+      flex-basis: 100%;
+      margin: 0.2rem 0 0;
+      padding-left: 1.1rem;
     }
   }
 </style>
