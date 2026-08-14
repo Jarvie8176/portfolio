@@ -1,0 +1,49 @@
+/**
+ * GENERATED from tokens/penpot.json + tokens/aliases.json via `npm run tokens:build`.
+ * Source of truth: Penpot `portfolio` token set. Do not edit by hand.
+ */
+
+:root {
+  --paper: #f6f7f5; /** penpot:color */
+  --surface: #fcfbf7; /** penpot:color */
+  --surface-quiet: #edf1ed; /** penpot:color */
+  --ink: #1b1d1f; /** penpot:color */
+  --ink-soft: #5a5e63; /** penpot:color */
+  --ink-faint: #8a8f92; /** penpot:color */
+  --rule: #dce1de; /** penpot:color */
+  --rule-hard: #9ca6a0; /** penpot:color */
+  --systems: #2c4e8a; /** penpot:color */
+  --embodied: #657052; /** penpot:color */
+  --worlds: #985e49; /** penpot:color */
+  --thesis-claim: #232629; /** penpot:color */
+  --thesis-body: #5f656b; /** penpot:color */
+  --dark-ground: #141210; /** penpot:color */
+  --dark-ink: #e8e2d6; /** penpot:color */
+  --dark-line: #3a352d; /** penpot:color */
+  --serif: "Noto Serif",Georgia,serif; /** penpot:fontFamilies */
+  --mono: "Noto Sans Mono",ui-monospace,"SFMono-Regular",Menlo,monospace; /** penpot:fontFamilies */
+  --sans: "Noto Sans","Segoe UI",sans-serif; /** penpot:fontFamilies */
+  --fs-label: 0.72rem; /** penpot:fontSizes */
+  --fs-meta: 0.82rem; /** penpot:fontSizes */
+  --fs-body: 1rem; /** penpot:fontSizes */
+  --fs-h3: 1.35rem; /** penpot:fontSizes */
+  --fs-h2: 1.8rem; /** penpot:fontSizes */
+  --track-label: 0.14em; /** penpot:letterSpacing */
+  --sp-1: 0.5rem; /** penpot:spacing */
+  --sp-2: 1rem; /** penpot:spacing */
+  --sp-3: 1.75rem; /** penpot:spacing */
+  --sp-4: 3rem; /** penpot:spacing */
+  --sp-5: 5rem; /** penpot:spacing */
+  --col-main: 42rem; /** penpot:sizing */
+  --col-note: 14rem; /** penpot:sizing */
+  --site-header-min: 64px; /** penpot:sizing */
+  --radius: 0; /** penpot:borderRadius */
+  --paper-2: var(--surface); /** legacy alias */
+  --paper-3: var(--surface-quiet); /** legacy alias */
+  --line: var(--rule); /** legacy alias */
+  --line-hard: var(--rule-hard); /** legacy alias */
+  --stamp: var(--worlds); /** status stamps, marks */
+  --accent: var(--systems); /** links, interactive */
+  --live: var(--embodied); /** live/verified state */
+  --open: var(--systems); /** open-question state */
+}

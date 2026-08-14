@@ -1,0 +1,202 @@
+{
+  "color": {
+    "paper": {
+      "$type": "color",
+      "$value": "#f6f7f5",
+      "$description": "penpot:color"
+    },
+    "surface": {
+      "$type": "color",
+      "$value": "#fcfbf7",
+      "$description": "penpot:color"
+    },
+    "surface-quiet": {
+      "$type": "color",
+      "$value": "#edf1ed",
+      "$description": "penpot:color"
+    },
+    "ink": {
+      "$type": "color",
+      "$value": "#1b1d1f",
+      "$description": "penpot:color"
+    },
+    "ink-soft": {
+      "$type": "color",
+      "$value": "#5a5e63",
+      "$description": "penpot:color"
+    },
+    "ink-faint": {
+      "$type": "color",
+      "$value": "#8a8f92",
+      "$description": "penpot:color"
+    },
+    "rule": {
+      "$type": "color",
+      "$value": "#dce1de",
+      "$description": "penpot:color"
+    },
+    "rule-hard": {
+      "$type": "color",
+      "$value": "#9ca6a0",
+      "$description": "penpot:color"
+    },
+    "systems": {
+      "$type": "color",
+      "$value": "#2c4e8a",
+      "$description": "penpot:color"
+    },
+    "embodied": {
+      "$type": "color",
+      "$value": "#657052",
+      "$description": "penpot:color"
+    },
+    "worlds": {
+      "$type": "color",
+      "$value": "#985e49",
+      "$description": "penpot:color"
+    },
+    "thesis-claim": {
+      "$type": "color",
+      "$value": "#232629",
+      "$description": "penpot:color"
+    },
+    "thesis-body": {
+      "$type": "color",
+      "$value": "#5f656b",
+      "$description": "penpot:color"
+    },
+    "dark-ground": {
+      "$type": "color",
+      "$value": "#141210",
+      "$description": "penpot:color"
+    },
+    "dark-ink": {
+      "$type": "color",
+      "$value": "#e8e2d6",
+      "$description": "penpot:color"
+    },
+    "dark-line": {
+      "$type": "color",
+      "$value": "#3a352d",
+      "$description": "penpot:color"
+    }
+  },
+  "font": {
+    "serif": {
+      "$type": "fontFamilies",
+      "$value": [
+        "\"Noto Serif\"",
+        "Georgia",
+        "serif"
+      ],
+      "$description": "penpot:fontFamilies"
+    },
+    "mono": {
+      "$type": "fontFamilies",
+      "$value": [
+        "\"Noto Sans Mono\"",
+        "ui-monospace",
+        "\"SFMono-Regular\"",
+        "Menlo",
+        "monospace"
+      ],
+      "$description": "penpot:fontFamilies"
+    },
+    "sans": {
+      "$type": "fontFamilies",
+      "$value": [
+        "\"Noto Sans\"",
+        "\"Segoe UI\"",
+        "sans-serif"
+      ],
+      "$description": "penpot:fontFamilies"
+    }
+  },
+  "fs": {
+    "label": {
+      "$type": "fontSizes",
+      "$value": "0.72rem",
+      "$description": "penpot:fontSizes"
+    },
+    "meta": {
+      "$type": "fontSizes",
+      "$value": "0.82rem",
+      "$description": "penpot:fontSizes"
+    },
+    "body": {
+      "$type": "fontSizes",
+      "$value": "1rem",
+      "$description": "penpot:fontSizes"
+    },
+    "h3": {
+      "$type": "fontSizes",
+      "$value": "1.35rem",
+      "$description": "penpot:fontSizes"
+    },
+    "h2": {
+      "$type": "fontSizes",
+      "$value": "1.8rem",
+      "$description": "penpot:fontSizes"
+    }
+  },
+  "track": {
+    "label": {
+      "$type": "dimension",
+      "$value": "0.14em",
+      "$description": "penpot:letterSpacing"
+    }
+  },
+  "sp": {
+    "1": {
+      "$type": "dimension",
+      "$value": "0.5rem",
+      "$description": "penpot:spacing"
+    },
+    "2": {
+      "$type": "dimension",
+      "$value": "1rem",
+      "$description": "penpot:spacing"
+    },
+    "3": {
+      "$type": "dimension",
+      "$value": "1.75rem",
+      "$description": "penpot:spacing"
+    },
+    "4": {
+      "$type": "dimension",
+      "$value": "3rem",
+      "$description": "penpot:spacing"
+    },
+    "5": {
+      "$type": "dimension",
+      "$value": "5rem",
+      "$description": "penpot:spacing"
+    }
+  },
+  "col": {
+    "main": {
+      "$type": "dimension",
+      "$value": "42rem",
+      "$description": "penpot:sizing"
+    },
+    "note": {
+      "$type": "dimension",
+      "$value": "14rem",
+      "$description": "penpot:sizing"
+    }
+  },
+  "size": {
+    "header-min": {
+      "$type": "dimension",
+      "$value": "64px",
+      "$description": "penpot:sizing"
+    }
+  },
+  "radius": {
+    "default": {
+      "$type": "dimension",
+      "$value": "0",
+      "$description": "penpot:borderRadius"
+    }
+  }
+}
