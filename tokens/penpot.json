@@ -188,14 +188,14 @@
   "size": {
     "header-min": {
       "$type": "dimension",
-      "$value": "56px",
+      "$value": "64px",
       "$description": "penpot:sizing"
     }
   },
   "radius": {
     "default": {
       "$type": "dimension",
-      "$value": "3px",
+      "$value": "0",
       "$description": "penpot:borderRadius"
     }
   }
