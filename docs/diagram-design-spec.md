@@ -1,6 +1,6 @@
 # Diagram design spec
 
-Status: design authority - v0.1
+Status: design authority - v0.2
 Companion to `docs/diagram-pipeline.md` (the engineering/how-it-is-built doc).
 This doc is the visual authority: how a project figure should LOOK and BEHAVE.
 The node/edge content of a specific figure is auto-generated per project (e.g.
@@ -9,27 +9,57 @@ The node/edge content of a specific figure is auto-generated per project (e.g.
 ## 1. Composition principle
 
 A figure is a **deliberate composition**, not an auto-layout graph. The reader
-should grasp the thesis before reading a single label. For Yaaa that thesis is
-an hourglass:
+should grasp the thesis before reading a single label. Yaaa reads as a
+**layered map**: a left-to-right authority pipeline banded top and bottom by the
+IO and governance boundaries.
 
-> passive/proactive input -> SENSE / CONVERSE -> bind central -> write narrow
-> -> passive/proactive output / improve by review
+> passive/proactive input (L0 left)
+>   -> SENSE (L1) -> bind (L2) -> Nested ReAct (L3) -> gated write (L4)
+>   -> passive/proactive output (L0 right),
+> with the governance foundation (L5) as the reviewed feedback lane along the base.
 
-- **IO boundary** separates four external-facing quadrants: passive input,
-  proactive input, passive output, and proactive output.
-- **SENSE** fans in from source adapters and narrows ambient input to
+- **IO boundary (L0)** is a full-width top band with four external-facing
+  quadrants: passive/proactive input on the left, passive/proactive output on
+  the right. Inputs enter, outputs leave; everything crosses a visible boundary.
+- **SENSE (L1)** fans in from source adapters and narrows ambient input to
   operator-owned source records.
-- **CONVERSE** handles human turns inside the binding layer; it is not the IO
-  boundary, an output surface owner, or write authority.
-- **Binding layer** is the durable center: memory SSoT is authority, while
-  harness/agent memory are rebuildable projections or staged namespaces.
-- **Write side** converges to a single fail-closed gate - the waist.
-- **Governance foundation** re-expands run evidence into reviewable artifacts,
-  records decisions and runbooks, reconciles memory namespaces, then feeds
-  reviewed changes back up.
+- **Binding layer (L2)** is the durable center column: memory SSoT is authority,
+  while harness/agent memory are rebuildable projections or staged namespaces.
+  CONVERSE is the replaceable session harness (not the IO boundary, an output
+  surface owner, or write authority).
+- **Nested ReAct (L3)** is the bounded reason -> act -> observe -> reflect loop;
+  `act` emits an intent proposal only.
+- **Write side (L4)** narrows through a single vertical funnel: side-effect
+  intent -> procedure manifest -> policy check -> fail-closed gate -> disposition.
+  The one fail-closed gate is the single write boundary.
+- **Governance foundation (L5)** is a full-width bottom band that re-expands run
+  evidence into reviewable artifacts, records decisions and runbooks, reconciles
+  memory namespaces, then feeds reviewed changes back up.
+
+The earlier hourglass / waist composition is retired: the "narrow to one gate"
+thesis is now carried by the L4 vertical funnel, not by a visual pinch.
 
 Positions are authored by hand (WYSIWYG on the canvas) and are never produced by
 a layout algorithm. Each project has its own composition (see 9).
+
+### 1.1 Layout grid and spacing
+
+Spacing is uniform so the layers read as one system, not assorted boxes.
+
+- **Layer (group) padding:** 30px on left / right / bottom, **40px on top** to
+  clear the layer label. Every layer container wraps its nodes with these insets.
+- **Vertical stacks** (L1, L2): 40px between stacked nodes.
+- **L3 ReAct grid:** 28px row gaps, ~25px column gaps.
+- **L4 write funnel:** 20px between the stacked funnel nodes - denser than a
+  stack by design (a funnel is a tight column).
+- **L5 governance pipeline:** a horizontal flow with uniform 100px node gaps that
+  fills the band's full width.
+- **Bands (L0, L5)** share the same left edge and width so the top and bottom
+  boundaries align; their content spans the full width.
+
+These are the current defaults, not a hard grid: a hand-authored position may
+deviate locally when a route needs clearance, but insets stay equal across
+layers.
 
 ## 2. Shape grammar
 
@@ -48,9 +78,9 @@ Blocks carry two related but separate meanings:
 | `note` | plain text | caption / reading rule |
 
 The gate uses the same block element as the surrounding workflow nodes. Its
-special role is carried by the L4 color, converging edges, `fail-closed gate`
-label, and side lock glyph; no side effect continues unless the gate explicitly
-returns a disposition.
+special role is carried by the L4 color, the write funnel that narrows into it,
+the `fail-closed gate` label, and side lock glyph; no side effect continues
+unless the gate explicitly returns a disposition.
 
 ### 2.1 Block semantics
 
@@ -210,23 +240,36 @@ second IO boundary.
 | `authority` | thick solid | authority transition (durable memory, promotion) |
 | `async` | dashed | trace collection / background loop |
 | `sync` | double arrow | negotiated / two-way state |
-| `funnel` | converging | side-effect intent constrained before the gate |
+| `funnel` | thicker solid (optionally converging) | side-effect intent constrained before the gate |
 
-Edges are colored by their source layer. Arrowheads land on the **box boundary**
-(a side midpoint), never the box center.
+Edges are colored by their **source layer**, and each arrowhead is filled to
+match its line - never a neutral gray that would read as a separate element.
+Arrowheads land on the **box boundary** (a side midpoint or an explicit port
+side), never the box center.
 
 ### 4.1 Routing
 
 - Default: **orthogonal, minimum bends** - straight when the two boxes share a
-  band, a single elbow otherwise. Never a double (Z) elbow.
-- **Exception - `funnel` edges converge.** Orthogonalizing the write-side
-  convergence flattens the "narrow to one gate" reading and is prohibited for
-  `funnel` edges. They render as converging straight lines into the gate. (This
-  is the one place a diagram skill's orthogonal-only rule actively fights the
-  composition; the exception is deliberate.)
+  band, a single elbow otherwise. Never a double (Z) elbow. This includes the
+  write funnel: side-effect -> manifest -> policy-check -> gate render as a clean
+  vertical orthogonal column.
+- **Prefer a straight edge by alignment.** When one node feeds another across a
+  gap (e.g. `act` -> `side-effect intent`), align their centers on the shared
+  axis so the edge is a single straight segment onto the boundary midpoint,
+  rather than an elbow that grazes a neighbour.
+- **Port hints for stacked targets.** An edge into a node stacked behind others
+  (e.g. `Nested ReAct loop` -> `fail-closed gate`, which sits below the rest of
+  the L4 funnel) sets explicit `fromSide` / `toSide` on the canvas edge; the
+  renderer honours them and routes the riser through a clear gap instead of
+  piercing the intervening nodes.
+- **Optional convergence.** A `funnelStraight` render flag can draw `funnel`
+  edges as converging diagonals into the gate (the retired hourglass reading). It
+  is off by default; the shipped compositions keep funnel edges orthogonal.
 
-Obstacle avoidance is out of scope; positions are refined by hand to keep long
-edges clear.
+Full obstacle-avoiding auto-routing is still out of scope; long edges are cleared
+by hand-authored positions plus the port hints above. Known residual: authority
+feedback edges from L5 back to `memory SSoT` (a top-of-column hub) can graze the
+intervening stack; fully resolving it needs per-side port distribution.
 
 ## 5. Terminology reference
 
@@ -269,7 +312,7 @@ drilldown docs or runbooks, not in the concept figure.
 ## 6. Reading levels (semantic zoom)
 
 - **Level 0 (high-level):** one summary node per layer + cross-layer edges = the
-  hourglass. This is the static, no-JS baseline.
+  layered map. This is the static, no-JS baseline.
 - **Level 1 (hover/focus):** a node raises its connected flow; unrelated marks
   dim.
 - **Level 2 (drill-in):** zooming into / double-clicking a layer reveals that
@@ -303,7 +346,7 @@ Each project keeps the shared grammar and its own accent + shape.
 
 | Project | Accent | Composition |
 |---|---|---|
-| Yaaa | `systems` | four IO quadrants -> SENSE / CONVERSE -> bind -> narrow-write hourglass -> governance artifacts + reconciliation |
+| Yaaa | `systems` | IO band -> SENSE -> bind -> Nested ReAct -> gated write funnel (L1-L4 as left-to-right columns) -> governance band + reconciliation |
 | Amanuensis | `systems` | read -> triage -> rank -> deliver pipeline + delivery ledger |
 | Beagle | `embodied` | record -> track -> remind cognitive-support loop |
 | commonplace | `worlds` | bridge / toy-world co-presence architecture |
@@ -312,6 +355,9 @@ Each project keeps the shared grammar and its own accent + shape.
 
 The shape grammar, color semantics, and accessibility contract were cross-checked
 against an editorial diagram-skill render of the same content. Findings folded
-into this spec: the focal-accent discipline, the accessible-SVG contract, and -
-most importantly - the `funnel` routing exception in 4.1, which an orthogonal-only
-rule set would otherwise flatten.
+into this spec: the focal-accent discipline, the accessible-SVG contract, and the
+optional `funnel` convergence in 4.1.
+
+v0.2 retires the hourglass composition for a left-to-right layered map (1), adds
+the uniform spacing grid (1.1), colored arrowheads (4), and port-hinted routing
+(4.1). The write funnel now renders as an orthogonal vertical column by default.

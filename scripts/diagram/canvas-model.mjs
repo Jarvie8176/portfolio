@@ -63,7 +63,7 @@ export function parseCanvas(pathOrJson) {
 
   const edges = (doc.edges || []).map((e) => {
     const { kind, text } = parseEdgeLabel(e.label);
-    return { id: e.id, from: e.fromNode, to: e.toNode, kind, label: text };
+    return { id: e.id, from: e.fromNode, to: e.toNode, kind, label: text, fromSide: e.fromSide, toSide: e.toSide };
   });
 
   return { groups, nodes, edges };

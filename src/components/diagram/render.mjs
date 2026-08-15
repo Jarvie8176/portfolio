@@ -40,6 +40,18 @@ function anchor(box, side) {
   return [x + w / 2, y + h]; // 'b'
 }
 
+// explicit side-to-side orthogonal route (honors JSON Canvas fromSide/toSide).
+// Lets us hand-route the few edges whose auto-route would cross a stacked node.
+const SIDE = { top: 't', bottom: 'b', left: 'l', right: 'r', t: 't', b: 'b', l: 'l', r: 'r' };
+const SIDE_DIR = { r: [1, 0], l: [-1, 0], t: [0, -1], b: [0, 1] };
+function routeSided(a, b, fs, ts) {
+  const A = anchor(a, fs), B = anchor(b, ts);
+  const aH = SIDE_DIR[fs][0] !== 0, bH = SIDE_DIR[ts][0] !== 0;
+  if (aH && bH) { const mx = (A[0] + B[0]) / 2; return A[1] === B[1] ? [A, B] : [A, [mx, A[1]], [mx, B[1]], B]; }
+  if (!aH && !bH) { const my = (A[1] + B[1]) / 2; return A[0] === B[0] ? [A, B] : [A, [A[0], my], [B[0], my], B]; }
+  return aH ? [A, [B[0], A[1]], B] : [A, [A[0], B[1]], B]; // mixed -> single elbow
+}
+
 // orthogonal route with the FEWEST bends: straight (0) when the boxes share a
 // band, else a single elbow (1). Always lands on a box-edge midpoint, never
 // the center.
@@ -180,11 +192,14 @@ export function renderSvg(canvasInput, opts = {}) {
   const maxY = Math.max(...all.map((n) => n.y + n.h)) + 40;
   const W = maxX - minX, H = maxY - minY;
 
-  const kinds = [...new Set(model.edges.map((e) => e.kind))];
-  const markers = kinds.map((k) => {
-    const color = '#9aa0a6';
-    return `<marker id="arw-${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${color}"/></marker>`;
-  }).join('');
+  // one arrowhead marker per edge color so heads match their line (not a
+  // neutral gray that reads as a different element).
+  const ckey = (c) => c.replace('#', '');
+  const edgeColorOf = (e) => layerColor((byId.get(e.from) || {}).layer);
+  const colors = [...new Set(model.edges.map(edgeColorOf))];
+  const markers = colors.map((c) =>
+    `<marker id="arw-${ckey(c)}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`
+  ).join('');
 
   // groups (back, dashed containers) + layer labels
   const groups = model.groups.map((g) => {
@@ -209,11 +224,14 @@ export function renderSvg(canvasInput, opts = {}) {
       const p0 = edgePoint(a, b.x + b.w / 2, b.y + b.h / 2);
       const p1 = edgePoint(b, a.x + a.w / 2, a.y + a.h / 2);
       d = `M ${p0[0]} ${p0[1]} L ${p1[0]} ${p1[1]}`;
+    } else if (e.fromSide && e.toSide && SIDE[e.fromSide] && SIDE[e.toSide]) {
+      d = orthPath(routeSided(a, b, SIDE[e.fromSide], SIDE[e.toSide]));
     } else {
       d = orthPath(routeIoBoundary(a, b) || routeOrthogonal(a, b));
     }
+    const mk = `url(#arw-${ckey(col)})`;
     const attrs = `fill="none" stroke="${col}" stroke-width="${spec.w}"${spec.dash ? ` stroke-dasharray="${spec.dash}"` : ''}`
-      + ` marker-end="url(#arw-${e.kind})"${spec.start ? ` marker-start="url(#arw-${e.kind})"` : ''}`;
+      + ` marker-end="${mk}"${spec.start ? ` marker-start="${mk}"` : ''}`;
     const lod = a.lod === 0 && b.lod === 0 ? 0 : 1;
     const detailLayer = lod === 1 ? (a.lod === 1 ? a.layer : b.layer) || '' : '';
     return `<g data-edge="${esc(e.from)}-&gt;${esc(e.to)}" data-kind="${esc(e.kind)}" data-lod="${lod}" data-detail-layer="${esc(detailLayer)}" class="yd-edge"><path d="${d}" ${attrs}/></g>`;
