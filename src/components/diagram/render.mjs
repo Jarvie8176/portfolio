@@ -19,6 +19,66 @@ const layerColor = (l) => LAYER_COLOR[l] || SOFT;
 
 function nodeCenter(n) { return { cx: n.x + n.w / 2, cy: n.y + n.h / 2 }; }
 
+// boundary anchor at the midpoint of a box side
+function anchor(box, side) {
+  const { x, y, w, h } = box;
+  if (side === 'r') return [x + w, y + h / 2];
+  if (side === 'l') return [x, y + h / 2];
+  if (side === 't') return [x + w / 2, y];
+  return [x + w / 2, y + h]; // 'b'
+}
+
+// orthogonal route with the FEWEST bends: straight (0) when the boxes share a
+// band, else a single elbow (1). Always lands on a box-edge midpoint, never
+// the center.
+function routeOrthogonal(a, b) {
+  const TOL = 4, PAD = 12;
+  const aL = a.x, aR = a.x + a.w, aT = a.y, aB = a.y + a.h, aCx = a.x + a.w / 2, aCy = a.y + a.h / 2;
+  const bL = b.x, bR = b.x + b.w, bT = b.y, bB = b.y + b.h, bCx = b.x + b.w / 2, bCy = b.y + b.h / 2;
+  const xLo = Math.max(aL, bL), xHi = Math.min(aR, bR);
+  const yLo = Math.max(aT, bT), yHi = Math.min(aB, bB);
+  const below = bT >= aB - TOL, above = bB <= aT + TOL;
+  const right = bL >= aR - TOL, left = bR <= aL + TOL;
+  // straight vertical (shared x-band, clearly above/below) -> 0 bends
+  if (xHi - xLo > 2 * PAD && (below || above)) {
+    const sx = Math.min(xHi - PAD, Math.max(xLo + PAD, (aCx + bCx) / 2));
+    return below ? [[sx, aB], [sx, bT]] : [[sx, aT], [sx, bB]];
+  }
+  // straight horizontal (shared y-band, clearly left/right) -> 0 bends
+  if (yHi - yLo > 2 * PAD && (right || left)) {
+    const sy = Math.min(yHi - PAD, Math.max(yLo + PAD, (aCy + bCy) / 2));
+    return right ? [[aR, sy], [bL, sy]] : [[aL, sy], [bR, sy]];
+  }
+  // single elbow -> 1 bend
+  const dx = bCx - aCx, dy = bCy - aCy;
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    const p0 = [dx >= 0 ? aR : aL, aCy];
+    const p1 = [bCx, dy >= 0 ? bT : bB];
+    return [p0, [p1[0], p0[1]], p1];
+  }
+  const p0 = [aCx, dy >= 0 ? aB : aT];
+  const p1 = [dx >= 0 ? bL : bR, bCy];
+  return [p0, [p0[0], p1[1]], p1];
+}
+
+// path with short rounded elbows for legibility
+function orthPath(pts, r = 8) {
+  if (pts.length === 2) return `M ${pts[0][0]} ${pts[0][1]} L ${pts[1][0]} ${pts[1][1]}`;
+  let d = `M ${pts[0][0]} ${pts[0][1]}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const p = pts[i], prev = pts[i - 1], next = pts[i + 1];
+    const inDir = [Math.sign(p[0] - prev[0]), Math.sign(p[1] - prev[1])];
+    const outDir = [Math.sign(next[0] - p[0]), Math.sign(next[1] - p[1])];
+    const rr = Math.min(r, Math.abs(p[0] - prev[0]) / 2 || r, Math.abs(p[1] - prev[1]) / 2 || r,
+      Math.abs(next[0] - p[0]) / 2 || r, Math.abs(next[1] - p[1]) / 2 || r);
+    d += ` L ${p[0] - inDir[0] * rr} ${p[1] - inDir[1] * rr}`;
+    d += ` Q ${p[0]} ${p[1]} ${p[0] + outDir[0] * rr} ${p[1] + outDir[1] * rr}`;
+  }
+  const last = pts[pts.length - 1];
+  d += ` L ${last[0]} ${last[1]}`;
+  return d;
+}
+
 function shape(n) {
   const c = layerColor(n.layer);
   const { x, y, w, h } = n;
@@ -79,21 +139,23 @@ export function renderSvg(canvasInput, opts = {}) {
       + `</g>`;
   }).join('');
 
-  // edges (behind nodes), colored by source layer
+  // edges (behind nodes): orthogonal routes landing on box boundaries
   const edges = model.edges.map((e) => {
     const a = byId.get(e.from), b = byId.get(e.to);
     if (!a || !b) return '';
-    const p = nodeCenter(a), q = nodeCenter(b);
     const spec = EDGE[e.kind] || EDGE.data;
     const col = layerColor(a.layer);
-    const attrs = `stroke="${col}" stroke-width="${spec.w}"${spec.dash ? ` stroke-dasharray="${spec.dash}"` : ''}`
+    const d = orthPath(routeOrthogonal(a, b));
+    const attrs = `fill="none" stroke="${col}" stroke-width="${spec.w}"${spec.dash ? ` stroke-dasharray="${spec.dash}"` : ''}`
       + ` marker-end="url(#arw-${e.kind})"${spec.start ? ` marker-start="url(#arw-${e.kind})"` : ''}`;
-    return `<g data-edge="${esc(e.from)}-&gt;${esc(e.to)}" data-kind="${esc(e.kind)}" class="yd-edge"><line x1="${p.cx}" y1="${p.cy}" x2="${q.cx}" y2="${q.cy}" ${attrs}/></g>`;
+    const lod = a.lod === 0 && b.lod === 0 ? 0 : 1;
+    const detailLayer = lod === 1 ? (a.lod === 1 ? a.layer : b.layer) || '' : '';
+    return `<g data-edge="${esc(e.from)}-&gt;${esc(e.to)}" data-kind="${esc(e.kind)}" data-lod="${lod}" data-detail-layer="${esc(detailLayer)}" class="yd-edge"><path d="${d}" ${attrs}/></g>`;
   }).join('');
 
   // nodes (front)
   const nodes = model.nodes.map((n) =>
-    `<g data-node="${esc(n.id)}" data-type="${esc(n.type)}" data-layer="${esc(n.layer || '')}" class="yd-node" tabindex="0">`
+    `<g data-node="${esc(n.id)}" data-type="${esc(n.type)}" data-layer="${esc(n.layer || '')}" data-lod="${n.lod}" class="yd-node" tabindex="0">`
     + `<title>${esc(n.title)}</title>${shape(n)}${nodeLabel(n)}</g>`).join('');
 
   const title = opts.title || 'architecture diagram';

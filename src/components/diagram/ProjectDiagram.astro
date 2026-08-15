@@ -17,7 +17,7 @@ const { svg } = renderSvg(canvasRaw, { title });
 <figure class={`yd-figure yd-accent-${accent}`} data-interactive={interactive ? 'true' : 'false'}>
   <div class="yd-stage" set:html={svg}></div>
   <figcaption class="yd-caption sr-only">{title}</figcaption>
-  {interactive && <p class="yd-hint" aria-hidden="true">scroll or +/- to zoom, drag to pan, 0 to reset</p>}
+  {interactive && <p class="yd-hint" aria-hidden="true">double-click a layer to drill in - scroll or +/- to zoom - 0 to reset</p>}
 </figure>
 
 {interactive && (
@@ -35,6 +35,11 @@ const { svg } = renderSvg(canvasRaw, { title });
   .yd-accent-systems { --yd-accent: var(--systems, #2c4e8a); }
   .yd-accent-embodied { --yd-accent: var(--embodied, #657052); }
   .yd-accent-worlds { --yd-accent: var(--worlds, #985e49); }
+
+  /* semantic zoom: per-layer detail is hidden at the high level and revealed
+     on drill-in. No-JS baseline therefore shows the clean high-level view. */
+  .yd-stage :global([data-lod="1"]) { opacity: 0; visibility: hidden; }
+  .yd-figure[data-interactive="true"] .yd-stage :global([data-lod="1"]) { transition: opacity 220ms ease; }
 
   /* no-JS interaction baseline: hover/focus dims the rest */
   .yd-stage :global(.yd-node),

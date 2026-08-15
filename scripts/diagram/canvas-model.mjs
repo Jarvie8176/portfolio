@@ -46,6 +46,7 @@ export function parseCanvas(pathOrJson) {
       id: n.id,
       type: marker.type || 'process',
       layer: marker.layer || null,
+      lod: marker.lod != null ? Number(marker.lod) : 0,
       title: (body[0] || n.id).trim(),
       sub: (body[1] || '').trim(),
       x: n.x, y: n.y, w: n.width, h: n.height,
