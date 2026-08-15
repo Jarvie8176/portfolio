@@ -9,8 +9,8 @@ project.
 
 Each project concept page needs a bespoke architecture figure that:
 
-- expresses a **deliberate composition** (e.g. Yaaa's broad-read / narrow-write
-  funnel), not a generic auto-layout graph;
+- expresses a **deliberate composition** (e.g. Yaaa's four-quadrant IO boundary
+  / SENSE / narrow-write funnel), not a generic auto-layout graph;
 - uses a **semantic visual language** (shape grammar + color-by-role);
 - supports **interactive semantic zoom**: a high-level view that zooms into
   per-layer detail (polished visualization);
@@ -49,14 +49,27 @@ sidecar; see "encoding" below) so the render step can apply the shape grammar.
 
 ### Node roles (`type`)
 
+`type` controls the rendered shape. A separate optional `block` marker records
+the architectural role so a full-system figure can distinguish static entities
+from workflow/action/control blocks without inventing one-off styling.
+
 | `type` | Shape rendered | Meaning |
 |---|---|---|
 | `store` | hard-edged rect (optional heavy left bar) | durable data / owned ledger / run traces |
 | `process` | rounded rect | a transform: sense, normalize, reason, converse |
 | `decision` | hexagon | routing / policy decision |
-| `gate` | octagon + lock glyph | fail-closed action boundary (focal) |
+| `gate` | standard rounded control block + side lock glyph | fail-closed action boundary |
 | `container` | dashed rounded rect | a logical **layer** (also a Canvas group) |
 | `note` | plain text, no box | caption / reading rule |
+
+### Block roles (`block`)
+
+| `block` | Meaning | Examples |
+|---|---|---|
+| `entity` | addressable source, artifact, ledger, proposal, manifest, trace | passive input, proactive input, passive output, source records, memory SSoT, harness memory, agent memory, procedure manifest, ADR changelog, runbook updates |
+| `workflow` | transform or coordination step with no direct side effect | source adapters, normalize, policy router, converse, ReAct reason/observe/reflect, distill, memory reconciliation |
+| `action` | side-effecting operation, active emission, or promotion/deploy step | proactive output, act, approve/refuse/defer, promote, apply |
+| `control` | policy/review/admission/authority boundary | policy check, review, governance, fail-closed gate |
 
 ### Layers = Canvas groups
 
@@ -80,11 +93,11 @@ group reveals its member nodes (the per-layer detail graph).
 JSON Canvas has no custom fields, so tags are encoded deterministically and
 losslessly:
 
-- **node `type`** -> encoded in the node `color` slot is NOT used for this
+- **node `type` / `block` / `layer` / `lod`** -> encoded in the node `color` slot is NOT used for this
   (color is reserved for the project accent). Instead the node `text` starts
-  with a hidden marker line `<!--type:gate,layer:L4-->` on its own line; the
-  render strips it. Rationale: survives round-trip through Obsidian, stays
-  visible/diffable in the raw file, needs no sidecar.
+  with a hidden marker line `<!--type:gate,block:control,layer:L4,lod:0-->` on
+  its own line; the render strips it. Rationale: survives round-trip through
+  Obsidian, stays visible/diffable in the raw file, needs no sidecar.
 - **edge `edge-kind`** -> encoded as a leading token in the edge `label`
   (`authority: candidate -> memory`); render strips the `kind:` prefix.
 - **project accent** -> not stored in the canvas; injected by the render step
@@ -162,13 +175,15 @@ already present in the canvas. No network fetch, no re-layout.
 Every rendered SVG (build-time and runtime) MUST annotate:
 
 ```
-<g data-node="owned-memory-ledger" data-type="store" data-layer="L2">
-  <title>owned memory ledger</title> ...
+<g data-node="memory-ssot" data-type="store" data-block="entity" data-layer="L2">
+  <title>memory SSoT</title> ...
 </g>
-<g data-edge="context-candidate->owned-memory-ledger" data-kind="authority"> ... </g>
+<g data-edge="context-candidate->memory-ssot" data-kind="authority"> ... </g>
 ```
 
 - `data-node` / `data-edge` ids are the canvas node ids and `from->to` pairs.
+- `data-block` exposes the entity / workflow / action / control distinction for
+  styling, filtering, and legends.
 - `<title>` (and `aria-label` on the root `<svg role="img">`) give the
   accessible name; these double as the parity anchors.
 - IDs are stable and kebab-cased from the canvas.
@@ -187,7 +202,8 @@ Algorithm:
 3. Diff and **fail** on any of:
    - node in `model` missing from `svg`, or in `svg` not in `model`;
    - edge mismatch (same rule);
-   - node whose `data-layer` disagrees with the canvas group.
+   - node whose `data-layer` disagrees with the canvas group;
+   - node whose `data-block` is missing or disagrees with the canvas marker.
 4. **Fail closed:** an SVG with zero `data-node` annotations is a FAIL
    ("cannot be verified"), never a pass-on-empty.
 5. Labels normalized (trim/case) before comparison.
@@ -219,7 +235,7 @@ project accent.
 
 | Project | Accent | Shape of the figure |
 |---|---|---|
-| Yaaa | `systems` | broad-read -> bind -> narrow-write funnel + governance foundation |
+| Yaaa | `systems` | passive/proactive input -> SENSE / CONVERSE -> bind -> narrow-write funnel -> passive/proactive output + governance foundation |
 | Amanuensis | `systems` | read -> triage -> rank -> deliver pipeline + delivery ledger |
 | Beagle | `embodied` | record -> track -> remind cognitive-support loop |
 | commonplace | `worlds` | bridge / toy-world co-presence architecture |

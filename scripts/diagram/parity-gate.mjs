@@ -6,19 +6,30 @@ import { readFileSync } from 'node:fs';
 import { parseCanvas, modelSets } from './canvas-model.mjs';
 
 const norm = (s) => String(s).trim().toLowerCase();
+const attr = (tag, name) => {
+  const m = tag.match(new RegExp(`${name}="([^"]*)"`));
+  return m ? m[1] : '';
+};
 
 function svgSets(svg) {
   const nodes = new Set();
   const layerOf = new Map();
-  for (const m of svg.matchAll(/data-node="([^"]+)"(?:[^>]*?data-layer="([^"]*)")?/g)) {
-    nodes.add(norm(m[1]));
-    if (m[2]) layerOf.set(norm(m[1]), m[2]);
+  const blockOf = new Map();
+  for (const m of svg.matchAll(/<g\b([^>]*\bdata-node="[^"]+"[^>]*)>/g)) {
+    const tag = m[1];
+    const id = norm(attr(tag, 'data-node'));
+    if (!id) continue;
+    nodes.add(id);
+    const layer = attr(tag, 'data-layer');
+    const block = attr(tag, 'data-block');
+    if (layer) layerOf.set(id, layer);
+    if (block) blockOf.set(id, block);
   }
   const edges = new Set();
   for (const m of svg.matchAll(/data-edge="([^"]+?)-&gt;([^"]+?)"/g)) edges.add(`${norm(m[1])}->${norm(m[2])}`);
   // also accept literal '->' if not entity-encoded
   for (const m of svg.matchAll(/data-edge="([^"]+?)->([^"]+?)"/g)) edges.add(`${norm(m[1])}->${norm(m[2])}`);
-  return { nodes, edges, layerOf };
+  return { nodes, edges, layerOf, blockOf };
 }
 
 export function checkParity(canvasPath, svg) {
@@ -36,6 +47,12 @@ export function checkParity(canvasPath, svg) {
   for (const [id, layer] of got.layerOf) {
     const want = model.layerOf.get(id);
     if (want && layer && norm(want) !== norm(layer)) fails.push(`layer mismatch ${id}: SoT=${want} SVG=${layer}`);
+  }
+  for (const id of model.nodes) {
+    const want = model.blockOf.get(id);
+    const block = got.blockOf.get(id);
+    if (want && !block) fails.push(`block missing in SVG: ${id}`);
+    else if (want && block && norm(want) !== norm(block)) fails.push(`block mismatch ${id}: SoT=${want} SVG=${block}`);
   }
   return { ok: fails.length === 0, fails, counts: { nodes: model.nodes.size, edges: model.edges.size } };
 }

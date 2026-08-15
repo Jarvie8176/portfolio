@@ -24,6 +24,12 @@ function parseEdgeLabel(label) {
   return { kind, text: label.slice(i + 1).trim() };
 }
 
+function defaultBlock(type) {
+  if (type === 'store') return 'entity';
+  if (type === 'decision' || type === 'gate') return 'control';
+  return 'workflow';
+}
+
 export function parseCanvas(pathOrJson) {
   const raw =
     typeof pathOrJson === 'string' && pathOrJson.trim().startsWith('{')
@@ -42,9 +48,11 @@ export function parseCanvas(pathOrJson) {
     const lines = String(n.text || '').split('\n');
     const marker = parseMarker(lines[0]);
     const body = marker.type !== undefined || lines[0].match(MARKER) ? lines.slice(1) : lines;
+    const type = marker.type || 'process';
     nodes.push({
       id: n.id,
-      type: marker.type || 'process',
+      type,
+      block: marker.block || defaultBlock(type),
       layer: marker.layer || null,
       lod: marker.lod != null ? Number(marker.lod) : 0,
       title: (body[0] || n.id).trim(),
@@ -68,6 +76,7 @@ export function modelSets(model) {
     nodes: new Set(model.nodes.map((n) => norm(n.id))),
     edges: new Set(model.edges.map((e) => `${norm(e.from)}->${norm(e.to)}`)),
     layerOf: new Map(model.nodes.map((n) => [norm(n.id), n.layer])),
+    blockOf: new Map(model.nodes.map((n) => [norm(n.id), n.block])),
   };
 }
 

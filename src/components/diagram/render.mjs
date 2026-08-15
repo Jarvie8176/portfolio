@@ -4,9 +4,10 @@
 // positions are the canvas's manual coordinates (no auto-layout, ever).
 import { parseCanvas } from '../../../scripts/diagram/canvas-model.mjs';
 
-const LAYER_COLOR = { L1: '#0e7490', L2: '#334155', L3: '#7c3aed', L4: '#d97706', L5: '#334155' };
-const TINT = { L1: '#e7f8fb', L2: '#eef2f7', L3: '#f4ecff', L4: '#fff4e6', L5: '#eef2f7' };
+const LAYER_COLOR = { L0: '#2f855a', L1: '#0e7490', L2: '#334155', L3: '#7c3aed', L4: '#d97706', L5: '#334155' };
+const TINT = { L0: '#ecf8f0', L1: '#e7f8fb', L2: '#eef2f7', L3: '#f4ecff', L4: '#fff4e6', L5: '#eef2f7' };
 const INK = '#1b1d1f', SOFT = '#5a5e63', FAINT = '#8a8f92', PAPER = '#f6f7f5';
+const BLOCK_LABEL = { entity: 'ENTITY', workflow: 'FLOW', action: 'ACTION', control: 'CTRL' };
 const EDGE = {
   data: { w: 2, dash: '', end: 1, start: 0 },
   authority: { w: 3.4, dash: '', end: 1, start: 0 },
@@ -18,6 +19,17 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const layerColor = (l) => LAYER_COLOR[l] || SOFT;
 
 function nodeCenter(n) { return { cx: n.x + n.w / 2, cy: n.y + n.h / 2 }; }
+
+// point where the ray from a box center toward (tx,ty) crosses the box edge
+function edgePoint(box, tx, ty) {
+  const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
+  const dx = tx - cx, dy = ty - cy;
+  if (dx === 0 && dy === 0) return [cx, cy];
+  const sx = dx !== 0 ? box.w / 2 / Math.abs(dx) : Infinity;
+  const sy = dy !== 0 ? box.h / 2 / Math.abs(dy) : Infinity;
+  const s = Math.min(sx, sy);
+  return [cx + dx * s, cy + dy * s];
+}
 
 // boundary anchor at the midpoint of a box side
 function anchor(box, side) {
@@ -61,6 +73,41 @@ function routeOrthogonal(a, b) {
   return [p0, [p0[0], p1[1]], p1];
 }
 
+// IO-boundary edges are explanatory rails. Passive intake may fall straight
+// into SENSE, but operator turns and output surfaces should route around the
+// runtime blocks so they do not read as internal authority edges.
+function routeIoBoundary(a, b) {
+  const touchesIo = a.layer === 'L0' || b.layer === 'L0';
+  const ambientSense = a.layer === 'L0' && b.layer === 'L1';
+  if (!touchesIo || ambientSense || a.layer === b.layer) return null;
+
+  const ioNode = a.layer === 'L0' ? a : b;
+  const internal = a.layer === 'L0' ? b : a;
+
+  if (a.layer === 'L0') {
+    const railX = internal.x < ioNode.x ? internal.x + internal.w + 40 : internal.x - 40;
+    const fromRight = internal.x >= ioNode.x;
+    const p0 = anchor(a, fromRight ? 'r' : 'l');
+    const p1 = [railX, p0[1]];
+    const p2 = [railX, internal.y + internal.h / 2];
+    const p3 = anchor(internal, fromRight ? 'l' : 'r');
+    return [p0, p1, p2, p3];
+  }
+
+  const internalToRight = ioNode.x >= internal.x;
+  const internalEdge = internalToRight ? internal.x + internal.w : internal.x;
+  const ioEdge = internalToRight ? ioNode.x : ioNode.x + ioNode.w;
+  const gap = Math.abs(ioEdge - internalEdge);
+  const railX = gap > 24
+    ? (internalEdge + ioEdge) / 2
+    : internalEdge + (internalToRight ? 40 : -40);
+  const p0 = anchor(internal, internalToRight ? 'r' : 'l');
+  const p1 = [railX, p0[1]];
+  const p2 = [railX, ioNode.y + ioNode.h / 2];
+  const p3 = anchor(ioNode, internalToRight ? 'l' : 'r');
+  return [p0, p1, p2, p3];
+}
+
 // path with short rounded elbows for legibility
 function orthPath(pts, r = 8) {
   if (pts.length === 2) return `M ${pts[0][0]} ${pts[0][1]} L ${pts[1][0]} ${pts[1][1]}`;
@@ -83,13 +130,12 @@ function shape(n) {
   const c = layerColor(n.layer);
   const { x, y, w, h } = n;
   if (n.type === 'gate') {
-    const k = Math.min(w, h) * 0.29;
-    const pts = [[x + k, y], [x + w - k, y], [x + w, y + k], [x + w, y + h - k],
-      [x + w - k, y + h], [x + k, y + h], [x, y + h - k], [x, y + k]].map((p) => p.join(',')).join(' ');
-    const lx = x + w / 2, ly = y + h / 2;
-    return `<polygon points="${pts}" fill="#ffe4c4" stroke="${c}" stroke-width="4"/>`
-      + `<rect x="${lx - 9}" y="${ly - 2}" width="18" height="14" rx="3" fill="${c}"/>`
-      + `<path d="M ${lx - 5} ${ly - 2} v-4 a5 5 0 0 1 10 0 v4" fill="none" stroke="${c}" stroke-width="2.2"/>`;
+    const ly = y + h / 2;
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="#ffffff" stroke="${c}" stroke-width="1.5"/>`
+      + `<line x1="${x + 40}" y1="${y + 10}" x2="${x + 40}" y2="${y + h - 10}" stroke="${c}" stroke-opacity="0.28" stroke-width="1.2"/>`
+      + `<rect x="${x + 14}" y="${ly - 2}" width="18" height="15" rx="4" fill="none" stroke="${c}" stroke-width="2"/>`
+      + `<path d="M ${x + 18} ${ly - 2} v-6 a5 5 0 0 1 10 0 v6" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round"/>`
+      + `<circle cx="${x + 23}" cy="${ly + 5}" r="1.8" fill="${c}"/>`;
   }
   if (n.type === 'decision') {
     const pts = [[x + w / 2, y], [x + w, y + h / 2], [x + w / 2, y + h], [x, y + h / 2]].map((p) => p.join(',')).join(' ');
@@ -100,17 +146,27 @@ function shape(n) {
       + `<rect x="${x}" y="${y}" width="6" height="${h}" rx="0" fill="${c}"/>`;
   }
   // process (default)
-  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="#ffffff" stroke="${c}" stroke-width="1.5"/>`;
+  const actionMark = n.block === 'action'
+    ? `<path d="M ${x + w - 20} ${y + 10} l 8 5 l -8 5 z" fill="${c}" fill-opacity="0.82"/>`
+    : '';
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="12" fill="#ffffff" stroke="${c}" stroke-width="1.5"/>${actionMark}`;
+}
+
+function blockChip(n) {
+  const label = BLOCK_LABEL[n.block];
+  if (!label) return '';
+  const c = layerColor(n.layer);
+  const x = n.x + (n.type === 'gate' ? 50 : 10);
+  const y = n.y + 13;
+  return `<text x="${x}" y="${y}" text-anchor="start" font-size="7.5" font-weight="800" letter-spacing="0.7" fill="${c}" fill-opacity="0.62" style="text-transform:uppercase">${label}</text>`;
 }
 
 function nodeLabel(n) {
   const { cx } = nodeCenter(n);
-  const c = layerColor(n.layer);
-  const isGate = n.type === 'gate';
-  const ty = n.type === 'gate' ? n.y + n.h + 16 : (n.sub ? n.y + n.h / 2 - 4 : n.y + n.h / 2 + 4);
-  let s = `<text x="${cx}" y="${ty}" text-anchor="middle" font-size="13" font-weight="600" fill="${isGate ? c : INK}"`
-    + `${isGate ? ' letter-spacing="0.5" style="text-transform:uppercase"' : ''}>${esc(n.title)}</text>`;
-  if (n.sub && !isGate) s += `<text x="${cx}" y="${n.y + n.h / 2 + 14}" text-anchor="middle" font-size="11" fill="${FAINT}">${esc(n.sub)}</text>`;
+  const labelX = n.type === 'gate' ? cx + 18 : cx;
+  const ty = n.sub ? n.y + n.h / 2 + 2 : n.y + n.h / 2 + 7;
+  let s = `<text x="${labelX}" y="${ty}" text-anchor="middle" font-size="13" font-weight="600" fill="${INK}">${esc(n.title)}</text>`;
+  if (n.sub) s += `<text x="${labelX}" y="${n.y + n.h / 2 + 20}" text-anchor="middle" font-size="11" fill="${FAINT}">${esc(n.sub)}</text>`;
   return s;
 }
 
@@ -145,7 +201,17 @@ export function renderSvg(canvasInput, opts = {}) {
     if (!a || !b) return '';
     const spec = EDGE[e.kind] || EDGE.data;
     const col = layerColor(a.layer);
-    const d = orthPath(routeOrthogonal(a, b));
+    // funnel-hybrid: funnel edges converge as straight boundary-to-boundary
+    // lines (orthogonalizing them flattens the "narrow to one gate" reading);
+    // every other kind stays orthogonal with minimal bends.
+    let d;
+    if (opts.funnelStraight && e.kind === 'funnel') {
+      const p0 = edgePoint(a, b.x + b.w / 2, b.y + b.h / 2);
+      const p1 = edgePoint(b, a.x + a.w / 2, a.y + a.h / 2);
+      d = `M ${p0[0]} ${p0[1]} L ${p1[0]} ${p1[1]}`;
+    } else {
+      d = orthPath(routeIoBoundary(a, b) || routeOrthogonal(a, b));
+    }
     const attrs = `fill="none" stroke="${col}" stroke-width="${spec.w}"${spec.dash ? ` stroke-dasharray="${spec.dash}"` : ''}`
       + ` marker-end="url(#arw-${e.kind})"${spec.start ? ` marker-start="url(#arw-${e.kind})"` : ''}`;
     const lod = a.lod === 0 && b.lod === 0 ? 0 : 1;
@@ -155,8 +221,8 @@ export function renderSvg(canvasInput, opts = {}) {
 
   // nodes (front)
   const nodes = model.nodes.map((n) =>
-    `<g data-node="${esc(n.id)}" data-type="${esc(n.type)}" data-layer="${esc(n.layer || '')}" data-lod="${n.lod}" class="yd-node" tabindex="0">`
-    + `<title>${esc(n.title)}</title>${shape(n)}${nodeLabel(n)}</g>`).join('');
+    `<g data-node="${esc(n.id)}" data-type="${esc(n.type)}" data-block="${esc(n.block || '')}" data-layer="${esc(n.layer || '')}" data-lod="${n.lod}" class="yd-node" tabindex="0">`
+    + `<title>${esc(n.title)}</title>${shape(n)}${blockChip(n)}${nodeLabel(n)}</g>`).join('');
 
   const title = opts.title || 'architecture diagram';
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX} ${minY} ${W} ${H}" role="img" aria-label="${esc(title)}" class="yd-svg" font-family="var(--sans, system-ui, sans-serif)">`
