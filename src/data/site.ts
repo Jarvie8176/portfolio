@@ -10,10 +10,20 @@ export const site = {
 
 const env = (key: string) => process.env[key]?.trim() || undefined;
 
+const analyticsDefaults = {
+  scriptUrl: 'https://cloud.umami.is/script.js',
+  websiteId: '3e3f3371-89fc-46e2-ac8d-f57e0a30300a',
+  domains: 'portfolio.fnpg.me',
+};
+
 const analyticsScriptUrl =
-  env('PORTFOLIO_UMAMI_SCRIPT_URL') ?? env('UMAMI_SCRIPT_URL');
+  env('PORTFOLIO_UMAMI_SCRIPT_URL') ??
+  env('UMAMI_SCRIPT_URL') ??
+  analyticsDefaults.scriptUrl;
 const analyticsWebsiteId =
-  env('PORTFOLIO_UMAMI_WEBSITE_ID') ?? env('UMAMI_WEBSITE_ID');
+  env('PORTFOLIO_UMAMI_WEBSITE_ID') ??
+  env('UMAMI_WEBSITE_ID') ??
+  analyticsDefaults.websiteId;
 
 /**
  * Hostnames and addresses are injected at build time, never committed.
@@ -47,7 +57,10 @@ export const deployment = {
     /** Public Umami website id. Omitted when unset. */
     websiteId: analyticsWebsiteId,
     /** Optional comma-separated domain allowlist for the tracker. */
-    domains: env('PORTFOLIO_UMAMI_DOMAINS') ?? env('UMAMI_DOMAINS'),
+    domains:
+      env('PORTFOLIO_UMAMI_DOMAINS') ??
+      env('UMAMI_DOMAINS') ??
+      analyticsDefaults.domains,
     /** Optional Umami tag for separating dev/prod or campaigns. */
     tag: env('PORTFOLIO_UMAMI_TAG') ?? env('UMAMI_TAG'),
     enabled: Boolean(analyticsScriptUrl && analyticsWebsiteId),

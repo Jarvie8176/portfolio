@@ -342,11 +342,15 @@ const faqs = [
                                 href={shorelineTrailHref}
                                 target="_blank"
                                 rel="noreferrer"
+                                data-umami-event="trailwalk_origin_link_click"
+                                data-umami-event-location="shoreline_trail"
                                 >Shoreline Trail in Port Moody, BC</a
                             > and <a
                                 href={saintAnthonyViewHref}
                                 target="_blank"
                                 rel="noreferrer"
+                                data-umami-event="trailwalk_origin_link_click"
+                                data-umami-event-location="saint_anthony_view"
                                 >an iceberg view from a mountain viewpoint in
                                 Saint Anthony, NL</a
                             >.
@@ -554,6 +558,34 @@ const faqs = [
                         });
                     });
                 });
+
+            const heroVideo =
+                document.querySelector<HTMLVideoElement>(".hero-video");
+
+            if (heroVideo && "IntersectionObserver" in window) {
+                let tracked = false;
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        const entry = entries.find(
+                            (entry) => entry.target === heroVideo,
+                        );
+
+                        if (!entry || !entry.isIntersecting || tracked) {
+                            return;
+                        }
+
+                        tracked = true;
+                        observer.disconnect();
+                        trackTrailwalkEvent("trailwalk_hero_video_seen", {
+                            muted: String(heroVideo.muted),
+                            autoplay: String(heroVideo.autoplay),
+                        });
+                    },
+                    { threshold: 0.35 },
+                );
+
+                observer.observe(heroVideo);
+            }
         </script>
     </body>
 </html>
