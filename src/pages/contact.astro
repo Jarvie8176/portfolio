@@ -10,6 +10,7 @@ interface ChannelIcon {
 }
 
 interface Channel {
+  id: string;
   label: string;
   value: string;
   icon: ChannelIcon;
@@ -63,6 +64,7 @@ const displayLink = (url: string | undefined) => {
 /** Channels come from deploy-time env injection; absent values render nothing. */
 const channels: Channel[] = [
   deployment.contactEmail && {
+    id: 'email',
     label: 'Email',
     value: 'Email address',
     icon: icons.email,
@@ -73,6 +75,7 @@ const channels: Channel[] = [
     obfuscated: true,
   },
   deployment.signalUrl && {
+    id: 'signal',
     label: 'Signal',
     value: 'Signal contact link',
     icon: icons.signal,
@@ -81,6 +84,7 @@ const channels: Channel[] = [
     obfuscated: true,
   },
   deployment.schedulingUrl && {
+    id: 'cal',
     label: 'Book a call',
     value: displayLink(deployment.schedulingUrl) ?? 'Scheduling',
     icon: icons.book,
@@ -88,6 +92,7 @@ const channels: Channel[] = [
     external: true,
   },
   deployment.linkedinUrl && {
+    id: 'linkedin',
     label: 'LinkedIn',
     value: displayLink(deployment.linkedinUrl) ?? 'Profile',
     icon: icons.linkedin,
@@ -95,6 +100,7 @@ const channels: Channel[] = [
     external: true,
   },
   {
+    id: 'github',
     label: 'GitHub',
     value: displayLink(site.githubUrl) ?? 'GitHub',
     icon: icons.github,
@@ -102,6 +108,7 @@ const channels: Channel[] = [
     external: true,
   },
   {
+    id: 'github_agent',
     label: 'GitHub · AI agent',
     value: displayLink(site.agentGithubUrl) ?? 'GitHub',
     icon: icons.github,
@@ -151,7 +158,12 @@ const channels: Channel[] = [
                   <span class="channel-label">{channel.label}</span>
                   <span class="channel-value channel-value-copy">{channel.value}</span>
                 </span>
-                <button class="copy-btn" type="button" data-o={obfuscate(channel.copyValue ?? channel.value)}>
+                <button
+                  class="copy-btn"
+                  type="button"
+                  data-o={obfuscate(channel.copyValue ?? channel.value)}
+                  data-contact-channel={channel.id}
+                >
                   <svg
                     class="copy-icon"
                     aria-hidden="true"
@@ -170,6 +182,8 @@ const channels: Channel[] = [
                 class="channel"
                 href={channel.obfuscated ? '#' : channel.href}
                 data-o={channel.obfuscated ? obfuscate(channel.href) : undefined}
+                data-umami-event="portfolio_contact_link_click"
+                data-umami-event-channel={channel.id}
                 rel={channel.external ? 'me noopener' : undefined}
                 target={channel.external ? '_blank' : undefined}
               >
@@ -191,7 +205,15 @@ const channels: Channel[] = [
         )}
       </ul>
 
-      <a class="back-link" href="/#work">View Work</a>
+      <a
+        class="back-link"
+        href="/#work"
+        data-umami-event="portfolio_cta_click"
+        data-umami-event-cta="view_work"
+        data-umami-event-placement="contact_page"
+      >
+        View Work
+      </a>
     </div>
   </main>
 </Base>
@@ -475,6 +497,7 @@ const channels: Channel[] = [
     btn.addEventListener('click', async () => {
       const text = decode(btn.dataset.o ?? '');
       const label = btn.querySelector<HTMLElement>('.copy-btn-label');
+      const channel = btn.dataset.contactChannel ?? 'unknown';
       let ok = false;
       try {
         await navigator.clipboard.writeText(text);
@@ -492,6 +515,16 @@ const channels: Channel[] = [
       }
       if (label) label.textContent = ok ? 'Copied' : 'Copy failed';
       btn.classList.toggle('done', ok);
+      (
+        window as Window & {
+          umami?: {
+            track?: (eventName: string, data?: Record<string, string>) => void;
+          };
+        }
+      ).umami?.track?.('portfolio_contact_copy', {
+        channel,
+        result: ok ? 'success' : 'failure',
+      });
       setTimeout(() => {
         if (label) label.textContent = 'Copy';
         btn.classList.remove('done');

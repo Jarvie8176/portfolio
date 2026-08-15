@@ -18,6 +18,9 @@ const { items } = Astro.props as Props;
       href={`#${item.id}`}
       aria-label={item.label}
       data-accent={item.accent ?? 'ink'}
+      data-umami-event="portfolio_topic_click"
+      data-umami-event-topic={item.id}
+      data-umami-event-source="dot_nav"
     >
       <span>{item.label}</span>
     </a>
