@@ -47,7 +47,18 @@ const commitUrl = build.version === 'local' ? undefined : `${site.repoUrl}/commi
         <span class="meta">{site.name}</span>
         <span class="meta-row">
           {!wide && deployment.analytics.enabled && <span class="meta">Privacy-friendly analytics</span>}
-          <span class="meta"><a href={site.repoUrl} rel="noopener" target="_blank">GitHub</a></span>
+          <span class="meta">
+            <a
+              href={site.repoUrl}
+              rel="noopener"
+              target="_blank"
+              data-umami-event="portfolio_nav_click"
+              data-umami-event-item="github"
+              data-umami-event-placement="footer"
+            >
+              GitHub
+            </a>
+          </span>
           {
             commitUrl ? (
               <a
@@ -56,6 +67,8 @@ const commitUrl = build.version === 'local' ? undefined : `${site.repoUrl}/commi
                 rel="noopener"
                 target="_blank"
                 aria-label={`Commit ${build.version}`}
+                data-umami-event="portfolio_build_ref_click"
+                data-umami-event-placement="footer"
               >
                 {build.version}
               </a>

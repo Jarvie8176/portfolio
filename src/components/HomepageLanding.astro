@@ -41,7 +41,13 @@ const dotNav = [
       <p class="bridge">{homepage.hero.bridge}</p>
       <div class="cta-row" role="group" aria-label="Hero actions">
         {homepage.hero.ctas.map((cta) => (
-          <a class:list={['button', cta.label === 'Contact' && 'secondary']} href={cta.href}>
+          <a
+            class:list={['button', cta.label === 'Contact' && 'secondary']}
+            href={cta.href}
+            data-umami-event="portfolio_cta_click"
+            data-umami-event-cta={cta.label === 'Contact' ? 'contact' : 'view_work'}
+            data-umami-event-placement="hero"
+          >
             {cta.label}
           </a>
         ))}
@@ -58,6 +64,9 @@ const dotNav = [
             class:list={['compass-panel', practiceClass[practice.id]]}
             href={`#${practice.id}`}
             aria-label={`${practice.title}: ${practice.lead}`}
+            data-umami-event="portfolio_topic_click"
+            data-umami-event-topic={practice.id}
+            data-umami-event-source="topic_card"
           >
             <div class="compass-copy">
               <h2>{practice.title}</h2>
@@ -90,9 +99,23 @@ const dotNav = [
                     style={materialStyle(project.material)}
                     tabindex="-1"
                     aria-hidden="true"
+                    data-umami-event="portfolio_project_open"
+                    data-umami-event-project={project.id}
+                    data-umami-event-topic={group.id}
+                    data-umami-event-source="card_media"
                   ></a>
                   <div class="project-copy">
-                    <h3><a href={project.href}>{project.name}</a></h3>
+                    <h3>
+                      <a
+                        href={project.href}
+                        data-umami-event="portfolio_project_open"
+                        data-umami-event-project={project.id}
+                        data-umami-event-topic={group.id}
+                        data-umami-event-source="card_title"
+                      >
+                        {project.name}
+                      </a>
+                    </h3>
                     <p>{project.introduction}</p>
                   </div>
                 </article>
@@ -109,7 +132,13 @@ const dotNav = [
       <p class="invite" id="contact-title">{homepage.contact.invitation}</p>
       <div class="cta-row" role="group" aria-label="Contact actions">
         {homepage.contact.ctas.map((cta) => (
-          <a class:list={['button', cta.label === 'View Work' && 'quiet']} href={cta.href}>
+          <a
+            class:list={['button', cta.label === 'View Work' && 'quiet']}
+            href={cta.href}
+            data-umami-event="portfolio_cta_click"
+            data-umami-event-cta={cta.label === 'Contact' ? 'contact' : 'view_work'}
+            data-umami-event-placement="contact_section"
+          >
             {cta.label}
           </a>
         ))}
