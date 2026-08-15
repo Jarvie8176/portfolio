@@ -43,6 +43,11 @@ The general portfolio footer uses the shorter disclosure:
 Page views are left to Umami's default tracker behavior. Custom events are used
 only where they answer product questions that page views cannot.
 
+The tracker deliberately does not set Umami's `data-do-not-track` flag. That
+flag makes browsers with `navigator.doNotTrack=1` skip the pageview request
+entirely, which hides legitimate owner/operator verification visits and makes
+the setup look unwired. Query strings and URL hashes are still excluded.
+
 ### Trailwalk Navigation
 
 `trailwalk_nav_click`
