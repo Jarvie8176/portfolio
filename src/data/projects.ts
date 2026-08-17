@@ -71,7 +71,7 @@ export const projects: Project[] = [
     conceptPage: true,
     summary:
       'A local-first, federated assistant architecture for auditable memory, sensitive-data routing, and harness-agnostic orchestration.',
-    existsNow: 'Architecture is mapped and several organs exist.',
+    existsNow: 'Architecture is mapped and several subsystems exist.',
     why: 'It asks how an assistant can stay auditable and under human authority.',
     unresolved: 'The full assistant loop and high-sensitivity safety path are not closed.',
     evidence: 'Capability map and binding plan',
