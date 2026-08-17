@@ -21,7 +21,7 @@ IO and governance boundaries.
 - **IO boundary (L0)** is a full-width top band with four external-facing
   quadrants: passive/proactive input on the left, passive/proactive output on
   the right. Inputs enter, outputs leave; everything crosses a visible boundary.
-- **SENSE (L1)** fans in from source adapters and aggregates senseable context
+- **SENSE (L1)** fans in from source adapters and aggregates available context
   into a unified source-record format with provenance attached.
 - **Binding layer (L2)** is the durable center column: memory SSoT is authority.
   Harness/agent memory remain local surfaces or staged namespaces. The policy
@@ -435,7 +435,7 @@ Before the full system map, include a compact L0-L5 layer breakdown. Each layer
 gets exactly one plain sentence:
 
 - L0 names outside ingress and egress paths;
-- L1 aggregates senseable context into source records with provenance;
+- L1 aggregates available context into source records with provenance;
 - L2 binds memory authority, routing, model/tool choice, and Converse;
 - L3 runs bounded task reasoning and returns observations or intent;
 - L4 decides approve/refuse/defer through one write boundary;
@@ -517,7 +517,7 @@ mode, or target-user constraint.
 Use this structure:
 
 - `How much friction does safety add?`
-- `Where is YAAA intentionally slow?`
+- `Where is Yaaa intentionally slow?`
 - `Can natural-language memory really be reconciled?`
 - `What happens when a data source is closed?`
 - `Who is willing to operate this?`
@@ -547,7 +547,7 @@ world is touched.
 | Question | First paragraph | Second paragraph |
 |---|---|---|
 | `How much friction does safety add?` | L4 gates side-effect intents, not every turn. Reads, drafts, and local reasoning stay outside the write gate. Stable low-risk procedures can use reviewed policy profiles and `approve_by_policy`. | Sensitive, ambiguous, or high-impact actions still require approval, defer, or refuse. Approval fatigue is a UX risk, so the review queue must be sparse and meaningful. |
-| `Where is YAAA intentionally slow?` | The slow path is the sensitive path: provenance-preserving ingestion, local model routing, side-effect review, and L5 governance. L0-L5 are authority boundaries, not a fully synchronous chain. | Yaaa is a poor fit for millisecond-critical workflows. Local hardware, adapter quality, retention budgets, and review steps impose real speed limits. |
+| `Where is Yaaa intentionally slow?` | The slow path is the sensitive path: provenance-preserving ingestion, local model routing, side-effect review, and L5 governance. L0-L5 are authority boundaries, not a fully synchronous chain. | Yaaa is a poor fit for millisecond-critical workflows. Local hardware, adapter quality, retention budgets, and review steps impose real speed limits. |
 | `Can natural-language memory really be reconciled?` | Use Postgres / vector storage for high-frequency working memory, run state, traces, and retrieval. Use the git-backed SSoT for reviewed core memory, SOPs, ADRs, policies, and manifests. LLM-assisted reconciliation can summarize diffs and propose candidate patches. | The LLM is not the judge. Semantic conflicts still need policy or human review before any candidate becomes authority. Git auto-merge cannot resolve meaning. |
 | `What happens when a data source is closed?` | Treat adapters as capability tiers: official API/export first, local files/webhooks/RSS next, manual capture next, and RPA/OCR only as a fragile fallback. Missing sources remain visible in the answer. | Closed ecosystems remain closed. RPA/OCR is slow, brittle, less auditable, and may break when UI or platform policy changes. It can help the system see, but should not become a high-trust source. |
 | `Who is willing to operate this?` | Ship opinionated default policy sets and hide SOP/ADR/runbook machinery behind plain-language review queues. L5 should turn traces into simple approval decisions, such as whether a repeated calendar pattern should become a default rule. | This remains a self-hostable architecture for operators and power users first. A zero-admin consumer assistant is a different product boundary. |
@@ -562,9 +562,10 @@ traces, and L5 governance still wrap tool access.
 
 Do not say "only tool calls enter L4." The correct boundary is: L4 intercepts
 side-effect intents. A read-only tool call may stay on the L1/L2 read path with
-mode and leak guards, while send/write/delete/spend/publish actions must become
-side-effect intents and pass L4. This also covers scheduled agents, conversation
-harnesses, MCP servers, RPA fallback, and proactive output paths.
+mode-aware accessors and leak checks that stop sensitive context before it
+reaches a disallowed cloud route, while send/write/delete/spend/publish actions
+must become side-effect intents and pass L4. This also covers scheduled agents,
+conversation harnesses, MCP servers, RPA fallback, and proactive output paths.
 
 The storage model should separate runtime state from reviewed authority:
 
@@ -588,7 +589,7 @@ private references, or operator-only issue state. Do not add a decorative
 After the FAQ list, close with a short positioning outro. The outro should end
 the page on what Yaaa is for, not on a list of limitations:
 
-- YAAA is an opinionated guideline for technically capable individuals with
+- Yaaa is an opinionated guideline for technically capable individuals with
   unusually high privacy and safety requirements.
 - It serves people who want AI help with personal affairs, but refuse to hand
   over data control or program execution authority.
@@ -643,7 +644,7 @@ study, roadmap item, or implementation status report.
 Layer-detail mini captions should explain the layer, not merely decorate the
 image. Current caption intent:
 
-- L1: senseable context aggregated into a unified format;
+- L1: available context aggregated into a unified format;
 - L2: Converse packages a web, terminal, or voice turn;
 - L3: the task loop runs reason/act/observe/reflect, with act limited to intent;
 - L5: traces become reviewed future behavior.

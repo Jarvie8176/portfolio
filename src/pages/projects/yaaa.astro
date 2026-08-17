@@ -34,7 +34,7 @@ const layerSummaries = [
     code: 'L1',
     name: 'SENSE',
     text:
-      'Turns senseable context from adapters into source records with a unified shape and preserved provenance.',
+      'Turns available context from adapters into source records with a unified shape and preserved provenance.',
   },
   {
     code: 'L2',
@@ -88,10 +88,10 @@ const challengeItems = [
   },
   {
     id: 'limit-latency',
-    question: 'Where is YAAA intentionally slow?',
+    question: 'Where is Yaaa intentionally slow?',
     answer: [
       'The slow path is the sensitive path: provenance-preserving ingestion, local model routing, side-effect review, and later governance. L0-L5 are authority boundaries, not one mandatory synchronous chain; passive input can be sensed ahead of time, L5 runs after the task, and low-risk reads can use a shorter route.',
-      'YAAA is a poor fit for millisecond-critical experiences such as live translation or always-on voice control. Local hardware, adapter quality, review steps, and retention budgets set real speed limits.',
+      'Yaaa is a poor fit for millisecond-critical experiences such as live translation or always-on voice control. Local hardware, adapter quality, review steps, and retention budgets set real speed limits.',
     ],
   },
   {
@@ -289,7 +289,7 @@ const dotNavItems = [
   wide
   showHeader={false}
 >
-  <header class="page-nav" aria-label="YAAA navigation">
+  <header class="page-nav" aria-label="Yaaa navigation">
     <div class="nav-identity">
       <a
         class="nav-home"
@@ -313,7 +313,7 @@ const dotNavItems = [
         YAAA
       </a>
     </div>
-    <nav class="page-nav__links" aria-label="YAAA page sections">
+    <nav class="page-nav__links" aria-label="Yaaa page sections">
       {sectionNavItems.map((item) => (
         <div class="nav-section">
           <a
@@ -343,11 +343,11 @@ const dotNavItems = [
       ))}
     </nav>
     <details class="mobile-nav">
-      <summary aria-label="YAAA sections">
+      <summary aria-label="Yaaa sections">
         <span class="mobile-nav__icon" aria-hidden="true"></span>
         <span class="sr-only">Sections</span>
       </summary>
-      <nav aria-label="YAAA mobile sections">
+      <nav aria-label="Yaaa mobile sections">
         {sectionNavItems.map((item) => (
           <div class="mobile-nav-group">
             <a
@@ -390,9 +390,10 @@ const dotNavItems = [
           architecture: a self-hostable, local-first system where memory,
           routing, and every action stay versioned, reviewed, and owned by you.
           Sensitive work runs local; cloud and model use is bounded by mode
-          routing and leak guards, and side effects leave through one fail-closed
-          gate. Conversation harnesses can be replaced without moving the source
-          of truth.
+          routing and leak checks that keep sensitive context off disallowed
+          routes, and side effects leave through one fail-closed gate.
+          Conversation harnesses can be replaced without moving the source of
+          truth.
         </p>
       </div>
 
@@ -566,8 +567,9 @@ const dotNavItems = [
           Yaaa starts from the opposite end: an assistant for you, on
           infrastructure you own, where memory is one reviewable record, sensitive
           work stays local, and cloud and model use is bounded by mode routing and
-          leak guards. Ownership is not a feature toggle. It lives in the
-          architecture.
+          leak checks. Those checks stop sensitive context before it reaches a
+          disallowed model or channel. Ownership is not a feature toggle. It
+          lives in the architecture.
         </p>
         <figure class="problem-figure" role="img" aria-label="The same data streams gather into one store you own: your source of truth, on your own infrastructure. Sensitive work stays local; cloud and model routes pass mode and leak checks, and side effects pass the fail-closed action gate.">
           <svg viewBox="0 0 560 262" xmlns="http://www.w3.org/2000/svg">
@@ -822,8 +824,8 @@ const dotNavItems = [
           <h3>Deep dive into the layers</h3>
           <p>
             The full map shows the contract; the drill-in names what each layer
-            owns, what it may see, and where its authority stops. Read it as a
-            opinionated guideline: L0/L1 gather context, L2 binds memory and
+            owns, what it may see, and where its authority stops. Read it as
+            an opinionated guideline: L0/L1 gather context, L2 binds memory and
             routing, L3 proposes, L4 controls side effects, and L5 changes the
             rules future runs stand on.
           </p>
@@ -882,7 +884,7 @@ const dotNavItems = [
                   <line class="m-line" x1="90" y1="86" x2="90" y2="100" marker-end="url(#mL1)"/>
                   <rect class="m-box" x="35" y="102" width="110" height="34" rx="4"/><text class="m-t" x="90" y="123" text-anchor="middle">source records</text>
                 </svg>
-                <p class="mini-cap">senseable context aggregated into a unified format</p>
+                <p class="mini-cap">available context aggregated into a unified format</p>
               </figure>
             </div>
           </section>
@@ -1029,7 +1031,8 @@ const dotNavItems = [
           Passive sources may arrive on timers or subscriptions. Interactive work
           enters through Converse. Reads skip the write gate but still carry
           egress risk, so high-sensitivity reading requires mode-aware accessors
-          and leak guards on any path toward a cloud model.
+          and leak checks that stop sensitive context before a disallowed cloud
+          route.
         </p>
         <p class="policy-note">
           There is a second loop above the first: observe runs, extract
@@ -1234,7 +1237,7 @@ const dotNavItems = [
                   <tspan x="318">OWNED</tspan>
                   <tspan x="318" dy="16">CONTROL</tspan>
                 </text>
-                <text class="tt-yaaa-label" x="244" y="142" text-anchor="middle">YAAA</text>
+                <text class="tt-yaaa-label" x="244" y="142" text-anchor="middle">Yaaa</text>
               </g>
             </svg>
             <ul class="tradeoff-legend" aria-label="Triangle corner definitions">
@@ -1269,7 +1272,7 @@ const dotNavItems = [
           <p class="kicker">Positioning</p>
           <h3 id="positioning-title">An opinionated guideline for owned personal AI</h3>
           <p>
-            YAAA is for technically capable individuals with unusually high
+            Yaaa is for technically capable individuals with unusually high
             privacy and safety requirements. It serves people who want AI help
             with personal affairs, but refuse to hand over data control or
             program execution authority.
