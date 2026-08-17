@@ -86,7 +86,7 @@ group reveals its member nodes (the per-layer detail graph).
 | `authority` | thick solid | authority transition (durable memory / promotion) |
 | `async` | dashed | trace collection / background loop |
 | `sync` | double arrow | negotiated / two-way state |
-| `funnel` | converging pair | side-effect intent constrained before a write |
+| `funnel` | constrained write path before a gate | side-effect intent constrained before a write |
 
 ### Encoding (how tags ride on stock JSON Canvas)
 
@@ -178,7 +178,7 @@ Every rendered SVG (build-time and runtime) MUST annotate:
 <g data-node="memory-ssot" data-type="store" data-block="entity" data-layer="L2">
   <title>memory SSoT</title> ...
 </g>
-<g data-edge="context-candidate->memory-ssot" data-kind="authority"> ... </g>
+<g data-edge="governance->memory-ssot" data-kind="authority"> ... </g>
 ```
 
 - `data-node` / `data-edge` ids are the canvas node ids and `from->to` pairs.

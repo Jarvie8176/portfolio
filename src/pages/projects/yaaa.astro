@@ -165,7 +165,7 @@ const openQuestions = [
           leak guards. Ownership is not a feature toggle. It lives in the
           architecture.
         </p>
-        <figure class="problem-figure" role="img" aria-label="The same data streams gather into one store you own — your source of truth, on your own infrastructure — and leave only through a gate: sensitive data stays local, and only bounded, reviewed data goes out.">
+        <figure class="problem-figure" role="img" aria-label="The same data streams gather into one store you own — your source of truth, on your own infrastructure. Sensitive work stays local; cloud and model routes pass mode and leak checks, and side effects pass the fail-closed action gate.">
           <svg viewBox="0 0 560 262" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <marker id="pr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="pr-arr-h" d="M0,0 L10,5 L0,10 z"/></marker>
