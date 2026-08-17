@@ -49,18 +49,19 @@ const openQuestions = [
         <p class="summary">
           Yaaa is a personal assistant ops architecture — a self-hostable,
           local-first system where memory, routing, and every action stay
-          versioned, reviewed, and owned by you. Sensitive work runs local, cloud
-          use is bounded and gated, and conversation harnesses can be replaced
-          without moving the source of truth.
+          versioned, reviewed, and owned by you. Sensitive work runs local; cloud
+          and model use is bounded by mode routing and leak guards, and side
+          effects leave through one fail-closed gate. Conversation harnesses can
+          be replaced without moving the source of truth.
         </p>
       </div>
 
       <figure
         class="subsystem-stack"
         role="img"
-        aria-label="Diagram of the Yaaa subsystems on a shared binding bus: sense, remember, reason, converse, act (the write boundary), and surface"
+        aria-label="Diagram of the Yaaa subsystems on a shared binding bus: sense, remember, reason, converse, act (intent proposal only), and surface"
       >
-        <span class="stack-title">runtime loop</span>
+        <span class="stack-title">runtime subsystems</span>
         <ul>
           {stackRows.map((row) => (
             <li>
@@ -68,7 +69,7 @@ const openQuestions = [
             </li>
           ))}
         </ul>
-        <figcaption>A runtime loop of subsystems on a shared bus.</figcaption>
+        <figcaption>The subsystems on a shared binding bus.</figcaption>
       </figure>
     </section>
 
@@ -160,8 +161,9 @@ const openQuestions = [
         <p class="problem-response">
           Yaaa starts from the opposite end: an assistant for you, on
           infrastructure you own, where memory is one reviewable record, sensitive
-          work stays local, and cloud use is bounded and gated. Ownership is not a
-          feature toggle. It lives in the architecture.
+          work stays local, and cloud and model use is bounded by mode routing and
+          leak guards. Ownership is not a feature toggle. It lives in the
+          architecture.
         </p>
         <figure class="problem-figure" role="img" aria-label="The same data streams gather into one store you own — your source of truth, on your own infrastructure — and leave only through a gate: sensitive data stays local, and only bounded, reviewed data goes out.">
           <svg viewBox="0 0 560 262" xmlns="http://www.w3.org/2000/svg">
@@ -285,8 +287,9 @@ const openQuestions = [
           <h2 id="loop-title">How it works</h2>
         </div>
         <p class="policy-note">
-          The runtime loop above is what runs; the L0–L5 layers below are where
-          authority sits. They overlap, but they are not a one-to-one mapping.
+          The runtime subsystems above are what run; the L0–L5 layers below are
+          where authority sits. They overlap, but they are not a one-to-one
+          mapping.
         </p>
         <figure class="arch-map">
           <ProjectDiagram

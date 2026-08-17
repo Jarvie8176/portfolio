@@ -11,7 +11,7 @@ const KIND_STYLE = {
   authority: 'thick (authority transition)',
   async: 'dashed (trace / background)',
   sync: 'double arrow (negotiated state)',
-  funnel: 'converging (write constrained before a gate)',
+  funnel: 'constrained write path before a gate',
 };
 
 export function canvasToDoc(input, name) {
@@ -59,7 +59,7 @@ export function canvasToDoc(input, name) {
   out.push('## Reading levels', '');
   const hasIoQuadrants = ['passive-input', 'proactive-input', 'passive-output', 'proactive-output']
     .every((id) => m.nodes.some((n) => n.id === id && n.lod === 0));
-  const highLevelShape = hasIoQuadrants ? 'the four IO quadrants and hourglass' : 'the authored composition';
+  const highLevelShape = hasIoQuadrants ? 'a layered map with L0/L5 bands and an L4 write funnel' : 'the authored composition';
   out.push(`**High-level (level 0):** summary nodes plus cross-layer edges - ${highLevelShape}.`, '');
   const summaries = m.nodes.filter((n) => n.lod === 0);
   out.push(...summaries.map((n) => `- ${n.layer} \`${n.id}\` - ${n.title}`), '');

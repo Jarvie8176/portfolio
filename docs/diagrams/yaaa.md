@@ -59,13 +59,13 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | from | to | kind | shown at |
 |---|---|---|---|
 | `passive-input` | `sense` | data (ambient ingest) | high-level |
-| `sense` | `memory-ssot` | authority (bind) | high-level |
+| `sense` | `memory-ssot` | data (binding candidate) | high-level |
 | `memory-ssot` | `react-loop` | data (governed context) | high-level |
 | `react-loop` | `fail-closed-gate` | async (requests write) | high-level |
 | `fail-closed-gate` | `governance` | async (trace) | high-level |
 | `governance` | `memory-ssot` | authority (reviewed memory delta) | high-level |
 | `converse` | `passive-output` | data (surface state) | high-level |
-| `converse` | `proactive-output` | data (answer/ask) | high-level |
+| `converse` | `proactive-output` | data (ask/alert/result) | high-level |
 | `action-disposition` | `proactive-output` | data (surface disposition) | detail |
 | `proactive-input` | `converse` | data (operator turn) | high-level |
 | `passive-input` | `source-adapters` | data | detail |
@@ -104,7 +104,7 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 
 ## Reading levels
 
-**High-level (level 0):** summary nodes plus cross-layer edges - the four IO quadrants and hourglass.
+**High-level (level 0):** summary nodes plus cross-layer edges - a layered map with L0/L5 bands and an L4 write funnel.
 
 - L0 `passive-input` - passive input
 - L0 `proactive-input` - proactive input
@@ -130,10 +130,10 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | kind | meaning |
 |---|---|
 | data | solid + arrow (deterministic data / control) |
-| authority | thick (authority transition) |
 | async | dashed (trace / background) |
+| authority | thick (authority transition) |
 | sync | double arrow (negotiated state) |
-| funnel | converging (write constrained before a gate) |
+| funnel | constrained write path before a gate |
 
 ## Acceptance graph (derived)
 
@@ -189,13 +189,13 @@ flowchart LR
   end
 
   passive_input -->|ambient ingest| sense
-  sense ==>|bind| memory_ssot
+  sense -->|binding candidate| memory_ssot
   memory_ssot -->|governed context| react_loop
   react_loop -.->|requests write| fail_closed_gate
   fail_closed_gate -.->|trace| governance
   governance ==>|reviewed memory delta| memory_ssot
   converse -->|surface state| passive_output
-  converse -->|answer/ask| proactive_output
+  converse -->|ask/alert/result| proactive_output
   action_disposition -->|surface disposition| proactive_output
   proactive_input -->|operator turn| converse
   passive_input --> source_adapters

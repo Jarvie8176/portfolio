@@ -46,13 +46,13 @@ flowchart LR
   end
 
   passive_input -->|ambient ingest| sense
-  sense ==>|bind| memory_ssot
+  sense -->|binding candidate| memory_ssot
   memory_ssot -->|governed context| react_loop
   react_loop -.->|requests write| fail_closed_gate
   fail_closed_gate -.->|trace| governance
   governance ==>|reviewed memory delta| memory_ssot
   converse -->|surface state| passive_output
-  converse -->|answer/ask| proactive_output
+  converse -->|ask/alert/result| proactive_output
   action_disposition -->|surface disposition| proactive_output
   proactive_input -->|operator turn| converse
   passive_input --> source_adapters
