@@ -18,8 +18,8 @@ flowchart LR
     agent_memory["agent memory"]
     converse("converse")
   end
-  subgraph grp_l3 ["L3 - Nested ReAct"]
-    react_loop("Nested ReAct loop")
+  subgraph grp_l3 ["L3 - Bounded ReAct"]
+    react_loop("ReAct task loop")
     reason("reason")
     act("act")
     observe("observe")
@@ -53,15 +53,15 @@ flowchart LR
   governance ==>|reviewed memory delta| memory_ssot
   converse -->|surface state| passive_output
   converse -->|ask/alert/result| proactive_output
-  action_disposition -->|surface disposition| proactive_output
+  fail_closed_gate -->|disposition output| proactive_output
   proactive_input -->|operator turn| converse
   passive_input --> source_adapters
   source_adapters --> normalize
   normalize --> source_records
   source_records --> sense
-  policy_router <--> memory_ssot
+  policy_router -->|mode/model/tool route| converse
   memory_ssot -->|materialize projection| harness_memory
-  policy_router -->|mode routing| react_loop
+  converse -->|routed task| react_loop
   harness_memory -->|scoped namespace| agent_memory
   agent_memory <--> converse
   harness_memory -->|served context| react_loop
@@ -75,6 +75,7 @@ flowchart LR
   procedure_manifest --> policy_check
   policy_check --> fail_closed_gate
   fail_closed_gate -->|disposition| action_disposition
+  action_disposition -->|surface disposition| proactive_output
   governance -->|expand| run_traces
   run_traces --> extract
   extract --> distill

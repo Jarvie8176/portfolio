@@ -3,7 +3,7 @@
 Auto-generated from the canvas source of truth. Do not edit by hand;
 edit the `.canvas` and regenerate (`npm run diagram:doc`).
 
-- layers: 6 - nodes: 33 (high-level 10 / detail 23) - edges: 43
+- layers: 6 - nodes: 33 (high-level 10 / detail 23) - edges: 44
 
 ## Layers
 
@@ -12,7 +12,7 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | L0 | L0 - IO boundary | passive-input, proactive-input, passive-output, proactive-output |
 | L1 | L1 - SENSE | sense, source-adapters, normalize, source-records |
 | L2 | L2 - Binding layer | memory-ssot, policy-router, harness-memory, agent-memory, converse |
-| L3 | L3 - Nested ReAct | react-loop, reason, act, observe, reflect |
+| L3 | L3 - Bounded ReAct | react-loop, reason, act, observe, reflect |
 | L4 | L4 - Gated action | fail-closed-gate, side-effect-intent, procedure-manifest, policy-check, action-disposition |
 | L5 | L5 - Governance foundation | governance, run-traces, extract, distill, review, promote, memory-reconciliation, deploy, adr-changelog, runbook-updates |
 
@@ -33,7 +33,7 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | `harness-memory` | L2 | detail | entity | store | harness memory | rebuildable projection |
 | `agent-memory` | L2 | detail | entity | store | agent memory | staged namespace |
 | `converse` | L2 | high-level | workflow | process | converse | replaceable session harness |
-| `react-loop` | L3 | high-level | workflow | process | Nested ReAct loop | called loop, not authority |
+| `react-loop` | L3 | high-level | workflow | process | ReAct task loop | called with context |
 | `reason` | L3 | detail | workflow | process | reason | plan next step |
 | `act` | L3 | detail | action | process | act | intent proposal only |
 | `observe` | L3 | detail | workflow | process | observe | result / trace |
@@ -66,15 +66,15 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | `governance` | `memory-ssot` | authority (reviewed memory delta) | high-level |
 | `converse` | `passive-output` | data (surface state) | high-level |
 | `converse` | `proactive-output` | data (ask/alert/result) | high-level |
-| `action-disposition` | `proactive-output` | data (surface disposition) | detail |
+| `fail-closed-gate` | `proactive-output` | data (disposition output) | high-level |
 | `proactive-input` | `converse` | data (operator turn) | high-level |
 | `passive-input` | `source-adapters` | data | detail |
 | `source-adapters` | `normalize` | data | detail |
 | `normalize` | `source-records` | data | detail |
 | `source-records` | `sense` | data | detail |
-| `policy-router` | `memory-ssot` | sync | detail |
+| `policy-router` | `converse` | data (mode/model/tool route) | detail |
 | `memory-ssot` | `harness-memory` | data (materialize projection) | detail |
-| `policy-router` | `react-loop` | data (mode routing) | detail |
+| `converse` | `react-loop` | data (routed task) | high-level |
 | `harness-memory` | `agent-memory` | data (scoped namespace) | detail |
 | `agent-memory` | `converse` | sync | detail |
 | `harness-memory` | `react-loop` | data (served context) | detail |
@@ -88,6 +88,7 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | `procedure-manifest` | `policy-check` | funnel | detail |
 | `policy-check` | `fail-closed-gate` | data | detail |
 | `fail-closed-gate` | `action-disposition` | data (disposition) | detail |
+| `action-disposition` | `proactive-output` | data (surface disposition) | detail |
 | `governance` | `run-traces` | data (expand) | detail |
 | `run-traces` | `extract` | data | detail |
 | `extract` | `distill` | data | detail |
@@ -113,15 +114,15 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 - L1 `sense` - SENSE
 - L2 `memory-ssot` - memory SSoT
 - L2 `converse` - converse
-- L3 `react-loop` - Nested ReAct loop
+- L3 `react-loop` - ReAct task loop
 - L4 `fail-closed-gate` - fail-closed gate
 - L5 `governance` - governance meta-loop
 
 **Per-layer detail (level 1):** drilling into a layer reveals its internal nodes.
 
 - **L1** L1 - SENSE: source-adapters -> normalize; normalize -> source-records; source-records -> sense
-- **L2** L2 - Binding layer: policy-router -> memory-ssot; memory-ssot -> harness-memory; harness-memory -> agent-memory; agent-memory -> converse
-- **L3** L3 - Nested ReAct: react-loop -> reason; reason -> act; act -> observe; observe -> reflect; reflect -> reason
+- **L2** L2 - Binding layer: policy-router -> converse; memory-ssot -> harness-memory; harness-memory -> agent-memory; agent-memory -> converse
+- **L3** L3 - Bounded ReAct: react-loop -> reason; reason -> act; act -> observe; observe -> reflect; reflect -> reason
 - **L4** L4 - Gated action: side-effect-intent -> procedure-manifest; procedure-manifest -> policy-check; policy-check -> fail-closed-gate; fail-closed-gate -> action-disposition
 - **L5** L5 - Governance foundation: governance -> run-traces; run-traces -> extract; extract -> distill; distill -> review; review -> promote; promote -> memory-reconciliation; memory-reconciliation -> deploy; promote -> adr-changelog; memory-reconciliation -> runbook-updates; adr-changelog -> runbook-updates; runbook-updates -> deploy
 
@@ -161,8 +162,8 @@ flowchart LR
     agent_memory["agent memory"]
     converse("converse")
   end
-  subgraph grp_l3 ["L3 - Nested ReAct"]
-    react_loop("Nested ReAct loop")
+  subgraph grp_l3 ["L3 - Bounded ReAct"]
+    react_loop("ReAct task loop")
     reason("reason")
     act("act")
     observe("observe")
@@ -196,15 +197,15 @@ flowchart LR
   governance ==>|reviewed memory delta| memory_ssot
   converse -->|surface state| passive_output
   converse -->|ask/alert/result| proactive_output
-  action_disposition -->|surface disposition| proactive_output
+  fail_closed_gate -->|disposition output| proactive_output
   proactive_input -->|operator turn| converse
   passive_input --> source_adapters
   source_adapters --> normalize
   normalize --> source_records
   source_records --> sense
-  policy_router <--> memory_ssot
+  policy_router -->|mode/model/tool route| converse
   memory_ssot -->|materialize projection| harness_memory
-  policy_router -->|mode routing| react_loop
+  converse -->|routed task| react_loop
   harness_memory -->|scoped namespace| agent_memory
   agent_memory <--> converse
   harness_memory -->|served context| react_loop
@@ -218,6 +219,7 @@ flowchart LR
   procedure_manifest --> policy_check
   policy_check --> fail_closed_gate
   fail_closed_gate -->|disposition| action_disposition
+  action_disposition -->|surface disposition| proactive_output
   governance -->|expand| run_traces
   run_traces --> extract
   extract --> distill
