@@ -1,0 +1,91 @@
+flowchart LR
+  subgraph grp_l0 ["L0 - IO boundary"]
+    passive_input["passive input"]
+    proactive_input["proactive input"]
+    passive_output["passive output"]
+    proactive_output("proactive output")
+  end
+  subgraph grp_l1 ["L1 - SENSE"]
+    sense("SENSE")
+    source_adapters("source adapters")
+    normalize("normalize")
+    source_records["source records"]
+  end
+  subgraph grp_l2 ["L2 - Binding layer"]
+    memory_ssot["memory SSoT"]
+    policy_router("policy router")
+    harness_memory["harness memory"]
+    agent_memory["agent memory"]
+    converse("converse")
+  end
+  subgraph grp_l3 ["L3 - Bounded ReAct"]
+    react_loop("ReAct task loop")
+    reason("reason")
+    act("act")
+    observe("observe")
+    reflect("reflect")
+  end
+  subgraph grp_l4 ["L4 - Gated action"]
+    fail_closed_gate{{"fail-closed gate"}}
+    side_effect_intent["side-effect intent"]
+    procedure_manifest["procedure manifest"]
+    policy_check{"policy check"}
+    action_disposition("approve / refuse / defer")
+  end
+  subgraph grp_l5 ["L5 - Governance foundation"]
+    governance("governance meta-loop")
+    run_traces["run traces"]
+    extract("extract")
+    distill("distill")
+    review{"human review"}
+    promote("promote")
+    memory_reconciliation("memory reconciliation")
+    deploy("apply")
+    adr_changelog["ADR changelog"]
+    runbook_updates["runbook updates"]
+  end
+
+  passive_input -->|ambient ingest| sense
+  sense -->|binding candidate| memory_ssot
+  memory_ssot -->|governed context| react_loop
+  react_loop -.->|requests write| fail_closed_gate
+  fail_closed_gate -.->|trace| governance
+  governance ==>|reviewed memory delta| memory_ssot
+  converse -->|surface state| passive_output
+  converse -->|ask/alert/result| proactive_output
+  fail_closed_gate -->|disposition output| proactive_output
+  proactive_input -->|operator turn| converse
+  passive_input --> source_adapters
+  source_adapters --> normalize
+  normalize --> source_records
+  source_records --> sense
+  policy_router -->|mode/model/tool route| converse
+  memory_ssot -->|materialize projection| harness_memory
+  converse -->|routed task| react_loop
+  harness_memory -->|scoped namespace| agent_memory
+  agent_memory <--> converse
+  harness_memory -->|served context| react_loop
+  react_loop -->|expand| reason
+  reason --> act
+  act --> observe
+  observe --> reflect
+  reflect -->|loop| reason
+  act -->|intent proposal| side_effect_intent
+  side_effect_intent --> procedure_manifest
+  procedure_manifest --> policy_check
+  policy_check --> fail_closed_gate
+  fail_closed_gate -->|disposition| action_disposition
+  action_disposition -->|surface disposition| proactive_output
+  governance -->|expand| run_traces
+  run_traces --> extract
+  extract --> distill
+  distill --> review
+  review ==> promote
+  promote ==> memory_reconciliation
+  memory_reconciliation --> deploy
+  promote -->|record| adr_changelog
+  memory_reconciliation -->|harden| runbook_updates
+  adr_changelog -->|informs| runbook_updates
+  runbook_updates --> deploy
+  memory_reconciliation ==>|reviewed alignment| memory_ssot
+  agent_memory -.->|staged delta| memory_reconciliation
