@@ -40,5 +40,14 @@ jobs:
       # commit passes unnoticed.
       - run: npm run tokens:build
       - run: git diff --exit-code src/styles/tokens.generated.css
+      # The committed diagram artifacts (Mermaid + doc) must be regenerable
+      # byte-clean from the JSON Canvas SoT, and the render/parity gate must
+      # pass — otherwise the Canvas can drift from its generated docs, or a
+      # render regression can slip in, while checks stay green. This is what
+      # makes the "auditable, drift-resistant" claim actually enforced.
+      - run: npm run diagram:derive
+      - run: npm run diagram:doc
+      - run: git diff --exit-code src/diagrams/yaaa.mmd docs/diagrams/yaaa.md
+      - run: npm run diagram:gate
       - run: npm run build
       - run: test -f dist/index.html
