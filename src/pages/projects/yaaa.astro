@@ -1,14 +1,16 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { site } from '../../data/site';
+import ProjectDiagram from '../../components/diagram/ProjectDiagram.astro';
+import yaaaCanvas from '../../diagrams/yaaa.canvas?raw';
 
 const formulaLines = [
-  'the product experience of ChatGPT Agent',
-  '+ the self-hosted surface of Open WebUI and LibreChat',
-  '+ the memory ambition of Letta, Mem0, and Zep',
-  '+ the automation target of Home Assistant and n8n',
-  '+ a compensatory human-AI collaboration stance',
-  '= a self-owned assistant operating layer',
+  'federated subsystems',
+  '+ user-owned memory',
+  '+ local-first routing',
+  '+ gated action',
+  '+ reviewed governance',
+  '= a personal assistant ops architecture',
 ];
 
 const stackRows = [
@@ -20,121 +22,53 @@ const stackRows = [
   { name: 'Surface', state: 'live', label: 'live' },
 ];
 
-const organs = [
-  {
-    name: 'Sense',
-    body: 'Normalize mail, feeds, notes, and other incoming sources into durable item stores with provenance.',
-  },
-  {
-    name: 'Remember',
-    body: 'Keep personal context in human-readable, git-backed memory that can be reviewed and diffed.',
-  },
-  {
-    name: 'Reason',
-    body: 'Triage, rank, summarize, and denoise, with sensitive work routed to local models.',
-  },
-  {
-    name: 'Converse',
-    body: 'The interactive natural-language loop: one of several processes, not the center of the system.',
-  },
-  {
-    name: 'Act',
-    body: 'Side effects, all of them, pass through a single gated procedure dispatcher.',
-  },
-  {
-    name: 'Surface',
-    body: 'Digest-first delivery through explicit gates, recorded in a ledger, quiet by default.',
-  },
-];
-
-const statusRows = [
-  {
-    organ: 'Surface',
-    status: 'live',
-    state: 'live',
-    note: 'Daily digest delivery has run in production since July 2026.',
-  },
-  {
-    organ: 'Sense',
-    status: 'partial, live',
-    state: 'partial',
-    note: 'Email ingestion is live; additional sources remain planned or gated.',
-  },
-  {
-    organ: 'Reason',
-    status: 'partial, live',
-    state: 'partial',
-    note: 'Digest triage is live; assistant multi-turn reasoning is future work.',
-  },
-  {
-    organ: 'Remember',
-    status: 'substrate live',
-    state: 'partial',
-    note: 'The memory authority exists; assistant read and write binding is pending.',
-  },
-  {
-    organ: 'Act',
-    status: 'gate verified',
-    state: 'partial',
-    note: 'The fail-closed gate and dispatcher are verified; production procedures are pending.',
-  },
-  {
-    organ: 'Converse',
-    status: 'pending',
-    state: 'pending',
-    note: 'The harness decision is open; a minimal single-turn slice is designed.',
-  },
-];
 
 const openQuestions = [
   'Which conversation harness earns the seat? Any candidate that creates a second write path or a second memory ledger is disqualified.',
   'How does memory binding land without a second ledger? Serving layers must stay rebuildable projections of the git-backed record.',
-  'When does the high-sensitivity path count as proven? Local routing is the chosen design; end-to-end evidence and leak detection are still being built.',
+  'How is the high-sensitivity path kept safe? Local routing is the chosen design; leak detection guards any path toward a cloud model.',
   'Can self-improvement ever be on by default? Learning loops that mutate skills or memory without review are treated as fail-open, so they stay off or behind staged review.',
 ];
 ---
 
 <Base
   title={`${site.name} · Yaaa`}
-  description="Yaaa is a self-owned assistant operating layer: a personal AI assistant assembled as a federation of small, auditable systems instead of a monolithic black box."
+  description="Yaaa is a personal assistant ops architecture: a personal AI assistant assembled as a federation of small, auditable systems instead of a monolithic black box."
   ogType="article"
   wide
 >
   <main class="yaaa-page">
     <section class="hero" aria-labelledby="project-title">
       <div class="hero-copy">
-        <div class="badge-row" aria-label="Project status">
-          <span class="wip-badge">WIP</span>
-          <span class="status-badge">Partially live</span>
+        <div class="badge-row" aria-label="Project domains">
           <span class="mode-tag">Systems</span>
           <span class="mode-tag mode-tag-secondary">Embodied Life</span>
         </div>
         <p class="eyebrow">Yet Another AI Assistant</p>
-        <h1 id="project-title">an operating layer for an assistant you own</h1>
+        <h1 id="project-title">an assistant you actually own</h1>
         <p class="summary">
-          A local-first, federated assistant architecture for auditable memory,
-          sensitive-data routing, and harness-agnostic orchestration.
+          Yaaa is a personal assistant ops architecture — a self-hostable,
+          local-first system where memory, routing, and every action stay
+          versioned, reviewed, and owned by you. Sensitive work runs local, cloud
+          use is bounded and gated, and conversation harnesses can be replaced
+          without moving the source of truth.
         </p>
-        <p class="status-line">mapped architecture · built organs · pending bindings</p>
       </div>
 
       <figure
-        class="organ-stack"
+        class="subsystem-stack"
         role="img"
-        aria-label="Diagram of the six Yaaa organs on one binding bus: sense partial and live, remember substrate live, reason partial and live, converse pending, act gate verified, surface live"
+        aria-label="Diagram of the Yaaa subsystems on a shared binding bus: sense, remember, reason, converse, act (the write boundary), and surface"
       >
         <span class="stack-title">runtime loop</span>
         <ul>
           {stackRows.map((row) => (
-            <li data-state={row.state}>
-              <i class="stack-dot" aria-hidden="true"></i>
+            <li>
               <b>{row.name}</b>
-              {row.gated && <span class="gate-chip">fail-closed</span>}
-              <em>{row.label}</em>
             </li>
           ))}
         </ul>
-        <figcaption>Six organs, one binding layer, one write path.</figcaption>
+        <figcaption>A runtime loop of subsystems on a shared bus.</figcaption>
       </figure>
     </section>
 
@@ -144,26 +78,134 @@ const openQuestions = [
           <span class="sec-no">01</span>
           <h2 id="problem-title">Problem</h2>
         </div>
-        <div class="two-column">
-          <p class="lead">
-            Consumer assistants optimize for convenience first. The price is
-            authority: memory, routing, and tool permissions all end up owned
-            by the vendor.
-          </p>
-          <div class="body-stack">
+        <p class="lead problem-intro">
+          A personal assistant is the most concentrated data you will ever hand to
+          one company. Consumer assistants optimize for convenience; the price is
+          that your most intimate context ends up owned, screened, and locked
+          inside a vendor.
+        </p>
+        <figure class="problem-figure" role="img" aria-label="Your personal data streams — mail, notes, calendar, camera, health, location, chats — converge into one commercial entity that aggregates and watches them; once sent, the data cannot be recalled.">
+          <svg viewBox="0 0 560 262" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="pf-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path class="pf-arr-h" d="M0,0 L10,5 L0,10 z"/>
+              </marker>
+            </defs>
+            <g aria-hidden="true">
+              <line class="pf-line" x1="98" y1="27" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="59" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="91" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="123" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="155" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="187" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="219" x2="238" y2="130"/>
+              <rect class="pf-chip" x="6" y="16" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="31" text-anchor="middle">mail</text>
+              <rect class="pf-chip" x="6" y="48" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="63" text-anchor="middle">notes</text>
+              <rect class="pf-chip" x="6" y="80" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="95" text-anchor="middle">calendar</text>
+              <rect class="pf-chip" x="6" y="112" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="127" text-anchor="middle">camera</text>
+              <rect class="pf-chip" x="6" y="144" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="159" text-anchor="middle">health</text>
+              <rect class="pf-chip" x="6" y="176" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="191" text-anchor="middle">location</text>
+              <rect class="pf-chip" x="6" y="208" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="223" text-anchor="middle">chats</text>
+              <text class="pf-faint" x="52" y="250" text-anchor="middle">your data streams</text>
+              <rect class="pf-box" x="240" y="88" width="140" height="84" rx="6"/>
+              <ellipse class="pf-eye" cx="310" cy="112" rx="14" ry="8"/>
+              <circle class="pf-pupil" cx="310" cy="112" r="3.6"/>
+              <text class="pf-box-t" x="310" y="145" text-anchor="middle">one commercial</text>
+              <text class="pf-box-t" x="310" y="161" text-anchor="middle">entity</text>
+              <line class="pf-out" x1="380" y1="124" x2="500" y2="124" marker-end="url(#pf-arr)"/>
+              <text class="pf-faint" x="440" y="116" text-anchor="middle">sent out</text>
+              <line class="pf-block" x1="500" y1="146" x2="388" y2="146"/>
+              <path class="pf-x" d="M437 140 L449 152 M449 140 L437 152"/>
+              <text class="pf-block-t" x="443" y="170" text-anchor="middle">no recall</text>
+            </g>
+          </svg>
+          <figcaption>Everything in, nothing back.</figcaption>
+        </figure>
+        <div class="problem-grid">
+          <article>
+            <span class="problem-label">Aggregated · unrecallable</span>
             <p>
-              That trade is invisible until it matters. Memory lives in an opaque
-              store you cannot diff. Sensitive context rides to whichever model
-              the product prefers. Actions run on trust in a prompt.
+              An assistant sees far more than email or a social feed — behavior,
+              identity, legal and medical history, conversations, private notes,
+              the cameras in your home, even the shape of your thinking, pooled
+              inside one commercial entity. Once that context leaves, it cannot be
+              taken back.
             </p>
+          </article>
+          <article>
+            <span class="problem-label">Screened · surveilled</span>
             <p>
-              Yaaa starts from the opposite end: an assistant for one person,
-              running on infrastructure that person owns, where every durable
-              change is reviewable and every side effect passes an explicit gate.
-              Ownership is not a feature toggle. It lives in the architecture.
+              Data routed to a cloud model is subject to that vendor's moderation,
+              monitoring, and retention. Your assistant's inputs and outputs are
+              watched on terms that are not yours.
             </p>
-          </div>
+          </article>
+          <article>
+            <span class="problem-label">Locked · fragmented</span>
+            <p>
+              Each vendor keeps agent memory in its own format, and nothing syncs
+              between them. Memory drifts across ChatGPT, Claude, and the next
+              tool; you reconcile the gaps by hand — and human memory fails too. An
+              assistant meant to lift that burden quietly adds to it.
+            </p>
+          </article>
         </div>
+        <p class="problem-response">
+          Yaaa starts from the opposite end: an assistant for you, on
+          infrastructure you own, where memory is one reviewable record, sensitive
+          work stays local, and cloud use is bounded and gated. Ownership is not a
+          feature toggle. It lives in the architecture.
+        </p>
+        <figure class="problem-figure" role="img" aria-label="The same data streams gather into one store you own — your source of truth, on your own infrastructure — and leave only through a gate: sensitive data stays local, and only bounded, reviewed data goes out.">
+          <svg viewBox="0 0 560 262" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="pr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="pr-arr-h" d="M0,0 L10,5 L0,10 z"/></marker>
+            </defs>
+            <g aria-hidden="true">
+              <line class="pf-line" x1="98" y1="27" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="59" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="91" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="123" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="155" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="187" x2="238" y2="130"/>
+              <line class="pf-line" x1="98" y1="219" x2="238" y2="130"/>
+              <rect class="pf-chip" x="6" y="16" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="31" text-anchor="middle">mail</text>
+              <rect class="pf-chip" x="6" y="48" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="63" text-anchor="middle">notes</text>
+              <rect class="pf-chip" x="6" y="80" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="95" text-anchor="middle">calendar</text>
+              <rect class="pf-chip" x="6" y="112" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="127" text-anchor="middle">camera</text>
+              <rect class="pf-chip" x="6" y="144" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="159" text-anchor="middle">health</text>
+              <rect class="pf-chip" x="6" y="176" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="191" text-anchor="middle">location</text>
+              <rect class="pf-chip" x="6" y="208" width="92" height="22" rx="4"/>
+              <text class="pf-chip-t" x="52" y="223" text-anchor="middle">chats</text>
+              <text class="pf-faint" x="52" y="250" text-anchor="middle">your data streams</text>
+              <rect class="pr-box" x="240" y="88" width="140" height="84" rx="6"/>
+              <path class="pr-glyph" d="M296 116 L310 103 L324 116 M300 116 L300 126 L320 126 L320 116"/>
+              <text class="pr-box-t" x="310" y="147" text-anchor="middle">your source</text>
+              <text class="pr-box-t" x="310" y="163" text-anchor="middle">of truth</text>
+              <line class="pr-out" x1="380" y1="128" x2="444" y2="128"/>
+              <rect class="pr-glyph" x="450" y="122" width="16" height="13" rx="2"/>
+              <path class="pr-glyph" d="M453 122 v-4 a5 5 0 0 1 10 0 v4"/>
+              <line class="pr-out-thin" x1="472" y1="120" x2="534" y2="104" marker-end="url(#pr-arr)"/>
+              <text class="pr-label" x="512" y="96" text-anchor="middle">bounded out</text>
+              <path class="pr-out-thin" d="M458 141 C458 180 402 180 356 172" marker-end="url(#pr-arr)"/>
+              <text class="pr-label" x="404" y="194" text-anchor="middle">sensitive stays</text>
+            </g>
+          </svg>
+          <figcaption>Yours by design — gathered, owned, and gated.</figcaption>
+        </figure>
       </section>
 
       <section class="page-section" id="concept" aria-labelledby="concept-title">
@@ -174,43 +216,67 @@ const openQuestions = [
         <div class="concept-grid">
           <div>
             <p class="kicker">What it is</p>
-            <h3>A binding layer over federated organs.</h3>
+            <h3>A binding architecture over federated subsystems.</h3>
             <p>
-              Each organ keeps its own runtime and cadence. The assistant layer
-              binds them through memory, conversation, surface, and governance
-              instead of replacing them with one central process.
+              Federated subsystems are the separate tools you already run — mail,
+              notes, calendar, a smart-home hub — each with its own runtime and
+              data. Rather than replace them with one central process, Yaaa binds
+              them into a single assistant through memory, conversation, surface,
+              and governance.
             </p>
           </div>
           <div>
             <p class="kicker">What it is not</p>
-            <h3>Not a monolith, and not finished.</h3>
+            <h3>Not a monolith, and not centralized.</h3>
             <p>
-              Some organs are live, some are partial, and the full closed loop is
-              still being assembled. The name is deliberate: it earns the "yet
-              another" by what it refuses to centralize.
+              No conversation harness owns memory, routing, or the write path.
+              Yaaa coordinates subsystems through reviewed records and explicit
+              gates; it does not absorb them into one black box.
             </p>
           </div>
         </div>
         <div
           class="formula"
           role="img"
-          aria-label="Architecture formula: the product experience of ChatGPT Agent, plus the self-hosted surface of Open WebUI and LibreChat, plus the memory ambition of Letta, Mem0, and Zep, plus the automation target of Home Assistant and n8n, plus a compensatory human-AI collaboration stance, equals a self-owned assistant operating layer"
+          aria-label="Architecture formula: federated subsystems, plus user-owned memory, plus local-first routing, plus gated action, plus reviewed governance, equals a personal assistant ops architecture"
         >
           {formulaLines.map((line) => <span>{line}</span>)}
         </div>
         <p class="formula-note">
-          The difference is not that other systems lack memory, tools, or
-          automation. The difference is who owns the result: auditable memory,
-          local routing for sensitive work, and a single write boundary that
-          policy can actually enforce.
+          The design question is ownership, not feature coverage: where memory
+          lives, which runtime may see sensitive context, and what must happen
+          before an action leaves the system.
         </p>
         <p class="stance-note">
-          The collaboration stance comes from <em>Mind Guarding Mind: A Framework
-          for Compensatory Human-AI Collaboration</em> (Agents4Science 2025): the
-          human remains Guardian of Direction, the AI serves as Guardian of
-          Process. The paper informs the design philosophy; the system's safety
-          guarantees have to come from its own implementation.
+          The collaboration stance: you set the direction, the assistant manages
+          the process — never the reverse. That boundary is architectural, not a
+          matter of trust.
         </p>
+        <div class="compare">
+          <p class="kicker">Ops discipline, different subject</p>
+          <div class="compare-grid">
+            <article>
+              <span class="compare-label">LLMOps</span>
+              <p>
+                Runs models in production for a team — serving, prompt and
+                fine-tune pipelines, monitoring, evaluation, throughput, and cost.
+                It optimizes how well an LLM service operates.
+              </p>
+            </article>
+            <article>
+              <span class="compare-label compare-label-accent">Yaaa</span>
+              <p>
+                Runs one assistant for one person — a reviewable memory of record,
+                sensitivity-aware routing, gated actions, and portability across
+                harnesses. It optimizes who owns and can audit the result.
+              </p>
+            </article>
+          </div>
+          <p class="compare-note">
+            Same rigor — versioning, review, gates, audit — pointed at ownership,
+            not throughput.
+          </p>
+        </div>
       </section>
 
       <section class="page-section" id="how-it-works" aria-labelledby="loop-title">
@@ -218,118 +284,216 @@ const openQuestions = [
           <span class="sec-no">03</span>
           <h2 id="loop-title">How it works</h2>
         </div>
+        <p class="policy-note">
+          The runtime loop above is what runs; the L0–L5 layers below are where
+          authority sits. They overlap, but they are not a one-to-one mapping.
+        </p>
         <figure class="arch-map">
-          <div class="arch-scroll">
-            <svg
-              viewBox="0 0 1040 500"
-              role="img"
-              aria-label="Architecture map. Read side, asynchronous on timers: sources flow into ingest, then an item store, then triage, then a triage store. Binding column: a git memory ledger and a surface and push organ attach to the binding layer. Write side, gated: the binding layer connects to the conversation harness, which sends intent and arguments to the dispatcher, then the procedure manifest, then a fail-closed gate; only passed work reaches a procedure."
-            >
-              <defs>
-                <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                  <path d="M0.5,0.5 L7.5,4 L0.5,7.5" fill="none" class="arr-head" />
-                </marker>
-              </defs>
-
-              <text class="col-head" x="170" y="32" text-anchor="middle">read side · async</text>
-              <text class="col-head" x="520" y="32" text-anchor="middle">binding</text>
-              <text class="col-head" x="850" y="32" text-anchor="middle">write side · gated</text>
-
-              <!-- animated flow overlays (behind nodes) -->
-              <path class="flow" d="M170,106 V384" />
-              <path class="flow" d="M270,245 H410" />
-              <path class="flow" d="M270,405 H410" />
-              <path class="flow" d="M520,271 V384" />
-              <path class="flow" d="M850,126 V324" />
-
-              <!-- read column -->
-              <g class="node store">
-                <rect x="74" y="60" width="200" height="42" rx="3" class="ghost" />
-                <rect x="70" y="64" width="200" height="42" rx="3" />
-                <text x="170" y="90" text-anchor="middle">sources</text>
-              </g>
-              <path class="edge" d="M170,106 V140" />
-              <g class="node">
-                <rect x="70" y="144" width="200" height="42" rx="3" />
-                <text x="170" y="170" text-anchor="middle">ingest</text>
-              </g>
-              <path class="edge" d="M170,186 V220" />
-              <g class="node store">
-                <rect x="74" y="220" width="200" height="42" rx="3" class="ghost" />
-                <rect x="70" y="224" width="200" height="42" rx="3" />
-                <text x="170" y="250" text-anchor="middle">item store</text>
-              </g>
-              <path class="edge" d="M170,266 V300" />
-              <g class="node">
-                <rect x="70" y="304" width="200" height="42" rx="3" />
-                <text x="170" y="330" text-anchor="middle">triage</text>
-              </g>
-              <path class="edge" d="M170,346 V380" />
-              <g class="node store">
-                <rect x="74" y="380" width="200" height="42" rx="3" class="ghost" />
-                <rect x="70" y="384" width="200" height="42" rx="3" />
-                <text x="170" y="410" text-anchor="middle">triage store</text>
-              </g>
-
-              <!-- binding column -->
-              <g class="node store">
-                <rect x="414" y="80" width="220" height="42" rx="3" class="ghost" />
-                <rect x="410" y="84" width="220" height="42" rx="3" />
-                <text x="520" y="110" text-anchor="middle">memory ledger · git</text>
-              </g>
-              <path class="edge two-way" d="M520,130 V215" />
-              <g class="node bind">
-                <rect x="410" y="219" width="220" height="52" rx="3" />
-                <text x="520" y="250" text-anchor="middle">binding layer</text>
-              </g>
-              <path class="edge" d="M520,271 V380" />
-              <g class="node">
-                <rect x="410" y="384" width="220" height="42" rx="3" />
-                <text x="520" y="410" text-anchor="middle">surface · push</text>
-              </g>
-
-              <path class="edge" d="M270,245 H406" />
-              <path class="edge" d="M270,405 H406" />
-              <path class="edge two-way" d="M634,245 H685 V105 H736" />
-
-              <!-- write column -->
-              <g class="node">
-                <rect x="740" y="84" width="220" height="42" rx="3" />
-                <text x="850" y="110" text-anchor="middle">conversation harness</text>
-              </g>
-              <path class="edge" d="M850,126 V160" />
-              <text class="edge-label" x="864" y="148">intent + args</text>
-              <g class="node">
-                <rect x="740" y="164" width="220" height="42" rx="3" />
-                <text x="850" y="190" text-anchor="middle">dispatcher</text>
-              </g>
-              <path class="edge" d="M850,206 V240" />
-              <g class="node">
-                <rect x="740" y="244" width="220" height="42" rx="3" />
-                <text x="850" y="270" text-anchor="middle">procedure manifest</text>
-              </g>
-              <path class="edge" d="M850,286 V320" />
-              <g class="node gate">
-                <rect x="740" y="324" width="220" height="46" rx="3" />
-                <text x="850" y="352" text-anchor="middle">fail-closed gate</text>
-              </g>
-              <path class="edge pass" d="M850,370 V404" />
-              <text class="edge-label" x="864" y="392">only what passes</text>
-              <g class="node">
-                <rect x="740" y="408" width="220" height="42" rx="3" />
-                <text x="850" y="434" text-anchor="middle">procedure</text>
-              </g>
-            </svg>
-          </div>
-          <figcaption>Read side on timers · one binding layer · one gated write path.</figcaption>
+          <ProjectDiagram
+            canvasRaw={yaaaCanvas}
+            accent="systems"
+            title="Yaaa L0-L5 authority map: IO boundary, SENSE, binding layer, nested ReAct, gated action, and governance foundation"
+          />
+          <figcaption>The L0–L5 authority map: where each layer may read, decide, and write.</figcaption>
         </figure>
-        <div class="organ-grid">
-          {organs.map((organ, index) => (
-            <article>
-              <span class="organ-port">{String(index + 1).padStart(2, '0')} · {organ.name}</span>
-              <p>{organ.body}</p>
-            </article>
-          ))}
+        <p class="policy-note">
+          Each block carries a role chip — <b>ENTITY</b> data, <b>FLOW</b>
+          transform, <b>ACTION</b> side effect, <b>CTRL</b> policy or gate. Read it
+          top-to-bottom: input enters at L0, memory sits at the center, and side
+          effects funnel down to L4.
+        </p>
+        <div class="layer-stack">
+          <section class="layer-block wide L0" aria-label="L0 IO boundary">
+            <h3 class="layer-head"><span class="layer-code">L0</span>IO boundary</h3>
+            <div class="layer-body">
+              <div class="layer-text">
+                <p>L0 is the system's only contact with the outside world. Inputs enter and outputs leave, and each one crosses a single visible boundary — nothing reaches a model or leaves for a channel off the record.</p>
+                <p>The four quadrants separate <em>how</em> an event flows. Passive input arrives on its own — feeds, timers, subscribed sources; proactive input is you — a prompt, reply, or approval. Passive output is a surface you pull when you choose; proactive output is the system reaching out. Keeping them distinct stops a quiet notification from posing as a pull surface, or an ambient feed from acting like your instruction.</p>
+                <dl class="layer-legend">
+                  <div><dt>passive input</dt><dd>environment, timers, subscribed sources</dd></div>
+                  <div><dt>proactive input</dt><dd>your prompts, replies, approvals</dd></div>
+                  <div><dt>passive output</dt><dd>pull surfaces you check — inbox, trace view</dd></div>
+                  <div><dt>proactive output</dt><dd>pushes — asks, alerts, results</dd></div>
+                </dl>
+              </div>
+              <figure class="layer-mini">
+                <svg viewBox="0 0 540 108" xmlns="http://www.w3.org/2000/svg">
+                  <defs><marker id="mL0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="m-h" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+                  <rect class="m-box" x="6" y="6" width="150" height="40" rx="6"/><text class="m-t" x="81" y="30" text-anchor="middle">passive input</text>
+                  <rect class="m-box" x="6" y="60" width="150" height="40" rx="6"/><text class="m-t" x="81" y="84" text-anchor="middle">proactive input</text>
+                  <rect class="m-box" x="384" y="6" width="150" height="40" rx="6"/><text class="m-t" x="459" y="30" text-anchor="middle">passive output</text>
+                  <rect class="m-box" x="384" y="60" width="150" height="40" rx="6"/><text class="m-t" x="459" y="84" text-anchor="middle">proactive output</text>
+                  <line class="m-line m-proj" x1="270" y1="4" x2="270" y2="104"/>
+                  <line class="m-line" x1="156" y1="26" x2="264" y2="26" marker-end="url(#mL0)"/>
+                  <line class="m-line" x1="156" y1="80" x2="264" y2="80" marker-end="url(#mL0)"/>
+                  <line class="m-line" x1="276" y1="26" x2="384" y2="26" marker-end="url(#mL0)"/>
+                  <line class="m-line" x1="276" y1="80" x2="384" y2="80" marker-end="url(#mL0)"/>
+                </svg>
+                <p class="mini-cap">input enters · output leaves · one boundary</p>
+              </figure>
+            </div>
+          </section>
+
+          <section class="layer-block L1" aria-label="L1 SENSE">
+            <h3 class="layer-head"><span class="layer-code">L1</span>SENSE</h3>
+            <div class="layer-body">
+              <div class="layer-text">
+                <p>L1 turns the ambient firehose into durable records you own. Source adapters connect to each source; normalize parses and classifies into one shape; the result is a source record with its provenance attached.</p>
+                <p>"Owned" is a property of the record, not a claim on the data: the deployment keeps a local, auditable copy or pointer under your control, with source identity preserved. It is not yet memory — promotion into durable memory happens later, at L2, and only after review.</p>
+                <dl class="layer-legend">
+                  <div><dt>source adapters</dt><dd>connect and pull each source</dd></div>
+                  <div><dt>normalize</dt><dd>parse and classify into one shape</dd></div>
+                  <div><dt>source records</dt><dd>user-owned, provenance preserved</dd></div>
+                </dl>
+              </div>
+              <figure class="layer-mini">
+                <svg viewBox="0 0 180 150" xmlns="http://www.w3.org/2000/svg">
+                  <defs><marker id="mL1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="m-h" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+                  <rect class="m-box" x="15" y="6" width="150" height="32" rx="6"/><text class="m-t" x="90" y="26" text-anchor="middle">source adapters</text>
+                  <line class="m-line" x1="90" y1="38" x2="90" y2="52" marker-end="url(#mL1)"/>
+                  <rect class="m-box" x="25" y="54" width="130" height="32" rx="6"/><text class="m-t" x="90" y="74" text-anchor="middle">normalize</text>
+                  <line class="m-line" x1="90" y1="86" x2="90" y2="100" marker-end="url(#mL1)"/>
+                  <rect class="m-box" x="35" y="102" width="110" height="34" rx="4"/><text class="m-t" x="90" y="123" text-anchor="middle">source records</text>
+                </svg>
+                <p class="mini-cap">narrowed into records you own</p>
+              </figure>
+            </div>
+          </section>
+
+          <section class="layer-block L2" aria-label="L2 Binding layer">
+            <h3 class="layer-head"><span class="layer-code">L2</span>Binding layer</h3>
+            <div class="layer-body">
+              <div class="layer-text">
+                <p>L2 is the durable center, and it keeps memory in strata rather than one blob. The memory SSoT is the git-backed authority — the one record that can accept reviewed changes. Harness memory is a rebuildable serving projection; agent memory is a staged, task-local namespace. Neither is authoritative, and neither can silently promote itself.</p>
+                <p>Routing lives here too: the policy router picks mode, model, and tool by sensitivity and task, and converse is a replaceable session harness — not the IO boundary, not an output owner, and not write authority. Collapsing these into one "memory" would hide the anti-lock-in claim and make a vendor cache look authoritative.</p>
+                <dl class="layer-legend">
+                  <div><dt>memory SSoT</dt><dd>git-backed authority — the record</dd></div>
+                  <div><dt>harness memory</dt><dd>rebuildable serving projection</dd></div>
+                  <div><dt>agent memory</dt><dd>staged, task-local namespace</dd></div>
+                  <div><dt>policy router</dt><dd>mode / model / tool routing</dd></div>
+                  <div><dt>converse</dt><dd>replaceable session harness</dd></div>
+                </dl>
+              </div>
+              <figure class="layer-mini">
+                <svg viewBox="0 0 200 216" xmlns="http://www.w3.org/2000/svg">
+                  <defs><marker id="mL2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="m-h" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+                  <rect class="m-box" x="25" y="6" width="150" height="28" rx="6"/><text class="m-t" x="100" y="24" text-anchor="middle">policy router</text>
+                  <line class="m-line" x1="100" y1="34" x2="100" y2="44" marker-end="url(#mL2)"/>
+                  <rect class="m-box m-auth" x="15" y="46" width="170" height="32" rx="6"/><text class="m-t" x="100" y="65" text-anchor="middle">memory SSoT</text>
+                  <line class="m-line m-proj" x1="100" y1="78" x2="100" y2="90" marker-end="url(#mL2)"/>
+                  <rect class="m-box m-proj" x="30" y="92" width="140" height="26" rx="6"/><text class="m-t" x="100" y="109" text-anchor="middle">harness memory</text>
+                  <rect class="m-box m-proj" x="30" y="124" width="140" height="26" rx="6"/><text class="m-t" x="100" y="141" text-anchor="middle">agent memory</text>
+                  <line class="m-line" x1="100" y1="150" x2="100" y2="162" marker-end="url(#mL2)"/>
+                  <rect class="m-box" x="25" y="164" width="150" height="28" rx="6"/><text class="m-t" x="100" y="182" text-anchor="middle">converse</text>
+                </svg>
+                <p class="mini-cap">one authority · rebuildable projections</p>
+              </figure>
+            </div>
+          </section>
+
+          <section class="layer-block L3" aria-label="L3 Nested ReAct">
+            <h3 class="layer-head"><span class="layer-code">L3</span>Nested ReAct</h3>
+            <div class="layer-body">
+              <div class="layer-text">
+                <p>L3 is the bounded thinking loop, nested inside the larger architecture rather than owning it. It reasons, acts, observes, and reflects, then closes back to reason — a closed cycle with observable exits.</p>
+                <p>The load-bearing constraint: "act" emits an intent proposal only. It never reaches the outside world directly; anything with a side effect leaves through L4's gate. The loop can plan, try, and adjust freely, because none of that is a write until the gate says so.</p>
+                <dl class="layer-legend">
+                  <div><dt>reason</dt><dd>plan the next step</dd></div>
+                  <div><dt>act</dt><dd>proposes an intent only</dd></div>
+                  <div><dt>observe</dt><dd>read the result / trace</dd></div>
+                  <div><dt>reflect</dt><dd>task-local adjustment</dd></div>
+                </dl>
+              </div>
+              <figure class="layer-mini">
+                <svg viewBox="0 0 220 156" xmlns="http://www.w3.org/2000/svg">
+                  <defs><marker id="mL3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="m-h" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+                  <rect class="m-box" x="20" y="6" width="180" height="28" rx="6"/><text class="m-t" x="110" y="24" text-anchor="middle">Nested ReAct loop</text>
+                  <rect class="m-box" x="26" y="52" width="76" height="32" rx="6"/><text class="m-t" x="64" y="72" text-anchor="middle">reason</text>
+                  <rect class="m-box" x="118" y="52" width="76" height="32" rx="6"/><text class="m-t" x="156" y="72" text-anchor="middle">act</text>
+                  <rect class="m-box" x="26" y="104" width="76" height="32" rx="6"/><text class="m-t" x="64" y="124" text-anchor="middle">reflect</text>
+                  <rect class="m-box" x="118" y="104" width="76" height="32" rx="6"/><text class="m-t" x="156" y="124" text-anchor="middle">observe</text>
+                  <line class="m-line" x1="102" y1="68" x2="118" y2="68" marker-end="url(#mL3)"/>
+                  <line class="m-line" x1="156" y1="84" x2="156" y2="104" marker-end="url(#mL3)"/>
+                  <line class="m-line" x1="118" y1="120" x2="102" y2="120" marker-end="url(#mL3)"/>
+                  <line class="m-line" x1="64" y1="104" x2="64" y2="84" marker-end="url(#mL3)"/>
+                  <line class="m-line m-proj" x1="194" y1="68" x2="216" y2="68" marker-end="url(#mL3)"/>
+                </svg>
+                <p class="mini-cap">act proposes; it cannot write</p>
+              </figure>
+            </div>
+          </section>
+
+          <section class="layer-block L4" aria-label="L4 Gated action">
+            <h3 class="layer-head"><span class="layer-code">L4</span>Gated action</h3>
+            <div class="layer-body">
+              <div class="layer-text">
+                <p>L4 is the system's one write boundary — the only place a proposed side effect can become a real one. It does not trust the caller: it turns an intent into an explicit, inspectable plan and runs it only if that plan clears the gate.</p>
+                <p>An action arrives as a <em>side-effect intent</em> — a request, not permission. It expands into a versioned <em>procedure manifest</em>; the <em>policy check</em> weighs mode, permission, and procedure constraints; then the <em>fail-closed gate</em> defaults to no execution, so a missing manifest, ambiguity, an expired confirmation, a timeout, or an unknown action class all resolve to "do not run" — nothing passes by omission. The outcome is one disposition: <em>approve</em>, <em>refuse</em>, or <em>defer</em> (held safely, unexecuted; resuming re-enters the gate, never a hidden retry).</p>
+                <p>Because every harness routes side effects through this one funnel, replacing the conversation harness never rebuilds the write logic, and no harness carries write authority of its own. The safety invariant is a mechanical branch, not a prompt.</p>
+                <dl class="layer-legend">
+                  <div><dt>side-effect intent</dt><dd>a proposal, not permission</dd></div>
+                  <div><dt>procedure manifest</dt><dd>the versioned write plan</dd></div>
+                  <div><dt>policy check</dt><dd>mode + permission constraints</dd></div>
+                  <div><dt>fail-closed gate</dt><dd>default deny — nothing passes by omission</dd></div>
+                  <div><dt>approve / refuse / defer</dt><dd>run, stop, or safely hold</dd></div>
+                </dl>
+              </div>
+              <figure class="layer-mini">
+                <svg viewBox="0 0 210 250" xmlns="http://www.w3.org/2000/svg">
+                  <defs><marker id="mL4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="m-h" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+                  <rect class="m-box" x="18" y="6" width="174" height="28" rx="6"/><text class="m-t" x="105" y="24" text-anchor="middle">side-effect intent</text>
+                  <line class="m-line" x1="105" y1="34" x2="105" y2="44" marker-end="url(#mL4)"/>
+                  <rect class="m-box" x="33" y="46" width="144" height="26" rx="6"/><text class="m-t" x="105" y="63" text-anchor="middle">procedure manifest</text>
+                  <line class="m-line" x1="105" y1="72" x2="105" y2="84" marker-end="url(#mL4)"/>
+                  <polygon class="m-box" points="105,88 148,110 105,132 62,110"/><text class="m-t" x="105" y="113" text-anchor="middle">policy check</text>
+                  <line class="m-line" x1="105" y1="132" x2="105" y2="146" marker-end="url(#mL4)"/>
+                  <rect class="m-box" x="45" y="148" width="120" height="36" rx="6"/>
+                  <rect class="m-line" x="56" y="160" width="13" height="11" rx="2"/><path class="m-line" d="M58 160 v-3 a4 4 0 0 1 8 0 v3"/>
+                  <text class="m-t" x="116" y="170" text-anchor="middle">fail-closed gate</text>
+                  <line class="m-line" x1="105" y1="184" x2="105" y2="198" marker-end="url(#mL4)"/>
+                  <rect class="m-box" x="24" y="200" width="162" height="28" rx="6"/><text class="m-t" x="105" y="218" text-anchor="middle">approve / refuse / defer</text>
+                </svg>
+                <p class="mini-cap">the write funnel</p>
+              </figure>
+            </div>
+          </section>
+
+          <section class="layer-block wide L5" aria-label="L5 Governance foundation">
+            <h3 class="layer-head"><span class="layer-code">L5</span>Governance foundation</h3>
+            <div class="layer-body">
+              <div class="layer-text">
+                <p>L5 is the meta-loop: not another runtime path, but the reviewed lane that turns operation into improvement. Run traces — conversations, tool calls, procedures, failures — are extracted into candidates and distilled into structured, reviewable artifacts.</p>
+                <p>A human review gates any authority change. Approved deltas are promoted into the relevant source of truth; memory reconciliation aligns the SSoT, harness projections, and agent namespaces; apply means a reviewed artifact can change future behavior. The system learns by turning runs into auditable artifacts — recorded as ADR and runbook changes — never by silently mutating an opaque model memory.</p>
+                <dl class="layer-legend">
+                  <div><dt>run traces</dt><dd>raw evidence from runs</dd></div>
+                  <div><dt>extract / distill</dt><dd>candidates into structured artifacts</dd></div>
+                  <div><dt>human review</dt><dd>the gate before any authority change</dd></div>
+                  <div><dt>promote</dt><dd>land approved deltas into the record</dd></div>
+                  <div><dt>memory reconciliation</dt><dd>align SSoT, projections, namespaces</dd></div>
+                  <div><dt>apply</dt><dd>a reviewed change alters future behavior</dd></div>
+                </dl>
+              </div>
+              <figure class="layer-mini">
+                <svg viewBox="0 0 560 72" xmlns="http://www.w3.org/2000/svg">
+                  <defs><marker id="mL5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="m-h" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+                  <rect class="m-box" x="2" y="22" width="70" height="30" rx="5"/><text class="m-t" x="37" y="41" text-anchor="middle">run traces</text>
+                  <line class="m-line" x1="72" y1="37" x2="86" y2="37" marker-end="url(#mL5)"/>
+                  <rect class="m-box" x="88" y="22" width="60" height="30" rx="5"/><text class="m-t" x="118" y="41" text-anchor="middle">extract</text>
+                  <line class="m-line" x1="148" y1="37" x2="162" y2="37" marker-end="url(#mL5)"/>
+                  <rect class="m-box" x="164" y="22" width="58" height="30" rx="5"/><text class="m-t" x="193" y="41" text-anchor="middle">distill</text>
+                  <line class="m-line" x1="222" y1="37" x2="236" y2="37" marker-end="url(#mL5)"/>
+                  <polygon class="m-box" points="270,20 300,37 270,54 240,37"/><text class="m-t" x="270" y="40" text-anchor="middle">review</text>
+                  <line class="m-line" x1="300" y1="37" x2="314" y2="37" marker-end="url(#mL5)"/>
+                  <rect class="m-box" x="316" y="22" width="64" height="30" rx="5"/><text class="m-t" x="348" y="41" text-anchor="middle">promote</text>
+                  <line class="m-line" x1="380" y1="37" x2="394" y2="37" marker-end="url(#mL5)"/>
+                  <rect class="m-box" x="396" y="22" width="76" height="30" rx="5"/><text class="m-t" x="434" y="41" text-anchor="middle">reconcile</text>
+                  <line class="m-line" x1="472" y1="37" x2="486" y2="37" marker-end="url(#mL5)"/>
+                  <rect class="m-box" x="488" y="22" width="60" height="30" rx="5"/><text class="m-t" x="518" y="41" text-anchor="middle">apply</text>
+                </svg>
+                <p class="mini-cap">runs → reviewed artifacts → promoted back</p>
+              </figure>
+            </div>
+          </section>
         </div>
         <p class="policy-note">
           The read side runs asynchronously on timers; the conversation harness is
@@ -346,40 +510,10 @@ const openQuestions = [
         </p>
       </section>
 
-      <section class="page-section" id="status" aria-labelledby="status-title">
-        <div class="section-label">
-          <span class="sec-no">04</span>
-          <h2 id="status-title">Current status</h2>
-        </div>
-        <p class="status-intro">
-          Status language is kept deliberately narrow: live means running and
-          backed by evidence for at least one real path, partial means
-          components exist but the job is not end-to-end, pending means design
-          exists but no operational path yet.
-        </p>
-        <dl class="status-ledger">
-          {statusRows.map((row) => (
-            <div>
-              <dt>
-                <span class="ledger-organ">{row.organ}</span>
-                <span class="state-chip" data-state={row.state}>{row.status}</span>
-              </dt>
-              <dd>{row.note}</dd>
-            </div>
-          ))}
-        </dl>
-        <p class="status-proof">
-          The read side of this loop is not hypothetical. Sense, reason,
-          and surface run in production as <a href="/projects/amanuensis/">amanuensis</a>,
-          the companion project that delivers a daily digest through this
-          architecture's gates.
-        </p>
-      </section>
-
       <section class="page-section" id="case-examples" aria-labelledby="case-title">
         <div class="section-label">
-          <span class="sec-no">05</span>
-          <h2 id="case-title">Case examples</h2>
+          <span class="sec-no">04</span>
+          <h2 id="case-title">Architecture cuts</h2>
         </div>
         <div class="case-grid">
           <article>
@@ -396,49 +530,37 @@ const openQuestions = [
               authority of its own.
             </p>
             <p>
-              Delivery has the same shape. Every outgoing message passes one
-              shared admission check: an audience gate, so a channel only receives
-              items for its declared audience, and a sensitivity gate, so a
-              high-sensitivity item may reach only a non-cloud channel. When no such
-              channel exists, the item is refused, never silently rerouted.
-              Refusing delivery beats delivering to the wrong place.
+              Delivery follows the same shape through its own admission check —
+              audience and sensitivity, refusing rather than misrouting — but that
+              is a separate boundary from the L4 action gate, not a second copy of
+              it.
             </p>
             <blockquote class="case-claim">The safety invariant is a mechanical branch, not a prompt.</blockquote>
-            <footer class="case-status">
-              Status: the base gate and dispatcher are verified and the delivery
-              boundary is live; real assistant procedures are still migrating
-              behind the gate.
-            </footer>
           </article>
           <article>
             <header>
               <span>Architecture cut 02</span>
             </header>
-            <h3>Claims tied to evidence.</h3>
+            <h3>Memory that stays yours.</h3>
             <p>
-              Every capability claim stays tied to implementation evidence.
-              Design documents carry evidence tables with checked-at dates and
-              confidence levels, and premises that were later refuted stay on
-              the record instead of being deleted.
+              The memory SSoT is a git-backed, reviewable record. Harness and
+              agent memory are rebuildable projections and staged namespaces,
+              never a second source of truth. A serving layer can be rebuilt or
+              replaced without the memory of record moving with it.
             </p>
             <p>
-              The same discipline draws the public boundary. The architecture is
-              mapped and some organs are live; the assistant is not shipped and
-              its high-sensitivity path is not yet proven end-to-end. The status
-              above says partial because the evidence does.
+              Because the authority is one reviewed record, no vendor store
+              becomes the source of truth, and reconciliation across namespaces
+              is a governed action rather than a silent background sync.
             </p>
-            <blockquote class="case-claim">Honesty is a mechanism, not a tone.</blockquote>
-            <footer class="case-status">
-              Status: the discipline is in force; it is what keeps the claims on
-              this page inside what the implementation can back.
-            </footer>
+            <blockquote class="case-claim">One authority, many rebuildable projections.</blockquote>
           </article>
         </div>
       </section>
 
       <section class="page-section" id="open-questions" aria-labelledby="questions-title">
         <div class="section-label">
-          <span class="sec-no">06</span>
+          <span class="sec-no">05</span>
           <h2 id="questions-title">Open questions</h2>
         </div>
         <div class="question-list">
@@ -473,18 +595,20 @@ const openQuestions = [
   .eyebrow,
   .status-line,
   .stack-title,
-  .organ-stack b,
-  .organ-stack em,
+  .subsystem-stack b,
+  .subsystem-stack em,
   .gate-chip,
   .section-label,
   .kicker,
-  .organ-port,
+  .subsystem-port,
   .write-path,
-  .ledger-organ,
+  .ledger-subsystem,
   .state-chip,
   .case-grid header span,
   .case-status,
   .open-chip,
+  .problem-label,
+  .compare-label,
   .back-link {
     font-family: var(--mono);
     font-size: 0.72rem;
@@ -587,9 +711,9 @@ const openQuestions = [
     color: var(--stamp);
   }
 
-  /* ---------- hero organ stack ---------- */
+  /* ---------- hero subsystem stack ---------- */
 
-  .organ-stack {
+  .subsystem-stack {
     position: relative;
     margin: 0;
     min-width: 0;
@@ -605,7 +729,7 @@ const openQuestions = [
       var(--surface);
   }
 
-  .organ-stack::before {
+  .subsystem-stack::before {
     content: "";
     position: absolute;
     inset: -0.85rem 0.85rem 0.85rem -0.85rem;
@@ -618,7 +742,7 @@ const openQuestions = [
     color: var(--stamp);
   }
 
-  .organ-stack ul {
+  .subsystem-stack ul {
     position: relative;
     margin: 1.1rem 0 0;
     padding: 0 0 0 1.1rem;
@@ -626,7 +750,7 @@ const openQuestions = [
   }
 
   /* the binding bus */
-  .organ-stack ul::before {
+  .subsystem-stack ul::before {
     content: "";
     position: absolute;
     top: 0.75rem;
@@ -635,7 +759,7 @@ const openQuestions = [
     border-left: 2px solid var(--systems);
   }
 
-  .organ-stack li {
+  .subsystem-stack li {
     position: relative;
     display: flex;
     align-items: center;
@@ -648,12 +772,12 @@ const openQuestions = [
     background: var(--paper);
   }
 
-  .organ-stack li:first-child {
+  .subsystem-stack li:first-child {
     margin-top: 0;
   }
 
-  /* connector stub from bus to organ */
-  .organ-stack li::before {
+  /* connector stub from bus to subsystem */
+  .subsystem-stack li::before {
     content: "";
     position: absolute;
     top: 50%;
@@ -682,11 +806,11 @@ const openQuestions = [
     border: 1px solid var(--ink-faint);
   }
 
-  .organ-stack b {
+  .subsystem-stack b {
     color: var(--ink);
   }
 
-  .organ-stack em {
+  .subsystem-stack em {
     margin-left: auto;
     font-style: normal;
     font-weight: 700;
@@ -706,7 +830,7 @@ const openQuestions = [
     font-size: 0.6rem;
   }
 
-  .organ-stack figcaption {
+  .subsystem-stack figcaption {
     margin-top: 1rem;
     color: var(--ink-soft);
     font-family: var(--mono);
@@ -795,6 +919,11 @@ const openQuestions = [
   .status-ledger dd,
   .status-proof,
   .case-grid p,
+  .problem-grid p,
+  .problem-response,
+  .compare-grid p,
+  .compare-note,
+  .layer-text p,
   .question-list p {
     color: var(--ink-soft);
     font-size: clamp(1rem, 1.25vw, 1.12rem);
@@ -841,6 +970,133 @@ const openQuestions = [
     margin: 0.9rem 0 0;
   }
 
+  /* ---------- problem: intro + 3 columns + response ---------- */
+
+  .problem-intro {
+    max-width: 52rem;
+    margin: 0;
+    font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+    line-height: 1.32;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    margin: clamp(2rem, 4vw, 3rem) 0 0;
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--rule-hard);
+  }
+
+  .problem-grid article {
+    min-width: 0;
+    padding: clamp(1.25rem, 2.3vw, 2rem);
+    background: var(--surface);
+  }
+
+  .problem-label {
+    color: var(--systems);
+  }
+
+  .problem-grid p {
+    margin: 0.75rem 0 0;
+  }
+
+  .problem-response {
+    max-width: 52rem;
+    margin: clamp(2rem, 4vw, 3rem) 0 0;
+    padding-left: 1.15rem;
+    border-left: 3px solid var(--systems);
+  }
+
+  /* ---------- problem concept diagram ---------- */
+
+  .problem-figure {
+    margin: clamp(2rem, 4vw, 3rem) 0 0;
+  }
+
+  .problem-figure svg {
+    display: block;
+    width: 100%;
+    max-width: 33rem;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .problem-figure figcaption {
+    margin-top: 0.75rem;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    text-align: center;
+  }
+
+  .problem-figure text { font-family: var(--mono); }
+  .pf-chip { fill: none; stroke: var(--ink-faint); stroke-width: 1; }
+  .pf-chip-t { fill: var(--ink-soft); font-size: 9.5px; }
+  .pf-line { stroke: var(--ink-faint); stroke-width: 1; opacity: 0.5; }
+  .pf-box { fill: var(--surface); stroke: var(--ink); stroke-width: 1.8; }
+  .pf-box-t { fill: var(--ink); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; }
+  .pf-eye { fill: none; stroke: var(--ink); stroke-width: 1.4; }
+  .pf-pupil { fill: var(--ink); }
+  .pf-arr-h { fill: var(--ink); }
+  .pf-out { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  .pf-faint { fill: var(--ink-faint); font-size: 9px; }
+  .pf-block { fill: none; stroke: #d97706; stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .pf-x { fill: none; stroke: #d97706; stroke-width: 2; }
+  .pf-block-t { fill: #d97706; font-size: 9.5px; font-weight: 700; }
+  .pr-box { fill: color-mix(in srgb, var(--systems) 6%, var(--surface)); stroke: var(--systems); stroke-width: 1.8; }
+  .pr-box-t { fill: var(--systems); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; }
+  .pr-glyph { fill: none; stroke: var(--systems); stroke-width: 1.6; }
+  .pr-arr-h { fill: var(--systems); }
+  .pr-out { fill: none; stroke: var(--systems); stroke-width: 2; }
+  .pr-out-thin { fill: none; stroke: var(--systems); stroke-width: 1.4; }
+  .pr-label { fill: var(--systems); font-size: 9px; font-weight: 700; }
+
+  /* ---------- LLMOps contrast ---------- */
+
+  .compare {
+    margin: clamp(2rem, 4vw, 3rem) 0 0;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0.9rem 0 0;
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--rule-hard);
+  }
+
+  .compare-grid article {
+    min-width: 0;
+    padding: clamp(1.25rem, 2.3vw, 2rem);
+    background: var(--surface);
+  }
+
+  .compare-label {
+    color: var(--ink-faint);
+  }
+
+  .compare-label-accent {
+    color: var(--systems);
+  }
+
+  .compare-grid p {
+    margin: 0.6rem 0 0;
+  }
+
+  .compare-note {
+    max-width: 52rem;
+    margin: 1rem 0 0;
+    padding-left: 1.15rem;
+    border-left: 3px solid var(--systems);
+  }
+
   /* ---------- formula ---------- */
 
   .formula {
@@ -883,7 +1139,7 @@ const openQuestions = [
 
   /* ---------- how it works ---------- */
 
-  .organ-grid {
+  .subsystem-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1px;
@@ -893,22 +1149,131 @@ const openQuestions = [
     background: var(--rule-hard);
   }
 
-  .organ-grid article {
+  .subsystem-grid article {
     min-width: 0;
     padding: clamp(1.25rem, 2.3vw, 2rem);
     background: var(--surface);
   }
 
-  .organ-port {
+  .subsystem-port {
     color: var(--systems);
   }
 
-  .organ-grid p {
+  .subsystem-grid p {
     margin: 0.75rem 0 0;
     color: var(--ink-soft);
     font-size: 1rem;
     line-height: 1.66;
   }
+
+  /* ---------- per-layer sub-sections ---------- */
+
+  .layer-stack {
+    margin: clamp(1.5rem, 3vw, 2.4rem) 0 0;
+  }
+
+  .layer-block {
+    padding: clamp(1.4rem, 3vw, 2rem) 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .layer-block:first-child {
+    border-top: 0;
+    padding-top: 0.25rem;
+  }
+
+  .layer-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+
+  .layer-code {
+    flex: none;
+    padding: 0.12rem 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--lc, var(--systems)) 45%, transparent);
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--lc, var(--systems));
+    transform: translateY(-0.12em);
+  }
+
+  .layer-text p {
+    margin: 0 0 0.85rem;
+    max-width: 54rem;
+  }
+
+  .layer-legend {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem 1.5rem;
+    margin: 1.1rem 0 0;
+  }
+
+  .layer-legend div {
+    min-width: 0;
+  }
+
+  .layer-legend dt {
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .layer-legend dd {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+
+  .layer-block.L0 { --lc: #2f855a; }
+  .layer-block.L1 { --lc: #0e7490; }
+  .layer-block.L2 { --lc: #334155; }
+  .layer-block.L3 { --lc: #7c3aed; }
+  .layer-block.L4 { --lc: #d97706; }
+  .layer-block.L5 { --lc: #334155; }
+
+  .layer-body {
+    display: grid;
+    grid-template-columns: 1fr minmax(180px, 230px);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+    margin-top: 0.9rem;
+  }
+
+  .layer-block.wide .layer-body {
+    grid-template-columns: 1fr;
+  }
+
+  .layer-mini { margin: 0; }
+  .layer-block.wide .layer-mini { margin-top: 1rem; max-width: 40rem; margin-inline: auto; }
+  .layer-mini svg { display: block; width: 100%; height: auto; }
+
+  .mini-cap {
+    margin: 0.5rem 0 0;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+
+  .m-box { fill: var(--surface); stroke: var(--lc); stroke-width: 1.5; }
+  .m-auth { stroke-width: 2.6; }
+  .m-proj { stroke-dasharray: 4 3; }
+  .m-line { fill: none; stroke: var(--lc); stroke-width: 1.4; }
+  .m-h { fill: var(--lc); }
+  .m-t { fill: var(--ink); font-family: var(--mono); font-size: 8px; font-weight: 600; }
 
   .arch-map {
     margin: 0 0 clamp(1.5rem, 3vw, 2.4rem);
@@ -1071,7 +1436,7 @@ const openQuestions = [
     margin: 0;
   }
 
-  .ledger-organ {
+  .ledger-subsystem {
     color: var(--ink);
   }
 
@@ -1252,6 +1617,8 @@ const openQuestions = [
     .hero,
     .two-column,
     .concept-grid,
+    .problem-grid,
+    .compare-grid,
     .case-grid {
       grid-template-columns: 1fr;
     }
@@ -1261,7 +1628,7 @@ const openQuestions = [
       align-items: start;
     }
 
-    .organ-stack {
+    .subsystem-stack {
       max-width: 28rem;
     }
 
@@ -1277,7 +1644,9 @@ const openQuestions = [
       margin-left: 0;
     }
 
-    .organ-grid {
+    .subsystem-grid,
+    .layer-body,
+    .layer-legend {
       grid-template-columns: 1fr;
     }
 
@@ -1300,15 +1669,15 @@ const openQuestions = [
       --pad: 1.25rem;
     }
 
-    .organ-stack::before {
+    .subsystem-stack::before {
       inset: -0.65rem 0.65rem 0.65rem -0.65rem;
     }
 
-    .organ-stack li {
+    .subsystem-stack li {
       flex-wrap: wrap;
     }
 
-    .organ-stack em {
+    .subsystem-stack em {
       flex-basis: 100%;
       margin: 0.2rem 0 0;
       padding-left: 1.1rem;
