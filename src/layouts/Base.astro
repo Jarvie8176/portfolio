@@ -10,8 +10,9 @@ interface Props {
   description: string;
   ogType?: string;
   wide?: boolean;
+  showHeader?: boolean;
 }
-const { title, description, ogType = 'website', wide = false } = Astro.props;
+const { title, description, ogType = 'website', wide = false, showHeader = true } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 const commitUrl = build.version === 'local' ? undefined : `${site.repoUrl}/commit/${build.version}`;
 ---
@@ -40,7 +41,7 @@ const commitUrl = build.version === 'local' ? undefined : `${site.repoUrl}/commi
     <Analytics />
   </head>
   <body>
-    <SiteHeader />
+    {showHeader && <SiteHeader />}
     <div class:list={['page', { 'page--wide': wide }]}>
       <slot />
       <footer class="site-foot">
