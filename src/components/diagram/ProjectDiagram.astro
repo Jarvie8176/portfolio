@@ -32,6 +32,15 @@ const drillLayers = [...model.groups]
       <div class="yd-control-group" aria-label="Layer detail toggles">
         <span class="yd-controls-label">Layer detail</span>
         <div class="yd-control-row">
+          <button
+            type="button"
+            data-yd-show-all
+            aria-label="Show all layer detail"
+            aria-pressed="false"
+            title="Show all layer detail"
+          >
+            All
+          </button>
           {drillLayers.map((layer) => (
             <button
               type="button"
@@ -47,7 +56,7 @@ const drillLayers = [...model.groups]
         </div>
       </div>
       <div class="yd-control-group" aria-label="Pan and zoom controls">
-        <span class="yd-controls-label">Pan / zoom</span>
+        <span class="yd-controls-label">View</span>
         <div class="yd-control-row">
           <button type="button" data-yd-zoom="out" aria-label="Zoom out" title="Zoom out">-</button>
           <button type="button" data-yd-zoom="in" aria-label="Zoom in" title="Zoom in">+</button>
@@ -55,9 +64,10 @@ const drillLayers = [...model.groups]
           <button type="button" data-yd-pan="left" aria-label="Pan left" title="Pan left">←</button>
           <button type="button" data-yd-pan="right" aria-label="Pan right" title="Pan right">→</button>
           <button type="button" data-yd-pan="down" aria-label="Pan down" title="Pan down">↓</button>
-          <button type="button" data-yd-fit aria-label="Fit view" title="Fit view">Fit</button>
+          <button type="button" data-yd-fit aria-label="Fit active layer detail" title="Fit active layer detail">Fit</button>
         </div>
       </div>
+      <p class="yd-hint">Double-click a layer to show detail. Use Fit to focus the active detail.</p>
       <span class="yd-status sr-only" data-yd-status aria-live="polite">High-level view</span>
     </div>
   )}
@@ -105,7 +115,9 @@ const drillLayers = [...model.groups]
     align-items: center;
     justify-content: center;
     gap: 0.8rem 1.1rem;
-    margin: 0.75rem 0 0;
+    margin: 0.9rem 0 0;
+    padding-top: 0.85rem;
+    border-top: 1px solid color-mix(in srgb, var(--rule, #d8d8d2) 80%, transparent);
   }
   .yd-control-group {
     display: inline-flex;
@@ -154,6 +166,19 @@ const drillLayers = [...model.groups]
   .yd-control-row button:disabled {
     cursor: default;
     opacity: 0.45;
+  }
+  .yd-control-row button:disabled:hover {
+    background: var(--surface, #fffefa);
+    border-color: color-mix(in srgb, var(--yd-accent) 45%, var(--rule, #d8d8d2));
+  }
+  .yd-hint {
+    flex-basis: 100%;
+    margin: -0.15rem 0 0;
+    color: var(--ink-faint, #8a8f92);
+    font-family: var(--mono, ui-monospace, monospace);
+    font-size: 0.68rem;
+    line-height: 1.4;
+    text-align: center;
   }
   .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;

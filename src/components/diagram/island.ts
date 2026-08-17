@@ -5,6 +5,9 @@
 import * as d3 from 'd3';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 5;
+const FIT_PADDING = 0.62;
 const reduce = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -29,20 +32,24 @@ export function mountDiagram(fig: HTMLElement): void {
   const summaries = Array.from(svgEl.querySelectorAll<SVGGElement>('.yd-node[data-lod="0"]'));
   const layerBoxes = Array.from(svgEl.querySelectorAll<SVGGElement>('.yd-layer'));
   const drillButtons = Array.from(fig.querySelectorAll<HTMLButtonElement>('[data-yd-drill-layer]'));
+  const showAllButtons = Array.from(fig.querySelectorAll<HTMLButtonElement>('[data-yd-show-all]'));
   const resetButtons = Array.from(fig.querySelectorAll<HTMLButtonElement>('[data-yd-reset]'));
   const zoomButtons = Array.from(fig.querySelectorAll<HTMLButtonElement>('[data-yd-zoom]'));
   const panButtons = Array.from(fig.querySelectorAll<HTMLButtonElement>('[data-yd-pan]'));
   const fitButtons = Array.from(fig.querySelectorAll<HTMLButtonElement>('[data-yd-fit]'));
   const status = fig.querySelector<HTMLElement>('[data-yd-status]');
   const el = (x: Element) => x as unknown as { dataset: DOMStringMap; style: CSSStyleDeclaration };
-  const drillableLayers = new Set(drillButtons.map((button) => button.dataset.ydDrillLayer).filter(Boolean));
+  const drillableLayerCodes = drillButtons
+    .map((button) => button.dataset.ydDrillLayer)
+    .filter((layer): layer is string => Boolean(layer));
+  const drillableLayers = new Set<string>(drillableLayerCodes);
   const activeLayers = new Set<string>();
   let currentTransform = d3.zoomIdentity;
 
   const svg = d3.select(svgEl);
   const zoom = d3
     .zoom<SVGSVGElement, unknown>()
-    .scaleExtent([0.6, 5])
+    .scaleExtent([MIN_ZOOM, MAX_ZOOM])
     .on('zoom', (ev) => {
       currentTransform = ev.transform;
       root!.setAttribute('transform', ev.transform.toString());
@@ -61,27 +68,45 @@ export function mountDiagram(fig: HTMLElement): void {
     );
   }
 
+  function orderedActiveLayers() {
+    return drillableLayerCodes.filter((layer) => activeLayers.has(layer));
+  }
+
   function updateControls() {
-    const active = [...activeLayers];
+    const active = orderedActiveLayers();
+    const allActive =
+      drillableLayers.size > 0
+      && [...drillableLayers].every((layer) => activeLayers.has(layer));
     for (const button of drillButtons) {
       button.setAttribute('aria-pressed', String(activeLayers.has(button.dataset.ydDrillLayer || '')));
+    }
+    for (const button of showAllButtons) {
+      button.setAttribute('aria-pressed', String(allActive));
+    }
+    for (const button of zoomButtons) {
+      if (button.dataset.ydZoom === 'out') button.disabled = currentTransform.k <= MIN_ZOOM + 0.001;
+      else if (button.dataset.ydZoom === 'in') button.disabled = currentTransform.k >= MAX_ZOOM - 0.001;
     }
     for (const button of resetButtons) {
       button.disabled = active.length === 0 && transformIsIdentity();
     }
     if (status) {
-      status.textContent = active.length
-        ? `${active.join(', ')} detail active`
-        : transformIsIdentity()
-          ? 'High-level view'
-          : 'Adjusted view';
+      if (allActive) status.textContent = 'All layer detail active';
+      else if (active.length > 1) status.textContent = `${active.join(', ')} detail active`;
+      else if (active.length === 1) status.textContent = `${active[0]} detail active`;
+      else status.textContent = transformIsIdentity() ? 'High-level view' : 'Adjusted view';
     }
   }
 
   function zoomTo(bbox: { x: number; y: number; width: number; height: number } | null) {
     const vb = svgEl!.viewBox.baseVal;
     if (!bbox) { animate((s) => s.call(zoom.transform as any, d3.zoomIdentity)); return; }
-    const k = Math.min(4, 0.62 / Math.max(bbox.width / vb.width, bbox.height / vb.height));
+    const desiredK = FIT_PADDING / Math.max(bbox.width / vb.width, bbox.height / vb.height);
+    if (desiredK <= MIN_ZOOM) {
+      animate((s) => s.call(zoom.transform as any, d3.zoomIdentity));
+      return;
+    }
+    const k = Math.min(MAX_ZOOM, desiredK);
     const tx = vb.x + vb.width / 2 - k * (bbox.x + bbox.width / 2);
     const ty = vb.y + vb.height / 2 - k * (bbox.y + bbox.height / 2);
     animate((s) => s.call(zoom.transform as any, d3.zoomIdentity.translate(tx, ty).scale(k)));
@@ -124,7 +149,7 @@ export function mountDiagram(fig: HTMLElement): void {
       const l = el(s).dataset.layer;
       el(s).style.opacity = activeLayers.size && l && !activeLayers.has(l) ? '0.2' : '1';
     }
-    if (activeLayers.size) fig.dataset.activeLayers = [...activeLayers].join(' ');
+    if (activeLayers.size) fig.dataset.activeLayers = orderedActiveLayers().join(' ');
     else delete fig.dataset.activeLayers;
     updateControls();
   }
@@ -133,12 +158,17 @@ export function mountDiagram(fig: HTMLElement): void {
     zoomTo(activeLayerBox());
   }
 
-  function toggleLayer(layer: string, fit = true) {
+  function toggleLayer(layer: string) {
     if (!drillableLayers.has(layer)) return;
     if (activeLayers.has(layer)) activeLayers.delete(layer);
     else activeLayers.add(layer);
     updateLayerVisibility();
-    if (fit) fitActiveLayers();
+  }
+
+  function showAllLayers() {
+    for (const layer of drillableLayers) activeLayers.add(layer);
+    updateLayerVisibility();
+    zoomTo(null);
   }
 
   function reset() {
@@ -149,6 +179,9 @@ export function mountDiagram(fig: HTMLElement): void {
 
   for (const button of drillButtons) {
     button.addEventListener('click', () => toggleLayer(button.dataset.ydDrillLayer || ''));
+  }
+  for (const button of showAllButtons) {
+    button.addEventListener('click', () => showAllLayers());
   }
   for (const button of resetButtons) {
     button.addEventListener('click', () => reset());
@@ -176,7 +209,7 @@ export function mountDiagram(fig: HTMLElement): void {
   }
   updateLayerVisibility();
 
-  // double-click a layer (or a high-level node) toggles its detail; background resets
+  // Double-click toggles layer detail only; pan/zoom stays explicit in controls.
   svg.selectAll<SVGGElement, unknown>('.yd-layer').on('dblclick', function (ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -187,11 +220,6 @@ export function mountDiagram(fig: HTMLElement): void {
     ev.stopPropagation();
     const l = el(this).dataset.layer;
     if (l) toggleLayer(l);
-  });
-  svgEl.addEventListener('dblclick', (ev) => {
-    const target = ev.target as Element | null;
-    if (target?.closest('.yd-layer, .yd-node')) return;
-    if (activeLayers.size || !transformIsIdentity()) reset();
   });
 
   // keyboard: +/- zoom, 0 reset (zoom + drill), arrows pan
