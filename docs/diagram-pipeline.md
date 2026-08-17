@@ -267,17 +267,23 @@ docs/diagram-pipeline.md             # this spec
   composition scratchpads only - their SVG export is not the annotated,
   CSS-animatable artifact this pipeline requires.
 
-## Open questions (pre-implementation)
+## Design decisions and future work
 
-1. Detail graphs: author per-layer detail as **nested group members in the one
-   canvas** (preferred - single file, zoom expands it) vs separate detail
-   canvases. Default: nested.
-2. Edge routing: v0.1 draws edges center-to-center (behind opaque nodes), so
-   long edges can visually cross unrelated boxes. Next iteration routes to box
-   boundaries and offsets the funnel pair. Positions themselves are refined in
-   Obsidian (WYSIWYG), not by an auto-layout pass.
-3. Whether to defer the d3 chunk with a dynamic `import()` until first
-   interaction (saves ~90 kB gz on load) vs eager module script. v0.1 is eager
-   (deferred module, non-blocking); revisit if load budget matters.
-4. Whether the parity gate also runs against the runtime-expanded detail level
-   or only the build-time base. Default: base only for v0.1; extend later.
+Status of the questions this pipeline opened with:
+
+1. **Detail graphs - settled (nested).** Per-layer detail is authored as nested
+   group members in the one canvas (single file; zoom expands it), not as
+   separate detail canvases.
+2. **Edge routing - landed; obstacle-avoidance still open.** Edges now route
+   orthogonally to box boundaries (`routeIoBoundary` / `routeOrthogonal` /
+   `routeSided` in `render.mjs`), with funnel edges kept straight
+   boundary-to-boundary to preserve the "narrow to one gate" reading. This
+   replaced the v0.1 center-to-center draw. Crossing-minimizing / lane-based
+   routing that avoids unrelated boxes is the remaining work, tracked with the
+   d3 interaction rewrite. Positions are refined in Obsidian (WYSIWYG), not by
+   an auto-layout pass.
+3. **d3 chunk loading - open.** Still eager (deferred module, non-blocking);
+   revisit deferring with a dynamic `import()` until first interaction (~90 kB
+   gz) if the load budget matters.
+4. **Parity-gate scope - open.** Runs against the build-time base level only;
+   extending it to the runtime-expanded detail level is deferred.
