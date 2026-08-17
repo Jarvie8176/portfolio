@@ -45,8 +45,8 @@ const { svg } = renderSvg(canvasRaw, { title });
   .yd-stage :global(.yd-node),
   .yd-stage :global(.yd-layer),
   .yd-stage :global(.yd-edge) { transition: opacity 160ms ease; }
-  .yd-stage:has(:global(.yd-node:hover)) :global(.yd-node:not(:hover)),
-  .yd-stage:has(:global(.yd-node:focus)) :global(.yd-node:not(:focus)) { opacity: 0.32; }
+  :global(.yd-stage:has(.yd-node:hover) .yd-node:not(:hover)),
+  :global(.yd-stage:has(.yd-node:focus) .yd-node:not(:focus)) { opacity: 0.32; }
   .yd-stage :global(.yd-node:focus) { outline: none; }
   .yd-stage :global(.yd-node:focus) :global(rect),
   .yd-stage :global(.yd-node:focus) :global(polygon) { stroke-width: 3; }
