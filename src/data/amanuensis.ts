@@ -205,6 +205,8 @@ export interface Stage {
   id: string;
   index: string;
   title: string;
+  /** short form for the stage rail; the design keeps the rail to one word */
+  railLabel: string;
   lede: string;
   failTitle: string;
   fail: string;
@@ -217,6 +219,7 @@ export const stages: Stage[] = [
     id: 'w-ingest',
     index: '01',
     title: 'Ingest',
+    railLabel: 'Ingest',
     lede: 'A source adapter pulls what is new and normalizes it into one shape. Each adapter owns an opaque cursor that the pipeline stores and never interprets, so the pipeline does not need to know how a source paginates. Content hashing drops anything already seen.',
     failTitle: 'When it fails',
     fail: 'If the run fails before anything is persisted, the cursor does not advance and the next run repeats the same window. If items were committed and the run failed afterwards, the audit row records that explicitly and the cursor still does not advance, so a partial run is visible rather than silently skipped. A run left pending was interrupted mid-flight.',
@@ -233,6 +236,7 @@ state:         stored`,
     id: 'w-triage',
     index: '02',
     title: 'Triage',
+    railLabel: 'Triage',
     lede: 'One model call per item returns priority, audience, a summary, key entities, and whether action is required. The endpoint is chosen by sensitivity: a cloud-capable route for ordinary items, a local-only route for sensitive ones. The verdict records which model actually served it, not the one that was asked for.',
     failTitle: 'When it fails',
     fail: 'A missing or invalid priority is never invented: the item is marked degraded and retried, and past the attempt limit it goes to dead-letter. On a local-only route, a served model that looks like a cloud model is treated as a leak and the verdict is discarded rather than recorded as ok. If the local endpoint is unreachable the item is deferred, which does not consume an attempt and never falls back to a cloud route.',
@@ -252,6 +256,7 @@ state:           ok`,
     id: 'w-ladder',
     index: '03',
     title: 'Priority ladder',
+    railLabel: 'Ladder',
     lede: 'The tier decides what happens next. The ladder is the denoising decision: everything below the top tier trades immediacy for a quieter day, and the bottom tier is recorded rather than delivered.',
     failTitle: 'What the tiers are for',
     fail: 'Tiers are assigned per item against a rubric that lives in the bundled defaults, so the ranking rule is inspectable and replaceable without touching the engine.',
@@ -260,6 +265,7 @@ state:           ok`,
     id: 'w-gates',
     index: '04',
     title: 'Delivery gates',
+    railLabel: 'Gates',
     lede: 'Two gates sit in front of every send. The audience gate requires the channel\'s audience to match the item\'s. The sensitivity gate allows a high-sensitivity item only on a non-cloud channel. Both read values persisted in the ledger rather than live configuration, so a config edit or a stale row is still caught at delivery time.',
     failTitle: 'When it fails',
     fail: 'Unknown values fail closed: an unmarked audience becomes personal, an unmarked sensitivity becomes high, and a normalizing validator maps anything unrecognized onto the safe value. A refusal is not a failure, so no attempt is consumed and the row stays terminal until an operator forces it.',
@@ -276,6 +282,7 @@ attempts:    0`,
     id: 'w-digest',
     index: '05',
     title: 'Digest fold',
+    railLabel: 'Digest',
     lede: 'Items below the top tier wait in a fold queue until the next waking-hours window, then leave together as one rollup message. A deferred item ages upward each time it is skipped, so a quiet item cannot starve behind louder ones.',
     failTitle: 'When it fails',
     fail: 'If the rollup would exceed the channel\'s payload limit, the packer sends what fits in rank order and defers the remainder to the next window, rather than truncating the message or dropping the overflow.',
@@ -290,6 +297,7 @@ window: personal:fc3532...
     id: 'w-ledger',
     index: '06',
     title: 'Ledger',
+    railLabel: 'Ledger',
     lede: 'Every delivery attempt lands in an idempotent ledger keyed by source, item, and channel. The state set is explicit, and the terminal states are honest about which of them mean "sent" and which mean "deliberately not sent".',
     failTitle: 'What the ledger will not do',
     fail: 'Read and acknowledged advance only on an explicit human signal, and an acknowledgment without a matching feedback entry is rejected. The delivery path also has a mandatory dry-run that runs full routing and both gates, prints what would be sent, makes zero outbound calls, and writes nothing.',

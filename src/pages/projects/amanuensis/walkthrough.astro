@@ -80,7 +80,7 @@ const description =
           data-umami-event-section={stage.id}
           data-umami-event-placement="stage_rail"
         >
-          <span class="rail-num">{stage.index}</span> {stage.title}
+          <span class="rail-num">{stage.index}</span> {stage.railLabel}
         </a>
       ))}
     </nav>
@@ -110,7 +110,8 @@ const description =
                 </ol>
               )}
               {stage.id === 'w-ledger' && (
-                <ul class="states" aria-label="Delivery states">
+                <p class="kicker states-label">Delivery states</p>
+                <ul class="states">
                   {deliveryStates.map((state) => (
                     <li>{state}</li>
                   ))}
@@ -516,11 +517,12 @@ const description =
   }
   .tier-note { font-size: 0.9rem; color: var(--color-ink-soft); }
 
+  .states-label { margin: 1.6rem 0 0.7rem; }
   .states {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
-    margin: 1.6rem 0 0;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
