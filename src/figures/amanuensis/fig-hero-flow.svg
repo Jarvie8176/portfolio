@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 392 428" width="392" height="428" role="img" aria-labelledby="t1 d1">
+  <title id="t1">One direction of flow</title>
+  <desc id="d1">Aggregate, then triage, then deliver. A fail-closed gate sits before triage and another before delivery.</desc>
+  <style>
+    .mono{font-family:'Noto Sans Mono',ui-monospace,monospace}
+    .sans{font-family:'Noto Sans',system-ui,sans-serif}
+    .lbl{font-size:11px;font-weight:600;letter-spacing:1.8px;fill:#8a8f92}
+    .stage{font-size:14px;font-weight:600;fill:#1b1d1f}
+    .sub{font-size:12.5px;fill:#8a8f92}
+    .gk{font-size:9.5px;font-weight:600;letter-spacing:1px;fill:#985e49}
+    .gt{font-size:12px;fill:#5a5e63}
+    .fn{font-size:10.5px;fill:#8a8f92}
+  </style>
+
+  <text class="mono lbl" x="0" y="10">ONE DIRECTION OF FLOW</text>
+
+  <rect x="0" y="26" width="392" height="54" fill="#f6f7f5" stroke="#dce1de"/>
+  <rect x="0" y="26" width="3" height="54" fill="#2c4e8a"/>
+  <text class="mono stage" x="16" y="49">aggregate</text>
+  <text class="sans sub" x="16" y="68">many sources, one shape</text>
+
+  <rect x="8" y="90" width="2" height="64" fill="#2c4e8a"/>
+  <rect x="20" y="90" width="372" height="64" fill="#f7eee9" stroke="#985e49" stroke-dasharray="4 3"/>
+  <text class="mono gk" x="33" y="110">GATE 1 · INBOUND</text>
+  <text class="sans gt" x="33" y="129">Sensitive items are read only by a model</text>
+  <text class="sans gt" x="33" y="145">running on owned hardware.</text>
+
+  <rect x="18" y="164" width="374" height="54" fill="#f6f7f5" stroke="#dce1de"/>
+  <rect x="18" y="164" width="3" height="54" fill="#2c4e8a"/>
+  <text class="mono stage" x="34" y="187">triage</text>
+  <text class="sans sub" x="34" y="206">priority · audience · summary</text>
+
+  <rect x="26" y="228" width="2" height="64" fill="#2c4e8a"/>
+  <rect x="38" y="228" width="354" height="64" fill="#f7eee9" stroke="#985e49" stroke-dasharray="4 3"/>
+  <text class="mono gk" x="51" y="248">GATE 2 · OUTBOUND</text>
+  <text class="sans gt" x="51" y="267">A channel must match the item's audience</text>
+  <text class="sans gt" x="51" y="283">and clear its sensitivity, or nothing is sent.</text>
+
+  <rect x="36" y="302" width="356" height="54" fill="#f6f7f5" stroke="#dce1de"/>
+  <rect x="36" y="302" width="3" height="54" fill="#2c4e8a"/>
+  <text class="mono stage" x="52" y="325">deliver</text>
+  <text class="sans sub" x="52" y="344">digest window · ledger</text>
+
+  <line x1="0" y1="380" x2="392" y2="380" stroke="#dce1de"/>
+  <text class="mono fn" x="0" y="400">Both gates fail closed: refusing to send</text>
+  <text class="mono fn" x="0" y="416">is the safe outcome.</text>
+</svg>

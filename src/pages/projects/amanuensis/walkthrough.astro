@@ -1,0 +1,582 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { site, deployment } from '../../../data/site';
+import { walkthroughNav, stages, tiers, deliveryStates, closingPoints } from '../../../data/amanuensis';
+
+const description =
+  'One item travelling the whole Amanuensis path: normalized on the way in, judged once, routed by priority and audience, folded into a digest window, and recorded in a delivery ledger.';
+---
+
+<Base
+  title={`${site.name} · Amanuensis walkthrough`}
+  description={description}
+  ogType="article"
+  wide
+  showHeader={false}
+>
+  <header class="page-nav" aria-label="Amanuensis walkthrough navigation">
+    <div class="nav-identity">
+      <a
+        class="nav-home"
+        href="/projects/amanuensis/"
+        aria-label="Back to the Amanuensis concept page"
+        data-umami-event="amanuensis_nav_click"
+        data-umami-event-section="concept"
+        data-umami-event-placement="header"
+      >
+        <span aria-hidden="true">&#8592;</span>
+        <span>Amanuensis</span>
+      </a>
+    </div>
+    <nav class="page-nav__links" aria-label="Walkthrough stages">
+      {walkthroughNav.map((item) => (
+        <a
+          href={`#${item.id}`}
+          data-umami-event="amanuensis_nav_click"
+          data-umami-event-section={item.id}
+          data-umami-event-placement="header"
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <details class="mobile-nav">
+      <summary aria-label="Walkthrough stages">
+        <span class="mobile-nav__icon" aria-hidden="true"></span>
+        <span class="sr-only">Stages</span>
+      </summary>
+      <nav aria-label="Walkthrough mobile stages">
+        {walkthroughNav.map((item) => (
+          <a
+            href={`#${item.id}`}
+            data-umami-event="amanuensis_nav_click"
+            data-umami-event-section={item.id}
+            data-umami-event-placement="mobile_menu"
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </details>
+  </header>
+
+  <main class="aman-page">
+    <section class="hero" aria-labelledby="walk-title">
+      <p class="eyebrow">Walkthrough</p>
+      <h1 id="walk-title">One item, end to end</h1>
+      <p class="hero-summary">
+        A single item travels the whole path: normalized on the way in, judged once, routed by
+        priority and audience, folded into a digest window, and recorded in a delivery ledger. Each
+        stage shows what it does, what it produces, and what happens when it fails.
+      </p>
+      <p class="provenance">Records shown are extracted from the live system and synthesized for publication.</p>
+    </section>
+
+    <nav class="rail" aria-label="Stage rail">
+      {stages.map((stage) => (
+        <a
+          href={`#${stage.id}`}
+          data-umami-event="amanuensis_nav_click"
+          data-umami-event-section={stage.id}
+          data-umami-event-placement="stage_rail"
+        >
+          <span class="rail-num">{stage.index}</span> {stage.title}
+        </a>
+      ))}
+    </nav>
+
+    {stages.map((stage, i) => (
+      <section id={stage.id} class:list={['band', { 'band--quiet': i % 2 === 1 }]} aria-labelledby={`${stage.id}-title`}>
+        <div class="wrap">
+          <p class="sec-mark">
+            <span class="num">{stage.index}</span><span class="slash">/</span>
+            <span id={`${stage.id}-title`}>{stage.title}</span>
+          </p>
+          <div class="stage">
+            <div>
+              <p class="lede">{stage.lede}</p>
+              <div class="fail">
+                <p class="kicker kicker--refuse">{stage.failTitle}</p>
+                <p class="card-text">{stage.fail}</p>
+              </div>
+              {stage.id === 'w-ladder' && (
+                <ol class="ladder" aria-label="Priority tiers">
+                  {tiers.map((tier) => (
+                    <li>
+                      <span class="tier-name">{tier.name}</span>
+                      <span class="tier-note">{tier.note}</span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+              {stage.id === 'w-ledger' && (
+                <ul class="states" aria-label="Delivery states">
+                  {deliveryStates.map((state) => (
+                    <li>{state}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {stage.record && (
+              <figure class="record">
+                <figcaption>{stage.recordLabel}</figcaption>
+                <pre aria-label={`${stage.recordLabel}, a representative record`}>{stage.record}</pre>
+              </figure>
+            )}
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <section class="band" aria-labelledby="shows-title">
+      <div class="wrap">
+        <p class="sec-mark">
+          <span class="num">07</span><span class="slash">/</span>
+          <span id="shows-title">What this shows</span>
+        </p>
+        {closingPoints.map((point) => (
+          <p class="body">{point}</p>
+        ))}
+      </div>
+    </section>
+
+    <section class="band band--close" aria-label="Next steps">
+      <div class="wrap close">
+        <a
+          class="back"
+          href="/projects/amanuensis/"
+          data-umami-event="amanuensis_nav_click"
+          data-umami-event-section="concept"
+          data-umami-event-placement="section_close"
+        >
+          <span aria-hidden="true">&#8592;</span> Back to the concept
+        </a>
+        {deployment.contactEmail && (
+          <a
+            class="btn"
+            href={`mailto:${deployment.contactEmail}`}
+            data-umami-event="amanuensis_cta_click"
+            data-umami-event-cta="contact"
+            data-umami-event-placement="section_close"
+          >
+            Get in touch
+          </a>
+        )}
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  /* the sticky nav is a sibling of .aman-page, so both need the page vars */
+  .page-nav,
+  .aman-page {
+    --page-max: 72rem;
+    --pad: clamp(1.5rem, 4vw, 4rem);
+    --sec-pad: clamp(3.5rem, 6vw, 5.5rem);
+    --refuse-wash: #f7eee9;
+    color: var(--color-ink);
+  }
+
+  /* ---------------------------------------------------------- page nav */
+  .page-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 64px;
+    padding: 0 var(--pad);
+    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .nav-identity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .nav-home,
+  .nav-brand {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .nav-home {
+    display: none;
+    gap: 0.4rem;
+    color: var(--color-ink-faint);
+  }
+  .nav-brand { color: var(--color-ink-soft); }
+  .page-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .page-nav__links a {
+    color: var(--color-ink-faint);
+    text-decoration: none;
+  }
+  .page-nav__links a:hover,
+  .page-nav__links a:focus-visible {
+    color: var(--color-ink);
+  }
+  .page-nav__links .nav-cta {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .mobile-nav { display: none; margin-left: auto; }
+  .mobile-nav > summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .mobile-nav > summary::-webkit-details-marker { display: none; }
+  .mobile-nav__icon,
+  .mobile-nav__icon::before,
+  .mobile-nav__icon::after {
+    display: block;
+    width: 18px;
+    height: 1px;
+    background: var(--color-ink-soft);
+    content: '';
+  }
+  .mobile-nav__icon { position: relative; }
+  .mobile-nav__icon::before { position: absolute; top: -6px; }
+  .mobile-nav__icon::after { position: absolute; top: 6px; }
+  .mobile-nav[open] > nav {
+    position: absolute;
+    right: var(--pad);
+    top: 60px;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.1rem 1.3rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .mobile-nav nav a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ------------------------------------------------------------ shell */
+  .band { border-top: 1px solid var(--color-line); }
+  .band--quiet { background: var(--color-paper-3); }
+  .band--close { background: var(--color-paper-3); }
+  .wrap {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: var(--sec-pad) var(--pad);
+  }
+
+  .sec-mark {
+    display: flex;
+    gap: 0.7rem;
+    margin: 0 0 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .sec-mark .num { color: var(--color-accent); }
+  .sec-mark .slash { color: var(--color-ink-faint); }
+  .sec-mark span:last-child { color: var(--color-ink-soft); }
+
+  .kicker {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .kicker--refuse { color: var(--color-stamp); }
+
+  .lede,
+  .body {
+    margin: 0 0 1.4rem;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+    max-width: 64ch;
+  }
+  .lede { font-size: 1.12rem; max-width: 56ch; }
+  .body--tight { margin-bottom: 0.9rem; }
+  .claim {
+    margin: 0 0 0.9rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2.4vw, 1.5rem);
+    line-height: 1.4;
+    color: var(--color-ink);
+    max-width: 34ch;
+  }
+  .pull {
+    margin: 2rem 0 0;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+    max-width: 38ch;
+  }
+  .pull--tight { margin-top: 1rem; }
+  .card-text {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .two-col--even { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* ----------------------------------------------------------- figures */
+  .figure {
+    margin: 0;
+    padding: clamp(1.2rem, 2.4vw, 1.6rem);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .figure--wide { margin: 0 0 1.6rem; padding: clamp(1.4rem, 3vw, 2.2rem); }
+  .figure :global(svg) { display: block; width: 100%; height: auto; }
+
+  /* -------------------------------------------------------------- hero */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: clamp(3.5rem, 7vw, 6rem) var(--pad) clamp(3rem, 5vw, 4.5rem);
+  }
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .hero h1 {
+    margin: 1.4rem 0 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 6vw, 4.4rem);
+    font-weight: 600;
+    line-height: 1.02;
+    color: var(--color-ink);
+  }
+  .hero-gloss {
+    margin: 1.1rem 0 0;
+    max-width: 44ch;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: var(--color-ink-faint);
+  }
+  .hero-gloss a { font-style: normal; margin-left: 0.25rem; }
+  .hero-summary {
+    margin: 1.8rem 0 0;
+    max-width: 52ch;
+    font-size: 1.12rem;
+    line-height: 1.72;
+    color: var(--color-ink-soft);
+  }
+
+  /* -------------------------------------------------------- walkthrough */
+  /* the back link is this page's only identity, so it shows at every width */
+  .nav-home { display: inline-flex; }
+
+  .hero { display: block; }
+  .hero h1 { margin-top: 0.9rem; max-width: 20ch; }
+  .provenance {
+    margin: 1.4rem 0 0;
+    max-width: 60ch;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--color-ink-faint);
+  }
+  .rail {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 0 var(--pad);
+  }
+  .rail a {
+    flex: 1 1 8rem;
+    padding: 1rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--color-ink-soft);
+    border: 1px solid var(--color-line);
+    border-right: 0;
+  }
+  .rail a:last-child { border-right: 1px solid var(--color-line); }
+  .rail a:hover,
+  .rail a:focus-visible { color: var(--color-ink); background: var(--color-paper-2); }
+  .rail-num { color: var(--color-accent); font-weight: 600; }
+
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+  }
+  .fail {
+    padding: 1rem 1.2rem;
+    background: var(--refuse-wash);
+    border-left: 3px solid var(--color-stamp);
+  }
+  .record { margin: 0; }
+  .record figcaption {
+    margin-bottom: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .record pre {
+    margin: 0;
+    padding: 1.1rem 1.2rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+
+  .ladder {
+    margin: 1.6rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ladder li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.6rem 0.9rem;
+    border-left: 3px solid var(--color-accent);
+    background: var(--color-paper-2);
+  }
+  .ladder li + li { margin-top: 0.35rem; }
+  .ladder li:nth-child(4) { border-left-color: var(--color-ink-faint); }
+  .ladder li:nth-child(5) { border-left-color: var(--color-stamp); }
+  .tier-name {
+    flex: none;
+    width: 7rem;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .tier-note { font-size: 0.9rem; color: var(--color-ink-soft); }
+
+  .states {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .states li {
+    padding: 0.3rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--color-ink-soft);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+
+  .close {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .back {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-accent);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-paper);
+    background: var(--color-accent);
+  }
+  .btn:hover,
+  .btn:focus-visible { background: var(--color-ink); }
+
+  @media (max-width: 912px) {
+    .page-nav__links { display: none; }
+    .mobile-nav { display: block; }
+    .nav-home { display: inline-flex; }
+    .stage { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .rail a { flex-basis: 33%; border-right: 1px solid var(--color-line); }
+  }
+  @media (max-width: 560px) {
+    .aman-page { --sec-pad: 2.6rem; }
+    .hero h1 { font-size: 2.4rem; }
+    .ladder li { flex-direction: column; gap: 0.15rem; }
+    .tier-name { width: auto; }
+  }
+</style>

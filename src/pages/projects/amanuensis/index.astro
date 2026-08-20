@@ -1,0 +1,905 @@
+---
+import Base from '../../../layouts/Base.astro';
+import SectionDotNav from '../../../components/SectionDotNav.astro';
+import { site, deployment } from '../../../data/site';
+import {
+  conceptNav,
+  gapCards,
+  missingChain,
+  kits,
+  policyLayers,
+  gates,
+  failClosedDefaults,
+  tenets,
+  faq,
+} from '../../../data/amanuensis';
+import heroFlowSvg from '../../../figures/amanuensis/fig-hero-flow.svg?raw';
+import problemFunnelSvg from '../../../figures/amanuensis/fig-problem-funnel.svg?raw';
+import architectureSvg from '../../../figures/amanuensis/fig-architecture.svg?raw';
+
+const dotNavItems = [
+  { id: 'intro', label: 'Intro', accent: 'ink' as const },
+  ...conceptNav.map((item) => ({ id: item.id, label: item.label, accent: 'systems' as const })),
+];
+
+const description =
+  'Amanuensis is a base platform for personal LLM assistants: it aggregates personal and ambient information, then triages, ranks, and denoises the stream so what matters surfaces where it matters.';
+---
+
+<Base title={`${site.name} · Amanuensis`} description={description} ogType="article" wide showHeader={false}>
+  <header class="page-nav" aria-label="Amanuensis navigation">
+    <div class="nav-identity">
+      <a
+        class="nav-home"
+        href="/work/#amanuensis"
+        aria-label="Back to work index"
+        data-umami-event="amanuensis_nav_click"
+        data-umami-event-section="work_index"
+        data-umami-event-placement="header"
+      >
+        <span aria-hidden="true">&#8592;</span>
+        <span>Portfolio</span>
+      </a>
+      <a
+        class="nav-brand"
+        href="#intro"
+        aria-current="page"
+        data-umami-event="amanuensis_nav_click"
+        data-umami-event-section="hero"
+        data-umami-event-placement="header"
+      >
+        Amanuensis
+      </a>
+    </div>
+    <nav class="page-nav__links" aria-label="Amanuensis page sections">
+      {conceptNav.map((item) => (
+        <a
+          href={`#${item.id}`}
+          data-umami-event="amanuensis_nav_click"
+          data-umami-event-section={item.id}
+          data-umami-event-placement="header"
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        class="nav-cta"
+        href="/projects/amanuensis/walkthrough/"
+        data-umami-event="amanuensis_cta_click"
+        data-umami-event-cta="walkthrough"
+        data-umami-event-placement="header"
+      >
+        Walkthrough &#8594;
+      </a>
+    </nav>
+    <details class="mobile-nav">
+      <summary aria-label="Amanuensis sections">
+        <span class="mobile-nav__icon" aria-hidden="true"></span>
+        <span class="sr-only">Sections</span>
+      </summary>
+      <nav aria-label="Amanuensis mobile sections">
+        {conceptNav.map((item) => (
+          <a
+            href={`#${item.id}`}
+            data-umami-event="amanuensis_nav_click"
+            data-umami-event-section={item.id}
+            data-umami-event-placement="mobile_menu"
+          >
+            {item.label}
+          </a>
+        ))}
+        <a
+          href="/projects/amanuensis/walkthrough/"
+          data-umami-event="amanuensis_cta_click"
+          data-umami-event-cta="walkthrough"
+          data-umami-event-placement="mobile_menu"
+        >
+          Walkthrough &#8594;
+        </a>
+      </nav>
+    </details>
+  </header>
+
+  <SectionDotNav items={dotNavItems} />
+
+  <main class="aman-page">
+    <section class="hero" id="intro" aria-labelledby="project-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Systems &#183; Concept</p>
+        <h1 id="project-title">Amanuensis</h1>
+        <p class="hero-gloss">
+          amanuensis (n.) - one who writes down what another dictates, or copies and orders
+          another's papers.
+          <a href="https://en.wikipedia.org/wiki/Amanuensis" rel="noopener" target="_blank"
+            aria-label="Amanuensis on Wikipedia">&#8599;</a>
+        </p>
+        <p class="hero-summary">
+          A base platform for personal LLM assistants, built to offload cognitive load. It
+          aggregates personal information (work email, to-dos, appointments) and ambient
+          information (flyers, newsletters, weather alerts, RSS feeds), then triages, ranks, and
+          denoises the stream, so what matters surfaces where it matters.
+        </p>
+      </div>
+      <figure class="figure figure--hero" aria-label="One direction of flow: aggregate, then triage, then deliver, with a fail-closed gate before each of the last two stages">
+        <Fragment set:html={heroFlowSvg} />
+      </figure>
+    </section>
+
+    <section id="problem" class="band" aria-labelledby="problem-title">
+      <div class="wrap">
+        <p class="sec-mark"><span class="num">01</span><span class="slash">/</span><span id="problem-title">The problem</span></p>
+        <div class="two-col">
+          <div>
+            <p class="lede">
+              Personal information does not arrive in one place. It arrives as work email,
+              newsletters, to-do items, notes, and calendar entries, each in its own app, each with
+              its own idea of urgency, and none of them ranked against the others. Keeping up means
+              polling every source, every day. That is a standing cognitive tax, and it does not
+              scale with the number of sources.
+            </p>
+            <p class="pull">Much of what demands a look does not deserve one.</p>
+          </div>
+          <figure class="figure" aria-label="Six kinds of source converge into one ranked stream, and each item leaves as one structured record">
+            <Fragment set:html={problemFunnelSvg} />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="why" class="band band--quiet" aria-labelledby="why-title">
+      <div class="wrap">
+        <p class="sec-mark"><span class="num">02</span><span class="slash">/</span><span id="why-title">Why this</span></p>
+        <p class="claim">
+          The surprising part is that no existing open-source tool covers this. The ecosystem is
+          mature at both ends and empty in the middle.
+        </p>
+        <div class="gap-grid">
+          {gapCards.map((card) => (
+            <article class="card">
+              <p class="kicker">{card.kicker}</p>
+              <p class="card-name">{card.name}</p>
+              <p class="card-text">{card.text}</p>
+            </article>
+          ))}
+        </div>
+        <div class="chain" aria-label="The missing chain">
+          <p class="kicker">The missing chain</p>
+          <ol class="chain-row">
+            {missingChain.map((step) => (
+              <li>{step}</li>
+            ))}
+          </ol>
+        </div>
+        <p class="body">
+          Amanuensis builds exactly this chain and nothing else. Where mature components exist, it
+          adopts them instead of rebuilding them. The delivery shape follows an industry-wide
+          convergence: scheduled digests and channel routing, rather than an always-hot reasoning
+          loop. Even a flagship consumer assistant retired its proactive feed into scheduled tasks.
+          Amanuensis differs from consumer assistants in posture rather than shape: sensitive
+          material is handled by local inference as an architectural guarantee rather than a
+          settings toggle, and delivery fails closed.
+        </p>
+      </div>
+    </section>
+
+    <section id="how" class="band" aria-labelledby="how-title">
+      <div class="wrap">
+        <p class="sec-mark"><span class="num">03</span><span class="slash">/</span><span id="how-title">How it works</span></p>
+        <p class="claim">Three kits, one direction of flow.</p>
+        <p class="body body--tight">
+          Each kit is an independently tested package; none of them imports the others. The
+          consuming application does the wiring, and the sensitive policy arrives from outside all
+          three.
+        </p>
+        <figure class="figure figure--wide" aria-label="Sources feed ingest-kit, triage-kit and push-kit in one direction, out to channels; policy is injected from outside, three stores back a rebuildable read model, and feedback returns to triage">
+          <Fragment set:html={architectureSvg} />
+        </figure>
+        <p class="body">
+          There is no always-hot daemon anywhere: timers drive ingest, triage, and delivery. State
+          lives in SQLite by choice; the read model is a projection that can be rebuilt from
+          scratch, and the conditions that would justify a heavier database are written down in
+          advance.
+        </p>
+      </div>
+    </section>
+
+    <section id="drill" class="band band--quiet" aria-labelledby="drill-title">
+      <div class="wrap">
+        <p class="sec-mark"><span class="num">04</span><span class="slash">/</span><span id="drill-title">Drill down</span></p>
+        <div class="kits">
+          {kits.map((kit) => (
+            <article class="kit">
+              <h2 class="kit-name">{kit.name}</h2>
+              <p class="body body--tight">{kit.lede}</p>
+              <dl class="kit-points">
+                {kit.points.map((point) => (
+                  <div class="kit-point">
+                    <dt>{point.term}</dt>
+                    <dd>{point.text}</dd>
+                  </div>
+                ))}
+              </dl>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="invariants" class="band" aria-labelledby="invariants-title">
+      <div class="wrap">
+        <p class="sec-mark"><span class="num">05</span><span class="slash">/</span><span id="invariants-title">Design invariants</span></p>
+        <p class="claim">The engine cannot leak what it never contains.</p>
+        <ol class="layers">
+          {policyLayers.map((layer) => (
+            <li class="layer">
+              <p class="layer-name">{layer.name}</p>
+              <p class="layer-note">{layer.note}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="body">
+          Policy lives in three layers, and the sensitive one sits outside the engine by
+          construction, so opening a kit later would be a visibility flip rather than a scrubbing
+          exercise.
+        </p>
+
+        <div class="gate-grid">
+          {gates.map((gate) => (
+            <article class="gate">
+              <p class="kicker kicker--refuse">{gate.kicker}</p>
+              <p class="gate-rule">{gate.rule}</p>
+              <p class="card-text">{gate.text}</p>
+            </article>
+          ))}
+        </div>
+        <ul class="defaults" aria-label="Fail-closed defaults">
+          {failClosedDefaults.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+
+        <div class="tenets">
+          {tenets.map((tenet) => (
+            <article class="tenet">
+              <h3>{tenet.title}</h3>
+              <p class="card-text">{tenet.text}</p>
+            </article>
+          ))}
+        </div>
+
+        <aside class="loadbearing">
+          <p class="stamp" aria-hidden="true">Fail<br />closed</p>
+          <div>
+            <p class="kicker kicker--refuse">The load-bearing behaviour</p>
+            <p class="body body--tight">
+              The most important behaviour is a refusal. When a high-sensitivity source has no
+              compliant channel configured, the pipeline delivers nothing from it, and the same rule
+              governs the conversation path: if anything in scope is high-sensitivity, cloud egress
+              is forbidden.
+            </p>
+            <p class="pull pull--tight">Better unsent than sent to the wrong place.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="action" class="band band--quiet" aria-labelledby="action-title">
+      <div class="wrap">
+        <div class="action">
+          <div>
+            <p class="sec-mark"><span class="num">06</span><span class="slash">/</span><span id="action-title">See it in action</span></p>
+            <p class="body body--tight">
+              One item, end to end: the record it becomes, the verdict it receives, the gates it
+              passes or fails, and the digest line it lands in. Each stage also shows what happens
+              when that stage fails.
+            </p>
+          </div>
+          <a
+            class="btn"
+            href="/projects/amanuensis/walkthrough/"
+            data-umami-event="amanuensis_cta_click"
+            data-umami-event-cta="walkthrough"
+            data-umami-event-placement="section_action"
+          >
+            Walkthrough &#8594;
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="limits" class="band" aria-labelledby="limits-title">
+      <div class="wrap">
+        <p class="sec-mark"><span class="num">07</span><span class="slash">/</span><span id="limits-title">Trade-offs and limits</span></p>
+        <div class="two-col two-col--even">
+          <div>
+            <p class="kicker">Frequently asked</p>
+            {faq.map((item) => (
+              <details class="faq">
+                <summary>
+                  <span>{item.q}</span>
+                  <span class="faq-mark" aria-hidden="true">+</span>
+                </summary>
+                <p class="card-text">{item.a}</p>
+              </details>
+            ))}
+          </div>
+          <div>
+            <p class="kicker">Trade-offs and inherent limits</p>
+            <p class="body body--tight">
+              Every choice here buys something and costs something. Digest windows buy protected
+              attention and cost immediacy: an item that arrives just after a window waits for the
+              next one, and the aging rule bounds that wait rather than removing it. Local inference
+              buys a privacy guarantee and costs capability: a self-hosted model is smaller than the
+              frontier, so the ceiling on summarization quality is the ceiling of what runs on owned
+              hardware. Building only the missing leg buys focus and costs coupling: transport,
+              browsing, and observability come from projects whose roadmaps are not ours.
+            </p>
+            <p class="body body--tight">
+              The feedback loop has a narrower base than it looks. Signals come from one operator, so
+              the ranking it learns is one person's judgment rather than a population's. Source
+              coverage is narrow by construction as well, since each new kind of source is an adapter
+              someone has to write. And the evaluation is qualitative: the system is judged by
+              whether the right things surfaced and the wrong things stayed put, which is a claim
+              about design discipline rather than a benchmark.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band band--close" aria-labelledby="close-title">
+      <div class="wrap close">
+        <p class="kicker" id="close-title">Compare notes</p>
+        <p class="claim claim--close">The code is private; the architecture is documented here in full.</p>
+        <p class="body body--tight">
+          If any of this overlaps with something you are building, I would be glad to compare notes.
+        </p>
+        {deployment.contactEmail && (
+          <a
+            class="btn btn--close"
+            href={`mailto:${deployment.contactEmail}`}
+            data-umami-event="amanuensis_cta_click"
+            data-umami-event-cta="contact"
+            data-umami-event-placement="section_close"
+          >
+            Get in touch
+          </a>
+        )}
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  /* the sticky nav is a sibling of .aman-page, so both need the page vars */
+  .page-nav,
+  .aman-page {
+    --page-max: 72rem;
+    --pad: clamp(1.5rem, 4vw, 4rem);
+    --sec-pad: clamp(3.5rem, 6vw, 5.5rem);
+    --systems-wash: #eef2f8;
+    --refuse-wash: #f7eee9;
+    color: var(--color-ink);
+  }
+
+  /* ---------------------------------------------------------- page nav */
+  .page-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 64px;
+    padding: 0 var(--pad);
+    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .nav-identity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .nav-home,
+  .nav-brand {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .nav-home {
+    display: none;
+    gap: 0.4rem;
+    color: var(--color-ink-faint);
+  }
+  .nav-brand { color: var(--color-ink-soft); }
+  .page-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .page-nav__links a {
+    color: var(--color-ink-faint);
+    text-decoration: none;
+  }
+  .page-nav__links a:hover,
+  .page-nav__links a:focus-visible {
+    color: var(--color-ink);
+  }
+  .page-nav__links .nav-cta {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .mobile-nav { display: none; margin-left: auto; }
+  .mobile-nav > summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .mobile-nav > summary::-webkit-details-marker { display: none; }
+  .mobile-nav__icon,
+  .mobile-nav__icon::before,
+  .mobile-nav__icon::after {
+    display: block;
+    width: 18px;
+    height: 1px;
+    background: var(--color-ink-soft);
+    content: '';
+  }
+  .mobile-nav__icon { position: relative; }
+  .mobile-nav__icon::before { position: absolute; top: -6px; }
+  .mobile-nav__icon::after { position: absolute; top: 6px; }
+  .mobile-nav[open] > nav {
+    position: absolute;
+    right: var(--pad);
+    top: 60px;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.1rem 1.3rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .mobile-nav nav a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ------------------------------------------------------------ shell */
+  .band { border-top: 1px solid var(--color-line); }
+  .band--quiet { background: var(--color-paper-3); }
+  .band--close { background: var(--color-paper-3); }
+  .wrap {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: var(--sec-pad) var(--pad);
+  }
+
+  .sec-mark {
+    display: flex;
+    gap: 0.7rem;
+    margin: 0 0 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .sec-mark .num { color: var(--color-accent); }
+  .sec-mark .slash { color: var(--color-ink-faint); }
+  .sec-mark span:last-child { color: var(--color-ink-soft); }
+
+  .kicker {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .kicker--refuse { color: var(--color-stamp); }
+
+  .lede,
+  .body {
+    margin: 0 0 1.4rem;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+    max-width: 64ch;
+  }
+  .lede { font-size: 1.12rem; max-width: 56ch; }
+  .body--tight { margin-bottom: 0.9rem; }
+  .claim {
+    margin: 0 0 0.9rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2.4vw, 1.5rem);
+    line-height: 1.4;
+    color: var(--color-ink);
+    max-width: 34ch;
+  }
+  .pull {
+    margin: 2rem 0 0;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+    max-width: 38ch;
+  }
+  .pull--tight { margin-top: 1rem; }
+  .card-text {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .two-col--even { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* ----------------------------------------------------------- figures */
+  .figure {
+    margin: 0;
+    padding: clamp(1.2rem, 2.4vw, 1.6rem);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .figure--wide { margin: 0 0 1.6rem; padding: clamp(1.4rem, 3vw, 2.2rem); }
+  .figure :global(svg) { display: block; width: 100%; height: auto; }
+
+  /* -------------------------------------------------------------- hero */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: clamp(3.5rem, 7vw, 6rem) var(--pad) clamp(3rem, 5vw, 4.5rem);
+  }
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .hero h1 {
+    margin: 1.4rem 0 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 6vw, 4.4rem);
+    font-weight: 600;
+    line-height: 1.02;
+    color: var(--color-ink);
+  }
+  .hero-gloss {
+    margin: 1.1rem 0 0;
+    max-width: 44ch;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: var(--color-ink-faint);
+  }
+  .hero-gloss a { font-style: normal; margin-left: 0.25rem; }
+  .hero-summary {
+    margin: 1.8rem 0 0;
+    max-width: 52ch;
+    font-size: 1.12rem;
+    line-height: 1.72;
+    color: var(--color-ink-soft);
+  }
+
+  /* --------------------------------------------------------- why cards */
+  .gap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+    margin: 2rem 0;
+  }
+  .card {
+    padding: 1.3rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .card-name {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+  .chain {
+    padding: 1.3rem;
+    margin-bottom: 2rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .chain-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--color-ink-soft);
+  }
+  .chain-row li + li::before {
+    margin-right: 0.9rem;
+    color: var(--color-accent);
+    font-weight: 700;
+    content: '\2192';
+  }
+
+  /* -------------------------------------------------------------- kits */
+  .kits {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+  .kit {
+    padding: 1.4rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-accent);
+  }
+  .kit-name {
+    margin: 0 0 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .kit-points { margin: 1rem 0 0; }
+  .kit-point + .kit-point { margin-top: 0.9rem; }
+  .kit-point dt {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-ink);
+  }
+  .kit-point dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+
+  /* -------------------------------------------------------- invariants */
+  .layers {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+    margin: 0 0 1.6rem;
+    padding: 0;
+    list-style: none;
+    counter-reset: layer;
+  }
+  .layer {
+    padding: 1.1rem 1.2rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .layer:last-child {
+    border-style: dashed;
+    border-color: var(--color-stamp);
+    background: var(--refuse-wash);
+  }
+  .layer-name {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+  .layer:last-child .layer-name { color: var(--color-stamp); }
+  .layer-note {
+    margin: 0.2rem 0 0;
+    font-size: 0.82rem;
+    color: var(--color-ink-faint);
+  }
+
+  .gate-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+    margin: 2rem 0 1rem;
+  }
+  .gate {
+    padding: 1.3rem;
+    background: var(--refuse-wash);
+    border: 1px dashed var(--color-stamp);
+  }
+  .gate-rule {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .defaults {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 2.4rem;
+    padding: 0;
+    list-style: none;
+  }
+  .defaults li {
+    padding: 0.35rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-ink-soft);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+
+  .tenets {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+  .tenet {
+    padding: 1.3rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .tenet h3 {
+    margin: 0 0 0.55rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .loadbearing {
+    display: flex;
+    gap: 1.6rem;
+    align-items: flex-start;
+    margin-top: 2.4rem;
+    padding: 1.6rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-stamp);
+  }
+  .stamp {
+    flex: none;
+    margin: 0;
+    padding: 0.6rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-stamp);
+    border: 2px solid var(--color-stamp);
+  }
+
+  /* ------------------------------------------------------------ action */
+  .action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.6rem 1.8rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-accent);
+  }
+  .action .sec-mark { margin-bottom: 1rem; }
+  .action .body { margin-bottom: 0; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    height: 48px;
+    padding: 0 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--color-paper);
+    background: var(--color-accent);
+  }
+  .btn:hover,
+  .btn:focus-visible { background: var(--color-ink); }
+
+  /* --------------------------------------------------------------- faq */
+  .faq {
+    border-top: 1px solid var(--color-line);
+    padding: 1rem 0;
+  }
+  .faq > summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq > summary::-webkit-details-marker { display: none; }
+  .faq-mark { color: var(--color-accent); }
+  .faq[open] .faq-mark::before { content: '\2212'; }
+  .faq[open] .faq-mark { font-size: 0; }
+  .faq[open] .faq-mark::before { font-size: 1rem; }
+  .faq > p { margin: 0.9rem 0 0; }
+
+  /* ------------------------------------------------------------- close */
+  .close { text-align: center; }
+  .close .kicker,
+  .close .claim,
+  .close .body { margin-left: auto; margin-right: auto; }
+  .claim--close { max-width: 42ch; }
+  .close .body { max-width: 52ch; }
+  .btn--close { margin-top: 1.4rem; }
+
+  /* ------------------------------------------------------- breakpoints */
+  @media (max-width: 1080px) {
+    .tenets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 912px) {
+    .page-nav__links { display: none; }
+    .mobile-nav { display: block; }
+    .nav-home { display: inline-flex; }
+    .hero,
+    .two-col { grid-template-columns: minmax(0, 1fr); }
+    .gap-grid,
+    .kits,
+    .layers { grid-template-columns: minmax(0, 1fr); }
+    .action { flex-direction: column; align-items: flex-start; }
+  }
+  @media (max-width: 760px) {
+    .gate-grid,
+    .tenets { grid-template-columns: minmax(0, 1fr); }
+    .loadbearing { flex-direction: column; gap: 1rem; }
+  }
+  @media (max-width: 560px) {
+    .aman-page { --sec-pad: 2.6rem; }
+    .hero h1 { font-size: 2.6rem; }
+  }
+</style>
