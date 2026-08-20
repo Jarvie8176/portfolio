@@ -51,6 +51,7 @@ export const projects: Project[] = [
     primary: 'systems',
     secondary: 'worlds',
     topic: 'Attention filtering',
+    conceptPage: true,
     summary:
       'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information and ambient information, then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
     existsNow: 'Read, reason, and push kits are in use for a digest loop.',

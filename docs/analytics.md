@@ -148,6 +148,52 @@ Purpose: understand whether visitors open real samples, whether the viewer
 loads successfully, whether HD is worth its bandwidth cost, and whether metadata
 or map links are helpful.
 
+### Yaaa Navigation
+
+`yaaa_nav_click`
+
+Fields:
+
+- `section`: `work_index`, `hero`, or a page section id (`problem-space`,
+  `architecture`, `layer-map`, `binding`, `governance`, `challenges-limits`, and
+  their subsections)
+- `placement`: `header`, `header_subnav`, `mobile_menu`, or `mobile_subnav`
+
+Purpose: understand which parts of the architecture visitors jump to directly.
+
+### Amanuensis Navigation
+
+`amanuensis_nav_click`
+
+Fields:
+
+- `section`: `work_index`, `concept`, `hero`, a concept section id (`problem`,
+  `why`, `how`, `drill`, `invariants`, `limits`), or a walkthrough stage id
+  (`w-ingest`, `w-triage`, `w-ladder`, `w-gates`, `w-digest`, `w-ledger`)
+- `placement`: `header`, `mobile_menu`, `stage_rail`, or `section_close`
+
+Purpose: understand which sections visitors jump to, and whether the walkthrough
+is read stage by stage or entered at a specific stage.
+
+### Amanuensis CTA
+
+`amanuensis_cta_click`
+
+Fields:
+
+- `cta`: `walkthrough` or `contact`
+- `placement`: `header`, `mobile_menu`, `section_action`, or `section_close`
+
+Purpose: distinguish interest in the end-to-end walkthrough from general contact
+interest, and see which placement earns the walkthrough click.
+
+The two Amanuensis pages share one event namespace; `section` and `placement`
+carry the page distinction (`stage_rail` only exists on the walkthrough).
+
+Section dot navigation on the concept page uses the shared
+`portfolio_topic_click` event from `SectionDotNav.astro` rather than a page
+specific event.
+
 ## Data Boundaries
 
 Custom events deliberately do not send:
