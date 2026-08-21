@@ -20,7 +20,7 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 |---|---|---|---|---|---|---|
 | `inbound-policy` | L4 | high-level | none | gate | inbound policy gate | selects the allowed model route |
 | `outbound-policy` | L4 | high-level | none | gate | outbound audience gate | audience and sensitivity, fail closed |
-| `ingest-kit` | L1 | high-level | none | process | ingest-kit | make sources comparable |
+| `ingest-kit` | L1 | high-level | none | process | ingest-kit | make unlike sources comparable |
 | `triage-kit` | L1 | high-level | none | process | triage-kit | turn a record into a decision |
 | `push-kit` | L1 | high-level | none | process | push-kit | spend attention deliberately |
 | `d-normalize` | INGEST | detail | none | process | normalize | one record shape for every source |

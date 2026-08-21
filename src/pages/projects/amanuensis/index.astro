@@ -14,9 +14,41 @@ import heroFlowSvg from '../../../figures/amanuensis/fig-hero-flow.svg?raw';
 import problemFunnelSvg from '../../../figures/amanuensis/fig-problem-funnel.svg?raw';
 import whyLayerSvg from '../../../figures/amanuensis/fig-why-layer.svg?raw';
 import exampleIngestSvg from '../../../figures/amanuensis/fig-example-ingest.svg?raw';
+import { renderSvg } from '../../../components/diagram/render.mjs';
 import ProjectDiagram from '../../../components/diagram/ProjectDiagram.astro';
 import exampleCanvas from '../../../diagrams/amanuensis-example.canvas?raw';
 import architectureCanvas from '../../../diagrams/amanuensis-architecture.canvas?raw';
+
+// per-stage flow figures are derived from the architecture canvas SoT so they
+// cannot drift from the interactive diagram in this section
+const archDoc = JSON.parse(architectureCanvas);
+const stageFlowSvg = (ids: string[], title: string): string => {
+  const nodes = archDoc.nodes
+    .filter((node: { id: string }) => ids.includes(node.id))
+    .map((node: { text?: string }) => ({
+      ...node,
+      text: typeof node.text === 'string' ? node.text.replace('lod: 1', 'lod: 0') : node.text,
+    }));
+  const edges = archDoc.edges.filter(
+    (edge: { fromNode: string; toNode: string }) =>
+      ids.includes(edge.fromNode) && ids.includes(edge.toNode),
+  );
+  return renderSvg(JSON.stringify({ nodes, edges }), { title }).svg;
+};
+const kitFlowSvgs: Record<string, string> = {
+  'ingest-kit': stageFlowSvg(
+    ['d-normalize', 'd-dedupe', 'd-identify', 'record-store'],
+    'ingest-kit flow: normalize, dedupe, identify, then the record store',
+  ),
+  'triage-kit': stageFlowSvg(
+    ['d-route', 'd-call', 'd-verdict', 'verdict-store'],
+    'triage-kit flow: route by sensitivity, one model call, structured verdict, then the verdict store',
+  ),
+  'push-kit': stageFlowSvg(
+    ['d-ladder', 'd-gates', 'd-fold', 'delivery-ledger'],
+    'push-kit flow: priority ladder, delivery gates, delivery timing, then the delivery ledger',
+  ),
+};
 
 const dotNavItems = [
   { id: 'intro', label: 'Intro', accent: 'ink' as const },
@@ -125,7 +157,7 @@ const description =
           data-umami-event-cta="walkthrough"
           data-umami-event-placement="hero"
         >
-          Follow one item <span aria-hidden="true">&#8594;</span>
+          Sample walkthrough <span aria-hidden="true">&#8594;</span>
         </a>
       </div>
       <figure
@@ -173,18 +205,21 @@ const description =
           <span class="num">02</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="why-title">Why this layer</h2>
         </div>
-        <p class="claim">The missing layer is judgment before delivery</p>
+        <p class="claim">Aggregation, triage, restrained delivery</p>
         <p class="body body--wide">
           Today's tools move and shorten. Mail, calendar, task, and notification pipelines carry
           messages reliably; assistants summarize them one item at a time. What neither does is
-          weigh unlike sources against the same private context - the reader's plans, timing, and
-          intent - and make the delivery call before anything is allowed to interrupt.
+          pull unlike sources into one stream, weigh them against the same private context - the
+          reader's plans, timing, and intent - and make the delivery call before anything is
+          allowed to interrupt.
         </p>
         <p class="body body--wide">
           A private secretary sorting the morning mail made the same judgment: discard the junk,
           file the routine, interrupt only for what cannot wait. Amanuensis rebuilds that role as
-          a narrow layer between sources and channels, deciding in context whether an item
-          interrupts immediately, folds into the next digest, or stays quiet.
+          a narrow layer between sources and channels: aggregation first, judgment second. The
+          layer is source-agnostic - mail, a feed, a note, or a calendar entry all enter as the
+          same shape - and it decides in context whether an item interrupts immediately, folds
+          into the next digest, or stays quiet.
         </p>
         <figure
           class="figure figure--wide"
@@ -249,7 +284,7 @@ const description =
           <span class="num">04</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="how-title">How it works</h2>
         </div>
-        <p class="claim">Complexity is broken into stages that can be tested, governed, and traced</p>
+        <p class="claim">Separation of concerns, local reasoning, transparency</p>
         <p class="body body--wide">
           Amanuensis separates source handling, judgment, and delivery into three narrow kits.
           Records move in one direction; private context and policy enter at explicit boundaries,
@@ -266,21 +301,13 @@ const description =
         <div class="kit-sections">
           {conceptKits.map((kit, index) => (
             <article class="kit-section">
-              <header class="kit-section__header">
-                <p class="kicker">Stage 0{index + 1} · {kit.label}</p>
-                <h3>{kit.name}</h3>
-                <p class="kit-purpose">{kit.title}</p>
-              </header>
-              <div class="kit-section__detail">
-                <p>{kit.text}</p>
-                <p class="kit-flow" aria-label={kit.steps.join(', then ')}>
-                  {kit.steps.map((step, stepIndex) => (
-                    <Fragment>
-                      {stepIndex > 0 && <span aria-hidden="true">&#8594;</span>}
-                      {stepIndex === kit.steps.length - 1 ? <strong>{step}</strong> : <span>{step}</span>}
-                    </Fragment>
-                  ))}
-                </p>
+              <div class="kit-section__main">
+                <header class="kit-section__header">
+                  <p class="kicker">Stage 0{index + 1} · {kit.label}</p>
+                  <h3>{kit.name}</h3>
+                  <p class="kit-purpose">{kit.title}</p>
+                </header>
+                <p class="kit-text">{kit.text}</p>
                 <dl class="kit-details">
                   {kit.details.map((detail) => (
                     <div>
@@ -290,10 +317,15 @@ const description =
                   ))}
                 </dl>
               </div>
-              <aside class="kit-rationale">
-                <p class="kicker">Why</p>
-                <p>{kit.rationale}</p>
-              </aside>
+              <div class="kit-section__side">
+                <figure class="kit-flow-fig" aria-label={kit.steps.join(', then ')}>
+                  <Fragment set:html={kitFlowSvgs[kit.name]} />
+                </figure>
+                <aside class="kit-rationale">
+                  <p class="kicker">Why</p>
+                  <p>{kit.rationale}</p>
+                </aside>
+              </div>
             </article>
           ))}
         </div>
@@ -324,9 +356,10 @@ const description =
           <p class="stamp" aria-hidden="true">Fail<br />closed</p>
           <div>
             <p class="kicker kicker--refuse">When policy cannot prove the route</p>
-            <p class="pull pull--tight">Wait or refuse. Never guess.</p>
+            <p class="pull pull--tight">The item waits, or the send is refused.</p>
             <p class="failclosed-text">
-              No model or destination is selected as a convenient fallback.
+              It never substitutes a cloud model for an unreachable local one, or a different
+              channel for a blocked send, just to get the message out.
             </p>
             <p class="failclosed-text">
               Every send can be rehearsed: a dry-run runs the full routing and both gates, prints
@@ -681,11 +714,17 @@ const description =
   }
   .kit-section {
     display: grid;
-    grid-template-columns: minmax(0, 2.6fr) minmax(0, 3.7fr) minmax(0, 3fr);
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 3.5rem);
     align-items: start;
     padding: 2rem 0;
     border-bottom: 1px solid var(--color-line);
+  }
+  .kit-section__header { margin-bottom: 1.3rem; }
+  .kit-section__side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
   }
   .kit-section__header h3 {
     margin: 0 0 0.7rem;
@@ -703,33 +742,24 @@ const description =
     line-height: 1.45;
     color: var(--color-ink);
   }
-  .kit-section__detail > p:first-child,
+  .kit-text,
   .kit-rationale > p:last-child {
     margin: 0;
     font-size: 0.96rem;
     line-height: 1.7;
     color: var(--color-ink-soft);
   }
-  .kit-flow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    align-items: center;
-    margin: 1.2rem 0 0;
-    padding-top: 0.9rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    line-height: 1.5;
-    color: var(--color-ink-faint);
-    border-top: 1px solid var(--color-line);
+  .kit-flow-fig {
+    max-width: 340px;
+    margin: 0;
   }
-  .kit-flow strong { color: var(--color-accent); }
+  .kit-flow-fig :global(svg) { display: block; width: 100%; height: auto; }
   .kit-details {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
-    margin: 1.2rem 0 0;
-    padding-top: 1.1rem;
+    margin: 1.3rem 0 0;
+    padding-top: 1.2rem;
     border-top: 1px solid var(--color-line);
   }
   .kit-details dt {
@@ -864,14 +894,12 @@ const description =
     .hero .figure { max-width: 34rem; }
     .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .card-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
-    .kit-section { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); }
-    .kit-rationale { grid-column: 2; }
+    .kit-section { gap: clamp(1.2rem, 3vw, 2rem); }
   }
   @media (max-width: 760px) {
     .card-grid { grid-template-columns: minmax(0, 1fr); }
     .card-grid > :last-child:nth-child(odd) { grid-column: auto; }
-    .kit-section { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
-    .kit-rationale { grid-column: auto; }
+    .kit-section { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
     .loadbearing { align-items: flex-start; }
   }
   @media (max-width: 560px) {
