@@ -5,12 +5,11 @@ set in a field-notes visual language.
 
 ## Stack
 
-- [Astro](https://astro.build) 7, fully static output; client-side JS is
-  unrestricted where it earns its keep (no zero-JS constraint)
+- [Astro](https://astro.build) 7 with fully static output and route-scoped
+  client-side interaction for navigation, diagrams, contact, and media viewers
 - [Tailwind CSS](https://tailwindcss.com) 4 via `@tailwindcss/vite`, mapped onto
   a hand-written design-token layer (`src/styles/tokens.css`)
-- No client JavaScript except a small IntersectionObserver scrollspy;
-  the bottom scroll-ruler is pure CSS (scroll-driven animations)
+- The bottom scroll-ruler uses CSS scroll-driven animations
 
 ## Develop
 

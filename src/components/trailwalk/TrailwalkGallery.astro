@@ -96,8 +96,7 @@ const galleryItems = trailwalkGalleryItems.map((item) => ({
 }));
 
 // TODO(test): no coverage. See tests/TODO.md T3 — the serialized payload must
-// contain no key outside this allowlist. Without that assertion, a future
-// `...item` regression reopens the exact leak class this replaced.
+// contain no key outside this allowlist.
 // Publication is opt-in. Spreading `...item` into the payload below would mean
 // any field added to TrailwalkGalleryItem later is published to the browser by
 // default, which is the wrong direction for a public repository: the safe case
@@ -504,9 +503,8 @@ const publicPayload = trailwalkGalleryItems.map((item) => ({
     }
 
     .trailwalk-viewer__layout:has(.trailwalk-viewer__details:not([hidden])) {
-        /* Not wider: the panel is now open by default, so every pixel it takes
-           is taken from the sphere on every visit. At 1024px the stage is
-           already down to ~350px. */
+        /* The default-open panel takes width from the sphere. At 1024px the
+           stage is already down to ~350px. */
         grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
     }
 

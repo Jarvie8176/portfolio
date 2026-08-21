@@ -1,6 +1,6 @@
 # Portfolio diagram pipeline
 
-Status: spec (interface freeze) - v0.1
+Status: implemented shared interface
 Scope: shared, reusable architecture-diagram system for every project concept
 page (Yaaa, Amanuensis, Beagle, commonplace, ...). One engine, one canvas per
 project.
@@ -15,8 +15,7 @@ Each project concept page needs a bespoke architecture figure that:
 - supports **interactive semantic zoom**: a high-level view that zooms into
   per-layer detail (polished visualization);
 - ships **accessible and fast** on a static Astro site: a deterministic
-  build-time base render plus client-side d3 for interaction (there is no
-  zero-JS constraint anywhere in the portfolio);
+  build-time base render plus route-scoped d3 interaction;
 - stays **verifiable** against a single source of truth so figures cannot
   silently drift from the intended structure.
 
@@ -148,8 +147,8 @@ One component, used by every concept page.
 2. **Runtime (interaction layer).** On concept pages, a lazily loaded
    island imports d3 and **attaches to the already-present inline SVG**, adding
    `d3-zoom` pan/zoom, semantic-zoom level-of-detail, and flow animation. The
-   base SVG doubles as the loading state; zero-JS operation is not a support
-   target.
+   base SVG is the content baseline and loading state; d3 provides the
+   interaction model.
 
 d3 is imported as the full bundle (deliberate: a shared, evolving component
 across many projects and diagram types; avoids per-diagram import churn). It is
@@ -177,8 +176,8 @@ const svg = renderSvg(JSON.stringify({
 The excerpt inherits colors, chips, and routing from the pipeline and cannot
 drift from the canvas SoT. Detail-node visibility CSS is scoped to the
 interactive figure, so raw `renderSvg` output elsewhere shows its nodes
-unconditionally. First shipped for Amanuensis and now used on its technical deep
-dive, where the kit sections derive from `amanuensis-architecture.canvas`.
+unconditionally. The Amanuensis technical deep dive uses this path for kit
+sections derived from `amanuensis-architecture.canvas`.
 
 ### Semantic zoom / level-of-detail (LOD)
 
@@ -291,23 +290,20 @@ docs/diagram-pipeline.md             # this spec
   composition scratchpads only - their SVG export is not the annotated,
   CSS-animatable artifact this pipeline requires.
 
-## Design decisions and future work
-
-Status of the questions this pipeline opened with:
+## Current decisions and open work
 
 1. **Detail graphs - settled (nested).** Per-layer detail is authored as nested
    group members in the one canvas (single file; zoom expands it), not as
    separate detail canvases.
-2. **Edge routing - landed; obstacle-avoidance still open.** Edges now route
+2. **Edge routing - obstacle-avoidance open.** Edges route
    orthogonally to box boundaries (`routeIoBoundary` / `routeOrthogonal` /
    `routeSided` in `render.mjs`), with funnel edges kept straight
-   boundary-to-boundary to preserve the "narrow to one gate" reading. This
-   replaced the v0.1 center-to-center draw. Crossing-minimizing / lane-based
-   routing that avoids unrelated boxes is the remaining work, tracked with the
-   d3 interaction rewrite. Positions are refined in Obsidian (WYSIWYG), not by
-   an auto-layout pass.
-3. **d3 chunk loading - open.** Still eager (deferred module, non-blocking);
-   revisit deferring with a dynamic `import()` until first interaction (~90 kB
-   gz) if the load budget matters.
-4. **Parity-gate scope - open.** Runs against the build-time base level only;
-   extending it to the runtime-expanded detail level is deferred.
+   boundary-to-boundary to preserve the "narrow to one gate" reading.
+   Crossing-minimizing / lane-based routing that avoids unrelated boxes remains
+   open. Positions are refined in Obsidian (WYSIWYG), not by an auto-layout
+   pass.
+3. **d3 chunk loading - open.** The non-blocking deferred module loads on page
+   load. A dynamic `import()` on first interaction remains an option if the
+   ~90 kB gzipped load affects the route budget.
+4. **Parity-gate scope - open.** The gate covers the build-time base level;
+   runtime-expanded detail coverage remains open.
