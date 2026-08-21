@@ -18,6 +18,7 @@ export const conceptNav: NavItem[] = [
   { id: 'example', label: 'In practice' },
   { id: 'how', label: 'How it works' },
   { id: 'guarantees', label: 'Privacy' },
+  { id: 'feedback', label: 'Feedback' },
   { id: 'decisions', label: 'Decisions' },
 ];
 
@@ -127,10 +128,29 @@ export const conceptGuarantees = [
   },
 ];
 
+export const conceptFeedbackLoop: { title: string; text: string }[] = [
+  {
+    title: 'Score where it lands',
+    text: 'Every judged item is posted as a review card in the reader\'s own channel, pre-seeded with four one-tap verdicts: agree, should be higher, should be lower, stop pushing this kind. A short written correction works too. Dropped items get cards as well, because a wrongly suppressed item is the mistake a triage layer most needs to hear about.',
+  },
+  {
+    title: 'Capture only, never act',
+    text: 'The capture leg records the signal and hands it off; it never replies, re-judges, or acts on what it reads. Guard rails keep the system\'s own output out of its own input, so scoring a delivery can never echo back as another delivery.',
+  },
+  {
+    title: 'Rules pass human review',
+    text: 'Corrections accumulate in a feedback ledger. Repeats are condensed - deterministically, not by a model - into candidate override rules such as "notifications from this sender default to fyi". Every rule is reviewed by a human before it takes effect, and lives in versioned storage that can be diffed like code.',
+  },
+  {
+    title: 'Applied after the model',
+    text: 'An accepted rule runs as an ordinary deterministic branch after the model\'s judgment, overriding the verdict for every later item it matches. A human correction outranks the model, takes effect immediately, and survives a model swap: nothing is retrained.',
+  },
+];
+
 export const conceptDesignDecisions: { lead: string; text: string }[] = [
   {
     lead: 'Code replaces prompt constraints',
-    text: 'A prompt is a request with limited binding force: a model can misread it, drift from it, or be talked out of it. So none of the core safety rules - route selection, the two gates, the fail-closed branches - depend on a model understanding intent; each is an ordinary deterministic branch that runs the same way every time.',
+    text: 'A prompt is a request with limited binding force: a model can misread it, drift from it, or be talked out of it. So none of the core safety rules - route selection, the two gates, the override rules, the fail-closed branches - depend on a model understanding intent; each is an ordinary deterministic branch that runs the same way every time.',
   },
   {
     lead: 'Independent testing and traceability',

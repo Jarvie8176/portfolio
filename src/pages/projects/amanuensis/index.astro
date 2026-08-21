@@ -7,6 +7,7 @@ import {
   conceptKits,
   conceptGuarantees,
   conceptDesignDecisions,
+  conceptFeedbackLoop,
   conceptTradeoffs,
   conceptLimitations,
 } from '../../../data/amanuensis';
@@ -370,10 +371,48 @@ const description =
       </div>
     </section>
 
-    <section id="decisions" class="band band--quiet" aria-labelledby="decisions-title">
+    <section id="feedback" class="band band--quiet" aria-labelledby="feedback-title">
       <div class="wrap">
         <div class="sec-mark">
           <span class="num">06</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="feedback-title">The feedback loop</h2>
+        </div>
+        <p class="claim">A correction becomes a standing rule. The model never has the last word</p>
+        <p class="body body--wide">
+          Triage that cannot be corrected slowly drifts away from its reader. So delivery is not
+          the end of the pipeline: every verdict can be scored where it lands, and a correction
+          flows back as data - captured, condensed, reviewed, applied - not as a prompt tweak the
+          model is trusted to honor.
+        </p>
+        <div class="card-grid feedback-grid">
+          {conceptFeedbackLoop.map((step, index) => (
+            <article class="card guarantee-card">
+              <p class="guarantee-number" aria-hidden="true">0{index + 1}</p>
+              <h3>{step.title}</h3>
+              <p class="card-text">{step.text}</p>
+            </article>
+          ))}
+        </div>
+        <aside class="loadbearing loadbearing--calm">
+          <p class="stamp stamp--calm" aria-hidden="true">Fail<br />safe</p>
+          <div>
+            <p class="kicker">When nobody scores anything</p>
+            <p class="pull pull--tight">The loop is an accelerator, not a dependency.</p>
+            <p class="failclosed-text">
+              With zero feedback the system runs exactly as designed: defaults stay conservative
+              and quiet. Heavier adaptation - scoring rubrics, curated examples, fine-tuning - is
+              deliberately deferred until enough corrections accumulate to justify it; a reviewed
+              rule is always preferred over a model change.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="decisions" class="band" aria-labelledby="decisions-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">07</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="decisions-title">Decisions, trade-offs, and limits</h2>
         </div>
         <div class="decision-block">
@@ -798,6 +837,13 @@ const description =
   }
 
   .guarantee-card { min-height: 12rem; }
+  .feedback-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .feedback-grid .guarantee-card { min-height: 0; }
+  .loadbearing--calm { border-left-color: var(--color-accent); }
+  .stamp--calm {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
   .guarantee-number {
     margin: 0 0 1.8rem;
     font-family: var(--font-serif);
