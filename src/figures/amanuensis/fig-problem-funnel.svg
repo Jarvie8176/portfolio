@@ -1,16 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370 452" width="370" height="452" role="img" aria-labelledby="t2 d2">
-  <title id="t2">What arrives</title>
-  <desc id="d2">Six kinds of source converge into one ranked stream, and each item leaves as one structured record.</desc>
+  <title id="t2">Noise reduction across sources</title>
+  <desc id="d2">Many items from six personal information sources are compared together. A narrowing filter surfaces three useful items while fifteen lower-value items stay ambient or are suppressed.</desc>
   <style>
     .mono{font-family:'Noto Sans Mono',ui-monospace,monospace}
-    .sans{font-family:'Noto Sans',system-ui,sans-serif}
     .lbl{font-size:10.5px;font-weight:600;letter-spacing:1.5px;fill:#8a8f92}
     .chip{font-size:11.5px;fill:#5a5e63}
-    .arw{font-size:17px;fill:#8a8f92}
-    .stream{font-size:13px;font-weight:600;fill:#ffffff;letter-spacing:0.3px}
-    .fk{font-size:11.5px;fill:#8a8f92}
-    .fv{font-size:11.5px;fill:#5a5e63}
-    .fn{font-size:10px;fill:#8a8f92}
+    .bar{font-size:12.5px;font-weight:600;fill:#fff;letter-spacing:.3px}
+    .count{font-size:11px;font-weight:600;fill:#5a5e63}
+    .out{font-size:12px;font-weight:600;fill:#1d1f1e}
+    .note{font-size:9.5px;fill:#7b8084}
   </style>
 
   <text class="mono lbl" x="0" y="9">WHAT ARRIVES</text>
@@ -28,33 +26,40 @@
   <rect x="253" y="59" width="117" height="28" fill="#f6f7f5" stroke="#dce1de"/>
   <text class="mono chip" x="311.5" y="77" text-anchor="middle">social feeds</text>
 
-  <text class="sans arw" x="31" y="112" text-anchor="middle">↘</text>
-  <text class="sans arw" x="93" y="112" text-anchor="middle">↘</text>
-  <text class="sans arw" x="155" y="112" text-anchor="middle">↓</text>
-  <text class="sans arw" x="216" y="112" text-anchor="middle">↓</text>
-  <text class="sans arw" x="278" y="112" text-anchor="middle">↙</text>
-  <text class="sans arw" x="340" y="112" text-anchor="middle">↙</text>
+  <path d="M58 94v13m-4-5 4 5 4-5M185 94v13m-4-5 4 5 4-5M312 94v13m-4-5 4 5 4-5" fill="none" stroke="#8a8f92" stroke-width="1.3"/>
+  <rect x="0" y="116" width="370" height="38" fill="#2c4e8a" stroke="#2c4e8a" stroke-width="2"/>
+  <text class="mono bar" x="185" y="140" text-anchor="middle">compare across sources</text>
 
-  <rect x="0" y="124" width="370" height="38" fill="#2c4e8a" stroke="#2c4e8a" stroke-width="2"/>
-  <text class="mono stream" x="185" y="148" text-anchor="middle">one ranked stream</text>
+  <text class="mono lbl" x="0" y="182">18 ITEMS COMPARED</text>
+  <g fill="#d8dcda">
+    <rect x="0" y="198" width="29" height="9"/><rect x="42" y="198" width="29" height="9"/>
+    <rect x="84" y="198" width="29" height="9"/><rect x="126" y="198" width="29" height="9"/>
+    <rect x="168" y="198" width="29" height="9"/><rect x="210" y="198" width="29" height="9"/>
+    <rect x="252" y="198" width="29" height="9"/><rect x="294" y="198" width="29" height="9"/>
+    <rect x="336" y="198" width="29" height="9"/>
+    <rect x="0" y="218" width="29" height="9"/><rect x="42" y="218" width="29" height="9"/>
+    <rect x="84" y="218" width="29" height="9"/><rect x="126" y="218" width="29" height="9"/>
+    <rect x="168" y="218" width="29" height="9"/><rect x="210" y="218" width="29" height="9"/>
+    <rect x="252" y="218" width="29" height="9"/><rect x="294" y="218" width="29" height="9"/>
+    <rect x="336" y="218" width="29" height="9"/>
+  </g>
+  <g fill="#2c4e8a">
+    <rect x="42" y="198" width="29" height="9"/>
+    <rect x="210" y="198" width="29" height="9"/>
+    <rect x="126" y="218" width="29" height="9"/>
+  </g>
 
-  <text class="sans arw" x="185" y="188" text-anchor="middle">↓</text>
+  <path d="M0 252H370L248 326H122Z" fill="#e9eef5" stroke="#2c4e8a"/>
+  <text class="mono count" x="185" y="278" text-anchor="middle">remove repeats and low-value noise</text>
+  <text class="mono note" x="185" y="301" text-anchor="middle">rank by interruption value</text>
 
-  <rect x="0" y="200" width="370" height="196" fill="#f6f7f5" stroke="#dce1de"/>
-  <text class="mono lbl" x="14" y="222">ONE STRUCTURED RECORD</text>
-  <text class="mono fk" x="14" y="248">id</text>
-  <text class="mono fv" x="118" y="248">itm_9f2c41</text>
-  <text class="mono fk" x="14" y="272">source</text>
-  <text class="mono fv" x="118" y="272">newsletter-feed</text>
-  <text class="mono fk" x="14" y="296">priority</text>
-  <text class="mono fv" x="118" y="296" fill="#2c4e8a" font-weight="600">should</text>
-  <text class="mono fk" x="14" y="320">sensitivity</text>
-  <text class="mono fv" x="118" y="320" fill="#985e49" font-weight="600">high</text>
-  <text class="mono fk" x="14" y="344">audience</text>
-  <text class="mono fv" x="118" y="344">personal</text>
-  <text class="mono fk" x="14" y="368">summary</text>
-  <text class="mono fv" x="118" y="368">one line, written by the model</text>
+  <rect x="0" y="346" width="170" height="58" fill="#e9eef5" stroke="#2c4e8a"/>
+  <text class="mono out" x="85" y="369" text-anchor="middle" fill="#2c4e8a">3 SURFACED</text>
+  <text class="mono note" x="85" y="389" text-anchor="middle">must - should - fyi</text>
+  <rect x="190" y="346" width="180" height="58" fill="#f6f7f5" stroke="#dce1de"/>
+  <text class="mono out" x="280" y="369" text-anchor="middle">15 HELD BACK</text>
+  <text class="mono note" x="280" y="389" text-anchor="middle">ambient - drop</text>
 
-  <text class="mono fn" x="0" y="418">Every source lands in the same shape, so items from</text>
-  <text class="mono fn" x="0" y="433">different apps can finally be ranked against each other.</text>
+  <text class="mono note" x="0" y="428">signal buried in noise is garbage · signal after triage is a resource</text>
+  <text class="mono note" x="0" y="443">organized resources can become assets when context changes</text>
 </svg>

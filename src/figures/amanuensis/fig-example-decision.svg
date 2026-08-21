@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 252" width="1040" height="252" role="img" aria-labelledby="t6 d6">
+  <title id="t6">The same record, triaged with and without a plan</title>
+  <desc id="d6">The normalized record and the reader's context enter triage-kit. Triage picks one of five priority tiers and delivery picks one of three routes. Without a plan the item lands on ambient and is held without a push; with a plan to replace a desk chair this month it lands on should and enters the next digest window.</desc>
+  <defs>
+    <marker id="exd-blue" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#2c4e8a"/>
+    </marker>
+    <marker id="exd-red" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#985e49"/>
+    </marker>
+  </defs>
+  <style>
+    .mono{font-family:'Noto Sans Mono',ui-monospace,monospace}
+    .label{font-size:10px;font-weight:700;letter-spacing:1.4px;fill:#8a8f92}
+    .kit{font-size:14px;font-weight:700;fill:#1b1d1f}
+    .purpose{font-size:10.5px;fill:#5a5e63}
+    .policy{font-size:10px;font-weight:700;letter-spacing:1px;fill:#985e49}
+    .cond{font-size:10.5px;font-weight:700;letter-spacing:1px;fill:#4a4d49}
+    .cell{font-size:10px;font-weight:600;fill:#8a8f92}
+    .cell-on{font-size:10px;font-weight:700;fill:#fff}
+    .note{font-size:11px;fill:#5a5e63}
+    .chip{font-size:11px;font-weight:600;fill:#1b1d1f}
+  </style>
+
+  <rect x="0" y="10" width="264" height="44" fill="#fbfaf7" stroke="#dce1de"/>
+  <rect x="0" y="10" width="5" height="44" fill="#657052"/>
+  <text class="mono chip" x="20" y="28">ex_2b8a1c...</text>
+  <text class="mono purpose" x="20" y="44">20% off ergonomic chairs</text>
+
+  <path d="M274 32h40" stroke="#2c4e8a" stroke-width="1.8" marker-end="url(#exd-blue)"/>
+
+  <rect x="324" y="10" width="212" height="44" fill="#eef2f8" stroke="#2c4e8a"/>
+  <text class="mono kit" x="344" y="29">triage-kit</text>
+  <text class="mono purpose" x="344" y="45">one model call per item</text>
+
+  <rect x="640" y="10" width="400" height="44" fill="#f7eee9" stroke="#985e49" stroke-dasharray="4 3"/>
+  <text class="mono policy" x="660" y="29">READER CONTEXT</text>
+  <text class="mono purpose" x="660" y="45">a purchase plan, present or absent</text>
+  <path d="M640 32h-90" stroke="#985e49" stroke-width="1.5" marker-end="url(#exd-red)"/>
+
+  <text class="mono label" x="0" y="106">PRIORITY</text>
+  <text class="mono label" x="628" y="106">DELIVERY</text>
+
+  <g transform="translate(0 116)">
+    <rect x="0" y="0" width="104" height="30" fill="#fff" stroke="#dce1de"/><text class="mono cell" x="52" y="19" text-anchor="middle">MUST</text>
+    <rect x="112" y="0" width="104" height="30" fill="#2c4e8a"/><text class="mono cell-on" x="164" y="19" text-anchor="middle">SHOULD</text>
+    <rect x="224" y="0" width="104" height="30" fill="#fff" stroke="#dce1de"/><text class="mono cell" x="276" y="19" text-anchor="middle">FYI</text>
+    <rect x="336" y="0" width="104" height="30" fill="#657052"/><text class="mono cell-on" x="388" y="19" text-anchor="middle">AMBIENT</text>
+    <rect x="448" y="0" width="104" height="30" fill="#fff" stroke="#dce1de"/><text class="mono cell" x="500" y="19" text-anchor="middle">DROP</text>
+    <path d="M562 15h56" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#exd-blue)"/>
+    <rect x="628" y="0" width="130" height="30" fill="#fff" stroke="#dce1de"/><text class="mono cell" x="693" y="19" text-anchor="middle">IMMEDIATE</text>
+    <rect x="766" y="0" width="130" height="30" fill="#2c4e8a"/><text class="mono cell-on" x="831" y="19" text-anchor="middle">NEXT WINDOW</text>
+    <rect x="904" y="0" width="130" height="30" fill="#657052"/><text class="mono cell-on" x="969" y="19" text-anchor="middle">AMBIENT HOLD</text>
+  </g>
+
+  <g transform="translate(0 186)">
+    <rect x="0" y="0" width="14" height="14" fill="#657052"/>
+    <text class="mono cond" x="26" y="11">WITHOUT A PLAN</text>
+    <text class="mono note" x="360" y="11">ambient - held and browsable, never pushed</text>
+  </g>
+  <g transform="translate(0 218)">
+    <rect x="0" y="0" width="14" height="14" fill="#2c4e8a"/>
+    <text class="mono cond" x="26" y="11">WITH A PLAN &#183; REPLACE DESK CHAIR THIS MONTH</text>
+    <text class="mono note" x="360" y="11">should - a relevant offer in the next digest</text>
+  </g>
+</svg>

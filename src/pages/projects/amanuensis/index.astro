@@ -1,21 +1,21 @@
 ---
 import Base from '../../../layouts/Base.astro';
 import SectionDotNav from '../../../components/SectionDotNav.astro';
-import { site, deployment } from '../../../data/site';
+import { site } from '../../../data/site';
 import {
   conceptNav,
-  gapCards,
-  missingChain,
-  kits,
-  policyLayers,
-  gates,
-  failClosedDefaults,
-  tenets,
-  faq,
+  conceptKits,
+  conceptGuarantees,
+  conceptDesignDecisions,
+  conceptTradeoffs,
+  conceptLimitations,
 } from '../../../data/amanuensis';
 import heroFlowSvg from '../../../figures/amanuensis/fig-hero-flow.svg?raw';
 import problemFunnelSvg from '../../../figures/amanuensis/fig-problem-funnel.svg?raw';
+import whyLayerSvg from '../../../figures/amanuensis/fig-why-layer.svg?raw';
 import architectureSvg from '../../../figures/amanuensis/fig-architecture.svg?raw';
+import exampleIngestSvg from '../../../figures/amanuensis/fig-example-ingest.svg?raw';
+import exampleDecisionSvg from '../../../figures/amanuensis/fig-example-decision.svg?raw';
 
 const dotNavItems = [
   { id: 'intro', label: 'Intro', accent: 'ink' as const },
@@ -23,7 +23,7 @@ const dotNavItems = [
 ];
 
 const description =
-  'Amanuensis is a base platform for personal LLM assistants: it aggregates personal and ambient information, then triages, ranks, and denoises the stream so what matters surfaces where it matters.';
+  'Amanuensis protects scarce attention by turning cross-source signals into context-ranked resources, with privacy gates on inference and delivery.';
 ---
 
 <Base title={`${site.name} · Amanuensis`} description={description} ogType="article" wide showHeader={false}>
@@ -105,41 +105,60 @@ const description =
   <main class="aman-page">
     <section class="hero" id="intro" aria-labelledby="project-title">
       <div class="hero-copy">
-        <p class="eyebrow">Systems &#183; Concept</p>
         <h1 id="project-title">Amanuensis</h1>
-        <p class="hero-gloss">
-          amanuensis (n.) - one who writes down what another dictates, or copies and orders
-          another's papers.
-          <a href="https://en.wikipedia.org/wiki/Amanuensis" rel="noopener" target="_blank"
-            aria-label="Amanuensis on Wikipedia">&#8599;</a>
-        </p>
+        <p class="hero-position">A read-and-prioritize layer for personal assistants.</p>
         <p class="hero-summary">
-          A base platform for personal LLM assistants, built to offload cognitive load. It
-          aggregates personal information (work email, to-dos, appointments) and ambient
-          information (flyers, newsletters, weather alerts, RSS feeds), then triages, ranks, and
-          denoises the stream, so what matters surfaces where it matters.
+          Amanuensis sits between personal information sources and delivery channels, using context
+          and priority to decide what deserves the foreground. Urgent items go out immediately; the rest
+          fold into a digest window, stay ambient, or drop away entirely. This protects attention without
+          discarding signals that may matter later.
         </p>
+        <p class="boundary">
+          It does not converse, hold long-term memory, or execute privileged actions.
+        </p>
+        <a
+          class="text-link"
+          href="/projects/amanuensis/walkthrough/"
+          data-umami-event="amanuensis_cta_click"
+          data-umami-event-cta="walkthrough"
+          data-umami-event-placement="hero"
+        >
+          Follow one item <span aria-hidden="true">&#8594;</span>
+        </a>
       </div>
-      <figure class="figure figure--hero" aria-label="One direction of flow: aggregate, then triage, then deliver, with a fail-closed gate before each of the last two stages">
+      <figure
+        class="figure figure--hero"
+        aria-label="Personal information is gathered, prioritized, and delivered; urgent items go out immediately while the rest fold into a digest window, stay ambient, or are suppressed"
+      >
         <Fragment set:html={heroFlowSvg} />
       </figure>
     </section>
 
     <section id="problem" class="band" aria-labelledby="problem-title">
       <div class="wrap">
-        <p class="sec-mark"><span class="num">01</span><span class="slash">/</span><span id="problem-title">The problem</span></p>
+        <div class="sec-mark">
+          <span class="num">01</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="problem-title">The problem</h2>
+        </div>
         <div class="two-col">
           <div>
+            <p class="claim">Attention is scarce; information is overloaded.</p>
             <p class="lede">
-              Personal information does not arrive in one place. It arrives as work email,
-              newsletters, to-do items, notes, and calendar entries, each in its own app, each with
-              its own idea of urgency, and none of them ranked against the others. Keeping up means
-              polling every source, every day. That is a standing cognitive tax, and it does not
-              scale with the number of sources.
+              Every source competes as if its message were urgent, so useful signals arrive mixed
+              with promotions, reminders, repeats, and timing that does not fit the reader's plan. Without triage, the result is
+              still garbage: more material to scan, distrust, and discard. Triage changes the
+              equation by ranking each signal against context, timing, and an actual plan.
             </p>
-            <p class="pull">Much of what demands a look does not deserve one.</p>
+            <p class="pull">
+              Signal buried in noise is garbage.<br />
+              Signal after triage is a resource.<br />
+              Resources, organized and reusable, become assets.
+            </p>
           </div>
-          <figure class="figure" aria-label="Six kinds of source converge into one ranked stream, and each item leaves as one structured record">
+          <figure
+            class="figure"
+            aria-label="Many signals mixed with noise are compared against context and a real plan; a few become useful foreground resources while the rest stay ambient or are suppressed"
+          >
             <Fragment set:html={problemFunnelSvg} />
           </figure>
         </div>
@@ -148,241 +167,220 @@ const description =
 
     <section id="why" class="band band--quiet" aria-labelledby="why-title">
       <div class="wrap">
-        <p class="sec-mark"><span class="num">02</span><span class="slash">/</span><span id="why-title">Why this</span></p>
-        <p class="claim">
-          The surprising part is that no existing open-source tool covers this. The ecosystem is
-          mature at both ends and empty in the middle.
+        <div class="sec-mark">
+          <span class="num">02</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="why-title">Why this layer</h2>
+        </div>
+        <p class="claim">The missing layer is judgment across sources.</p>
+        <p class="body body--wide">
+          Transport and notification tools already move messages well. Per-item summaries already
+          shorten them. Neither compares unlike sources against the same context before deciding
+          whether something deserves immediate delivery, the next digest, or an ambient hold.
         </p>
-        <div class="gap-grid">
-          {gapCards.map((card) => (
-            <article class="card">
-              <p class="kicker">{card.kicker}</p>
-              <p class="card-name">{card.name}</p>
-              <p class="card-text">{card.text}</p>
-            </article>
-          ))}
-        </div>
-        <div class="chain" aria-label="The missing chain">
-          <p class="kicker">The missing chain</p>
-          <ol class="chain-row">
-            {missingChain.map((step) => (
-              <li>{step}</li>
-            ))}
-          </ol>
-        </div>
-        <p class="body">
-          Amanuensis builds exactly this chain and nothing else. Where mature components exist, it
-          adopts them instead of rebuilding them. The delivery shape follows an industry-wide
-          convergence: scheduled digests and channel routing, rather than an always-hot reasoning
-          loop. Even a flagship consumer assistant retired its proactive feed into scheduled tasks.
-          Amanuensis differs from consumer assistants in posture rather than shape: sensitive
-          material is handled by local inference as an architectural guarantee rather than a
-          settings toggle, and delivery fails closed.
+        <figure
+          class="figure figure--wide"
+          aria-label="Mail, task, feed, and calendar signals pass through cross-source judgment before an item is delivered immediately, folded into a digest, or held as ambient; a chair discount becomes useful only when a purchase plan exists"
+        >
+          <Fragment set:html={whyLayerSvg} />
+        </figure>
+        <p class="body section-close">
+          Amanuensis owns that decision layer, records the reason, and hands the send to existing
+          delivery channels. It does not become the assistant's conversation, memory, or action
+          runtime.
         </p>
       </div>
     </section>
 
-    <section id="how" class="band" aria-labelledby="how-title">
+    <section id="example" class="band" aria-labelledby="example-title">
       <div class="wrap">
-        <p class="sec-mark"><span class="num">03</span><span class="slash">/</span><span id="how-title">How it works</span></p>
-        <p class="claim">Three kits, one direction of flow.</p>
-        <p class="body body--tight">
-          Each kit is an independently tested package; none of them imports the others. The
-          consuming application does the wiring, and the sensitive policy arrives from outside all
-          three.
+        <div class="sec-mark">
+          <span class="num">03</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="example-title">In practice</h2>
+        </div>
+        <p class="claim">What's important depends on the context.</p>
+        <p class="body body--wide">
+          A discount flyer is ambient when there is no purchase plan. Repeated as an immediate
+          notification, it becomes spam and a spending trap. When a plan already exists - for
+          example, replace a desk chair this month - the same offer becomes useful. Amanuensis
+          keeps it ambient by default, then surfaces it when the offer matches a real plan.
         </p>
-        <figure class="figure figure--wide" aria-label="Sources feed ingest-kit, triage-kit and push-kit in one direction, out to channels; policy is injected from outside, three stores back a rebuildable read model, and feedback returns to triage">
+        <a
+          class="text-link"
+          href="/projects/amanuensis/walkthrough/"
+          data-umami-event="amanuensis_cta_click"
+          data-umami-event-cta="walkthrough"
+          data-umami-event-placement="example"
+        >
+          See every stage and failure path <span aria-hidden="true">&#8594;</span>
+        </a>
+        <figure
+          class="figure figure--wide"
+          aria-label="A promotions flyer for 20% off ergonomic chairs passes through ingest-kit and becomes one normalized record with a source, a stable ID, and a content hash"
+        >
+          <Fragment set:html={exampleIngestSvg} />
+        </figure>
+        <figure
+          class="figure figure--wide"
+          aria-label="The same record is triaged against the reader's context: without a plan it lands on the ambient tier of five and is held without a push; with a plan to replace a desk chair this month it lands on should and enters the next digest window"
+        >
+          <Fragment set:html={exampleDecisionSvg} />
+        </figure>
+      </div>
+    </section>
+
+    <section id="how" class="band band--quiet" aria-labelledby="how-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">04</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="how-title">How it works</h2>
+        </div>
+        <p class="claim">Complexity is broken into stages that can be tested, governed, and traced.</p>
+        <p class="body body--wide">
+          Amanuensis separates source handling, judgment, and delivery into three narrow kits.
+          Records move in one direction; private context and policy enter at explicit boundaries,
+          while a stable item ID connects every decision. This keeps adapters replaceable, model
+          routing auditable, and delivery gates deterministic.
+        </p>
+        <figure
+          class="figure figure--wide"
+          aria-label="A source item becomes a normalized record, a context-ranked decision, and an immediate, digest, or ambient outcome; policy gates sit before inference and delivery, and one item ID connects the trace"
+        >
           <Fragment set:html={architectureSvg} />
         </figure>
-        <p class="body">
-          There is no always-hot daemon anywhere: timers drive ingest, triage, and delivery. State
-          lives in SQLite by choice; the read model is a projection that can be rebuilt from
-          scratch, and the conditions that would justify a heavier database are written down in
-          advance.
+        <div class="kit-sections">
+          {conceptKits.map((kit, index) => (
+            <article class="kit-section">
+              <header class="kit-section__header">
+                <p class="kicker">Stage 0{index + 1} · {kit.label}</p>
+                <h3>{kit.name}</h3>
+                <p class="kit-purpose">{kit.title}</p>
+              </header>
+              <div class="kit-section__detail">
+                <p>{kit.text}</p>
+                <p class="kit-flow" aria-label={kit.steps.join(', then ')}>
+                  {kit.steps.map((step, stepIndex) => (
+                    <Fragment>
+                      {stepIndex > 0 && <span aria-hidden="true">&#8594;</span>}
+                      {stepIndex === kit.steps.length - 1 ? <strong>{step}</strong> : <span>{step}</span>}
+                    </Fragment>
+                  ))}
+                </p>
+                <dl class="kit-details">
+                  {kit.details.map((detail) => (
+                    <div>
+                      <dt>{detail.term}</dt>
+                      <dd>{detail.text}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+              <aside class="kit-rationale">
+                <p class="kicker">Why</p>
+                <p>{kit.rationale}</p>
+              </aside>
+            </article>
+          ))}
+        </div>
+        <p class="body section-close">
+          Nothing here depends on how a source talks: an adapter may poll, receive pushes, or hold a
+          subscription, and digests leave on their own window schedule rather than on arrival. Every
+          attempt lands in a delivery ledger, and an ambient item remains available for
+          reconsideration when later context makes it relevant.
         </p>
       </div>
     </section>
 
-    <section id="drill" class="band band--quiet" aria-labelledby="drill-title">
+    <section id="guarantees" class="band" aria-labelledby="guarantees-title">
       <div class="wrap">
-        <p class="sec-mark"><span class="num">04</span><span class="slash">/</span><span id="drill-title">Drill down</span></p>
-        <div class="kits">
-          {kits.map((kit) => (
-            <article class="kit">
-              <h2 class="kit-name">{kit.name}</h2>
-              <p class="body body--tight">{kit.lede}</p>
-              <dl class="kit-points">
-                {kit.points.map((point) => (
-                  <div class="kit-point">
-                    <dt>{point.term}</dt>
-                    <dd>{point.text}</dd>
-                  </div>
-                ))}
-              </dl>
+        <div class="sec-mark">
+          <span class="num">05</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="guarantees-title">Privacy and traceability</h2>
+        </div>
+        <p class="claim">Two gates control the route. One trace explains the outcome.</p>
+        <div class="card-grid guarantee-grid">
+          {conceptGuarantees.map((guarantee, index) => (
+            <article class="card guarantee-card">
+              <p class="guarantee-number" aria-hidden="true">0{index + 1}</p>
+              <h3>{guarantee.title}</h3>
+              <p class="card-text">{guarantee.text}</p>
             </article>
           ))}
         </div>
-      </div>
-    </section>
-
-    <section id="invariants" class="band" aria-labelledby="invariants-title">
-      <div class="wrap">
-        <p class="sec-mark"><span class="num">05</span><span class="slash">/</span><span id="invariants-title">Design invariants</span></p>
-        <p class="claim">The engine cannot leak what it never contains.</p>
-        <ol class="layers">
-          {policyLayers.map((layer) => (
-            <li class="layer">
-              <p class="layer-name">{layer.name}</p>
-              <p class="layer-note">{layer.note}</p>
-            </li>
-          ))}
-        </ol>
-        <p class="body">
-          Policy lives in three layers, and the sensitive one sits outside the engine by
-          construction, so opening a kit later would be a visibility flip rather than a scrubbing
-          exercise.
-        </p>
-
-        <div class="gate-grid">
-          {gates.map((gate) => (
-            <article class="gate">
-              <p class="kicker kicker--refuse">{gate.kicker}</p>
-              <p class="gate-rule">{gate.rule}</p>
-              <p class="card-text">{gate.text}</p>
-            </article>
-          ))}
-        </div>
-        <ul class="defaults" aria-label="Fail-closed defaults">
-          {failClosedDefaults.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-
-        <div class="tenets">
-          {tenets.map((tenet) => (
-            <article class="tenet">
-              <h3>{tenet.title}</h3>
-              <p class="card-text">{tenet.text}</p>
-            </article>
-          ))}
-        </div>
-
         <aside class="loadbearing">
           <p class="stamp" aria-hidden="true">Fail<br />closed</p>
           <div>
-            <p class="kicker kicker--refuse">The load-bearing behaviour</p>
-            <p class="body body--tight">
-              The most important behaviour is a refusal. When a high-sensitivity source has no
-              compliant channel configured, the pipeline delivers nothing from it, and the same rule
-              governs the conversation path: if anything in scope is high-sensitivity, cloud egress
-              is forbidden.
+            <p class="kicker kicker--refuse">When policy cannot prove the route</p>
+            <p class="pull pull--tight">Wait or refuse. Never guess.</p>
+            <p class="failclosed-text">
+              No model or destination is selected as a convenient fallback.
             </p>
-            <p class="pull pull--tight">Better unsent than sent to the wrong place.</p>
+            <p class="failclosed-text">
+              Every send can be rehearsed: a mandatory dry-run executes the full routing and both
+              gates, prints what would be sent, and writes nothing.
+            </p>
           </div>
         </aside>
       </div>
     </section>
 
-    <section id="action" class="band band--quiet" aria-labelledby="action-title">
+    <section id="decisions" class="band band--quiet" aria-labelledby="decisions-title">
       <div class="wrap">
-        <div class="action">
-          <div>
-            <p class="sec-mark"><span class="num">06</span><span class="slash">/</span><span id="action-title">See it in action</span></p>
-            <p class="body body--tight">
-              One item, end to end: the record it becomes, the verdict it receives, the gates it
-              passes or fails, and the digest line it lands in. Each stage also shows what happens
-              when that stage fails.
-            </p>
-          </div>
-          <a
-            class="btn"
-            href="/projects/amanuensis/walkthrough/"
-            data-umami-event="amanuensis_cta_click"
-            data-umami-event-cta="walkthrough"
-            data-umami-event-placement="section_action"
-          >
-            Walkthrough &#8594;
-          </a>
+        <div class="sec-mark">
+          <span class="num">06</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="decisions-title">Decisions, trade-offs, and limits</h2>
         </div>
-      </div>
-    </section>
-
-    <section id="limits" class="band" aria-labelledby="limits-title">
-      <div class="wrap">
-        <p class="sec-mark"><span class="num">07</span><span class="slash">/</span><span id="limits-title">Trade-offs and limits</span></p>
-        <div class="two-col two-col--even">
-          <div>
-            <p class="kicker">Frequently asked</p>
-            {faq.map((item) => (
-              <details class="faq">
-                <summary>
-                  <span>{item.q}</span>
-                  <span class="faq-mark" aria-hidden="true">+</span>
-                </summary>
-                <p class="card-text">{item.a}</p>
-              </details>
-            ))}
-          </div>
-          <div>
-            <p class="kicker">Trade-offs and inherent limits</p>
-            <p class="body body--tight">
-              Every choice here buys something and costs something. Digest windows buy protected
-              attention and cost immediacy: an item that arrives just after a window waits for the
-              next one, and the aging rule bounds that wait rather than removing it. Local inference
-              buys a privacy guarantee and costs capability: a self-hosted model is smaller than the
-              frontier, so the ceiling on summarization quality is the ceiling of what runs on owned
-              hardware. Building only the missing leg buys focus and costs coupling: transport,
-              browsing, and observability come from projects whose roadmaps are not ours.
-            </p>
-            <p class="body body--tight">
-              The feedback loop has a narrower base than it looks. Signals come from one operator, so
-              the ranking it learns is one person's judgment rather than a population's. Source
-              coverage is narrow by construction as well, since each new kind of source is an adapter
-              someone has to write. And the evaluation is qualitative: the system is judged by
-              whether the right things surfaced and the wrong things stayed put, which is a claim
-              about design discipline rather than a benchmark.
-            </p>
-          </div>
+        <div class="decision-grid">
+          <article class="decision-group">
+            <p class="kicker">Built this way on purpose</p>
+            <h3>Design decisions</h3>
+            <ul>
+              {conceptDesignDecisions.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="decision-group">
+            <p class="kicker">What the choices cost</p>
+            <h3>Trade-offs</h3>
+            <ul>
+              {conceptTradeoffs.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
+          <article class="decision-group">
+            <p class="kicker">What remains outside</p>
+            <h3>Limitations</h3>
+            <ul>
+              {conceptLimitations.map((item) => <li>{item}</li>)}
+            </ul>
+          </article>
         </div>
       </div>
     </section>
 
     <section class="band band--close" aria-labelledby="close-title">
       <div class="wrap close">
-        <p class="kicker" id="close-title">Compare notes</p>
-        <p class="claim claim--close">The code is private; the architecture is documented here in full.</p>
-        <p class="body body--tight">
-          If any of this overlaps with something you are building, I would be glad to compare notes.
+        <p class="kicker" id="close-title">Work in progress</p>
+        <p class="claim claim--close">
+          Documented in full, ahead of a public release.
         </p>
-        {deployment.contactEmail && (
-          <a
-            class="btn btn--close"
-            href={`mailto:${deployment.contactEmail}`}
-            data-umami-event="amanuensis_cta_click"
-            data-umami-event-cta="contact"
-            data-umami-event-placement="section_close"
-          >
-            Get in touch
-          </a>
-        )}
+        <p class="body body--tight">
+          Amanuensis is developed in a private repository while its interfaces settle. The sensitive
+          policy already lives outside the engine, so opening a kit is a visibility flip rather than
+          a scrubbing exercise; the code will follow when it is ready to be public.
+        </p>
       </div>
     </section>
   </main>
 </Base>
 
 <style>
-  /* the sticky nav is a sibling of .aman-page, so both need the page vars */
   .page-nav,
   .aman-page {
     --page-max: 72rem;
     --pad: clamp(1.5rem, 4vw, 4rem);
     --sec-pad: clamp(3.5rem, 6vw, 5.5rem);
-    --systems-wash: #eef2f8;
     --refuse-wash: #f7eee9;
     color: var(--color-ink);
   }
 
-  /* ---------------------------------------------------------- page nav */
   .page-nav {
     position: sticky;
     top: 0;
@@ -420,7 +418,7 @@ const description =
   .page-nav__links {
     display: flex;
     align-items: center;
-    gap: 1.4rem;
+    gap: 1.25rem;
     margin-left: auto;
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -433,9 +431,7 @@ const description =
     text-decoration: none;
   }
   .page-nav__links a:hover,
-  .page-nav__links a:focus-visible {
-    color: var(--color-ink);
-  }
+  .page-nav__links a:focus-visible { color: var(--color-ink); }
   .page-nav__links .nav-cta {
     color: var(--color-accent);
     font-weight: 600;
@@ -492,18 +488,17 @@ const description =
     white-space: nowrap;
   }
 
-  /* ------------------------------------------------------------ shell */
   .band { border-top: 1px solid var(--color-line); }
-  .band--quiet { background: var(--color-paper-3); }
+  .band--quiet,
   .band--close { background: var(--color-paper-3); }
   .wrap {
     max-width: var(--page-max);
     margin: 0 auto;
     padding: var(--sec-pad) var(--pad);
   }
-
   .sec-mark {
     display: flex;
+    align-items: baseline;
     gap: 0.7rem;
     margin: 0 0 2rem;
     font-family: var(--font-mono);
@@ -514,80 +509,59 @@ const description =
   }
   .sec-mark .num { color: var(--color-accent); }
   .sec-mark .slash { color: var(--color-ink-faint); }
-  .sec-mark span:last-child { color: var(--color-ink-soft); }
-
+  .sec-mark h2 {
+    margin: 0;
+    font: inherit;
+    color: var(--color-ink-soft);
+  }
   .kicker {
-    margin: 0 0 1rem;
+    margin: 0 0 0.8rem;
     font-family: var(--font-mono);
-    font-size: 0.66rem;
+    font-size: 0.68rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-ink-faint);
   }
   .kicker--refuse { color: var(--color-stamp); }
-
   .lede,
   .body {
     margin: 0 0 1.4rem;
+    max-width: 64ch;
     font-size: 1.05rem;
     line-height: 1.75;
     color: var(--color-ink-soft);
-    max-width: 64ch;
   }
-  .lede { font-size: 1.12rem; max-width: 56ch; }
+  .lede { max-width: 56ch; font-size: 1.12rem; }
+  .body--wide { max-width: 76ch; }
   .body--tight { margin-bottom: 0.9rem; }
   .claim {
     margin: 0 0 0.9rem;
+    max-width: 35ch;
     font-family: var(--font-serif);
-    font-size: clamp(1.3rem, 2.4vw, 1.5rem);
+    font-size: clamp(1.3rem, 2.4vw, 1.55rem);
     line-height: 1.4;
     color: var(--color-ink);
-    max-width: 34ch;
   }
   .pull {
     margin: 2rem 0 0;
+    max-width: 38ch;
     font-family: var(--font-serif);
     font-size: 1.35rem;
     line-height: 1.5;
     color: var(--color-ink);
-    max-width: 38ch;
   }
-  .pull--tight { margin-top: 1rem; }
-  .card-text {
-    margin: 0;
-    font-size: 0.94rem;
-    line-height: 1.65;
-    color: var(--color-ink-soft);
-  }
+  .pull--tight { margin-top: 0; }
+  .section-close { margin: 1.8rem 0 0; }
 
-  .two-col {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: start;
-  }
-  .two-col--even { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-  /* ----------------------------------------------------------- figures */
-  .figure {
-    margin: 0;
-    padding: clamp(1.2rem, 2.4vw, 1.6rem);
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-  }
-  .figure--wide { margin: 0 0 1.6rem; padding: clamp(1.4rem, 3vw, 2.2rem); }
-  .figure :global(svg) { display: block; width: 100%; height: auto; }
-
-  /* -------------------------------------------------------------- hero */
   .hero {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: start;
+    align-items: center;
     max-width: var(--page-max);
     margin: 0 auto;
-    padding: clamp(3.5rem, 7vw, 6rem) var(--pad) clamp(3rem, 5vw, 4.5rem);
+    padding: clamp(3.5rem, 7vw, 5.8rem) var(--pad) clamp(3rem, 5vw, 4.5rem);
   }
   .eyebrow {
     margin: 0;
@@ -599,212 +573,202 @@ const description =
     color: var(--color-accent);
   }
   .hero h1 {
-    margin: 1.4rem 0 0;
+    margin: 1.2rem 0 0;
     font-family: var(--font-serif);
     font-size: clamp(2.8rem, 6vw, 4.4rem);
     font-weight: 600;
     line-height: 1.02;
     color: var(--color-ink);
   }
-  .hero-gloss {
-    margin: 1.1rem 0 0;
-    max-width: 44ch;
+  .hero-position {
+    margin: 1rem 0 0;
+    max-width: 32ch;
     font-family: var(--font-serif);
-    font-style: italic;
-    font-size: 1.02rem;
-    line-height: 1.6;
-    color: var(--color-ink-faint);
+    font-size: 1.3rem;
+    line-height: 1.45;
+    color: var(--color-ink);
   }
-  .hero-gloss a { font-style: normal; margin-left: 0.25rem; }
   .hero-summary {
-    margin: 1.8rem 0 0;
-    max-width: 52ch;
-    font-size: 1.12rem;
+    margin: 1.35rem 0 0;
+    max-width: 55ch;
+    font-size: 1.08rem;
     line-height: 1.72;
     color: var(--color-ink-soft);
   }
-
-  /* --------------------------------------------------------- why cards */
-  .gap-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.1rem;
-    margin: 2rem 0;
-  }
-  .card {
-    padding: 1.3rem;
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-  }
-  .card-name {
-    margin: 0 0 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--color-ink);
-  }
-  .chain {
-    padding: 1.3rem;
-    margin-bottom: 2rem;
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-  }
-  .chain-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.6rem 0.9rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
+  .boundary {
+    margin: 1.15rem 0 0;
+    max-width: 55ch;
+    padding-left: 1rem;
+    font-size: 0.96rem;
+    line-height: 1.65;
     color: var(--color-ink-soft);
+    border-left: 3px solid var(--color-accent);
   }
-  .chain-row li + li::before {
-    margin-right: 0.9rem;
-    color: var(--color-accent);
-    font-weight: 700;
-    content: '\2192';
-  }
-
-  /* -------------------------------------------------------------- kits */
-  .kits {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.1rem;
-  }
-  .kit {
-    padding: 1.4rem;
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-    border-left: 4px solid var(--color-accent);
-  }
-  .kit-name {
-    margin: 0 0 0.7rem;
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
     font-family: var(--font-mono);
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--color-accent);
-  }
-  .kit-points { margin: 1rem 0 0; }
-  .kit-point + .kit-point { margin-top: 0.9rem; }
-  .kit-point dt {
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .text-link:hover,
+  .text-link:focus-visible { color: var(--color-ink); }
+
+  .figure {
+    margin: 0;
+    padding: clamp(1.2rem, 2.4vw, 1.6rem);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .figure--wide { margin: 1.8rem 0 1.2rem; padding: clamp(1.4rem, 3vw, 2.2rem); }
+  .figure :global(svg) { display: block; width: 100%; height: auto; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+  .card {
+    position: relative;
+    min-width: 0;
+    padding: 1.35rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .card h3 {
+    margin: 0 0 0.65rem;
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+    line-height: 1.35;
     color: var(--color-ink);
   }
-  .kit-point dd {
+  .card-text {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+
+  .kit-sections {
+    margin-top: 2.2rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .kit-section {
+    display: grid;
+    grid-template-columns: minmax(0, 2.6fr) minmax(0, 3.7fr) minmax(0, 3fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .kit-section__header h3 {
+    margin: 0 0 0.7rem;
+    overflow-wrap: anywhere;
+    font-family: var(--font-mono);
+    font-size: 1.08rem;
+    line-height: 1.35;
+    color: var(--color-accent);
+  }
+  .kit-purpose {
+    margin: 0;
+    max-width: 22ch;
+    font-family: var(--font-serif);
+    font-size: 1.18rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .kit-section__detail > p:first-child,
+  .kit-rationale > p:last-child {
+    margin: 0;
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: var(--color-ink-soft);
+  }
+  .kit-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    align-items: center;
+    margin: 1.2rem 0 0;
+    padding-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--color-ink-faint);
+    border-top: 1px solid var(--color-line);
+  }
+  .kit-flow strong { color: var(--color-accent); }
+  .kit-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin: 1.2rem 0 0;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .kit-details dt {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-stamp);
+  }
+  .kit-details dd {
     margin: 0.25rem 0 0;
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--color-ink-soft);
   }
-
-  /* -------------------------------------------------------- invariants */
-  .layers {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.1rem;
-    margin: 0 0 1.6rem;
-    padding: 0;
-    list-style: none;
-    counter-reset: layer;
-  }
-  .layer {
+  .kit-rationale {
+    min-width: 0;
     padding: 1.1rem 1.2rem;
     background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
+    border-left: 3px solid var(--color-accent);
   }
-  .layer:last-child {
-    border-style: dashed;
-    border-color: var(--color-stamp);
-    background: var(--refuse-wash);
-  }
-  .layer-name {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.86rem;
-    font-weight: 600;
+
+  .guarantee-card { min-height: 12rem; }
+  .guarantee-number {
+    margin: 0 0 1.8rem;
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    line-height: 1;
     color: var(--color-accent);
   }
-  .layer:last-child .layer-name { color: var(--color-stamp); }
-  .layer-note {
-    margin: 0.2rem 0 0;
-    font-size: 0.82rem;
-    color: var(--color-ink-faint);
-  }
-
-  .gate-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.1rem;
-    margin: 2rem 0 1rem;
-  }
-  .gate {
-    padding: 1.3rem;
-    background: var(--refuse-wash);
-    border: 1px dashed var(--color-stamp);
-  }
-  .gate-rule {
-    margin: 0 0 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: var(--color-ink);
-  }
-  .defaults {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 0 0 2.4rem;
-    padding: 0;
-    list-style: none;
-  }
-  .defaults li {
-    padding: 0.35rem 0.7rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--color-ink-soft);
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-  }
-
-  .tenets {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.1rem;
-  }
-  .tenet {
-    padding: 1.3rem;
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-  }
-  .tenet h3 {
-    margin: 0 0 0.55rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-ink);
-  }
-
   .loadbearing {
     display: flex;
-    gap: 1.6rem;
-    align-items: flex-start;
-    margin-top: 2.4rem;
-    padding: 1.6rem;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 1.1rem;
+    padding: 1.5rem;
     background: var(--color-paper-2);
     border: 1px solid var(--color-line);
     border-left: 4px solid var(--color-stamp);
   }
+  .failclosed-text {
+    margin: 0.55rem 0 0;
+    font-size: 0.94rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
   .stamp {
     flex: none;
     margin: 0;
-    padding: 0.6rem 0.7rem;
+    padding: 0.55rem 0.65rem;
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-weight: 700;
     line-height: 1.3;
     letter-spacing: 0.08em;
@@ -814,25 +778,52 @@ const description =
     border: 2px solid var(--color-stamp);
   }
 
-  /* ------------------------------------------------------------ action */
-  .action {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    padding: 1.6rem 1.8rem;
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-    border-left: 4px solid var(--color-accent);
+  .decision-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
   }
-  .action .sec-mark { margin-bottom: 1rem; }
-  .action .body { margin-bottom: 0; }
+  .decision-group {
+    min-width: 0;
+    padding: 1.7rem 0;
+  }
+  .decision-group + .decision-group { border-top: 1px solid var(--color-line); }
+  .decision-group h3 {
+    margin: 0 0 1rem;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .decision-group ul { margin: 0; padding: 0; list-style: none; }
+  .decision-group li {
+    position: relative;
+    padding: 0.8rem 0 0.8rem 1.25rem;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    border-top: 1px solid var(--color-line);
+  }
+  .decision-group li::before {
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    content: '\2192';
+  }
+
+  .close { text-align: center; }
+  .close .kicker,
+  .close .claim,
+  .close .body { margin-left: auto; margin-right: auto; }
+  .claim--close { max-width: 42ch; }
+  .close .body { max-width: 52ch; }
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    flex: none;
     height: 48px;
+    margin-top: 1.3rem;
     padding: 0 1.6rem;
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -840,66 +831,46 @@ const description =
     letter-spacing: 0.06em;
     text-transform: uppercase;
     text-decoration: none;
-    white-space: nowrap;
     color: var(--color-paper);
     background: var(--color-accent);
   }
   .btn:hover,
   .btn:focus-visible { background: var(--color-ink); }
 
-  /* --------------------------------------------------------------- faq */
-  .faq {
-    border-top: 1px solid var(--color-line);
-    padding: 1rem 0;
+  @media (max-width: 1040px) {
+    .page-nav__links { gap: 0.9rem; font-size: 0.68rem; }
   }
-  .faq > summary {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--color-ink);
-    cursor: pointer;
-    list-style: none;
-  }
-  .faq > summary::-webkit-details-marker { display: none; }
-  .faq-mark { color: var(--color-accent); }
-  .faq[open] .faq-mark::before { content: '\2212'; }
-  .faq[open] .faq-mark { font-size: 0; }
-  .faq[open] .faq-mark::before { font-size: 1rem; }
-  .faq > p { margin: 0.9rem 0 0; }
-
-  /* ------------------------------------------------------------- close */
-  .close { text-align: center; }
-  .close .kicker,
-  .close .claim,
-  .close .body { margin-left: auto; margin-right: auto; }
-  .claim--close { max-width: 42ch; }
-  .close .body { max-width: 52ch; }
-  .btn--close { margin-top: 1.4rem; }
-
-  /* ------------------------------------------------------- breakpoints */
-  @media (max-width: 1080px) {
-    .tenets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-  @media (max-width: 912px) {
+  @media (max-width: 980px) {
     .page-nav__links { display: none; }
     .mobile-nav { display: block; }
     .nav-home { display: inline-flex; }
     .hero,
     .two-col { grid-template-columns: minmax(0, 1fr); }
-    .gap-grid,
-    .kits,
-    .layers { grid-template-columns: minmax(0, 1fr); }
-    .action { flex-direction: column; align-items: flex-start; }
+    .hero { align-items: start; }
+    .hero .figure { max-width: 34rem; }
+    .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .kit-section { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); }
+    .kit-rationale { grid-column: 2; }
   }
   @media (max-width: 760px) {
-    .gate-grid,
-    .tenets { grid-template-columns: minmax(0, 1fr); }
-    .loadbearing { flex-direction: column; gap: 1rem; }
+    .card-grid { grid-template-columns: minmax(0, 1fr); }
+    .card-grid > :last-child:nth-child(odd) { grid-column: auto; }
+    .kit-section { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; }
+    .kit-rationale { grid-column: auto; }
+    .loadbearing { align-items: flex-start; }
   }
   @media (max-width: 560px) {
-    .aman-page { --sec-pad: 2.6rem; }
+    .aman-page { --sec-pad: 2.8rem; }
+    .hero { padding-top: 2.8rem; }
     .hero h1 { font-size: 2.6rem; }
+    .hero-position { font-size: 1.18rem; }
+    .hero-summary { font-size: 1rem; }
+    .loadbearing { flex-direction: column; gap: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .page-nav__links a,
+    .text-link,
+    .btn { transition: none; }
   }
 </style>
