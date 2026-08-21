@@ -1,47 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 392 428" width="392" height="428" role="img" aria-labelledby="t1 d1">
-  <title id="t1">One direction of flow</title>
-  <desc id="d1">Aggregate, then triage, then deliver. A fail-closed gate sits before triage and another before delivery.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 392 392" width="392" height="392" role="img" aria-labelledby="t1 d1">
+  <title id="t1">Amanuensis flow</title>
+  <desc id="d1">Signals move through gather, judge, and deliver. Inbound and outbound policy gates control the route. Outcomes are immediate delivery, the digest window, or a quiet do-not-disturb hold, with drop-tier items suppressed.</desc>
+  <defs>
+    <marker id="hero-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#2c4e8a"/>
+    </marker>
+  </defs>
   <style>
     .mono{font-family:'Noto Sans Mono',ui-monospace,monospace}
-    .sans{font-family:'Noto Sans',system-ui,sans-serif}
-    .lbl{font-size:11px;font-weight:600;letter-spacing:1.8px;fill:#8a8f92}
-    .stage{font-size:14px;font-weight:600;fill:#1b1d1f}
-    .sub{font-size:12.5px;fill:#8a8f92}
-    .gk{font-size:9.5px;font-weight:600;letter-spacing:1px;fill:#985e49}
-    .gt{font-size:12px;fill:#5a5e63}
-    .fn{font-size:10.5px;fill:#8a8f92}
+    .label{font-size:10px;font-weight:700;letter-spacing:1.5px;fill:#8a8f92}
+    .stage{font-size:14px;font-weight:700;fill:#1b1d1f}
+    .kit{font-size:10.5px;fill:#5a5e63}
+    .gate{font-size:9.5px;font-weight:700;letter-spacing:1px;fill:#985e49}
+    .out{font-size:10px;font-weight:700;letter-spacing:.7px;fill:#2c4e8a}
+    .inverse{fill:#fff}
+    .trace{font-size:10px;font-weight:600;letter-spacing:1px;fill:#657052}
+    .icon{fill:none;stroke:#2c4e8a;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   </style>
 
-  <text class="mono lbl" x="0" y="10">ONE DIRECTION OF FLOW</text>
+  <text class="mono label" x="0" y="11">SIGNALS IN, ATTENTION OUT</text>
 
-  <rect x="0" y="26" width="392" height="54" fill="#f6f7f5" stroke="#dce1de"/>
-  <rect x="0" y="26" width="3" height="54" fill="#2c4e8a"/>
-  <text class="mono stage" x="16" y="49">aggregate</text>
-  <text class="sans sub" x="16" y="68">many sources, one shape</text>
+  <rect x="0" y="28" width="392" height="64" fill="#f6f7f5" stroke="#dce1de"/>
+  <rect x="0" y="28" width="4" height="64" fill="#2c4e8a"/>
+  <g class="icon" transform="translate(20 46)">
+    <path d="M1 2h22v16H1zM1 3l11 8 11-8"/>
+  </g>
+  <text class="mono stage" x="62" y="55">gather</text>
+  <text class="mono kit" x="62" y="75">one comparable shape</text>
 
-  <rect x="8" y="90" width="2" height="64" fill="#2c4e8a"/>
-  <rect x="20" y="90" width="372" height="64" fill="#f7eee9" stroke="#985e49" stroke-dasharray="4 3"/>
-  <text class="mono gk" x="33" y="110">GATE 1 · INBOUND</text>
-  <text class="sans gt" x="33" y="129">Sensitive items are read only by a model</text>
-  <text class="sans gt" x="33" y="145">running on owned hardware.</text>
+  <path d="M196 92v26" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#hero-arrow)"/>
+  <rect x="112" y="106" width="168" height="24" fill="#f7eee9" stroke="#985e49" stroke-dasharray="4 3"/>
+  <text class="mono gate" x="196" y="122" text-anchor="middle">INBOUND POLICY</text>
 
-  <rect x="18" y="164" width="374" height="54" fill="#f6f7f5" stroke="#dce1de"/>
-  <rect x="18" y="164" width="3" height="54" fill="#2c4e8a"/>
-  <text class="mono stage" x="34" y="187">triage</text>
-  <text class="sans sub" x="34" y="206">priority · audience · summary</text>
+  <rect x="0" y="142" width="392" height="64" fill="#eef2f8" stroke="#2c4e8a"/>
+  <rect x="0" y="142" width="4" height="64" fill="#2c4e8a"/>
+  <g class="icon" transform="translate(21 159)">
+    <path d="M3 2v20M12 2v20M21 2v20M0 7h6M9 16h6M18 10h6"/>
+  </g>
+  <text class="mono stage" x="62" y="169">judge</text>
+  <text class="mono kit" x="62" y="189">context decides relevance</text>
 
-  <rect x="26" y="228" width="2" height="64" fill="#2c4e8a"/>
-  <rect x="38" y="228" width="354" height="64" fill="#f7eee9" stroke="#985e49" stroke-dasharray="4 3"/>
-  <text class="mono gk" x="51" y="248">GATE 2 · OUTBOUND</text>
-  <text class="sans gt" x="51" y="267">A channel must match the item's audience</text>
-  <text class="sans gt" x="51" y="283">and clear its sensitivity, or nothing is sent.</text>
+  <path d="M196 206v26" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#hero-arrow)"/>
+  <rect x="108" y="220" width="176" height="24" fill="#f7eee9" stroke="#985e49" stroke-dasharray="4 3"/>
+  <text class="mono gate" x="196" y="236" text-anchor="middle">OUTBOUND POLICY</text>
 
-  <rect x="36" y="302" width="356" height="54" fill="#f6f7f5" stroke="#dce1de"/>
-  <rect x="36" y="302" width="3" height="54" fill="#2c4e8a"/>
-  <text class="mono stage" x="52" y="325">deliver</text>
-  <text class="sans sub" x="52" y="344">digest window · ledger</text>
+  <rect x="0" y="256" width="392" height="64" fill="#f6f7f5" stroke="#dce1de"/>
+  <rect x="0" y="256" width="4" height="64" fill="#2c4e8a"/>
+  <g class="icon" transform="translate(20 273)">
+    <path d="M2 3l22 9-22 9 4-9-4-9zM6 12h9"/>
+  </g>
+  <text class="mono stage" x="62" y="283">deliver</text>
+  <text class="mono kit" x="62" y="303">spend attention deliberately</text>
 
-  <line x1="0" y1="380" x2="392" y2="380" stroke="#dce1de"/>
-  <text class="mono fn" x="0" y="400">Both gates fail closed: refusing to send</text>
-  <text class="mono fn" x="0" y="416">is the safe outcome.</text>
+  <path d="M196 320v18" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#hero-arrow)"/>
+  <g transform="translate(0 348)">
+    <rect width="116" height="32" fill="#2c4e8a"/>
+    <text class="mono out inverse" x="58" y="20" text-anchor="middle">IMMEDIATE</text>
+    <rect x="128" width="128" height="32" fill="#eef2f8" stroke="#2c4e8a"/>
+    <text class="mono out" x="192" y="20" text-anchor="middle">DIGEST</text>
+    <rect x="268" width="124" height="32" fill="#f6f7f5" stroke="#dce1de"/>
+    <text class="mono out" x="330" y="20" text-anchor="middle">QUIET</text>
+  </g>
 </svg>

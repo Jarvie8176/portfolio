@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 250" width="1040" height="250" role="img" aria-labelledby="t5 d5">
+  <title id="t5">A flyer becomes a normalized record</title>
+  <desc id="d5">A promotions flyer for 20% off ergonomic chairs passes through ingest-kit, which normalizes, dedupes, and identifies it, and comes out as one normalized record with a source, a stable external ID, a content hash, and a run ID.</desc>
+  <defs>
+    <marker id="exi-blue" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L8 4L0 8Z" fill="#2c4e8a"/>
+    </marker>
+  </defs>
+  <style>
+    .mono{font-family:'Noto Sans Mono',ui-monospace,monospace}
+    .label{font-size:10px;font-weight:700;letter-spacing:1.4px;fill:#8a8f92}
+    .kit{font-size:15px;font-weight:700;fill:#1b1d1f}
+    .purpose{font-size:11px;fill:#5a5e63}
+    .tag{font-size:10px;font-weight:600;fill:#2c4e8a}
+    .field{font-size:11px;fill:#5a5e63}
+    .value{font-size:11px;font-weight:600;fill:#1b1d1f}
+    .flyer-off{font-size:26px;font-weight:700;fill:#985e49}
+    .flyer-sub{font-size:13px;font-weight:600;fill:#1b1d1f}
+    .flyer-fine{font-size:10px;fill:#8a8f92}
+    .icon{fill:none;stroke:#2c4e8a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  </style>
+
+  <text class="mono label" x="0" y="14">SOURCE ITEM</text>
+  <rect x="0" y="30" width="280" height="190" fill="#fff" stroke="#dce1de"/>
+  <rect x="0" y="30" width="280" height="34" fill="#f7eee9"/>
+  <path d="M16 41h30l8 12-8 12H16z" fill="none" stroke="#985e49"/>
+  <circle cx="42" cy="47" r="2" fill="none" stroke="#985e49"/>
+  <text class="mono label" x="62" y="57" fill="#985e49">MAIL / PROMOTIONS</text>
+  <text class="mono flyer-off" x="24" y="106">20% OFF</text>
+  <text class="mono flyer-sub" x="24" y="130">ergonomic chairs</text>
+  <text class="mono flyer-fine" x="24" y="154">from: deals@officestore.example</text>
+  <path d="M24 172h176M24 186h232M24 200h140" stroke="#dce1de" stroke-width="6" stroke-linecap="round"/>
+
+  <path d="M290 125h44" stroke="#2c4e8a" stroke-width="1.8" marker-end="url(#exi-blue)"/>
+
+  <rect x="344" y="58" width="256" height="134" fill="#f6f7f5" stroke="#dce1de"/>
+  <rect x="344" y="58" width="5" height="134" fill="#2c4e8a"/>
+  <g class="icon" transform="translate(366 76)">
+    <path d="M2 2h30v22H2zM2 3l15 11L32 3"/>
+  </g>
+  <text class="mono kit" x="416" y="88">ingest-kit</text>
+  <text class="mono purpose" x="416" y="106">one shape for every source</text>
+  <rect x="366" y="132" width="70" height="28" fill="#eef2f8"/>
+  <text class="mono tag" x="401" y="150" text-anchor="middle">NORMALIZE</text>
+  <rect x="442" y="132" width="62" height="28" fill="#eef2f8"/>
+  <text class="mono tag" x="473" y="150" text-anchor="middle">DEDUPE</text>
+  <rect x="510" y="132" width="68" height="28" fill="#eef2f8"/>
+  <text class="mono tag" x="544" y="150" text-anchor="middle">IDENTIFY</text>
+
+  <path d="M610 125h44" stroke="#2c4e8a" stroke-width="1.8" marker-end="url(#exi-blue)"/>
+
+  <text class="mono label" x="664" y="14">NORMALIZED RECORD</text>
+  <rect x="664" y="30" width="376" height="190" fill="#fbfaf7" stroke="#dce1de"/>
+  <rect x="664" y="30" width="5" height="190" fill="#657052"/>
+  <g transform="translate(688 56)">
+    <text class="mono field" x="0" y="0">source_id:</text><text class="mono value" x="118" y="0">mail-promotions</text>
+    <text class="mono field" x="0" y="24">external_id:</text><text class="mono value" x="118" y="24">ex_2b8a1c...</text>
+    <text class="mono field" x="0" y="48">title:</text><text class="mono value" x="118" y="48">20% off ergonomic chairs</text>
+    <text class="mono field" x="0" y="72">received_at:</text><text class="mono value" x="118" y="72">2026-08-19T09:14:00Z</text>
+    <text class="mono field" x="0" y="96">content_hash:</text><text class="mono value" x="118" y="96">sha256:7d41e9...</text>
+    <text class="mono field" x="0" y="120">run_id:</text><text class="mono value" x="118" y="120">6d0e77...</text>
+    <text class="mono field" x="0" y="144">state:</text><text class="mono value" x="118" y="144">stored</text>
+  </g>
+</svg>

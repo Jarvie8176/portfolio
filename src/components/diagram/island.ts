@@ -1,7 +1,6 @@
-// Runtime progressive enhancement: attach d3 semantic zoom + per-layer
-// drill-in to the already rendered inline SVG. Never re-renders geometry
-// (positions stay the canvas's manual coordinates). If this never loads, the
-// static high-level SVG remains fully usable.
+// Runtime interaction layer: attach d3 semantic zoom + per-layer drill-in to
+// the already rendered inline SVG. Never re-renders geometry (positions stay
+// the canvas's manual coordinates).
 import * as d3 from 'd3';
 
 const SVGNS = 'http://www.w3.org/2000/svg';

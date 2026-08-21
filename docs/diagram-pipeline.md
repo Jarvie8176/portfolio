@@ -14,8 +14,9 @@ Each project concept page needs a bespoke architecture figure that:
 - uses a **semantic visual language** (shape grammar + color-by-role);
 - supports **interactive semantic zoom**: a high-level view that zooms into
   per-layer detail (polished visualization);
-- ships **accessible and fast** on a static Astro site (works with no JS, then
-  progressively enhances);
+- ships **accessible and fast** on a static Astro site: a deterministic
+  build-time base render plus client-side d3 for interaction (there is no
+  zero-JS constraint anywhere in the portfolio);
 - stays **verifiable** against a single source of truth so figures cannot
   silently drift from the intended structure.
 
@@ -30,7 +31,7 @@ open pieces around one source of truth.
 | **job-A acceptance** | **Mermaid**, derived from the canvas | structural correctness check; renders natively in GitHub for review |
 | **L1+L2 render + interaction** | **shared d3 component** (Astro island) | reads canvas JSON -> interactive SVG with semantic zoom |
 | **drift gate** | **content-parity check** (CI) | fails closed if the shipped SVG and the SoT disagree on nodes/edges |
-| **styling** | CSS + design tokens | tokens, reduced-motion, print/no-JS fallback |
+| **styling** | CSS + design tokens | tokens, reduced-motion, print styles |
 
 ### The one hard guardrail
 
@@ -136,25 +137,48 @@ One component, used by every concept page.
 />
 ```
 
-### Two-phase render (this is how full d3 coexists with a no-JS baseline)
+### Two-phase render (build-time base + runtime d3)
 
 1. **Build time (deterministic renderer, no d3).** During `astro build`, the
    component calls `render.mjs` - a plain, dependency-free renderer - to emit a
    **static inline SVG** of the high-level view from the canvas's manual
-   coordinates. This is what ships in the HTML: it is visible with **zero
-   JavaScript**, is crawlable, and paints on first load. It carries the full
+   coordinates. This is what ships in the HTML: it is crawlable and paints on first load. It carries the full
    `data-*` annotation set (see below). d3 is deliberately NOT used at build,
    so the build stays d3-free and fast.
-2. **Runtime (progressive enhancement).** On concept pages, a lazily loaded
+2. **Runtime (interaction layer).** On concept pages, a lazily loaded
    island imports d3 and **attaches to the already-present inline SVG**, adding
-   `d3-zoom` pan/zoom, semantic-zoom level-of-detail, and flow animation. If
-   the island never loads (no JS, slow net, error), the static high-level
-   figure remains fully usable.
+   `d3-zoom` pan/zoom, semantic-zoom level-of-detail, and flow animation. The
+   base SVG doubles as the loading state; zero-JS operation is not a support
+   target.
 
 d3 is imported as the full bundle (deliberate: a shared, evolving component
 across many projects and diagram types; avoids per-diagram import churn). It is
 loaded **only** by the interactive island on concept pages, never on the
 landing or other routes, and never blocks first paint.
+
+### Derived static flow figures (canvas subsets)
+
+A page may need a small static figure that shows one slice of a canvas - for
+example a per-stage flow strip next to the full architecture diagram. Do NOT
+draw a second SVG for this; derive it from the same canvas at build time:
+
+```
+import { renderSvg } from '.../diagram/render.mjs';
+const doc = JSON.parse(architectureCanvas);
+const svg = renderSvg(JSON.stringify({
+  nodes: doc.nodes
+    .filter((n) => ids.includes(n.id))
+    // promote detail nodes to the always-visible level for the excerpt
+    .map((n) => ({ ...n, text: n.text?.replace('lod: 1', 'lod: 0') ?? n.text })),
+  edges: doc.edges.filter((e) => ids.includes(e.fromNode) && ids.includes(e.toNode)),
+}), { title }).svg;
+```
+
+The excerpt inherits colors, chips, and routing from the pipeline and cannot
+drift from the canvas SoT. Detail-node visibility CSS is scoped to the
+interactive figure, so raw `renderSvg` output elsewhere shows its nodes
+unconditionally. First shipped for Amanuensis and now used on its technical deep
+dive, where the kit sections derive from `amanuensis-architecture.canvas`.
 
 ### Semantic zoom / level-of-detail (LOD)
 

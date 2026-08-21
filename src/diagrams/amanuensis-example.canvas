@@ -1,0 +1,351 @@
+{
+	"nodes": [
+		{
+			"id": "grp-ingest",
+			"type": "group",
+			"x": 60,
+			"y": 10,
+			"width": 1140,
+			"height": 240,
+			"label": "INGEST - gather"
+		},
+		{
+			"id": "grp-triage",
+			"type": "group",
+			"x": 60,
+			"y": 290,
+			"width": 1140,
+			"height": 240,
+			"label": "TRIAGE - judge"
+		},
+		{
+			"id": "grp-push",
+			"type": "group",
+			"x": 60,
+			"y": 572,
+			"width": 1140,
+			"height": 436,
+			"label": "PUSH - deliver"
+		},
+		{
+			"id": "grp-priority",
+			"type": "group",
+			"x": 100,
+			"y": 612,
+			"width": 1050,
+			"height": 96,
+			"label": "PRIORITY"
+		},
+		{
+			"id": "grp-delivery",
+			"type": "group",
+			"x": 100,
+			"y": 772,
+			"width": 1066,
+			"height": 96,
+			"label": "DELIVERY"
+		},
+		{
+			"id": "memo",
+			"type": "text",
+			"x": 120,
+			"y": 50,
+			"width": 320,
+			"height": 70,
+			"text": "<!-- type: process, layer: L2, lod: 0, block: none -->\nmemo\nreplace my desk chair this month"
+		},
+		{
+			"id": "flyer",
+			"type": "text",
+			"x": 560,
+			"y": 50,
+			"width": 320,
+			"height": 70,
+			"text": "<!-- type: process, layer: L2, lod: 0, block: none -->\nflyer email\n20% off ergonomic chairs"
+		},
+		{
+			"id": "rec-memo",
+			"type": "text",
+			"x": 160,
+			"y": 160,
+			"width": 240,
+			"height": 50,
+			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\nnormalized record"
+		},
+		{
+			"id": "rec-flyer",
+			"type": "text",
+			"x": 600,
+			"y": 160,
+			"width": 240,
+			"height": 50,
+			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\nnormalized record"
+		},
+		{
+			"id": "record-store",
+			"type": "text",
+			"x": 920,
+			"y": 160,
+			"width": 240,
+			"height": 56,
+			"text": "<!-- type: store, layer: INGEST, lod: 0, block: entity -->\nrecord store\ncontent-hashed, versioned"
+		},
+		{
+			"id": "cls-match",
+			"type": "text",
+			"x": 160,
+			"y": 350,
+			"width": 320,
+			"height": 70,
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\nmarketing message\nmatching a recent purchase plan"
+		},
+		{
+			"id": "cls-regular",
+			"type": "text",
+			"x": 600,
+			"y": 350,
+			"width": 320,
+			"height": 70,
+			"text": "<!-- type: process, layer: L0, lod: 0, block: none -->\nregular marketing message\nno plan in context"
+		},
+		{
+			"id": "no-plan",
+			"type": "text",
+			"x": 970,
+			"y": 350,
+			"width": 200,
+			"height": 70,
+			"text": "<!-- type: process, layer: L0, lod: 0, block: none -->\nno matching plan"
+		},
+		{
+			"id": "verdict-store",
+			"type": "text",
+			"x": 430,
+			"y": 445,
+			"width": 240,
+			"height": 56,
+			"text": "<!-- type: store, layer: TRIAGE, lod: 0, block: entity -->\nverdict store\nversioned by route"
+		},
+		{
+			"id": "tier-must",
+			"type": "text",
+			"x": 120,
+			"y": 640,
+			"width": 180,
+			"height": 50,
+			"text": "<!-- type: process, layer: L2, lod: 0, block: none -->\nmust"
+		},
+		{
+			"id": "tier-should",
+			"type": "text",
+			"x": 328,
+			"y": 640,
+			"width": 180,
+			"height": 50,
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\nshould"
+		},
+		{
+			"id": "tier-fyi",
+			"type": "text",
+			"x": 536,
+			"y": 640,
+			"width": 180,
+			"height": 50,
+			"text": "<!-- type: process, layer: L2, lod: 0, block: none -->\nfyi"
+		},
+		{
+			"id": "tier-ambient",
+			"type": "text",
+			"x": 744,
+			"y": 640,
+			"width": 180,
+			"height": 50,
+			"text": "<!-- type: process, layer: L0, lod: 0, block: none -->\nambient"
+		},
+		{
+			"id": "tier-drop",
+			"type": "text",
+			"x": 952,
+			"y": 640,
+			"width": 180,
+			"height": 50,
+			"text": "<!-- type: process, layer: L2, lod: 0, block: none -->\ndrop"
+		},
+		{
+			"id": "out-immediate",
+			"type": "text",
+			"x": 120,
+			"y": 800,
+			"width": 280,
+			"height": 50,
+			"text": "<!-- type: process, layer: L2, lod: 0, block: none -->\nimmediate"
+		},
+		{
+			"id": "out-window",
+			"type": "text",
+			"x": 440,
+			"y": 800,
+			"width": 300,
+			"height": 50,
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\nnext window"
+		},
+		{
+			"id": "out-quiet",
+			"type": "text",
+			"x": 850,
+			"y": 800,
+			"width": 300,
+			"height": 50,
+			"text": "<!-- type: process, layer: L0, lod: 0, block: none -->\nquiet - do not disturb\nnothing sent; held, browsable later"
+		},
+		{
+			"id": "sink-ntfy",
+			"type": "text",
+			"x": 185,
+			"y": 920,
+			"width": 150,
+			"height": 50,
+			"text": "<!-- type: process, layer: L2, lod: 0, block: none -->\nntfy.sh"
+		},
+		{
+			"id": "sink-discord",
+			"type": "text",
+			"x": 515,
+			"y": 920,
+			"width": 170,
+			"height": 50,
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\ndiscord channel"
+		},
+		{
+			"id": "ledger",
+			"type": "text",
+			"x": 860,
+			"y": 920,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: store, layer: PUSH, lod: 0, block: entity -->\ndelivery ledger\nevery attempt lands here"
+		}
+	],
+	"edges": [
+		{
+			"id": "e-memo-rec",
+			"fromNode": "memo",
+			"toNode": "rec-memo",
+			"label": "data: ingest"
+		},
+		{
+			"id": "e-flyer-rec",
+			"fromNode": "flyer",
+			"toNode": "rec-flyer",
+			"label": "data: ingest"
+		},
+		{
+			"id": "e-rec-store",
+			"fromNode": "rec-flyer",
+			"toNode": "record-store",
+			"label": "data: every record lands here"
+		},
+		{
+			"id": "e-context",
+			"fromNode": "rec-memo",
+			"toNode": "cls-match",
+			"label": "async: read as context"
+		},
+		{
+			"id": "e-rec-match",
+			"fromNode": "rec-flyer",
+			"toNode": "cls-match",
+			"label": "data: judged with a plan",
+			"fromSide": "bottom",
+			"toSide": "top"
+		},
+		{
+			"id": "e-rec-regular",
+			"fromNode": "rec-flyer",
+			"toNode": "cls-regular",
+			"label": "data: judged without a plan",
+			"fromSide": "bottom",
+			"toSide": "top"
+		},
+		{
+			"id": "e-noplan",
+			"fromNode": "no-plan",
+			"toNode": "cls-regular",
+			"label": "async: no plan in context"
+		},
+		{
+			"id": "e-match-should",
+			"fromNode": "cls-match",
+			"toNode": "tier-should",
+			"label": "authority: tier pick"
+		},
+		{
+			"id": "e-regular-ambient",
+			"fromNode": "cls-regular",
+			"toNode": "tier-ambient",
+			"label": "authority: tier pick"
+		},
+		{
+			"id": "e-should-window",
+			"fromNode": "tier-should",
+			"toNode": "out-window",
+			"label": "authority: route"
+		},
+		{
+			"id": "e-ambient-quiet",
+			"fromNode": "tier-ambient",
+			"toNode": "out-quiet",
+			"label": "authority: route"
+		},
+		{
+			"id": "e-fyi-window",
+			"fromNode": "tier-fyi",
+			"toNode": "out-window",
+			"label": "async: default mapping"
+		},
+		{
+			"id": "e-drop-quiet",
+			"fromNode": "tier-drop",
+			"toNode": "out-quiet",
+			"label": "async: default mapping",
+			"fromSide": "bottom",
+			"toSide": "top"
+		},
+		{
+			"id": "e-immediate-ntfy",
+			"fromNode": "out-immediate",
+			"toNode": "sink-ntfy",
+			"label": "data: mobile push"
+		},
+		{
+			"id": "e-window-discord",
+			"fromNode": "out-window",
+			"toNode": "sink-discord",
+			"label": "authority: digest rollup"
+		},
+		{
+			"id": "e-match-verdict",
+			"fromNode": "cls-match",
+			"toNode": "verdict-store",
+			"label": "data: verdict stored",
+			"fromSide": "bottom",
+			"toSide": "left"
+		},
+		{
+			"id": "e-regular-verdict",
+			"fromNode": "cls-regular",
+			"toNode": "verdict-store",
+			"label": "data: verdict stored",
+			"fromSide": "bottom",
+			"toSide": "right"
+		},
+		{
+			"id": "e-quiet-ledger",
+			"fromNode": "out-quiet",
+			"toNode": "ledger",
+			"label": "data: attempt recorded",
+			"fromSide": "bottom",
+			"toSide": "top"
+		}
+	]
+}

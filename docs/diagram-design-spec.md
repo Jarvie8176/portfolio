@@ -667,7 +667,7 @@ drilldown docs or runbooks, not in the concept figure.
 ## 6. Reading levels (semantic zoom)
 
 - **Level 0 (high-level):** one summary node per layer + cross-layer edges = the
-  layered map. This is the static, no-JS baseline.
+  layered map. This is the static baseline the island enhances.
 - **Level 1 (hover/focus):** a node raises its connected flow; unrelated marks
   dim.
 - **Level 2 (detail overlay):** toggling or double-clicking a layer reveals that
@@ -687,8 +687,9 @@ level 0 by style, so drift verification always sees the full node/edge set.
 - **Keyboard:** zoom (+/-), pan (arrows), reset (0) reachable without a mouse;
   layer toggles, pan/zoom controls, layers, and nodes are focusable with visible
   focus rings.
-- **No-JS baseline:** the static high-level figure is fully readable; all of the
-  above is progressive enhancement layered on the inline SVG.
+- **Base render:** the static high-level figure is readable before the island
+  loads; the interactions above are layered on the inline SVG. Zero-JS support
+  is not a requirement.
 
 ## 8. Accessibility & motion
 

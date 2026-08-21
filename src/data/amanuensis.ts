@@ -1,7 +1,6 @@
 /**
- * Shared content for the two Amanuensis pages: the concept page
- * (`/projects/amanuensis/`) and the end-to-end walkthrough
- * (`/projects/amanuensis/walkthrough/`).
+ * Shared content for the Amanuensis concept, technical deep dive, and example
+ * walkthrough pages.
  *
  * Structural content lives here rather than in markup so the two pages can
  * share nav taxonomy and so copy edits do not mean editing layout.
@@ -15,10 +14,16 @@ export interface NavItem {
 export const conceptNav: NavItem[] = [
   { id: 'problem', label: 'Problem' },
   { id: 'why', label: 'Why this' },
-  { id: 'how', label: 'How it works' },
-  { id: 'drill', label: 'Drill down' },
-  { id: 'invariants', label: 'Invariants' },
-  { id: 'limits', label: 'Limits' },
+  { id: 'example', label: 'In practice' },
+  { id: 'system', label: 'The system' },
+  { id: 'explore', label: 'Explore' },
+];
+
+export const technicalNav: NavItem[] = [
+  { id: 'architecture', label: 'Architecture' },
+  { id: 'guarantees', label: 'Privacy' },
+  { id: 'feedback', label: 'Feedback' },
+  { id: 'decisions', label: 'Decisions' },
 ];
 
 export const walkthroughNav: NavItem[] = [
@@ -32,170 +37,161 @@ export const walkthroughNav: NavItem[] = [
 
 /* ---------------------------------------------------------------- concept */
 
-export const gapCards = [
-  {
-    kicker: 'Solved · transport',
-    name: 'ntfy · Gotify · Apprise',
-    text: 'Delivery is mature but carries zero aggregation intelligence: it delivers whatever it is handed.',
-  },
-  {
-    kicker: 'Solved · summarization',
-    name: 'per-item LLM summaries',
-    text: 'One item at a time: no cross-source clustering, no record of what was suppressed, no feedback loop.',
-  },
-  {
-    kicker: 'Papers, not products',
-    name: 'topic clustering',
-    text: 'Exists as libraries and papers. Novu\'s "digest" is time-window batching, not selection.',
-  },
-];
-
-export const missingChain = [
-  'heterogeneous sources',
-  'one screening pass: priority + audience',
-  'denoise',
-  'tiered delivery',
-];
-
-export interface Kit {
+export interface ConceptKit {
   name: string;
-  lede: string;
-  points: { term: string; text: string }[];
+  label: string;
+  title: string;
+  text: string;
+  rationale: string;
+  /** internal flow, first entry is the input and last entry the output */
+  steps: string[];
+  details: { term: string; text: string }[];
 }
 
-export const kits: Kit[] = [
+export const conceptKits: ConceptKit[] = [
   {
     name: 'ingest-kit',
-    lede: 'Each adapter owns an opaque cursor token that the core pipeline stores but never inspects, so a new source is an adapter plus config rather than a schema migration.',
-    points: [
+    label: 'Gather',
+    title: 'Make unlike sources comparable',
+    text: 'Adapters turn mail, tasks, feeds, and notes into one record shape, remove repeats, and assign a stable item ID. Collection follows each source\'s shape - polled, pushed, or subscribed - and every record lands in a content-hashed store.',
+    rationale: 'Source-specific behavior stays at the edge, so adding an adapter does not force triage or delivery to understand another API.',
+    steps: ['source item', 'adapter: poll · push · subscribe', 'normalize · dedupe · ID', 'normalized record'],
+    details: [
       {
         term: 'opaque cursor',
-        text: 'The pipeline persists what the adapter hands it and asks no questions about the format.',
+        text: 'Each adapter owns a resume cursor the pipeline stores and never interprets, so a new source is an adapter plus config rather than a schema migration.',
       },
       {
         term: 'content hashing',
         text: 'Repeats are dropped on the way in, before anything downstream pays for them.',
       },
       {
-        term: 'run identity',
-        text: 'Every run carries an id that joins items to an audit trail with an explicit pending-to-terminal lifecycle, so an interrupted run stays diagnosable.',
+        term: 'run audit',
+        text: 'Every run carries an ID with an explicit pending-to-terminal lifecycle, so an interrupted run stays diagnosable rather than silently skipped.',
       },
     ],
   },
   {
     name: 'triage-kit',
-    lede: 'One model call per item returns priority, audience, a summary, key entities, and whether action is required. Five priority tiers run from must down to drop.',
-    points: [
+    label: 'Judge',
+    title: 'Turn a record into a decision',
+    text: 'Sensitivity is marked at the source before any call is made. One policy-routed model call per item then returns priority, audience, a summary, key entities, and whether action is required, judged against the reader\'s current plan.',
+    rationale: 'The decision is structured and stored once. It can be inspected or reconsidered later without asking a model to remember it.',
+    steps: ['normalized record + context', 'route by sensitivity', 'one model call', 'structured verdict'],
+    details: [
       {
-        term: 'sensitivity-gated endpoints',
-        text: 'Ordinary items may take a cloud-capable route; sensitive items take a local-only route.',
-      },
-      {
-        term: 'leak guard',
-        text: 'On a local-only route, a cloud-looking served model is treated as a leak: the verdict is discarded rather than recorded as ok.',
+        term: 'sensitivity-gated routes',
+        text: 'Ordinary items may take a cloud-capable route; sensitive items only an approved local one.',
       },
       {
         term: 'constrained decoding',
         text: 'The output schema makes an invalid priority impossible to sample, so bad structure cannot enter the store.',
       },
+      {
+        term: 'versioned verdicts',
+        text: 'A verdict records which model actually served it and is stored per route version; a re-triage writes a new row instead of overwriting history.',
+      },
     ],
   },
   {
     name: 'push-kit',
-    lede: 'Routing is a priority-by-audience table, and both delivery gates sit in front of every send.',
-    points: [
+    label: 'Deliver',
+    title: 'Spend attention deliberately',
+    text: 'The assigned priority is one of five tiers - must, should, fyi, ambient, drop - and the tier picks the route: immediate delivery, the next digest window, or a quiet do-not-disturb hold, while drop is suppressed and only recorded. Shared and public destinations must also clear the outbound gate.',
+    rationale: 'Delivery is separate from inference, so a model response cannot bypass deterministic audience and sensitivity rules.',
+    steps: ['structured verdict', 'priority ladder', 'outbound gate', 'immediate · digest · quiet'],
+    details: [
       {
-        term: 'gates read persisted values',
-        text: 'The gates read what the ledger recorded rather than live configuration, so a config edit or a stale row is still caught at delivery time.',
+        term: 'the five tiers',
+        text: 'must interrupts immediately; should and fyi fold into the next digest window; ambient is held quiet - do not disturb, but browsable; drop is suppressed and kept only as a record.',
       },
       {
-        term: 'digest fold with aging',
-        text: 'Anything below the top tier folds into waking-hours windows, and a deferred item ages upward so it cannot starve.',
+        term: 'delivery timing',
+        text: 'A deferred item ages upward each window it is skipped, so a low-priority item cannot starve behind louder ones.',
       },
       {
         term: 'idempotent ledger',
-        text: 'Every delivery lands in a ledger keyed by source, item, and channel, with explicit terminal states including dead-letter.',
+        text: 'Every attempt lands in a ledger keyed by source, item, and channel - a retry updates the same row instead of adding a duplicate - with terminal states that distinguish sent from deliberately not sent.',
       },
     ],
   },
 ];
 
-export const policyLayers = [
-  { name: 'engine', note: 'mechanism only' },
-  { name: 'bundled defaults', note: 'generic, non-sensitive' },
-  { name: 'private policy pack', note: 'outside the engine' },
-];
-
-export const gates = [
+export const conceptGuarantees = [
   {
-    kicker: 'Gate 1 · on the way in',
-    rule: 'high sensitivity → local model only',
-    text: 'If the serving endpoint reports a cloud-looking model, the result is treated as a leak: the verdict is discarded, the item degrades and retries, and it is never recorded as ok.',
+    title: 'Inbound policy gate',
+    text: 'Source and message sensitivity select the allowed triage path. Sensitive content can only reach an approved local model; if the endpoint reports back a cloud-looking model on that path, the verdict is discarded as a leak rather than recorded as ok.',
   },
   {
-    kicker: 'Gate 2 · on the way out',
-    rule: 'high sensitivity → self-hosted channel only',
-    text: 'A cloud channel refuses the item mechanically. The gates read ledger-persisted values, so a config edit or a stale row is still caught at delivery time.',
+    title: 'Outbound audience gate',
+    text: 'Before a message leaves a private, personal channel, audience and sensitivity are checked. Public Discord servers, shared Slack bots, and similar destinations require an explicitly allowed route. The gate reads values persisted with the item rather than live configuration, so a later config edit cannot widen what was allowed when the item was judged.',
+  },
+  {
+    title: 'End-to-end traceability',
+    text: 'One item ID links receipt, policy checks, model route, ranking, and the final outcome - delivery, quiet hold, or refusal. Every consequential step remains inspectable.',
   },
 ];
 
-export const failClosedDefaults = [
-  'unknown audience → personal',
-  'unknown sensitivity → high',
-  'local endpoint down → wait, never cloud',
-];
-
-export const tenets = [
+export const conceptFeedbackLoop: { label: string; title: string; text: string }[] = [
   {
-    title: 'Provenance that refuses to lie',
-    text: 'Every verdict records which model actually served it; a missing report is marked unknown instead of passing the requested name off as served. Rows from before provenance existed stay empty, because backfilling would assert something false about a past verdict.',
+    label: 'Capture',
+    title: 'Capture the correction',
+    text: 'A handoff-only receive path records a reaction or written quality correction, normalizes it into structured data, and passes it on. It never replies, re-judges, or acts.',
   },
   {
-    title: 'No fabricated verdicts',
-    text: 'An item with a failed priority is degraded and retried, never given a made-up tier. The output schema closes the other side by making an invalid priority impossible to sample.',
+    label: 'Condense',
+    title: 'Propose a narrow rule',
+    text: 'Corrections collect in a feedback ledger. Repeated signals are condensed deterministically into a candidate override; the model does not get to write policy.',
   },
   {
-    title: 'Rehearsal before side effects',
-    text: 'The delivery path has a mandatory dry-run mode that executes the full routing and both gates, prints what would be sent, makes zero outbound calls, and writes nothing.',
+    label: 'Review',
+    title: 'Approve the change',
+    text: 'A human reviews the candidate as a versioned diff. An accepted rule enters the rule store; a rejected candidate changes nothing.',
   },
   {
-    title: 'Adversarial audits as routine',
-    text: 'One bug class, model prose forging reference anchors, was chased through six consecutive audit rounds. Safety invariants are deterministic branches, never prompt instructions.',
-  },
-  {
-    title: 'Explicit signals only',
-    text: 'An item is marked read or acknowledged only on an explicit human signal, never inferred from silence; a fabricated signal would poison the feedback loop.',
-  },
-  {
-    title: 'Build only the missing piece',
-    text: 'The open-source survey came first, and it justified building exactly one leg: the aggregation chain no existing open-source tool covers. Anything mature is adopted, not rebuilt.',
+    label: 'Apply',
+    title: 'Change future matches',
+    text: 'Once approved and applied, the rule runs after the model and overrides later matching verdicts. Human judgment outranks the model without retraining it.',
   },
 ];
 
-export const faq = [
+export const conceptDesignDecisions: { lead: string; text: string }[] = [
   {
-    q: 'Why not just use an existing notification hub?',
-    a: 'Notification hubs move messages; they do not decide which messages deserve to move. Amanuensis adds the missing middle: one screening pass that ranks by priority and audience, denoises, and then hands a hub the few things worth delivering.',
+    lead: 'Code replaces prompt constraints',
+    text: 'A prompt is a request with limited binding force: a model can misread it, drift from it, or be talked out of it. So none of the core safety rules - route selection, the two gates, the override rules, the fail-closed branches - depend on a model understanding intent; each is an ordinary deterministic branch that runs the same way every time.',
   },
   {
-    q: 'Why local inference instead of a privacy setting?',
-    a: 'A setting can be toggled, forgotten, or overridden by a later default. Routing sensitive material to local inference is a branch in the code, so the guarantee holds regardless of configuration, and an endpoint that answers with a cloud model is treated as a leak rather than a success.',
+    lead: 'Independent testing and traceability',
+    text: 'The stable item ID follows a record across every kit and stage, from receipt to verdict to delivery. Any single link can be pulled out of the chain, fed a known input, and replayed on its own, and any delivery can be walked backwards to the judgment that produced it.',
+  },
+];
+
+export const conceptTradeoffs: { keep: string; cost: string; text: string }[] = [
+  {
+    keep: 'Privacy',
+    cost: 'capability',
+    text: 'Keeping sensitive inference local means running small local models where a frontier cloud model would judge more accurately and write a smoother digest. That cost is accepted: the privacy of the material is worth more than the polish of its summary.',
   },
   {
-    q: 'Why digests instead of real-time delivery?',
-    a: 'Real time means every source can interrupt you. Digests protect attention by collecting the non-urgent into a few waking-hours windows, while the top tier still goes out immediately and an aging rule keeps a quiet item from waiting forever.',
+    keep: 'Attention',
+    cost: 'immediacy',
+    text: 'Digest-first delivery deliberately delays everything that is not urgent; information that could have arrived now arrives at the next window instead. The delay is the price paid for fewer interruptions.',
   },
   {
-    q: 'What happens when the local endpoint is down?',
-    a: 'A sensitive item waits. An unreachable local endpoint defers the item without consuming an attempt, and it never falls back to a cloud route to make progress, because progress at the cost of the privacy guarantee is not progress.',
+    keep: 'Auditability',
+    cost: 'overhead',
+    text: 'Every send clears explicit gates, and every consequential step writes a durable trace row. Gates add latency, traces add storage, and both add operational work - accepted, because a delivery that cannot be explained is the more expensive failure.',
+  },
+];
+
+export const conceptLimitations: { lead: string; text: string }[] = [
+  {
+    lead: 'Advanced capabilities are stripped away on purpose',
+    text: 'Conversation, long-term memory, and privileged action are excluded from Amanuensis: each belongs to a different kind of system with its own safety story, and bolting them onto a triage layer would blur the boundary this design depends on.',
   },
   {
-    q: 'Why SQLite?',
-    a: 'The store is small, single-writer, and lives on owned hardware, which is exactly SQLite\'s shape. The read model is a projection that rebuilds from scratch, and the conditions that would justify a heavier database are written down in advance rather than assumed away.',
-  },
-  {
-    q: 'Is any of this open source?',
-    a: 'It is currently developed in a private repository; it will be released when it is ready to be public. The architecture is designed so that opening a kit would be a visibility flip rather than a scrubbing exercise, because the sensitive policy already lives outside the engine.',
+    lead: 'A sorting router and a breakwater',
+    text: 'Amanuensis delivers the right information at the right granularity to the reader or to an external system, and stops there; complex operations happen on the other side of that boundary, done by whoever received the item.',
   },
 ];
 
@@ -239,7 +235,7 @@ state:         stored`,
     railLabel: 'Triage',
     lede: 'One model call per item returns priority, audience, a summary, key entities, and whether action is required. The endpoint is chosen by sensitivity: a cloud-capable route for ordinary items, a local-only route for sensitive ones. The verdict records which model actually served it, not the one that was asked for.',
     failTitle: 'When it fails',
-    fail: 'A missing or invalid priority is never invented: the item is marked degraded and retried, and past the attempt limit it goes to dead-letter. On a local-only route, a served model that looks like a cloud model is treated as a leak and the verdict is discarded rather than recorded as ok. If the local endpoint is unreachable the item is deferred, which does not consume an attempt and never falls back to a cloud route.',
+    fail: 'A missing or invalid priority is never invented: the item is marked degraded and retried, and past the attempt limit it goes to dead-letter. On a local-only route, a served model that looks like a cloud model is treated as a leak and the verdict is discarded rather than recorded as ok. If the local endpoint is unreachable, the item is deferred: no attempt is consumed, and it never falls back to a cloud route.',
     recordLabel: 'Triage verdict',
     record: `priority:        fyi
 audience:        personal
@@ -266,9 +262,9 @@ state:           ok`,
     index: '04',
     title: 'Delivery gates',
     railLabel: 'Gates',
-    lede: 'Two gates sit in front of every send. The audience gate requires the channel\'s audience to match the item\'s. The sensitivity gate allows a high-sensitivity item only on a non-cloud channel. Both read values persisted in the ledger rather than live configuration, so a config edit or a stale row is still caught at delivery time.',
+    lede: 'Two delivery checks sit in front of every send. The audience check requires the channel\'s audience to match the item\'s; the sensitivity check allows a high-sensitivity item only on a non-cloud channel. Both read values persisted with the item rather than live configuration, so a later config edit cannot widen what was allowed when the item was judged.',
     failTitle: 'When it fails',
-    fail: 'Unknown values fail closed: an unmarked audience becomes personal, an unmarked sensitivity becomes high, and a normalizing validator maps anything unrecognized onto the safe value. A refusal is not a failure, so no attempt is consumed and the row stays terminal until an operator forces it.',
+    fail: 'Unknown values fail closed: an unmarked audience becomes personal, an unmarked sensitivity becomes high, and a normalizing validator maps anything unrecognized onto the safe value. A refusal is not a failure, so no attempt is consumed and the row stays put until an operator forces it.',
     recordLabel: 'Refused delivery',
     record: `channel:     cloud-chat
 audience:    personal
@@ -283,9 +279,9 @@ attempts:    0`,
     index: '05',
     title: 'Digest fold',
     railLabel: 'Digest',
-    lede: 'Items below the top tier wait in a fold queue until the next waking-hours window, then leave together as one rollup message. A deferred item ages upward each time it is skipped, so a quiet item cannot starve behind louder ones.',
+    lede: 'Should and fyi items wait for the next waking-hours window, then leave together as one rollup message. A waiting item ages upward each window it is skipped, so a low-priority item cannot starve behind louder ones.',
     failTitle: 'When it fails',
-    fail: 'If the rollup would exceed the channel\'s payload limit, the packer sends what fits in rank order and defers the remainder to the next window, rather than truncating the message or dropping the overflow.',
+    fail: 'If the rollup would exceed the channel\'s payload limit, the packer sends what fits in rank order and carries the remainder to the next window, rather than truncating the message or dropping the overflow.',
     recordLabel: 'Digest line',
     record: `state:  sent    mode: digest
 window: personal:fc3532...
@@ -298,9 +294,9 @@ window: personal:fc3532...
     index: '06',
     title: 'Ledger',
     railLabel: 'Ledger',
-    lede: 'Every delivery attempt lands in an idempotent ledger keyed by source, item, and channel. The state set is explicit, and the terminal states are honest about which of them mean "sent" and which mean "deliberately not sent".',
+    lede: 'Every delivery attempt lands in an idempotent ledger keyed by source, item, and channel, so a retry updates the same row instead of adding a duplicate. The state set is explicit, and the terminal states are honest about which of them mean "sent" and which mean "deliberately not sent".',
     failTitle: 'What the ledger will not do',
-    fail: 'Read and acknowledged advance only on an explicit human signal, and an acknowledgment without a matching feedback entry is rejected. The delivery path also has a mandatory dry-run that runs full routing and both gates, prints what would be sent, makes zero outbound calls, and writes nothing.',
+    fail: 'The read and acked states advance only on an explicit human signal. The delivery path also offers a dry-run that runs full routing and both checks, prints what would be sent, makes zero outbound calls, and writes nothing.',
     recordLabel: 'Terminal semantics',
     record: `sent       delivered, receipt recorded
 dead       attempts exhausted, parked in

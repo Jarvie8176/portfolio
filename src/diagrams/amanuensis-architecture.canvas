@@ -1,0 +1,340 @@
+{
+	"nodes": [
+		{
+			"id": "grp-policy",
+			"type": "group",
+			"x": 440,
+			"y": -70,
+			"width": 740,
+			"height": 122,
+			"label": "POLICY - private context enters at explicit boundaries"
+		},
+		{
+			"id": "grp-ingest",
+			"type": "group",
+			"x": 40,
+			"y": 80,
+			"width": 340,
+			"height": 530,
+			"label": "INGEST - gather"
+		},
+		{
+			"id": "grp-triage",
+			"type": "group",
+			"x": 440,
+			"y": 80,
+			"width": 340,
+			"height": 530,
+			"label": "TRIAGE - judge"
+		},
+		{
+			"id": "grp-push",
+			"type": "group",
+			"x": 840,
+			"y": 80,
+			"width": 340,
+			"height": 530,
+			"label": "PUSH - deliver"
+		},
+		{
+			"id": "inbound-policy",
+			"type": "text",
+			"x": 460,
+			"y": -32,
+			"width": 300,
+			"height": 64,
+			"text": "<!-- type: gate, layer: L4, lod: 0, block: none -->\ninbound policy gate\nselects the allowed model route"
+		},
+		{
+			"id": "outbound-policy",
+			"type": "text",
+			"x": 860,
+			"y": -32,
+			"width": 300,
+			"height": 64,
+			"text": "<!-- type: gate, layer: L4, lod: 0, block: none -->\noutbound audience gate\naudience and sensitivity, fail closed"
+		},
+		{
+			"id": "ingest-kit",
+			"type": "text",
+			"x": 60,
+			"y": 140,
+			"width": 300,
+			"height": 90,
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\ningest-kit\nmake unlike sources comparable"
+		},
+		{
+			"id": "triage-kit",
+			"type": "text",
+			"x": 460,
+			"y": 140,
+			"width": 300,
+			"height": 90,
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\ntriage-kit\nturn a record into a decision"
+		},
+		{
+			"id": "push-kit",
+			"type": "text",
+			"x": 860,
+			"y": 140,
+			"width": 300,
+			"height": 90,
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\npush-kit\nspend attention deliberately"
+		},
+		{
+			"id": "d-normalize",
+			"type": "text",
+			"x": 60,
+			"y": 270,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: INGEST, lod: 1, block: none -->\nnormalize\none record shape for every source"
+		},
+		{
+			"id": "d-dedupe",
+			"type": "text",
+			"x": 60,
+			"y": 345,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: INGEST, lod: 1, block: none -->\ndedupe\ncontent hashing drops repeats"
+		},
+		{
+			"id": "d-identify",
+			"type": "text",
+			"x": 60,
+			"y": 420,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: INGEST, lod: 1, block: none -->\nidentify\nassigns the stable item ID"
+		},
+		{
+			"id": "d-route",
+			"type": "text",
+			"x": 460,
+			"y": 270,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: TRIAGE, lod: 1, block: none -->\nroute by sensitivity\nsensitive items go local-only"
+		},
+		{
+			"id": "d-call",
+			"type": "text",
+			"x": 460,
+			"y": 345,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: TRIAGE, lod: 1, block: none -->\none model call\nconstrained decoding, no invalid priority"
+		},
+		{
+			"id": "d-verdict",
+			"type": "text",
+			"x": 460,
+			"y": 420,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: TRIAGE, lod: 1, block: none -->\nstructured verdict\npriority, audience, summary, action required"
+		},
+		{
+			"id": "d-ladder",
+			"type": "text",
+			"x": 860,
+			"y": 270,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: PUSH, lod: 1, block: none -->\npriority ladder\nmust, should, fyi, ambient, drop"
+		},
+		{
+			"id": "d-gates",
+			"type": "text",
+			"x": 860,
+			"y": 345,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: PUSH, lod: 1, block: none -->\ndelivery gates\nread persisted values, fail closed"
+		},
+		{
+			"id": "d-fold",
+			"type": "text",
+			"x": 860,
+			"y": 420,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: process, layer: PUSH, lod: 1, block: none -->\ndelivery timing\ndeferred items age upward"
+		},
+		{
+			"id": "record-store",
+			"type": "text",
+			"x": 60,
+			"y": 520,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\nrecord store\ncontent-hashed"
+		},
+		{
+			"id": "verdict-store",
+			"type": "text",
+			"x": 460,
+			"y": 520,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\nverdict store\nversioned by route"
+		},
+		{
+			"id": "delivery-ledger",
+			"type": "text",
+			"x": 860,
+			"y": 520,
+			"width": 300,
+			"height": 56,
+			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\ndelivery ledger\neach delivery and its outcome"
+		},
+		{
+			"id": "trace",
+			"type": "text",
+			"x": 340,
+			"y": 680,
+			"width": 540,
+			"height": 56,
+			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\nstable item ID\none trace connects every decision"
+		}
+	],
+	"edges": [
+		{
+			"id": "e-ingest-triage",
+			"fromNode": "ingest-kit",
+			"toNode": "triage-kit",
+			"label": "authority: normalized record"
+		},
+		{
+			"id": "e-triage-push",
+			"fromNode": "triage-kit",
+			"toNode": "push-kit",
+			"label": "authority: structured verdict"
+		},
+		{
+			"id": "e-inbound",
+			"fromNode": "inbound-policy",
+			"toNode": "triage-kit",
+			"label": "async: policy injected"
+		},
+		{
+			"id": "e-outbound",
+			"fromNode": "outbound-policy",
+			"toNode": "push-kit",
+			"label": "async: policy injected"
+		},
+		{
+			"id": "e-ingest-store",
+			"fromNode": "ingest-kit",
+			"toNode": "record-store",
+			"label": "data: every record lands here"
+		},
+		{
+			"id": "e-triage-store",
+			"fromNode": "triage-kit",
+			"toNode": "verdict-store",
+			"label": "data: verdict stored once"
+		},
+		{
+			"id": "e-push-ledger",
+			"fromNode": "push-kit",
+			"toNode": "delivery-ledger",
+			"label": "data: every attempt recorded"
+		},
+		{
+			"id": "e-ing-d1",
+			"fromNode": "ingest-kit",
+			"toNode": "d-normalize",
+			"label": "data: step"
+		},
+		{
+			"id": "e-ing-d2",
+			"fromNode": "d-normalize",
+			"toNode": "d-dedupe",
+			"label": "data: step"
+		},
+		{
+			"id": "e-ing-d3",
+			"fromNode": "d-dedupe",
+			"toNode": "d-identify",
+			"label": "data: step"
+		},
+		{
+			"id": "e-ing-d4",
+			"fromNode": "d-identify",
+			"toNode": "record-store",
+			"label": "data: stored"
+		},
+		{
+			"id": "e-tri-d1",
+			"fromNode": "triage-kit",
+			"toNode": "d-route",
+			"label": "data: step"
+		},
+		{
+			"id": "e-tri-d2",
+			"fromNode": "d-route",
+			"toNode": "d-call",
+			"label": "data: step"
+		},
+		{
+			"id": "e-tri-d3",
+			"fromNode": "d-call",
+			"toNode": "d-verdict",
+			"label": "data: step"
+		},
+		{
+			"id": "e-tri-d4",
+			"fromNode": "d-verdict",
+			"toNode": "verdict-store",
+			"label": "data: stored"
+		},
+		{
+			"id": "e-push-d1",
+			"fromNode": "push-kit",
+			"toNode": "d-ladder",
+			"label": "data: step"
+		},
+		{
+			"id": "e-push-d2",
+			"fromNode": "d-ladder",
+			"toNode": "d-gates",
+			"label": "data: step"
+		},
+		{
+			"id": "e-push-d3",
+			"fromNode": "d-gates",
+			"toNode": "d-fold",
+			"label": "data: step"
+		},
+		{
+			"id": "e-push-d4",
+			"fromNode": "d-fold",
+			"toNode": "delivery-ledger",
+			"label": "data: recorded"
+		},
+		{
+			"id": "e-trace-1",
+			"fromNode": "record-store",
+			"toNode": "trace",
+			"label": "async: joined by item ID",
+			"fromSide": "bottom",
+			"toSide": "left"
+		},
+		{
+			"id": "e-trace-2",
+			"fromNode": "verdict-store",
+			"toNode": "trace",
+			"label": "async: joined by item ID"
+		},
+		{
+			"id": "e-trace-3",
+			"fromNode": "delivery-ledger",
+			"toNode": "trace",
+			"label": "async: joined by item ID",
+			"fromSide": "bottom",
+			"toSide": "right"
+		}
+	]
+}

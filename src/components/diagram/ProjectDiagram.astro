@@ -1,7 +1,7 @@
 ---
 // Shared project architecture diagram.
-// Build time: deterministic render of the canvas SoT -> inline SVG (works with
-// zero JS). Runtime: a lazily loaded d3 island attaches semantic zoom / LOD.
+// Build time: deterministic render of the canvas SoT -> inline SVG (base
+// render). Runtime: a lazily loaded d3 island attaches semantic zoom / LOD.
 import { renderSvg } from './render.mjs';
 
 interface Props {
@@ -91,7 +91,7 @@ const drillLayers = [...model.groups]
   .yd-accent-worlds { --yd-accent: var(--worlds, #985e49); }
 
   /* semantic zoom: per-layer detail is hidden at the high level and revealed
-     on drill-in. No-JS baseline therefore shows the clean high-level view. */
+     on drill-in. The base render therefore shows the clean high-level view. */
   .yd-stage :global([data-lod="1"]) { opacity: 0; visibility: hidden; }
   .yd-figure[data-interactive="true"] .yd-stage :global([data-lod="1"]) { transition: opacity 220ms ease; }
   .yd-stage :global([data-lod="1"][data-layer-active="true"]) {
@@ -99,7 +99,7 @@ const drillLayers = [...model.groups]
     visibility: visible;
   }
 
-  /* no-JS interaction baseline: hover/focus dims the rest */
+  /* CSS interaction baseline: hover/focus dims the rest */
   .yd-stage :global(.yd-node),
   .yd-stage :global(.yd-layer),
   .yd-stage :global(.yd-edge) { transition: opacity 160ms ease; }

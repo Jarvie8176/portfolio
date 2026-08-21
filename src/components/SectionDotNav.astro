@@ -34,7 +34,7 @@ const { items } = Astro.props as Props;
     right: clamp(18px, 2vw, 28px);
     z-index: 40;
     display: grid;
-    gap: 14px;
+    gap: 0;
     transform: translateY(-50%);
   }
 
@@ -47,21 +47,28 @@ const { items } = Astro.props as Props;
   .dot-nav a {
     --dot-accent: var(--ink);
     position: relative;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .dot-nav a::after {
+    content: "";
     width: 12px;
     height: 12px;
-    display: block;
     border: 1.5px solid var(--rule-hard);
     border-radius: 999px;
     background: var(--paper);
-    color: var(--ink-soft);
-    text-decoration: none;
     transition:
       border-color 160ms ease,
       background 160ms ease,
       transform 160ms ease;
   }
 
-  .dot-nav:hover a {
+  .dot-nav:hover a::after {
     transform: scale(1.18);
   }
 
@@ -81,14 +88,14 @@ const { items } = Astro.props as Props;
     --dot-accent: var(--worlds);
   }
 
-  .dot-nav a[aria-current="true"] {
+  .dot-nav a[aria-current="true"]::after {
     border-color: var(--dot-accent);
     background: var(--dot-accent);
   }
 
-  .dot-nav a:hover,
-  .dot-nav a:focus-visible,
-  .dot-nav a[data-section-flash="true"] {
+  .dot-nav a:hover::after,
+  .dot-nav a:focus-visible::after,
+  .dot-nav a[data-section-flash="true"]::after {
     border-color: var(--dot-accent);
     background: var(--dot-accent);
     transform: scale(1.28);
@@ -138,15 +145,15 @@ const { items } = Astro.props as Props;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .dot-nav a,
+    .dot-nav a::after,
     .dot-nav span {
       transition: none;
     }
 
-    .dot-nav:hover a,
-    .dot-nav a:hover,
-    .dot-nav a:focus-visible,
-    .dot-nav a[data-section-flash="true"] {
+    .dot-nav:hover a::after,
+    .dot-nav a:hover::after,
+    .dot-nav a:focus-visible::after,
+    .dot-nav a[data-section-flash="true"]::after {
       transform: none;
     }
 

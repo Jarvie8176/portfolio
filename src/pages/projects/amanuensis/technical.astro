@@ -1,0 +1,1304 @@
+---
+import Base from '../../../layouts/Base.astro';
+import SectionDotNav from '../../../components/SectionDotNav.astro';
+import {
+  faArrowDown,
+  faArrowRotateLeft,
+  faArrowUp,
+  faCheck,
+  faCodeBranch,
+  faDatabase,
+  faInbox,
+  faUserCheck,
+  faVolumeXmark,
+} from '@fortawesome/free-solid-svg-icons';
+  import { site } from '../../../data/site';
+  import {
+    technicalNav,
+    conceptKits,
+  conceptGuarantees,
+  conceptDesignDecisions,
+  conceptFeedbackLoop,
+  conceptTradeoffs,
+  conceptLimitations,
+} from '../../../data/amanuensis';
+  import { renderSvg } from '../../../components/diagram/render.mjs';
+  import ProjectDiagram from '../../../components/diagram/ProjectDiagram.astro';
+  import architectureCanvas from '../../../diagrams/amanuensis-architecture.canvas?raw';
+
+// per-stage flow figures are derived from the architecture canvas SoT so they
+// cannot drift from the interactive diagram in this section
+const archDoc = JSON.parse(architectureCanvas);
+const stageFlowSvg = (ids: string[], title: string): string => {
+  const nodes = archDoc.nodes
+    .filter((node: { id: string }) => ids.includes(node.id))
+    .map((node: { text?: string }) => ({
+      ...node,
+      text: typeof node.text === 'string' ? node.text.replace('lod: 1', 'lod: 0') : node.text,
+    }));
+  const edges = archDoc.edges.filter(
+    (edge: { fromNode: string; toNode: string }) =>
+      ids.includes(edge.fromNode) && ids.includes(edge.toNode),
+  );
+  return renderSvg(JSON.stringify({ nodes, edges }), { title }).svg;
+};
+const kitFlowSvgs: Record<string, string> = {
+  'ingest-kit': stageFlowSvg(
+    ['d-normalize', 'd-dedupe', 'd-identify', 'record-store'],
+    'ingest-kit flow: normalize, dedupe, identify, then the record store',
+  ),
+  'triage-kit': stageFlowSvg(
+    ['d-route', 'd-call', 'd-verdict', 'verdict-store'],
+    'triage-kit flow: route by sensitivity, one model call, structured verdict, then the verdict store',
+  ),
+  'push-kit': stageFlowSvg(
+    ['d-ladder', 'd-gates', 'd-fold', 'delivery-ledger'],
+    'push-kit flow: priority ladder, delivery gates, delivery timing, then the delivery ledger',
+  ),
+};
+
+interface UiIcon {
+  paths: string[];
+  viewBox: string;
+}
+
+const faIcon = (definition: {
+  icon: readonly [number, number, readonly string[], string, string | string[]];
+}): UiIcon => {
+  const [width, height, , , pathData] = definition.icon;
+  return {
+    paths: Array.isArray(pathData) ? pathData : [pathData],
+    viewBox: `0 0 ${width} ${height}`,
+  };
+};
+
+const feedbackActions = [
+  { label: 'Agree', icon: faIcon(faCheck) },
+  { label: 'Higher', icon: faIcon(faArrowUp) },
+  { label: 'Lower', icon: faIcon(faArrowDown) },
+  { label: 'Mute kind', icon: faIcon(faVolumeXmark) },
+];
+const feedbackStepIcons = [faInbox, faDatabase, faUserCheck, faCodeBranch].map(faIcon);
+const returnIcon = faIcon(faArrowRotateLeft);
+
+const dotNavItems = [
+  { id: 'technical-intro', label: 'Technical deep dive', accent: 'ink' as const },
+  ...technicalNav.map((item) => ({ id: item.id, label: item.label, accent: 'systems' as const })),
+];
+
+const description =
+  'A technical deep dive into the Amanuensis architecture, privacy gates, correction loop, design decisions, trade-offs, and limits.';
+---
+
+<Base title={`${site.name} · Amanuensis technical deep dive`} description={description} ogType="article" wide showHeader={false}>
+  <header class="page-nav" aria-label="Amanuensis technical navigation">
+    <div class="nav-identity">
+      <a
+        class="nav-home"
+          href="/projects/amanuensis/"
+          aria-label="Back to the Amanuensis concept page"
+        data-umami-event="amanuensis_nav_click"
+          data-umami-event-section="concept"
+        data-umami-event-placement="header"
+      >
+        <span aria-hidden="true">&#8592;</span>
+          <span>Concept</span>
+      </a>
+      <a
+        class="nav-brand"
+          href="#technical-intro"
+        aria-current="page"
+        data-umami-event="amanuensis_nav_click"
+          data-umami-event-section="technical_intro"
+        data-umami-event-placement="header"
+      >
+          Technical deep dive
+      </a>
+    </div>
+      <nav class="page-nav__links" aria-label="Technical deep dive sections">
+        {technicalNav.map((item) => (
+        <a
+          href={`#${item.id}`}
+          data-umami-event="amanuensis_nav_click"
+          data-umami-event-section={item.id}
+          data-umami-event-placement="header"
+        >
+          {item.label}
+        </a>
+      ))}
+      <a
+        class="nav-cta"
+        href="/projects/amanuensis/walkthrough/"
+        data-umami-event="amanuensis_cta_click"
+        data-umami-event-cta="walkthrough"
+        data-umami-event-placement="header"
+      >
+        Walkthrough &#8594;
+      </a>
+    </nav>
+      <details class="mobile-nav">
+        <summary aria-label="Technical deep dive sections">
+        <span class="mobile-nav__icon" aria-hidden="true"></span>
+        <span class="sr-only">Sections</span>
+      </summary>
+        <nav aria-label="Technical deep dive mobile sections">
+          {technicalNav.map((item) => (
+          <a
+            href={`#${item.id}`}
+            data-umami-event="amanuensis_nav_click"
+            data-umami-event-section={item.id}
+            data-umami-event-placement="mobile_menu"
+          >
+            {item.label}
+          </a>
+        ))}
+        <a
+          href="/projects/amanuensis/walkthrough/"
+          data-umami-event="amanuensis_cta_click"
+          data-umami-event-cta="walkthrough"
+          data-umami-event-placement="mobile_menu"
+        >
+          Walkthrough &#8594;
+        </a>
+      </nav>
+    </details>
+  </header>
+
+  <SectionDotNav items={dotNavItems} />
+
+  <main class="aman-page">
+    <section class="hero hero--technical" id="technical-intro" aria-labelledby="technical-title">
+      <div class="hero-copy">
+        <p class="kicker">Amanuensis / Technical deep dive</p>
+        <h1 id="technical-title">Boundaries before intelligence</h1>
+        <p class="hero-summary">
+          The system is split into narrow stages so collection, inference, and delivery can be
+          inspected independently. Deterministic policy gates decide where sensitive data may go;
+          a stable item ID explains what happened from receipt to final outcome.
+        </p>
+        <p class="boundary">
+          Start here for architecture and rationale. Use the example walkthrough to inspect one
+          representative item, including records and failure paths.
+        </p>
+        <a
+          class="text-link"
+          href="/projects/amanuensis/walkthrough/"
+          data-umami-event="amanuensis_cta_click"
+          data-umami-event-cta="walkthrough"
+          data-umami-event-placement="technical_hero"
+        >
+          Open the example walkthrough <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+      <div class="technical-index" aria-label="Technical deep dive contents">
+        <p class="kicker">Inside this view</p>
+        <ol>
+          <li><span>01</span> Architecture and kits</li>
+          <li><span>02</span> Privacy and traceability</li>
+          <li><span>03</span> Correction loop</li>
+          <li><span>04</span> Decisions and limits</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="architecture" class="band band--quiet" aria-labelledby="architecture-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">01</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="architecture-title">Architecture and kits</h2>
+        </div>
+        <p class="claim">Separation of concerns, local reasoning, transparency</p>
+        <p class="body body--wide">
+          Amanuensis separates source handling, judgment, and delivery into three narrow kits.
+          Records move in one direction; private context and policy enter at explicit boundaries,
+          while a stable item ID connects every decision. This keeps adapters replaceable, model
+          routing auditable, and delivery gates deterministic.
+        </p>
+        <div class="figure figure--wide">
+          <ProjectDiagram
+            canvasRaw={architectureCanvas}
+            accent="systems"
+            title="Ingest-kit, triage-kit, and push-kit in sequence, each writing to its own store; policy gates sit before inference and delivery, and a stable item ID joins the stores into one trace. Drill into a stage for its internal steps"
+          />
+        </div>
+        <div class="kit-sections">
+          {conceptKits.map((kit, index) => (
+            <article class="kit-section">
+              <div class="kit-section__main">
+                <header class="kit-section__header">
+                  <p class="kicker">Stage 0{index + 1} · {kit.label}</p>
+                  <h3>{kit.name}</h3>
+                  <p class="kit-purpose">{kit.title}</p>
+                </header>
+                <p class="kit-text">{kit.text}</p>
+                <dl class="kit-details">
+                  {kit.details.map((detail) => (
+                    <div>
+                      <dt>{detail.term}</dt>
+                      <dd>{detail.text}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+              <div class="kit-section__side">
+                <figure class="kit-flow-fig" aria-label={kit.steps.join(', then ')}>
+                  <Fragment set:html={kitFlowSvgs[kit.name]} />
+                </figure>
+                <aside class="kit-rationale">
+                  <p class="kicker">Why</p>
+                  <p>{kit.rationale}</p>
+                </aside>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p class="body section-close">
+          Digests leave on their own window schedule rather than on arrival, and an ambient item
+          remains available for reconsideration when later context makes it relevant.
+        </p>
+      </div>
+    </section>
+
+    <section id="guarantees" class="band" aria-labelledby="guarantees-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">02</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="guarantees-title">Privacy and traceability</h2>
+        </div>
+        <p class="claim">Two gates control the route. One trace explains the outcome</p>
+        <div class="card-grid guarantee-grid">
+          {conceptGuarantees.map((guarantee, index) => (
+            <article class="card guarantee-card">
+              <p class="guarantee-number" aria-hidden="true">0{index + 1}</p>
+              <h3>{guarantee.title}</h3>
+              <p class="card-text">{guarantee.text}</p>
+            </article>
+          ))}
+        </div>
+        <aside class="loadbearing">
+          <p class="stamp" aria-hidden="true">Fail<br />closed</p>
+          <div>
+            <p class="kicker kicker--refuse">When policy cannot prove the route</p>
+            <p class="pull pull--tight">The item waits, or the send is refused.</p>
+            <p class="failclosed-text">
+              It never substitutes a cloud model for an unreachable local one, or a different
+              channel for a blocked send, just to get the message out.
+            </p>
+            <p class="failclosed-text">
+              Every send can be rehearsed: a dry-run runs the full routing and both gates, prints
+              what would be sent, and writes nothing.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="feedback" class="band band--quiet" aria-labelledby="feedback-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">03</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="feedback-title">The feedback loop</h2>
+        </div>
+        <p class="claim">Human-in-the-loop (HITL) review turns corrections into rules</p>
+        <p class="body body--wide">
+          Triage that cannot be corrected slowly drifts away from its reader. Delivery is not the
+          end of the pipeline: every eligible verdict can be scored in a private review channel,
+          including items that were suppressed. A quality correction returns as data - captured,
+          condensed, reviewed by a person, and applied - rather than as a prompt tweak the model is
+          trusted to honor. Human judgment remains authoritative over the model.
+        </p>
+        <figure class="feedback-loop-figure" aria-labelledby="feedback-figure-title">
+          <figcaption id="feedback-figure-title" class="feedback-figure-caption">
+            One quality correction, carried into the next matching verdict
+          </figcaption>
+          <div class="feedback-loop-layout">
+            <div class="review-surface">
+              <p class="review-surface__label">Private review channel</p>
+              <article class="review-card" aria-label="Example review card">
+                <div class="review-card__meta">
+                  <span>newsletter feed</span>
+                  <span class="review-priority">should</span>
+                </div>
+                <h3>Account agreement update</h3>
+                <p class="review-summary">
+                  The sender changed its standard terms. No action is required this week.
+                </p>
+                <ul class="review-actions" aria-label="One-tap quality verdicts">
+                  {feedbackActions.map((action) => (
+                    <li class="review-action">
+                      <svg viewBox={action.icon.viewBox} aria-hidden="true" focusable="false">
+                        {action.icon.paths.map((path) => <path d={path} />)}
+                      </svg>
+                      <span>{action.label}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div class="written-correction">
+                  <p>Written correction</p>
+                  <q>Notifications from this sender should default to fyi.</q>
+                </div>
+              </article>
+            </div>
+
+            <div class="feedback-connector" aria-hidden="true">
+              <span>quality correction</span>
+              <b>&#8594;</b>
+            </div>
+
+            <div class="feedback-process">
+              <ol class="feedback-steps">
+                {conceptFeedbackLoop.map((step, index) => (
+                  <li class="feedback-step">
+                    <span class="feedback-step__icon" aria-hidden="true">
+                      <svg viewBox={feedbackStepIcons[index].viewBox} focusable="false">
+                        {feedbackStepIcons[index].paths.map((path) => <path d={path} />)}
+                      </svg>
+                    </span>
+                    <div>
+                      <p class="feedback-step__label">0{index + 1} / {step.label}</p>
+                      <h3>{step.title}</h3>
+                      <p>{step.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+
+              <div class="feedback-outcome">
+                <p class="kicker">Next matching item</p>
+                <div class="feedback-transition" aria-label="The model says should; the reviewed rule changes the final verdict to fyi">
+                  <span><small>model verdict</small>should</span>
+                  <b aria-hidden="true">&#8594;</b>
+                  <span class="feedback-transition__final"><small>reviewed rule</small>fyi</span>
+                </div>
+                <p>Same sender, deterministic override, no model retraining.</p>
+              </div>
+            </div>
+          </div>
+          <div class="feedback-return">
+            <svg viewBox={returnIcon.viewBox} aria-hidden="true" focusable="false">
+              {returnIcon.paths.map((path) => <path d={path} />)}
+            </svg>
+            <span>The next item returns to the same review surface, closing the loop.</span>
+          </div>
+        </figure>
+
+        <div class="feedback-notes">
+          <aside class="feedback-note feedback-note--guard">
+            <p class="kicker">Capture boundary</p>
+            <p class="pull pull--tight">Record and hand off. Never act.</p>
+            <p class="failclosed-text">
+              Loop guards keep the system's own output out of its input. A quality score cannot
+              echo back as another delivery, and an action request belongs to a separate path.
+            </p>
+          </aside>
+          <aside class="feedback-note feedback-note--safe">
+            <p class="kicker">With zero feedback</p>
+            <p class="pull pull--tight">Conservative defaults keep working.</p>
+            <p class="failclosed-text">
+              Feedback accelerates calibration; it is not a runtime dependency. Reviewed rules
+              come before rubric changes, curated examples, or fine-tuning.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="decisions" class="band" aria-labelledby="decisions-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">04</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="decisions-title">Decisions, trade-offs, and limits</h2>
+        </div>
+        <div class="decision-block">
+          <p class="kicker">Determinism and control</p>
+          <h3>Design decisions</h3>
+          <div class="decision-cards">
+            {conceptDesignDecisions.map((item) => (
+              <article class="decision-card">
+                <p class="decision-lead">{item.lead}</p>
+                <p class="decision-text">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div class="decision-block">
+          <p class="kicker">What the choices cost</p>
+          <h3>Trade-offs</h3>
+          <div class="tradeoff-list">
+            {conceptTradeoffs.map((item) => (
+              <div class="tradeoff-row">
+                <p class="tradeoff-pair">
+                  <span class="tradeoff-keep">{item.keep}</span>
+                  <span class="tradeoff-vs" aria-hidden="true">vs</span>
+                  <span class="tradeoff-cost">{item.cost}</span>
+                </p>
+                <p class="decision-text">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="decision-block">
+          <p class="kicker">What remains outside</p>
+          <h3>Limitations</h3>
+          <div class="limit-cards">
+            {conceptLimitations.map((item) => (
+              <article class="limit-card">
+                <p class="decision-lead">{item.lead}</p>
+                <p class="decision-text">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band band--close" aria-labelledby="close-title">
+      <div class="wrap close close--routes">
+        <div>
+          <p class="kicker" id="close-title">Continue with evidence</p>
+          <p class="claim claim--close">Follow one item through every record and failure path.</p>
+        </div>
+        <div class="close-actions">
+          <a class="text-link" href="/projects/amanuensis/">
+            <span aria-hidden="true">&#8592;</span> Back to the concept
+          </a>
+          <a class="btn" href="/projects/amanuensis/walkthrough/">Open the example walkthrough</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('.mobile-nav').forEach((menu) => {
+    menu.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+      link.addEventListener('click', () => menu.removeAttribute('open'));
+    });
+  });
+</script>
+
+<style>
+  .page-nav,
+  .aman-page {
+    --page-max: 72rem;
+    --pad: clamp(1.5rem, 4vw, 4rem);
+    --sec-pad: clamp(3.5rem, 6vw, 5.5rem);
+    --refuse-wash: #f7eee9;
+    color: var(--color-ink);
+  }
+
+  .page-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 64px;
+    padding: 0 var(--pad);
+    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .nav-identity {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+  }
+  .nav-home,
+  .nav-brand {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .nav-home {
+    display: none;
+    gap: 0.4rem;
+    color: var(--color-ink-faint);
+  }
+  .nav-brand { color: var(--color-ink-soft); }
+  .page-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .page-nav__links a {
+    color: var(--color-ink-faint);
+    text-decoration: none;
+  }
+  .page-nav__links a:hover,
+  .page-nav__links a:focus-visible { color: var(--color-ink); }
+  .page-nav__links .nav-cta {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .mobile-nav { display: none; margin-left: auto; }
+  .mobile-nav > summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .mobile-nav > summary::-webkit-details-marker { display: none; }
+  .mobile-nav__icon,
+  .mobile-nav__icon::before,
+  .mobile-nav__icon::after {
+    display: block;
+    width: 18px;
+    height: 1px;
+    background: var(--color-ink-soft);
+    content: '';
+  }
+  .mobile-nav__icon { position: relative; }
+  .mobile-nav__icon::before { position: absolute; top: -6px; }
+  .mobile-nav__icon::after { position: absolute; top: 6px; }
+  .mobile-nav[open] > nav {
+    position: absolute;
+    right: var(--pad);
+    top: 60px;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.1rem 1.3rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .mobile-nav nav a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    text-decoration: none;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .band { border-top: 1px solid var(--color-line); }
+  .band--quiet,
+  .band--close { background: var(--color-paper-3); }
+  .wrap {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: var(--sec-pad) var(--pad);
+  }
+  .sec-mark {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin: 0 0 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .sec-mark .num { color: var(--color-accent); }
+  .sec-mark .slash { color: var(--color-ink-faint); }
+  .sec-mark h2 {
+    margin: 0;
+    font: inherit;
+    color: var(--color-ink-soft);
+  }
+  .kicker {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .kicker--refuse { color: var(--color-stamp); }
+  .lede,
+  .body {
+    margin: 0 0 1.4rem;
+    max-width: 64ch;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+  }
+  .lede { max-width: 56ch; font-size: 1.12rem; }
+  .body--wide { max-width: 76ch; }
+  .body--tight { margin-bottom: 0.9rem; }
+  .claim {
+    margin: 0 0 0.9rem;
+    max-width: 35ch;
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2.4vw, 1.55rem);
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .pull {
+    margin: 2rem 0 0;
+    max-width: 38ch;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
+  .pull--tight { margin-top: 0; }
+  .section-close { margin: 1.8rem 0 0; }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: clamp(3.5rem, 7vw, 5.8rem) var(--pad) clamp(3rem, 5vw, 4.5rem);
+  }
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .hero h1 {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 6vw, 4.4rem);
+    font-weight: 600;
+    line-height: 1.02;
+    color: var(--color-ink);
+  }
+  .hero-position {
+    margin: 1rem 0 0;
+    max-width: 32ch;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .hero-summary {
+    margin: 1.35rem 0 0;
+    max-width: 55ch;
+    font-size: 1.08rem;
+    line-height: 1.72;
+    color: var(--color-ink-soft);
+  }
+  .boundary {
+    margin: 1.15rem 0 0;
+    max-width: 55ch;
+    padding-left: 1rem;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    border-left: 3px solid var(--color-accent);
+  }
+  .technical-index {
+    align-self: stretch;
+    padding: clamp(1.5rem, 3vw, 2.2rem);
+    border: 1px solid var(--color-line);
+    background: var(--color-paper-2);
+  }
+  .technical-index ol {
+    display: grid;
+    gap: 0;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .technical-index li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.8rem;
+    padding: 0.9rem 0;
+    color: var(--color-ink-soft);
+    border-top: 1px solid var(--color-line);
+  }
+  .technical-index li span {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-accent);
+  }
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .text-link:hover,
+  .text-link:focus-visible { color: var(--color-ink); }
+
+  .figure {
+    margin: 0;
+    padding: clamp(1.2rem, 2.4vw, 1.6rem);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .figure--wide { margin: 1.8rem 0 1.2rem; padding: clamp(1.4rem, 3vw, 2.2rem); }
+  .figure :global(svg) { display: block; width: 100%; height: auto; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+  .card {
+    position: relative;
+    min-width: 0;
+    padding: 1.35rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .card h3 {
+    margin: 0 0 0.65rem;
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+    line-height: 1.35;
+    color: var(--color-ink);
+  }
+  .card-text {
+    margin: 0;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+
+  .kit-sections {
+    margin-top: 2.2rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .kit-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .kit-section__header { margin-bottom: 1.3rem; }
+  .kit-section__side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  .kit-section__header h3 {
+    margin: 0 0 0.7rem;
+    overflow-wrap: anywhere;
+    font-family: var(--font-mono);
+    font-size: 1.08rem;
+    line-height: 1.35;
+    color: var(--color-accent);
+  }
+  .kit-purpose {
+    margin: 0;
+    max-width: 22ch;
+    font-family: var(--font-serif);
+    font-size: 1.18rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .kit-text,
+  .kit-rationale > p:last-child {
+    margin: 0;
+    font-size: 0.96rem;
+    line-height: 1.7;
+    color: var(--color-ink-soft);
+  }
+  .kit-flow-fig {
+    max-width: 340px;
+    margin: 0;
+  }
+  .kit-flow-fig :global(svg) { display: block; width: 100%; height: auto; }
+  .kit-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin: 1.3rem 0 0;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .kit-details dt {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-stamp);
+  }
+  .kit-details dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .kit-rationale {
+    min-width: 0;
+    padding: 1.1rem 1.2rem;
+    background: var(--color-paper-2);
+    border-left: 3px solid var(--color-accent);
+  }
+
+  .guarantee-card { min-height: 12rem; }
+  .feedback-loop-figure {
+    margin: 2rem 0 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .feedback-figure-caption,
+  .review-surface__label,
+  .feedback-step__label,
+  .written-correction > p {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .feedback-figure-caption { margin-bottom: 1.2rem; }
+  .feedback-loop-layout {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.82fr) 5rem minmax(0, 1.28fr);
+    gap: 1rem;
+    align-items: start;
+  }
+  .review-surface,
+  .feedback-process { min-width: 0; }
+  .review-surface__label { margin-bottom: 0.55rem; color: var(--color-accent); }
+  .review-card {
+    padding: 1.2rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .review-card__meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-ink-faint);
+  }
+  .review-priority {
+    padding: 0.22rem 0.45rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+  }
+  .review-card h3 {
+    margin: 1rem 0 0.45rem;
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .review-summary {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .review-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .review-action {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    min-width: 0;
+    min-height: 2.2rem;
+    padding: 0.42rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-ink-soft);
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+  }
+  .review-action svg {
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    fill: var(--color-accent);
+  }
+  .written-correction {
+    margin-top: 0.85rem;
+    padding: 0.75rem 0.8rem;
+    background: var(--color-paper);
+    border-left: 3px solid var(--color-accent);
+  }
+  .written-correction q {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
+  }
+  .feedback-connector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    line-height: 1.35;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    align-self: center;
+  }
+  .feedback-connector b {
+    font-family: var(--font-sans);
+    font-size: 1.7rem;
+    font-weight: 400;
+    color: var(--color-accent);
+  }
+  .feedback-steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+  }
+  .feedback-step {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.9rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .feedback-step__icon {
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    color: var(--color-accent);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .feedback-step__icon svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    fill: currentColor;
+  }
+  .feedback-step__label { margin-bottom: 0.25rem; color: var(--color-accent); }
+  .feedback-step h3 {
+    margin: 0 0 0.22rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .feedback-step > div > p:last-child {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    color: var(--color-ink-soft);
+  }
+  .feedback-outcome {
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    background: var(--color-paper-2);
+    border-left: 3px solid var(--color-accent);
+  }
+  .feedback-transition {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.7rem;
+    align-items: center;
+  }
+  .feedback-transition > span {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.55rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+  }
+  .feedback-transition small {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .feedback-transition b { color: var(--color-accent); }
+  .feedback-transition .feedback-transition__final {
+    font-weight: 700;
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .feedback-outcome > p:last-child {
+    margin: 0.65rem 0 0;
+    font-size: 0.76rem;
+    line-height: 1.5;
+    color: var(--color-ink-faint);
+  }
+  .feedback-return {
+    display: flex;
+    gap: 0.55rem;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-accent);
+  }
+  .feedback-return svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    fill: currentColor;
+  }
+  .feedback-notes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .feedback-note {
+    min-width: 0;
+    padding: 1.3rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-stamp);
+  }
+  .feedback-note--safe { border-left-color: var(--color-accent); }
+  .guarantee-number {
+    margin: 0 0 1.8rem;
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--color-accent);
+  }
+  .loadbearing {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-top: 1.1rem;
+    padding: 1.5rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+    border-left: 4px solid var(--color-stamp);
+  }
+  .failclosed-text {
+    margin: 0.55rem 0 0;
+    font-size: 0.94rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+  .stamp {
+    flex: none;
+    margin: 0;
+    padding: 0.55rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--color-stamp);
+    border: 2px solid var(--color-stamp);
+  }
+
+  .decision-block { padding: 2rem 0 0.6rem; }
+  .decision-block + .decision-block {
+    margin-top: 1.6rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .decision-block h3 {
+    margin: 0 0 1.3rem;
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .decision-lead {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-serif);
+    font-size: 1.08rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .decision-text {
+    margin: 0;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+  .decision-cards,
+  .limit-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+  .decision-card {
+    min-width: 0;
+    padding: 1.4rem 1.5rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+    border-left: 3px solid var(--color-accent);
+  }
+  .limit-card {
+    min-width: 0;
+    padding: 1.4rem 1.5rem;
+    border: 1px dashed var(--color-rule-hard, #9ca6a0);
+  }
+  .tradeoff-row {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+    padding: 1.15rem 0;
+  }
+  .tradeoff-row + .tradeoff-row { border-top: 1px solid var(--color-line); }
+  .tradeoff-pair {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: baseline;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tradeoff-keep { color: var(--color-accent); }
+  .tradeoff-vs {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: none;
+    color: var(--color-ink-faint);
+  }
+  .tradeoff-cost { color: var(--color-stamp); }
+
+  .close { text-align: center; }
+  .close .kicker,
+  .close .claim,
+  .close .body { margin-left: auto; margin-right: auto; }
+  .claim--close { max-width: 42ch; }
+  .close .body { max-width: 52ch; }
+  .close--routes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    text-align: left;
+  }
+  .close--routes .kicker,
+  .close--routes .claim { margin-left: 0; margin-right: 0; }
+  .close-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5rem;
+  }
+  .close-actions .text-link,
+  .close-actions .btn { margin-top: 0; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    margin-top: 1.3rem;
+    padding: 0 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-paper);
+    background: var(--color-accent);
+  }
+  .btn:hover,
+  .btn:focus-visible { background: var(--color-ink); }
+
+  @media (max-width: 1080px) {
+    .page-nav__links { display: none; }
+    .mobile-nav { display: block; }
+    .nav-home { display: inline-flex; }
+    .hero,
+    .two-col { grid-template-columns: minmax(0, 1fr); }
+    .hero { align-items: start; }
+    .hero .figure { max-width: 34rem; }
+    .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .kit-section { gap: clamp(1.2rem, 3vw, 2rem); }
+    .feedback-loop-layout { grid-template-columns: minmax(0, 1fr); }
+    .review-surface { max-width: 34rem; }
+    .feedback-connector {
+      flex-direction: row;
+      justify-content: flex-start;
+      padding-left: 1rem;
+      text-align: left;
+      align-self: auto;
+    }
+    .feedback-connector b { transform: rotate(90deg); }
+    .feedback-return { justify-content: flex-start; }
+  }
+  @media (max-width: 760px) {
+    .card-grid { grid-template-columns: minmax(0, 1fr); }
+    .decision-cards,
+    .limit-cards { grid-template-columns: minmax(0, 1fr); }
+    .tradeoff-row { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+    .card-grid > :last-child:nth-child(odd) { grid-column: auto; }
+    .kit-section { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+    .loadbearing { align-items: flex-start; }
+    .feedback-notes { grid-template-columns: minmax(0, 1fr); }
+    .close--routes,
+    .close-actions { align-items: flex-start; flex-direction: column; }
+  }
+  @media (max-width: 560px) {
+    .aman-page { --sec-pad: 2.8rem; }
+    .hero { padding-top: 2.8rem; }
+    .hero h1 { font-size: 2.6rem; }
+    .hero-position { font-size: 1.18rem; }
+    .hero-summary { font-size: 1rem; }
+    .loadbearing { flex-direction: column; gap: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .page-nav__links a,
+    .text-link,
+    .btn { transition: none; }
+  }
+</style>
