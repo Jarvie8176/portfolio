@@ -156,6 +156,30 @@ across many projects and diagram types; avoids per-diagram import churn). It is
 loaded **only** by the interactive island on concept pages, never on the
 landing or other routes, and never blocks first paint.
 
+### Derived static flow figures (canvas subsets)
+
+A page may need a small static figure that shows one slice of a canvas - for
+example a per-stage flow strip next to the full architecture diagram. Do NOT
+draw a second SVG for this; derive it from the same canvas at build time:
+
+```
+import { renderSvg } from '.../diagram/render.mjs';
+const doc = JSON.parse(architectureCanvas);
+const svg = renderSvg(JSON.stringify({
+  nodes: doc.nodes
+    .filter((n) => ids.includes(n.id))
+    // promote detail nodes to the always-visible level for the excerpt
+    .map((n) => ({ ...n, text: n.text?.replace('lod: 1', 'lod: 0') ?? n.text })),
+  edges: doc.edges.filter((e) => ids.includes(e.fromNode) && ids.includes(e.toNode)),
+}), { title }).svg;
+```
+
+The excerpt inherits colors, chips, and routing from the pipeline and cannot
+drift from the canvas SoT. Detail-node visibility CSS is scoped to the
+interactive figure, so raw `renderSvg` output elsewhere shows its nodes
+unconditionally. First shipped on the Amanuensis concept page (stage sections
+derive from `amanuensis-architecture.canvas`).
+
 ### Semantic zoom / level-of-detail (LOD)
 
 - **Level 0 (default):** high-level view. Layer groups render as labeled dashed
