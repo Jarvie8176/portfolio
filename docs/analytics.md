@@ -168,8 +168,10 @@ Purpose: understand which parts of the architecture visitors jump to directly.
 Fields:
 
 - `section`: `work_index`, `concept`, `hero`, a concept section id (`problem`,
-  `why`, `how`, `drill`, `invariants`, `limits`), or a walkthrough stage id
-  (`w-ingest`, `w-triage`, `w-ladder`, `w-gates`, `w-digest`, `w-ledger`)
+  `why`, `example`, `system`, `explore`), a technical section id
+  (`technical_intro`, `architecture`, `guarantees`, `feedback`, `decisions`), or
+  a walkthrough stage id (`w-ingest`, `w-triage`, `w-ladder`, `w-gates`,
+  `w-digest`, `w-ledger`)
 - `placement`: `header`, `mobile_menu`, `stage_rail`, or `section_close`
 
 Purpose: understand which sections visitors jump to, and whether the walkthrough
@@ -181,14 +183,17 @@ is read stage by stage or entered at a specific stage.
 
 Fields:
 
-- `cta`: `walkthrough` or `contact`
-- `placement`: `header`, `mobile_menu`, `section_action`, or `section_close`
+- `cta`: `technical`, `walkthrough`, or `contact`
+- `placement`: `header`, `mobile_menu`, `hero`, `technical_hero`, `system`,
+  `section_action`, or `section_close`
 
-Purpose: distinguish interest in the end-to-end walkthrough from general contact
-interest, and see which placement earns the walkthrough click.
+Purpose: distinguish interest in technical rationale from interest in the
+example evidence trail or general contact, and see which reading path earns the
+click.
 
-The two Amanuensis pages share one event namespace; `section` and `placement`
-carry the page distinction (`stage_rail` only exists on the walkthrough).
+The concept, technical deep dive, and example walkthrough share one event
+namespace; `section` and `placement` carry the page distinction (`stage_rail`
+only exists on the walkthrough).
 
 Section dot navigation on the concept page uses the shared
 `portfolio_topic_click` event from `SectionDotNav.astro` rather than a page

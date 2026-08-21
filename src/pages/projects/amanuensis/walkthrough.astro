@@ -4,11 +4,11 @@ import { site, deployment } from '../../../data/site';
 import { walkthroughNav, stages, tiers, deliveryStates, closingPoints } from '../../../data/amanuensis';
 
 const description =
-  'One item travelling the whole Amanuensis path: normalized on the way in, judged once, routed by priority and audience, folded into a digest window, and recorded in a delivery ledger.';
+  'An example walkthrough of one item travelling the whole Amanuensis path, including representative records and failure branches.';
 ---
 
 <Base
-  title={`${site.name} · Amanuensis walkthrough`}
+    title={`${site.name} · Amanuensis example walkthrough`}
   description={description}
   ogType="article"
   wide
@@ -61,8 +61,8 @@ const description =
   </header>
 
   <main class="aman-page">
-    <section class="hero" aria-labelledby="walk-title">
-      <p class="eyebrow">Walkthrough</p>
+      <section class="hero" id="walk-intro" aria-labelledby="walk-title">
+        <p class="eyebrow">Example walkthrough</p>
       <h1 id="walk-title">One item, end to end</h1>
       <p class="hero-summary">
         A single item travels the whole path: normalized on the way in, judged once, routed by
@@ -129,7 +129,7 @@ const description =
       </section>
     ))}
 
-    <section class="band" aria-labelledby="shows-title">
+      <section id="shows" class="band" aria-labelledby="shows-title">
       <div class="wrap">
         <p class="sec-mark">
           <span class="num">07</span><span class="slash">/</span>
@@ -141,17 +141,26 @@ const description =
       </div>
     </section>
 
-    <section class="band band--close" aria-label="Next steps">
+      <section id="walk-close" class="band band--close" aria-label="Next steps">
       <div class="wrap close">
-        <a
-          class="back"
+          <a
+            class="back"
           href="/projects/amanuensis/"
           data-umami-event="amanuensis_nav_click"
           data-umami-event-section="concept"
           data-umami-event-placement="section_close"
         >
-          <span aria-hidden="true">&#8592;</span> Back to the concept
-        </a>
+            <span aria-hidden="true">&#8592;</span> Back to the concept
+          </a>
+          <a
+            class="back"
+            href="/projects/amanuensis/technical/"
+            data-umami-event="amanuensis_nav_click"
+            data-umami-event-section="technical"
+            data-umami-event-placement="section_close"
+          >
+            Technical deep dive <span aria-hidden="true">&#8594;</span>
+          </a>
         {deployment.contactEmail && (
           <a
             class="btn"
@@ -166,7 +175,15 @@ const description =
       </div>
     </section>
   </main>
-</Base>
+  </Base>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('.mobile-nav').forEach((menu) => {
+    menu.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+      link.addEventListener('click', () => menu.removeAttribute('open'));
+    });
+  });
+</script>
 
 <style>
   /* the sticky nav is a sibling of .aman-page, so both need the page vars */
@@ -566,7 +583,7 @@ const description =
   .btn:hover,
   .btn:focus-visible { background: var(--color-ink); }
 
-  @media (max-width: 912px) {
+  @media (max-width: 1080px) {
     .page-nav__links { display: none; }
     .mobile-nav { display: block; }
     .nav-home { display: inline-flex; }

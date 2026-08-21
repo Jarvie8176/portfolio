@@ -177,8 +177,8 @@ const svg = renderSvg(JSON.stringify({
 The excerpt inherits colors, chips, and routing from the pipeline and cannot
 drift from the canvas SoT. Detail-node visibility CSS is scoped to the
 interactive figure, so raw `renderSvg` output elsewhere shows its nodes
-unconditionally. First shipped on the Amanuensis concept page (stage sections
-derive from `amanuensis-architecture.canvas`).
+unconditionally. First shipped for Amanuensis and now used on its technical deep
+dive, where the kit sections derive from `amanuensis-architecture.canvas`.
 
 ### Semantic zoom / level-of-detail (LOD)
 

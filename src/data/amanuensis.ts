@@ -1,7 +1,6 @@
 /**
- * Shared content for the two Amanuensis pages: the concept page
- * (`/projects/amanuensis/`) and the end-to-end walkthrough
- * (`/projects/amanuensis/walkthrough/`).
+ * Shared content for the Amanuensis concept, technical deep dive, and example
+ * walkthrough pages.
  *
  * Structural content lives here rather than in markup so the two pages can
  * share nav taxonomy and so copy edits do not mean editing layout.
@@ -16,7 +15,12 @@ export const conceptNav: NavItem[] = [
   { id: 'problem', label: 'Problem' },
   { id: 'why', label: 'Why this' },
   { id: 'example', label: 'In practice' },
-  { id: 'how', label: 'How it works' },
+  { id: 'system', label: 'The system' },
+  { id: 'explore', label: 'Explore' },
+];
+
+export const technicalNav: NavItem[] = [
+  { id: 'architecture', label: 'Architecture' },
   { id: 'guarantees', label: 'Privacy' },
   { id: 'feedback', label: 'Feedback' },
   { id: 'decisions', label: 'Decisions' },
@@ -128,22 +132,26 @@ export const conceptGuarantees = [
   },
 ];
 
-export const conceptFeedbackLoop: { title: string; text: string }[] = [
+export const conceptFeedbackLoop: { label: string; title: string; text: string }[] = [
   {
-    title: 'Score where it lands',
-    text: 'Every judged item is posted as a review card in the reader\'s own channel, pre-seeded with four one-tap verdicts: agree, should be higher, should be lower, stop pushing this kind. A short written correction works too. Dropped items get cards as well, because a wrongly suppressed item is the mistake a triage layer most needs to hear about.',
+    label: 'Capture',
+    title: 'Capture the correction',
+    text: 'A handoff-only receive path records a reaction or written quality correction, normalizes it into structured data, and passes it on. It never replies, re-judges, or acts.',
   },
   {
-    title: 'Capture only, never act',
-    text: 'The capture leg records the signal and hands it off; it never replies, re-judges, or acts on what it reads. Guard rails keep the system\'s own output out of its own input, so scoring a delivery can never echo back as another delivery.',
+    label: 'Condense',
+    title: 'Propose a narrow rule',
+    text: 'Corrections collect in a feedback ledger. Repeated signals are condensed deterministically into a candidate override; the model does not get to write policy.',
   },
   {
-    title: 'Rules pass human review',
-    text: 'Corrections accumulate in a feedback ledger. Repeats are condensed - deterministically, not by a model - into candidate override rules such as "notifications from this sender default to fyi". Every rule is reviewed by a human before it takes effect, and lives in versioned storage that can be diffed like code.',
+    label: 'Review',
+    title: 'Approve the change',
+    text: 'A human reviews the candidate as a versioned diff. An accepted rule enters the rule store; a rejected candidate changes nothing.',
   },
   {
-    title: 'Applied after the model',
-    text: 'An accepted rule runs as an ordinary deterministic branch after the model\'s judgment, overriding the verdict for every later item it matches. A human correction outranks the model, takes effect immediately, and survives a model swap: nothing is retrained.',
+    label: 'Apply',
+    title: 'Change future matches',
+    text: 'Once approved and applied, the rule runs after the model and overrides later matching verdicts. Human judgment outranks the model without retraining it.',
   },
 ];
 
