@@ -53,7 +53,7 @@ export const projects: Project[] = [
     topic: 'Attention filtering',
     conceptPage: true,
     summary:
-      'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information and ambient information, then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
+      'A privacy-aware information triage layer for personal LLM assistants. It gathers messages, tasks, events, and ambient feeds, then uses context to rank, denoise, and route each signal, so attention goes to what matters, when and where it matters.',
     existsNow: 'Read, reason, and push kits are in use for a digest loop.',
     why: 'It keeps attention from being spent on every incoming signal.',
     unresolved: 'Public release posture and broader adapter shape remain open.',

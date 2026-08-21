@@ -167,12 +167,13 @@ Purpose: understand which parts of the architecture visitors jump to directly.
 
 Fields:
 
-- `section`: `work_index`, `concept`, `hero`, a concept section id (`problem`,
+- `section`: `work_index`, `concept`, `technical`, `walkthrough`, `hero`, a concept section id (`problem`,
   `why`, `example`, `system`, `explore`), a technical section id
   (`technical_intro`, `architecture`, `guarantees`, `feedback`, `decisions`), or
   a walkthrough stage id (`w-ingest`, `w-triage`, `w-ladder`, `w-gates`,
   `w-digest`, `w-ledger`)
-- `placement`: `header`, `mobile_menu`, `stage_rail`, or `section_close`
+- `placement`: `header`, `header_subnav`, `mobile_subnav`, `stage_rail`, or
+  `section_close`
 
 Purpose: understand which sections visitors jump to, and whether the walkthrough
 is read stage by stage or entered at a specific stage.
