@@ -21,20 +21,20 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | `inbound-policy` | L4 | high-level | none | gate | inbound policy gate | selects the allowed model route |
 | `outbound-policy` | L4 | high-level | none | gate | outbound audience gate | audience and sensitivity, fail closed |
 | `ingest-kit` | L1 | high-level | none | process | ingest-kit | make sources comparable |
-| `triage-kit` | L1 | high-level | none | process | triage-kit | turn context into a decision |
+| `triage-kit` | L1 | high-level | none | process | triage-kit | turn a record into a decision |
 | `push-kit` | L1 | high-level | none | process | push-kit | spend attention deliberately |
 | `d-normalize` | INGEST | detail | none | process | normalize | one record shape for every source |
 | `d-dedupe` | INGEST | detail | none | process | dedupe | content hashing drops repeats |
 | `d-identify` | INGEST | detail | none | process | identify | assigns the stable item ID |
 | `d-route` | TRIAGE | detail | none | process | route by sensitivity | sensitive items go local-only |
 | `d-call` | TRIAGE | detail | none | process | one model call | constrained decoding, no invalid priority |
-| `d-verdict` | TRIAGE | detail | none | process | structured verdict | priority, audience, sensitivity, relevance |
-| `d-ladder` | PUSH | detail | none | process | ladder rung | must, should, fyi, ambient, drop |
+| `d-verdict` | TRIAGE | detail | none | process | structured verdict | priority, audience, summary, action required |
+| `d-ladder` | PUSH | detail | none | process | priority ladder | must, should, fyi, ambient, drop |
 | `d-gates` | PUSH | detail | none | process | delivery gates | read persisted values, fail closed |
-| `d-fold` | PUSH | detail | none | process | digest fold | deferred items age upward |
+| `d-fold` | PUSH | detail | none | process | delivery timing | deferred items age upward |
 | `record-store` | L2 | high-level | entity | store | record store | content-hashed |
 | `verdict-store` | L2 | high-level | entity | store | verdict store | versioned by route |
-| `delivery-ledger` | L2 | high-level | entity | store | delivery ledger | idempotent |
+| `delivery-ledger` | L2 | high-level | entity | store | delivery ledger | each delivery and its outcome |
 | `trace` | L2 | high-level | entity | store | stable item ID | one trace connects every decision |
 
 ## Edges
@@ -42,7 +42,7 @@ edit the `.canvas` and regenerate (`npm run diagram:doc`).
 | from | to | kind | shown at |
 |---|---|---|---|
 | `ingest-kit` | `triage-kit` | authority (normalized record) | high-level |
-| `triage-kit` | `push-kit` | authority (ranked decision) | high-level |
+| `triage-kit` | `push-kit` | authority (structured verdict) | high-level |
 | `inbound-policy` | `triage-kit` | async (policy injected) | high-level |
 | `outbound-policy` | `push-kit` | async (policy injected) | high-level |
 | `ingest-kit` | `record-store` | data (every record lands here) | high-level |
@@ -112,13 +112,13 @@ flowchart LR
     d_verdict("structured verdict")
   end
   subgraph grp_push ["PUSH - deliver"]
-    d_ladder("ladder rung")
+    d_ladder("priority ladder")
     d_gates("delivery gates")
-    d_fold("digest fold")
+    d_fold("delivery timing")
   end
 
   ingest_kit ==>|normalized record| triage_kit
-  triage_kit ==>|ranked decision| push_kit
+  triage_kit ==>|structured verdict| push_kit
   inbound_policy -.->|policy injected| triage_kit
   outbound_policy -.->|policy injected| push_kit
   ingest_kit -->|every record lands here| record_store

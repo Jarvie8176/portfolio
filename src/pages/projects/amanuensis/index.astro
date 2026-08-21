@@ -107,15 +107,16 @@ const description =
     <section class="hero" id="intro" aria-labelledby="project-title">
       <div class="hero-copy">
         <h1 id="project-title">Amanuensis</h1>
-        <p class="hero-position">A read-and-prioritize layer for personal assistants.</p>
+        <p class="hero-position">A read-and-prioritize layer for personal assistants</p>
         <p class="hero-summary">
           Amanuensis sits between personal information sources and delivery channels, using context
-          and priority to decide what deserves the foreground. Urgent items go out immediately; the rest
-          fold into a digest window, are held quiet, or drop away entirely. This protects attention without
+          and priority to decide what deserves the foreground. Urgent items go out immediately; necessary
+          but not urgent items are held back until a better time. This protects attention without
           discarding signals that may matter later.
         </p>
         <p class="boundary">
-          It does not converse, hold long-term memory, or execute privileged actions.
+          Amanuensis focuses on one job: deciding what deserves attention, and when. Conversation,
+          long-term memory, and privileged actions stay with the assistants it serves.
         </p>
         <a
           class="text-link"
@@ -143,15 +144,15 @@ const description =
         </div>
         <div class="two-col">
           <div>
-            <p class="claim">Attention is scarce; information is overloaded.</p>
+            <p class="claim">Attention is scarce; information is overwhelming</p>
             <p class="lede">
-              Every source competes as if its message were urgent, so useful signals arrive mixed
-              with promotions, reminders, repeats, and timing that does not fit the reader's plan. Without triage, the result is
-              still garbage: more material to scan, distrust, and discard. Triage changes the
-              equation by ranking each signal against context, timing, and an actual plan.
+              Urgent or not, messages from every source draw attention just to be processed. How
+              often is a push notification just spam? Without triage, the message is noisy: more
+              material to scan, distrust, and discard. Triage changes the equation by ranking each
+              signal against context, timing, and an actual plan.
             </p>
             <p class="pull">
-              Signal buried in noise is garbage.<br />
+              Signal buried in noise remains noise.<br />
               Signal after triage is a resource.<br />
               Resources, organized and reusable, become assets.
             </p>
@@ -172,22 +173,31 @@ const description =
           <span class="num">02</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="why-title">Why this layer</h2>
         </div>
-        <p class="claim">The missing layer is judgment across sources.</p>
+        <p class="claim">The missing layer is judgment before delivery</p>
         <p class="body body--wide">
-          Transport and notification tools already move messages well. Per-item summaries already
-          shorten them. Neither compares unlike sources against the same context before deciding
-          whether something deserves immediate delivery, the next digest, or a quiet hold.
+          Today's tools move and shorten. Mail, calendar, task, and notification pipelines carry
+          messages reliably; assistants summarize them one item at a time. What neither does is
+          weigh unlike sources against the same private context - the reader's plans, timing, and
+          intent - and make the delivery call before anything is allowed to interrupt.
+        </p>
+        <p class="body body--wide">
+          A private secretary sorting the morning mail made the same judgment: discard the junk,
+          file the routine, interrupt only for what cannot wait. Amanuensis rebuilds that role as
+          a narrow layer between sources and channels, deciding in context whether an item
+          interrupts immediately, folds into the next digest, or stays quiet.
         </p>
         <figure
           class="figure figure--wide"
-          aria-label="Mail, task, feed, and calendar signals pass through cross-source judgment before an item is delivered immediately, folded into a digest, or held quiet; a chair discount becomes useful only when a purchase plan exists"
+          aria-label="Mail, task, feed, and calendar signals already get moved and shortened; the missing layer compares them across sources against shared context and decides between immediate delivery, the digest window, and a quiet hold"
         >
           <Fragment set:html={whyLayerSvg} />
         </figure>
         <p class="body section-close">
-          Amanuensis owns that decision layer, records the reason, and hands the send to existing
-          delivery channels. It does not become the assistant's conversation, memory, or action
-          runtime.
+          The layer stays deliberately narrow: gather, judge, deliver - then leave the sending to
+          transport that already works. It organizes and presents; thinking, remembering, and
+          acting on the reader's behalf stay with the reader, or with agents built for those jobs.
+          The private path - sensitive items never leaving local inference - is an architectural
+          guarantee rather than a promise: two gates and one trace, below.
         </p>
       </div>
     </section>
@@ -198,12 +208,14 @@ const description =
           <span class="num">03</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="example-title">In practice</h2>
         </div>
-        <p class="claim">What's important depends on the context.</p>
+        <p class="claim">What's important depends on the context</p>
         <p class="body body--wide">
           A discount flyer is ambient when there is no purchase plan. Repeated as an immediate
           notification, it becomes spam and a spending trap. When a plan already exists - for
           example, replace a desk chair this month - the same offer becomes useful. Amanuensis
-          keeps it ambient by default, then surfaces it when the offer matches a real plan.
+          keeps it ambient by default, then surfaces it when the offer matches a real plan. Plans
+          arrive the same way anything else does: a memo is ingested as a record, then read as
+          context when other items are judged.
         </p>
         <a
           class="text-link"
@@ -224,7 +236,8 @@ const description =
           <ProjectDiagram
             canvasRaw={exampleCanvas}
             accent="systems"
-            title="A memo carrying a desk chair plan and the flyer are both ingested; with the memo as context the flyer matches a recent purchase plan, lands on the should tier, and reaches a Discord channel in the next digest window, while with no matching plan it is a regular marketing message, lands on ambient, and is held quiet with nothing sent"
+            interactive={false}
+            title="The memo carrying a desk chair plan and the flyer are both ingested. With the memo as context, the flyer matches a recent purchase plan, lands on the should tier, and reaches a Discord channel in the next digest window. With no matching plan, it is a regular marketing message: it lands on ambient and is held quiet, nothing sent"
           />
         </div>
       </div>
@@ -236,7 +249,7 @@ const description =
           <span class="num">04</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="how-title">How it works</h2>
         </div>
-        <p class="claim">Complexity is broken into stages that can be tested, governed, and traced.</p>
+        <p class="claim">Complexity is broken into stages that can be tested, governed, and traced</p>
         <p class="body body--wide">
           Amanuensis separates source handling, judgment, and delivery into three narrow kits.
           Records move in one direction; private context and policy enter at explicit boundaries,
@@ -285,10 +298,8 @@ const description =
           ))}
         </div>
         <p class="body section-close">
-          Nothing here depends on how a source talks: an adapter may poll, receive pushes, or hold a
-          subscription, and digests leave on their own window schedule rather than on arrival. Every
-          attempt lands in a delivery ledger, and an ambient item remains available for
-          reconsideration when later context makes it relevant.
+          Digests leave on their own window schedule rather than on arrival, and an ambient item
+          remains available for reconsideration when later context makes it relevant.
         </p>
       </div>
     </section>
@@ -299,7 +310,7 @@ const description =
           <span class="num">05</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="guarantees-title">Privacy and traceability</h2>
         </div>
-        <p class="claim">Two gates control the route. One trace explains the outcome.</p>
+        <p class="claim">Two gates control the route. One trace explains the outcome</p>
         <div class="card-grid guarantee-grid">
           {conceptGuarantees.map((guarantee, index) => (
             <article class="card guarantee-card">
@@ -318,8 +329,8 @@ const description =
               No model or destination is selected as a convenient fallback.
             </p>
             <p class="failclosed-text">
-              Every send can be rehearsed: a mandatory dry-run executes the full routing and both
-              gates, prints what would be sent, and writes nothing.
+              Every send can be rehearsed: a dry-run runs the full routing and both gates, prints
+              what would be sent, and writes nothing.
             </p>
           </div>
         </aside>
@@ -362,7 +373,7 @@ const description =
       <div class="wrap close">
         <p class="kicker" id="close-title">Work in progress</p>
         <p class="claim claim--close">
-          Documented in full, ahead of a public release.
+          Documented in full, ahead of a public release
         </p>
         <p class="body body--tight">
           Amanuensis is developed in a private repository while its interfaces settle. The sensitive

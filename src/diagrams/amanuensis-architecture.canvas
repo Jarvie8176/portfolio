@@ -70,7 +70,7 @@
 			"y": 140,
 			"width": 300,
 			"height": 90,
-			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\ntriage-kit\nturn context into a decision"
+			"text": "<!-- type: process, layer: L1, lod: 0, block: none -->\ntriage-kit\nturn a record into a decision"
 		},
 		{
 			"id": "push-kit",
@@ -133,7 +133,7 @@
 			"y": 420,
 			"width": 300,
 			"height": 56,
-			"text": "<!-- type: process, layer: TRIAGE, lod: 1, block: none -->\nstructured verdict\npriority, audience, sensitivity, relevance"
+			"text": "<!-- type: process, layer: TRIAGE, lod: 1, block: none -->\nstructured verdict\npriority, audience, summary, action required"
 		},
 		{
 			"id": "d-ladder",
@@ -142,7 +142,7 @@
 			"y": 270,
 			"width": 300,
 			"height": 56,
-			"text": "<!-- type: process, layer: PUSH, lod: 1, block: none -->\nladder rung\nmust, should, fyi, ambient, drop"
+			"text": "<!-- type: process, layer: PUSH, lod: 1, block: none -->\npriority ladder\nmust, should, fyi, ambient, drop"
 		},
 		{
 			"id": "d-gates",
@@ -160,7 +160,7 @@
 			"y": 420,
 			"width": 300,
 			"height": 56,
-			"text": "<!-- type: process, layer: PUSH, lod: 1, block: none -->\ndigest fold\ndeferred items age upward"
+			"text": "<!-- type: process, layer: PUSH, lod: 1, block: none -->\ndelivery timing\ndeferred items age upward"
 		},
 		{
 			"id": "record-store",
@@ -187,7 +187,7 @@
 			"y": 520,
 			"width": 300,
 			"height": 56,
-			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\ndelivery ledger\nidempotent"
+			"text": "<!-- type: store, layer: L2, lod: 0, block: entity -->\ndelivery ledger\neach delivery and its outcome"
 		},
 		{
 			"id": "trace",
@@ -210,7 +210,7 @@
 			"id": "e-triage-push",
 			"fromNode": "triage-kit",
 			"toNode": "push-kit",
-			"label": "authority: ranked decision"
+			"label": "authority: structured verdict"
 		},
 		{
 			"id": "e-inbound",

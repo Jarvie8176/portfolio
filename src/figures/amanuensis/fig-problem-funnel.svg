@@ -60,6 +60,6 @@
   <text class="mono out" x="280" y="369" text-anchor="middle">15 HELD BACK</text>
   <text class="mono note" x="280" y="389" text-anchor="middle">ambient - drop</text>
 
-  <text class="mono note" x="0" y="428">signal buried in noise is garbage · signal after triage is a resource</text>
+  <text class="mono note" x="0" y="428">signal buried in noise remains noise · signal after triage is a resource</text>
   <text class="mono note" x="0" y="443">organized resources can become assets when context changes</text>
 </svg>

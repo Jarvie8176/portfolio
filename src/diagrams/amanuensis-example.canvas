@@ -88,7 +88,7 @@
 			"y": 160,
 			"width": 240,
 			"height": 56,
-			"text": "<!-- type: store, layer: INGEST, lod: 1, block: entity -->\nrecord store\ncontent-hashed, versioned"
+			"text": "<!-- type: store, layer: INGEST, lod: 0, block: entity -->\nrecord store\ncontent-hashed, versioned"
 		},
 		{
 			"id": "cls-match",
@@ -124,7 +124,7 @@
 			"y": 445,
 			"width": 240,
 			"height": 56,
-			"text": "<!-- type: store, layer: TRIAGE, lod: 1, block: entity -->\nverdict store\nversioned by route"
+			"text": "<!-- type: store, layer: TRIAGE, lod: 0, block: entity -->\nverdict store\nversioned by route"
 		},
 		{
 			"id": "tier-must",
@@ -223,7 +223,7 @@
 			"y": 920,
 			"width": 300,
 			"height": 56,
-			"text": "<!-- type: store, layer: PUSH, lod: 1, block: entity -->\ndelivery ledger\nevery attempt lands here"
+			"text": "<!-- type: store, layer: PUSH, lod: 0, block: entity -->\ndelivery ledger\nevery attempt lands here"
 		}
 	],
 	"edges": [

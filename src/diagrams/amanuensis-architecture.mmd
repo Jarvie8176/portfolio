@@ -12,13 +12,13 @@ flowchart LR
     d_verdict("structured verdict")
   end
   subgraph grp_push ["PUSH - deliver"]
-    d_ladder("ladder rung")
+    d_ladder("priority ladder")
     d_gates("delivery gates")
-    d_fold("digest fold")
+    d_fold("delivery timing")
   end
 
   ingest_kit ==>|normalized record| triage_kit
-  triage_kit ==>|ranked decision| push_kit
+  triage_kit ==>|structured verdict| push_kit
   inbound_policy -.->|policy injected| triage_kit
   outbound_policy -.->|policy injected| push_kit
   ingest_kit -->|every record lands here| record_store

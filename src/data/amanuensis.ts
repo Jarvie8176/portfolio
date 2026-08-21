@@ -68,15 +68,15 @@ export const conceptKits: ConceptKit[] = [
   },
   {
     name: 'triage-kit',
-    label: 'Prioritize',
+    label: 'Judge',
     title: 'Turn a record into a decision',
-    text: 'One policy-routed model call per item assigns priority, audience, sensitivity, and relevance to the reader\'s current plan.',
+    text: 'Sensitivity is marked at the source before any call is made. One policy-routed model call per item then returns priority, audience, a summary, key entities, and whether action is required, judged against the reader\'s current plan.',
     rationale: 'The decision is structured and stored once. It can be inspected or reconsidered later without asking a model to remember it.',
-    steps: ['normalized record + context', 'route by sensitivity', 'one model call', 'ranked decision'],
+    steps: ['normalized record + context', 'route by sensitivity', 'one model call', 'structured verdict'],
     details: [
       {
         term: 'sensitivity-gated routes',
-        text: 'Ordinary items may take a cloud-capable route; sensitive items only an approved local one, chosen before any call is made.',
+        text: 'Ordinary items may take a cloud-capable route; sensitive items only an approved local one.',
       },
       {
         term: 'constrained decoding',
@@ -92,21 +92,21 @@ export const conceptKits: ConceptKit[] = [
     name: 'push-kit',
     label: 'Deliver',
     title: 'Spend attention deliberately',
-    text: 'Priority and audience select a rung on a five-tier ladder - must, should, fyi, ambient, drop - and the rung selects the route: immediate delivery, the next digest window, a quiet do-not-disturb hold, or suppression. Shared and public destinations must also clear the outbound gate.',
+    text: 'The assigned priority is one of five tiers - must, should, fyi, ambient, drop - and the tier picks the route: immediate delivery, the next digest window, or a quiet do-not-disturb hold, while drop is suppressed and only recorded. Shared and public destinations must also clear the outbound gate.',
     rationale: 'Delivery is separate from inference, so a model response cannot bypass deterministic audience and sensitivity rules.',
-    steps: ['ranked decision', 'ladder rung', 'delivery gates', 'immediate · digest · quiet'],
+    steps: ['structured verdict', 'priority ladder', 'outbound gate', 'immediate · digest · quiet'],
     details: [
       {
         term: 'the five tiers',
         text: 'must interrupts immediately; should and fyi fold into the next digest window; ambient is held quiet - do not disturb, but browsable; drop is suppressed and kept only as a record.',
       },
       {
-        term: 'digest fold with aging',
+        term: 'delivery timing',
         text: 'A deferred item ages upward each window it is skipped, so a low-priority item cannot starve behind louder ones.',
       },
       {
         term: 'idempotent ledger',
-        text: 'Every attempt lands in a ledger keyed by source, item, and channel, with terminal states that distinguish sent from deliberately not sent.',
+        text: 'Every attempt lands in a ledger keyed by source, item, and channel - a retry updates the same row instead of adding a duplicate - with terminal states that distinguish sent from deliberately not sent.',
       },
     ],
   },
@@ -119,17 +119,17 @@ export const conceptGuarantees = [
   },
   {
     title: 'Outbound audience gate',
-    text: 'Before a message leaves a private, personal channel, audience and sensitivity are checked. Public Discord servers, shared Slack bots, and similar destinations require an explicitly allowed route. Both gates read values persisted in the ledger rather than live configuration, so a config edit or a stale row is still caught at delivery time.',
+    text: 'Before a message leaves a private, personal channel, audience and sensitivity are checked. Public Discord servers, shared Slack bots, and similar destinations require an explicitly allowed route. The gate reads values persisted with the item rather than live configuration, so a later config edit cannot widen what was allowed when the item was judged.',
   },
   {
     title: 'End-to-end traceability',
-    text: 'One item ID links receipt, policy checks, model route, ranking, and the final delivery, quiet hold, or refusal. Every consequential step remains inspectable.',
+    text: 'One item ID links receipt, policy checks, model route, ranking, and the final outcome - delivery, quiet hold, or refusal. Every consequential step remains inspectable.',
   },
 ];
 
 export const conceptDesignDecisions = [
   'Digest-first delivery makes interruption the exception rather than the default.',
-  'Sensitive inference stays local, while private policy is supplied by the consuming application.',
+  'Sensitive inference stays local, while private policy is supplied by the assistant that embeds it.',
   'Narrow kit contracts and a stable item ID keep every stage independently testable and traceable.',
   'Safety invariants are deterministic code branches, and adversarial audits are routine: one bug class was chased through six consecutive review rounds.',
 ];
@@ -142,7 +142,7 @@ export const conceptTradeoffs = [
 
 export const conceptLimitations = [
   'Every new source still needs an adapter and an explicit policy.',
-  'Broader source coverage, public release, and wider assistant integration are not complete.',
+  'Broader source coverage, a public release, and wider assistant integration are still ahead.',
   'Conversation, long-term memory, and privileged action remain outside Amanuensis itself.',
 ];
 
@@ -186,7 +186,7 @@ state:         stored`,
     railLabel: 'Triage',
     lede: 'One model call per item returns priority, audience, a summary, key entities, and whether action is required. The endpoint is chosen by sensitivity: a cloud-capable route for ordinary items, a local-only route for sensitive ones. The verdict records which model actually served it, not the one that was asked for.',
     failTitle: 'When it fails',
-    fail: 'A missing or invalid priority is never invented: the item is marked degraded and retried, and past the attempt limit it goes to dead-letter. On a local-only route, a served model that looks like a cloud model is treated as a leak and the verdict is discarded rather than recorded as ok. If the local endpoint is unreachable the item is deferred, which does not consume an attempt and never falls back to a cloud route.',
+    fail: 'A missing or invalid priority is never invented: the item is marked degraded and retried, and past the attempt limit it goes to dead-letter. On a local-only route, a served model that looks like a cloud model is treated as a leak and the verdict is discarded rather than recorded as ok. If the local endpoint is unreachable, the item is deferred: no attempt is consumed, and it never falls back to a cloud route.',
     recordLabel: 'Triage verdict',
     record: `priority:        fyi
 audience:        personal
@@ -213,9 +213,9 @@ state:           ok`,
     index: '04',
     title: 'Delivery gates',
     railLabel: 'Gates',
-    lede: 'Two gates sit in front of every send. The audience gate requires the channel\'s audience to match the item\'s. The sensitivity gate allows a high-sensitivity item only on a non-cloud channel. Both read values persisted in the ledger rather than live configuration, so a config edit or a stale row is still caught at delivery time.',
+    lede: 'Two delivery checks sit in front of every send. The audience check requires the channel\'s audience to match the item\'s; the sensitivity check allows a high-sensitivity item only on a non-cloud channel. Both read values persisted with the item rather than live configuration, so a later config edit cannot widen what was allowed when the item was judged.',
     failTitle: 'When it fails',
-    fail: 'Unknown values fail closed: an unmarked audience becomes personal, an unmarked sensitivity becomes high, and a normalizing validator maps anything unrecognized onto the safe value. A refusal is not a failure, so no attempt is consumed and the row stays terminal until an operator forces it.',
+    fail: 'Unknown values fail closed: an unmarked audience becomes personal, an unmarked sensitivity becomes high, and a normalizing validator maps anything unrecognized onto the safe value. A refusal is not a failure, so no attempt is consumed and the row stays put until an operator forces it.',
     recordLabel: 'Refused delivery',
     record: `channel:     cloud-chat
 audience:    personal
@@ -230,9 +230,9 @@ attempts:    0`,
     index: '05',
     title: 'Digest fold',
     railLabel: 'Digest',
-    lede: 'Items below the top tier wait in a fold queue until the next waking-hours window, then leave together as one rollup message. A deferred item ages upward each time it is skipped, so a quiet item cannot starve behind louder ones.',
+    lede: 'Should and fyi items wait for the next waking-hours window, then leave together as one rollup message. A waiting item ages upward each window it is skipped, so a low-priority item cannot starve behind louder ones.',
     failTitle: 'When it fails',
-    fail: 'If the rollup would exceed the channel\'s payload limit, the packer sends what fits in rank order and defers the remainder to the next window, rather than truncating the message or dropping the overflow.',
+    fail: 'If the rollup would exceed the channel\'s payload limit, the packer sends what fits in rank order and carries the remainder to the next window, rather than truncating the message or dropping the overflow.',
     recordLabel: 'Digest line',
     record: `state:  sent    mode: digest
 window: personal:fc3532...
@@ -245,9 +245,9 @@ window: personal:fc3532...
     index: '06',
     title: 'Ledger',
     railLabel: 'Ledger',
-    lede: 'Every delivery attempt lands in an idempotent ledger keyed by source, item, and channel. The state set is explicit, and the terminal states are honest about which of them mean "sent" and which mean "deliberately not sent".',
+    lede: 'Every delivery attempt lands in an idempotent ledger keyed by source, item, and channel, so a retry updates the same row instead of adding a duplicate. The state set is explicit, and the terminal states are honest about which of them mean "sent" and which mean "deliberately not sent".',
     failTitle: 'What the ledger will not do',
-    fail: 'Read and acknowledged advance only on an explicit human signal, and an acknowledgment without a matching feedback entry is rejected. The delivery path also has a mandatory dry-run that runs full routing and both gates, prints what would be sent, makes zero outbound calls, and writes nothing.',
+    fail: 'The read and acked states advance only on an explicit human signal. The delivery path also offers a dry-run that runs full routing and both checks, prints what would be sent, makes zero outbound calls, and writes nothing.',
     recordLabel: 'Terminal semantics',
     record: `sent       delivered, receipt recorded
 dead       attempts exhausted, parked in

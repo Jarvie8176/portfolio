@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 390" width="1040" height="390" role="img" aria-labelledby="tw dw">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 224" width="1040" height="224" role="img" aria-labelledby="tw dw">
   <title id="tw">The judgment layer</title>
-  <desc id="dw">Mail, tasks, feeds, and calendar items can already be moved or shortened. Amanuensis compares them against shared context before choosing immediate delivery, the digest window, or a quiet hold. A chair discount is held quiet without a plan and enters a digest when a chair replacement plan exists.</desc>
+  <desc id="dw">Mail, tasks, feeds, and calendar items can already be moved or shortened. Amanuensis compares them against shared context and makes the delivery call before anything interrupts: immediate delivery, the digest window, or a quiet hold.</desc>
   <defs>
     <marker id="why-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M0 0L8 4L0 8Z" fill="#2c4e8a"/>
@@ -13,8 +13,6 @@
     .step{font-size:13px;font-weight:700;fill:#1b1d1f}
     .sub{font-size:10.5px;fill:#5a5e63}
     .out{font-size:10.5px;font-weight:700;letter-spacing:.6px;fill:#2c4e8a}
-    .case{font-size:11px;font-weight:600;fill:#1b1d1f}
-    .result{font-size:11px;font-weight:700;fill:#2c4e8a}
     .inverse{fill:#fff}
     .icon{fill:none;stroke:#2c4e8a;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   </style>
@@ -37,11 +35,11 @@
     <rect width="160" height="54" fill="#fbfaf7" stroke="#dce1de"/>
     <path class="icon" d="M18 16h24M34 10l8 6-8 6"/>
     <text class="mono step" x="58" y="25">move</text>
-    <text class="mono sub" x="58" y="41">reliable transport</text>
+    <text class="mono sub" x="58" y="41">urgent or not</text>
     <rect y="68" width="160" height="54" fill="#fbfaf7" stroke="#dce1de"/>
     <path class="icon" d="M18 84h24M18 91h17M18 98h10"/>
     <text class="mono step" x="58" y="93">shorten</text>
-    <text class="mono sub" x="58" y="109">one item at a time</text>
+    <text class="mono sub" x="58" y="109">each item alone</text>
   </g>
 
   <path d="M474 112h54" stroke="#2c4e8a" stroke-width="1.6" marker-end="url(#why-arrow)"/>
@@ -67,23 +65,4 @@
     <text class="mono out" x="76" y="147" text-anchor="middle">QUIET</text>
   </g>
 
-  <rect x="0" y="234" width="1040" height="134" fill="#fbfaf7" stroke="#dce1de"/>
-  <text class="mono label" x="20" y="258">SAME SIGNAL, DIFFERENT CONTEXT</text>
-  <g transform="translate(20 278)">
-    <path d="M0 5h42l12 18-12 18H0z" fill="#f7eee9" stroke="#985e49"/>
-    <circle cx="40" cy="13" r="2.5" fill="none" stroke="#985e49"/>
-    <text class="mono case" x="70" y="27">20% OFF CHAIR</text>
-    <path d="M196 23h70" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#why-arrow)"/>
-    <path d="M280 23h58M338 23v-26M338 23v26" fill="none" stroke="#2c4e8a" stroke-width="1.5"/>
-    <rect x="356" y="0" width="206" height="38" fill="#f6f7f5" stroke="#dce1de"/>
-    <text class="mono case" x="372" y="24">NO PURCHASE PLAN</text>
-    <path d="M574 19h62" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#why-arrow)"/>
-    <rect x="652" y="0" width="148" height="38" fill="#f6f7f5" stroke="#dce1de"/>
-    <text class="mono result" x="726" y="24" text-anchor="middle">QUIET</text>
-    <rect x="356" y="52" width="206" height="38" fill="#eef2f8" stroke="#2c4e8a"/>
-    <text class="mono case" x="372" y="76">REPLACE CHAIR</text>
-    <path d="M574 71h62" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#why-arrow)"/>
-    <rect x="652" y="52" width="236" height="38" fill="#eef2f8" stroke="#2c4e8a"/>
-    <text class="mono result" x="770" y="76" text-anchor="middle">NEXT DIGEST</text>
-  </g>
 </svg>
