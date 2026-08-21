@@ -9,6 +9,7 @@ const viewports = [
 const views = [
   {
     name: 'concept',
+    navLabel: 'Concept',
     path: '/projects/amanuensis/',
     sections: ['intro', 'problem', 'why', 'example', 'system', 'explore', 'close'],
     words: [350, 900],
@@ -28,6 +29,7 @@ const views = [
   },
   {
     name: 'technical',
+    navLabel: 'Technical',
     path: '/projects/amanuensis/technical/',
     sections: ['technical-intro', 'architecture', 'guarantees', 'feedback', 'decisions', 'close'],
     words: [900, 1900],
@@ -50,6 +52,7 @@ const views = [
   },
   {
     name: 'walkthrough',
+    navLabel: 'Walkthrough',
     path: '/projects/amanuensis/walkthrough/',
     sections: ['walk-intro', 'w-ingest', 'w-triage', 'w-ladder', 'w-gates', 'w-digest', 'w-ledger', 'shows', 'walk-close'],
     words: [700, 2200],
@@ -74,7 +77,7 @@ for (const view of views) {
     await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ path: `/tmp/amanuensis-${view.name}-${viewport.name}.png`, fullPage: true });
 
-    const metrics = await page.evaluate(({ expectedSections, requiredCopy, selectors }) => {
+    const metrics = await page.evaluate(({ expectedSections, requiredCopy, selectors, navLabel }) => {
       const visible = (element) => {
         const style = getComputedStyle(element);
         const rect = element.getBoundingClientRect();
@@ -138,6 +141,14 @@ for (const view of views) {
           return rect.width < 24 || rect.height < 24;
         })
         .map(label);
+      const desktopViewLinks = [...document.querySelectorAll('.page-nav__links .nav-primary')];
+      const mobileViewLinks = [...document.querySelectorAll('.mobile-nav .mobile-nav-group-label')];
+      const desktopSectionLinks = [...document.querySelectorAll('.page-nav__links .nav-subnav a')];
+      const mobileSectionLinks = [...document.querySelectorAll('.mobile-nav .mobile-nav-children a')];
+      const currentDesktopLinks = desktopViewLinks.filter((link) => link.getAttribute('aria-current') === 'page');
+      const currentMobileLinks = mobileViewLinks.filter((link) => link.getAttribute('aria-current') === 'page');
+      const desktopNav = document.querySelector('.page-nav__links');
+      const mobileNav = document.querySelector('.mobile-nav');
 
       return {
         documentWidth: `${document.documentElement.scrollWidth}/${document.documentElement.clientWidth}`,
@@ -148,6 +159,27 @@ for (const view of views) {
         sectionOverlap,
         unnamedFigures,
         smallDotTargets,
+        navStructure: {
+          home: document.querySelector('.nav-home span:last-child')?.textContent?.trim(),
+          brand: document.querySelector('.nav-brand')?.textContent?.trim(),
+          desktopViews: desktopViewLinks.length,
+          mobileViews: mobileViewLinks.length,
+          desktopSections: desktopSectionLinks.length,
+          mobileSections: mobileSectionLinks.length,
+          currentDesktop: currentDesktopLinks[0]?.textContent?.trim(),
+          currentMobile: currentMobileLinks[0]?.textContent?.trim(),
+          desktopVisible: desktopNav ? visible(desktopNav) : false,
+          mobileVisible: mobileNav ? visible(mobileNav) : false,
+          matches:
+            desktopViewLinks.length === 3 &&
+            mobileViewLinks.length === 3 &&
+            desktopSectionLinks.length === 15 &&
+            mobileSectionLinks.length === 15 &&
+            currentDesktopLinks.length === 1 &&
+            currentMobileLinks.length === 1 &&
+            currentDesktopLinks[0]?.textContent?.trim() === navLabel &&
+            currentMobileLinks[0]?.textContent?.trim() === navLabel,
+        },
         narrativeWordCount: narrativeText.split(/\s+/).filter(Boolean).length,
         requiredCopy: Object.fromEntries(requiredCopy.map((copy) => [copy, pageText.includes(copy)])),
         selectorCounts: Object.fromEntries(selectors.map(([selector]) => [selector, document.querySelectorAll(selector).length])),
@@ -162,13 +194,32 @@ for (const view of views) {
           !pageText.includes('Where it stands and limits') &&
           !pageText.includes('The load-bearing behavior'),
       };
-    }, { expectedSections: view.sections, requiredCopy: view.requiredCopy, selectors: view.selectors });
+    }, {
+      expectedSections: view.sections,
+      requiredCopy: view.requiredCopy,
+      selectors: view.selectors,
+      navLabel: view.navLabel,
+    });
+
+    let desktopDropdownWorks = { hover: true, focus: true };
+    if (viewport.width > 900) {
+      const currentPrimary = page.locator('.nav-primary[aria-current="page"]');
+      const currentDropdown = currentPrimary.locator('xpath=..').locator('.nav-subnav');
+      await currentPrimary.hover();
+      desktopDropdownWorks.hover = await currentDropdown.isVisible();
+      await page.waitForTimeout(180);
+      await page.screenshot({ path: `/tmp/amanuensis-${view.name}-${viewport.name}-nav-open.png` });
+      await page.mouse.move(0, 0);
+      await currentPrimary.focus();
+      desktopDropdownWorks.focus = await currentDropdown.isVisible();
+    }
 
     let mobileMenuCloses = true;
-    if (viewport.width <= 1080) {
+    if (viewport.width <= 900) {
       const menu = page.locator('.mobile-nav');
       await menu.locator(':scope > summary').click();
-      await menu.locator('nav a[href^="#"]').first().click();
+      await page.screenshot({ path: `/tmp/amanuensis-${view.name}-${viewport.name}-nav-open.png` });
+      await menu.locator('nav a[aria-current="page"]').click();
       mobileMenuCloses = !(await menu.evaluate((element) => element.open));
     }
 
@@ -182,15 +233,22 @@ for (const view of views) {
       metrics.sectionOverlap.length > 0 ||
       metrics.unnamedFigures.length > 0 ||
       metrics.smallDotTargets.length > 0 ||
+      metrics.navStructure.home !== 'Portfolio' ||
+      metrics.navStructure.brand !== 'Amanuensis' ||
+      !metrics.navStructure.matches ||
+      metrics.navStructure.desktopVisible !== (viewport.width > 900) ||
+      metrics.navStructure.mobileVisible !== (viewport.width <= 900) ||
       metrics.narrativeWordCount < view.words[0] ||
       metrics.narrativeWordCount > view.words[1] ||
       Object.values(metrics.requiredCopy).some((present) => !present) ||
       !selectorCountsMatch ||
       !metrics.sectionOrderMatches ||
       !metrics.removedCopy ||
+      !desktopDropdownWorks.hover ||
+      !desktopDropdownWorks.focus ||
       !mobileMenuCloses;
     failed ||= problems;
-    console.log(JSON.stringify({ view: view.name, viewport, mobileMenuCloses, ...metrics }, null, 2));
+    console.log(JSON.stringify({ view: view.name, viewport, desktopDropdownWorks, mobileMenuCloses, ...metrics }, null, 2));
     await page.close();
   }
 }

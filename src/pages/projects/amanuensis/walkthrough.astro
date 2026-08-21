@@ -1,7 +1,8 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import AmanuensisNav from '../../../components/amanuensis/AmanuensisNav.astro';
 import { site, deployment } from '../../../data/site';
-import { walkthroughNav, stages, tiers, deliveryStates, closingPoints } from '../../../data/amanuensis';
+import { stages, tiers, deliveryStates, closingPoints } from '../../../data/amanuensis';
 
 const description =
   'An example walkthrough of one item travelling the whole Amanuensis path, including representative records and failure branches.';
@@ -14,51 +15,7 @@ const description =
   wide
   showHeader={false}
 >
-  <header class="page-nav" aria-label="Amanuensis walkthrough navigation">
-    <div class="nav-identity">
-      <a
-        class="nav-home"
-        href="/projects/amanuensis/"
-        aria-label="Back to the Amanuensis concept page"
-        data-umami-event="amanuensis_nav_click"
-        data-umami-event-section="concept"
-        data-umami-event-placement="header"
-      >
-        <span aria-hidden="true">&#8592;</span>
-        <span>Amanuensis</span>
-      </a>
-    </div>
-    <nav class="page-nav__links" aria-label="Walkthrough stages">
-      {walkthroughNav.map((item) => (
-        <a
-          href={`#${item.id}`}
-          data-umami-event="amanuensis_nav_click"
-          data-umami-event-section={item.id}
-          data-umami-event-placement="header"
-        >
-          {item.label}
-        </a>
-      ))}
-    </nav>
-    <details class="mobile-nav">
-      <summary aria-label="Walkthrough stages">
-        <span class="mobile-nav__icon" aria-hidden="true"></span>
-        <span class="sr-only">Stages</span>
-      </summary>
-      <nav aria-label="Walkthrough mobile stages">
-        {walkthroughNav.map((item) => (
-          <a
-            href={`#${item.id}`}
-            data-umami-event="amanuensis_nav_click"
-            data-umami-event-section={item.id}
-            data-umami-event-placement="mobile_menu"
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-    </details>
-  </header>
+  <AmanuensisNav current="walkthrough" />
 
   <main class="aman-page">
       <section class="hero" id="walk-intro" aria-labelledby="walk-title">
@@ -177,17 +134,7 @@ const description =
   </main>
   </Base>
 
-<script>
-  document.querySelectorAll<HTMLDetailsElement>('.mobile-nav').forEach((menu) => {
-    menu.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
-      link.addEventListener('click', () => menu.removeAttribute('open'));
-    });
-  });
-</script>
-
 <style>
-  /* the sticky nav is a sibling of .aman-page, so both need the page vars */
-  .page-nav,
   .aman-page {
     --page-max: 72rem;
     --pad: clamp(1.5rem, 4vw, 4rem);
@@ -197,114 +144,6 @@ const description =
   }
 
   /* ---------------------------------------------------------- page nav */
-  .page-nav {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    height: 64px;
-    padding: 0 var(--pad);
-    background: color-mix(in srgb, var(--color-paper) 88%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--color-line);
-  }
-  .nav-identity {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    min-width: 0;
-  }
-  .nav-home,
-  .nav-brand {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    text-decoration: none;
-  }
-  .nav-home {
-    display: none;
-    gap: 0.4rem;
-    color: var(--color-ink-faint);
-  }
-  .nav-brand { color: var(--color-ink-soft); }
-  .page-nav__links {
-    display: flex;
-    align-items: center;
-    gap: 1.4rem;
-    margin-left: auto;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-  }
-  .page-nav__links a {
-    color: var(--color-ink-faint);
-    text-decoration: none;
-  }
-  .page-nav__links a:hover,
-  .page-nav__links a:focus-visible {
-    color: var(--color-ink);
-  }
-  .page-nav__links .nav-cta {
-    color: var(--color-accent);
-    font-weight: 600;
-  }
-  .mobile-nav { display: none; margin-left: auto; }
-  .mobile-nav > summary {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    list-style: none;
-  }
-  .mobile-nav > summary::-webkit-details-marker { display: none; }
-  .mobile-nav__icon,
-  .mobile-nav__icon::before,
-  .mobile-nav__icon::after {
-    display: block;
-    width: 18px;
-    height: 1px;
-    background: var(--color-ink-soft);
-    content: '';
-  }
-  .mobile-nav__icon { position: relative; }
-  .mobile-nav__icon::before { position: absolute; top: -6px; }
-  .mobile-nav__icon::after { position: absolute; top: 6px; }
-  .mobile-nav[open] > nav {
-    position: absolute;
-    right: var(--pad);
-    top: 60px;
-    display: grid;
-    gap: 0.9rem;
-    padding: 1.1rem 1.3rem;
-    background: var(--color-paper-2);
-    border: 1px solid var(--color-line);
-  }
-  .mobile-nav nav a {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    color: var(--color-ink-soft);
-    text-decoration: none;
-  }
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
 
   /* ------------------------------------------------------------ shell */
   .band { border-top: 1px solid var(--color-line); }
@@ -439,9 +278,6 @@ const description =
   }
 
   /* -------------------------------------------------------- walkthrough */
-  /* the back link is this page's only identity, so it shows at every width */
-  .nav-home { display: inline-flex; }
-
   .hero { display: block; }
   .hero h1 { margin-top: 0.9rem; max-width: 20ch; }
   .provenance {
@@ -584,9 +420,6 @@ const description =
   .btn:focus-visible { background: var(--color-ink); }
 
   @media (max-width: 1080px) {
-    .page-nav__links { display: none; }
-    .mobile-nav { display: block; }
-    .nav-home { display: inline-flex; }
     .stage { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 760px) {

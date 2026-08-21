@@ -1,0 +1,411 @@
+---
+import { conceptNav, technicalNav, walkthroughNav } from '../../data/amanuensis';
+
+type ViewId = 'concept' | 'technical' | 'walkthrough';
+
+interface Props {
+  current: ViewId;
+}
+
+const { current } = Astro.props as Props;
+const views: { id: ViewId; label: string; href: string; sections: typeof conceptNav }[] = [
+  { id: 'concept', label: 'Concept', href: '/projects/amanuensis/', sections: conceptNav },
+  {
+    id: 'technical',
+    label: 'Technical',
+    href: '/projects/amanuensis/technical/',
+    sections: technicalNav,
+  },
+  {
+    id: 'walkthrough',
+    label: 'Walkthrough',
+    href: '/projects/amanuensis/walkthrough/',
+    sections: walkthroughNav,
+  },
+];
+---
+
+<header class="page-nav" aria-label="Amanuensis navigation">
+  <div class="nav-identity">
+    <a
+      class="nav-home"
+      href="/work/#amanuensis"
+      aria-label="Back to the portfolio work index"
+      data-umami-event="amanuensis_nav_click"
+      data-umami-event-section="work_index"
+      data-umami-event-placement="header"
+    >
+      <span aria-hidden="true">&#8592;</span>
+      <span>Portfolio</span>
+    </a>
+    <a
+      class="nav-brand"
+      href="/projects/amanuensis/"
+      data-umami-event="amanuensis_nav_click"
+      data-umami-event-section="concept"
+      data-umami-event-placement="header"
+    >
+      Amanuensis
+    </a>
+  </div>
+
+  <nav class="page-nav__links" aria-label="Amanuensis views">
+    {views.map((view) => (
+      <div class="nav-section">
+        <a
+          class="nav-primary"
+          href={view.href}
+          aria-current={current === view.id ? 'page' : undefined}
+          data-umami-event="amanuensis_nav_click"
+          data-umami-event-section={view.id}
+          data-umami-event-placement="header_subnav"
+        >
+          {view.label}
+        </a>
+        <div class="nav-subnav" aria-label={`${view.label} sections`}>
+          {view.sections.map((section) => (
+            <a
+              href={`${view.href}#${section.id}`}
+              data-umami-event="amanuensis_nav_click"
+              data-umami-event-section={section.id}
+              data-umami-event-placement="header_subnav"
+            >
+              {section.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </nav>
+
+  <details class="mobile-nav">
+    <summary aria-label="Amanuensis views">
+      <span class="mobile-nav__icon" aria-hidden="true"></span>
+      <span class="sr-only">Views</span>
+    </summary>
+    <nav aria-label="Amanuensis mobile views">
+      {views.map((view) => (
+        <div class="mobile-nav-group">
+          <a
+            class="mobile-nav-group-label"
+            href={view.href}
+            aria-current={current === view.id ? 'page' : undefined}
+            data-umami-event="amanuensis_nav_click"
+            data-umami-event-section={view.id}
+            data-umami-event-placement="mobile_subnav"
+          >
+            {view.label}
+          </a>
+          <div class="mobile-nav-children">
+            {view.sections.map((section) => (
+              <a
+                href={`${view.href}#${section.id}`}
+                data-umami-event="amanuensis_nav_click"
+                data-umami-event-section={section.id}
+                data-umami-event-placement="mobile_subnav"
+              >
+                {section.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </nav>
+  </details>
+</header>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('.mobile-nav').forEach((menu) => {
+    menu.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+      link.addEventListener('click', () => menu.removeAttribute('open'));
+    });
+  });
+</script>
+
+<style>
+  .page-nav {
+    --nav-pad: clamp(1.5rem, 4vw, 4rem);
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 64px;
+    padding: 0 var(--nav-pad);
+    border-bottom: 1px solid var(--color-line);
+    background: color-mix(in srgb, var(--color-paper) 92%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  .nav-identity {
+    display: inline-flex;
+    flex: 0 0 auto;
+    min-width: 0;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .nav-home,
+  .page-nav__links a,
+  .mobile-nav summary,
+  .mobile-nav nav a {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nav-home {
+    order: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-ink-soft);
+  }
+
+  .nav-identity::after {
+    order: 1;
+    width: 1px;
+    height: 20px;
+    background: var(--color-line);
+    content: "";
+  }
+
+  .nav-brand {
+    order: 2;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .page-nav__links {
+    display: flex;
+    min-width: 0;
+    justify-content: flex-end;
+    gap: clamp(1rem, 2.4vw, 2.25rem);
+  }
+
+  .nav-section {
+    position: relative;
+  }
+
+  .nav-primary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 64px;
+    color: var(--color-ink-faint);
+  }
+
+  .nav-primary[aria-current='page'] {
+    color: var(--color-accent);
+  }
+
+  .nav-primary[aria-current='page']::after {
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    background: var(--color-accent);
+    content: "";
+  }
+
+  .nav-subnav {
+    position: absolute;
+    top: calc(100% - 0.4rem);
+    right: 0;
+    z-index: 1;
+    display: grid;
+    min-width: 12rem;
+    padding: 0.45rem;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    visibility: hidden;
+    background: var(--color-paper);
+    box-shadow: 0 18px 42px color-mix(in srgb, var(--color-ink) 14%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-0.35rem);
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+
+  .nav-section:hover .nav-subnav,
+  .nav-section:focus-within .nav-subnav {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav-subnav a {
+    display: flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 6px;
+    color: var(--color-ink-soft);
+    font-size: 0.68rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .nav-subnav a:hover,
+  .nav-subnav a:focus-visible {
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  }
+
+  .nav-home:hover,
+  .nav-brand:hover,
+  .page-nav__links a:hover,
+  .mobile-nav nav a:hover {
+    color: var(--color-accent);
+  }
+
+  .nav-home:focus-visible,
+  .nav-brand:focus-visible,
+  .page-nav__links a:focus-visible,
+  .mobile-nav summary:focus-visible,
+  .mobile-nav nav a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+
+  .mobile-nav {
+    position: relative;
+    display: none;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .mobile-nav summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-height: 38px;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-paper) 90%, transparent);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .mobile-nav summary::-webkit-details-marker { display: none; }
+
+  .mobile-nav__icon,
+  .mobile-nav__icon::before,
+  .mobile-nav__icon::after {
+    display: block;
+    width: 16px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--color-accent);
+    content: "";
+  }
+
+  .mobile-nav__icon { position: relative; }
+  .mobile-nav__icon::before,
+  .mobile-nav__icon::after { position: absolute; left: 0; }
+  .mobile-nav__icon::before { top: -5px; }
+  .mobile-nav__icon::after { top: 5px; }
+  .mobile-nav[open] .mobile-nav__icon { background: transparent; }
+  .mobile-nav[open] .mobile-nav__icon::before { top: 0; transform: rotate(45deg); }
+  .mobile-nav[open] .mobile-nav__icon::after { top: 0; transform: rotate(-45deg); }
+
+  .mobile-nav nav {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    display: grid;
+    width: min(76vw, 280px);
+    max-height: min(70vh, 34rem);
+    padding: 0.5rem;
+    overflow-y: auto;
+    border: 1px solid var(--color-line);
+    border-radius: 8px;
+    background: var(--color-paper);
+    box-shadow: 0 18px 42px color-mix(in srgb, var(--color-ink) 14%, transparent);
+  }
+
+  .mobile-nav-group {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.35rem 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .mobile-nav-group:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .mobile-nav nav a {
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    color: var(--color-ink-soft);
+  }
+
+  .mobile-nav-group-label {
+    min-height: 40px;
+    padding: 0 0.9rem;
+  }
+
+  .mobile-nav-children {
+    display: grid;
+    padding-left: 0.75rem;
+  }
+
+  .mobile-nav-children a {
+    min-height: 32px;
+    padding: 0.5rem 0.9rem;
+    color: var(--color-ink-faint);
+    font-size: 0.66rem;
+    font-weight: 600;
+  }
+
+  .mobile-nav-group-label[aria-current='page'] {
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  }
+
+  .mobile-nav nav a:hover {
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    .page-nav { padding-inline: max(1rem, 4vw); }
+    .page-nav__links { display: none; }
+    .mobile-nav { display: block; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-subnav,
+    .mobile-nav__icon,
+    .mobile-nav__icon::before,
+    .mobile-nav__icon::after { transition: none; }
+  }
+</style>
