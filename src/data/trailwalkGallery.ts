@@ -91,12 +91,9 @@ export type TrailwalkGalleryItem = {
 };
 
 /**
- * Published prefixes are immutable, so a change of content is a change of
- * prefix. v4 rebuilds the whole set from the current source directory: three
- * samples were re-exported from their raw masters, one was withdrawn, one was
- * added, and the HD tier's metadata handling changed: it now keeps the colour
- * profile and the lens and exposure fields, and removes only what identifies a
- * person or a place — including a vendor payload no metadata tool reports.
+ * Published prefixes are immutable. The current export keeps colour-profile,
+ * lens, and exposure metadata while removing fields that identify a person or
+ * place, including vendor payloads not reported by standard metadata tools.
  */
 const assetVersion = "trailwalk/v5";
 
@@ -109,9 +106,8 @@ const assetVersion = "trailwalk/v5";
  *   972-1077 px   a phone at 3x
  *  1229-1436 px   a tablet at 2x, where the grid drops to one full-width card
  *
- * The ladder before this was a single 1200 plus a 2400 that no browser ever
- * selected, so a 367 px slot was served a 1200-wide file while the widest slot
- * of all was under-served.
+ * These candidates limit over-serving in desktop slots while preserving enough
+ * density for wide mobile and tablet layouts.
  */
 const highlightWidths = [480, 800, 1200, 1600];
 

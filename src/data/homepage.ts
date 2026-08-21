@@ -88,7 +88,7 @@ export const homepage = {
           id: 'amanuensis',
           name: 'Amanuensis',
           introduction:
-            'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information (work email, to-dos, appointments) and ambient information (flyers, newsletters, weather alerts, RSS feeds), then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
+            'A privacy-aware information triage layer for personal LLM assistants. It gathers messages, tasks, events, and ambient feeds, then uses context to rank, denoise, and route each signal, so attention goes to what matters, when and where it matters.',
           href: '/projects/amanuensis/',
           material: materials.amanuensis,
         },

@@ -1,6 +1,6 @@
 # Diagram design spec
 
-Status: design authority - v1.0
+Status: implemented design authority
 Companion to `docs/diagram-pipeline.md` (the engineering/how-it-is-built doc).
 This doc is the visual authority: how a project figure should LOOK and BEHAVE.
 The node/edge content of a specific figure is auto-generated per project (e.g.
@@ -40,8 +40,8 @@ IO and governance boundaries.
   memory namespaces, then feeds reviewed changes back up. It is a foundation
   because it is the reviewed layer that changes the rules future runs stand on.
 
-The earlier hourglass / waist composition is retired: the "narrow to one gate"
-thesis is now carried by the L4 vertical funnel, not by a visual pinch.
+The "narrow to one gate" thesis is carried by the L4 vertical funnel, not by a
+visual pinch.
 L1-L4 layer containers share the same top y-position in the full-system figure;
 their heights may differ, but their labels and top boundaries should read as one
 middle runtime band.
@@ -667,7 +667,7 @@ drilldown docs or runbooks, not in the concept figure.
 ## 6. Reading levels (semantic zoom)
 
 - **Level 0 (high-level):** one summary node per layer + cross-layer edges = the
-  layered map. This is the static, no-JS baseline.
+  layered map. This is the static baseline the island enhances.
 - **Level 1 (hover/focus):** a node raises its connected flow; unrelated marks
   dim.
 - **Level 2 (detail overlay):** toggling or double-clicking a layer reveals that
@@ -687,8 +687,8 @@ level 0 by style, so drift verification always sees the full node/edge set.
 - **Keyboard:** zoom (+/-), pan (arrows), reset (0) reachable without a mouse;
   layer toggles, pan/zoom controls, layers, and nodes are focusable with visible
   focus rings.
-- **No-JS baseline:** the static high-level figure is fully readable; all of the
-  above is progressive enhancement layered on the inline SVG.
+- **Base render:** the static high-level figure is readable before the island
+  loads; the island layers the interaction model onto the inline SVG.
 
 ## 8. Accessibility & motion
 
@@ -717,6 +717,6 @@ against an editorial diagram-skill render of the same content. Findings folded
 into this spec: the focal-accent discipline, the accessible-SVG contract, and the
 optional `funnel` convergence in 4.1.
 
-v0.2 retires the hourglass composition for a left-to-right layered map (1), adds
-the uniform spacing grid (1.1), colored arrowheads (4), and port-hinted routing
-(4.1). The write funnel now renders as an orthogonal vertical column by default.
+The current contract uses a left-to-right layered map, a uniform spacing grid,
+colored arrowheads, port-hinted routing, and an orthogonal vertical write
+funnel.

@@ -1,0 +1,41 @@
+flowchart LR
+  subgraph grp_policy ["POLICY - private context enters at explicit boundaries"]
+  end
+  subgraph grp_ingest ["INGEST - gather"]
+    d_normalize("normalize")
+    d_dedupe("dedupe")
+    d_identify("identify")
+  end
+  subgraph grp_triage ["TRIAGE - judge"]
+    d_route("route by sensitivity")
+    d_call("one model call")
+    d_verdict("structured verdict")
+  end
+  subgraph grp_push ["PUSH - deliver"]
+    d_ladder("priority ladder")
+    d_gates("delivery gates")
+    d_fold("delivery timing")
+  end
+
+  ingest_kit ==>|normalized record| triage_kit
+  triage_kit ==>|structured verdict| push_kit
+  inbound_policy -.->|policy injected| triage_kit
+  outbound_policy -.->|policy injected| push_kit
+  ingest_kit -->|every record lands here| record_store
+  triage_kit -->|verdict stored once| verdict_store
+  push_kit -->|every attempt recorded| delivery_ledger
+  ingest_kit -->|step| d_normalize
+  d_normalize -->|step| d_dedupe
+  d_dedupe -->|step| d_identify
+  d_identify -->|stored| record_store
+  triage_kit -->|step| d_route
+  d_route -->|step| d_call
+  d_call -->|step| d_verdict
+  d_verdict -->|stored| verdict_store
+  push_kit -->|step| d_ladder
+  d_ladder -->|step| d_gates
+  d_gates -->|step| d_fold
+  d_fold -->|recorded| delivery_ledger
+  record_store -.->|joined by item ID| trace
+  verdict_store -.->|joined by item ID| trace
+  delivery_ledger -.->|joined by item ID| trace

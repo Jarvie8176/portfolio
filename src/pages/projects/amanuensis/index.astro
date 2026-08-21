@@ -1,0 +1,502 @@
+---
+import Base from '../../../layouts/Base.astro';
+import AmanuensisNav from '../../../components/amanuensis/AmanuensisNav.astro';
+import SectionDotNav from '../../../components/SectionDotNav.astro';
+import { site } from '../../../data/site';
+import { conceptNav } from '../../../data/amanuensis';
+import heroFlowSvg from '../../../figures/amanuensis/fig-hero-flow.svg?raw';
+import problemFunnelSvg from '../../../figures/amanuensis/fig-problem-funnel.svg?raw';
+import whyLayerSvg from '../../../figures/amanuensis/fig-why-layer.svg?raw';
+import ProjectDiagram from '../../../components/diagram/ProjectDiagram.astro';
+import exampleCanvas from '../../../diagrams/amanuensis-example.canvas?raw';
+
+const conceptStages = [
+  {
+    label: 'Gather',
+    title: 'Make unlike sources comparable',
+    text: 'Mail, tasks, feeds, and notes enter one stable record shape, with repeats removed at the edge.',
+  },
+  {
+    label: 'Judge',
+    title: 'Rank each item in context',
+    text: 'Private plans, timing, and intent turn the same signal into foreground, digest, quiet, or drop.',
+  },
+  {
+    label: 'Deliver',
+    title: 'Spend attention deliberately',
+    text: 'Deterministic gates decide whether an item may interrupt, wait for a digest, or remain unsent.',
+  },
+];
+
+const dotNavItems = [
+  { id: 'intro', label: 'Intro', accent: 'ink' as const },
+  ...conceptNav.map((item) => ({ id: item.id, label: item.label, accent: 'systems' as const })),
+];
+
+const description =
+  'Amanuensis protects scarce attention by turning cross-source signals into context-ranked resources, with privacy gates on inference and delivery.';
+---
+
+<Base title={`${site.name} · Amanuensis`} description={description} ogType="article" wide showHeader={false}>
+  <AmanuensisNav current="concept" />
+
+  <SectionDotNav items={dotNavItems} />
+
+  <main class="aman-page">
+    <section class="hero" id="intro" aria-labelledby="project-title">
+      <div class="hero-copy">
+        <h1 id="project-title">Amanuensis</h1>
+        <p class="hero-position">A read-and-prioritize layer for personal assistants</p>
+        <p class="hero-summary">
+          Amanuensis sits between personal information sources and delivery channels, using context
+          and priority to decide what deserves the foreground. Urgent items go out immediately; necessary
+          but not urgent items are held back until a better time. This protects attention without
+          discarding signals that may matter later.
+        </p>
+        <p class="boundary">
+          Amanuensis focuses on one job: deciding what deserves attention, and when. Conversation,
+          long-term memory, and privileged actions stay with the assistants it serves.
+        </p>
+        <a
+          class="text-link"
+          href="/projects/amanuensis/walkthrough/"
+          data-umami-event="amanuensis_cta_click"
+          data-umami-event-cta="walkthrough"
+          data-umami-event-placement="hero"
+        >
+          Sample walkthrough <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+      <figure
+        class="figure figure--hero"
+        aria-label="Personal information is gathered, prioritized, and delivered; urgent items go out immediately while the rest fold into a digest window, are held quiet, or are suppressed"
+      >
+        <Fragment set:html={heroFlowSvg} />
+      </figure>
+    </section>
+
+    <section id="problem" class="band" aria-labelledby="problem-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">01</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="problem-title">The problem</h2>
+        </div>
+        <div class="two-col">
+          <div>
+            <p class="claim">Attention is scarce; information is overwhelming</p>
+            <p class="lede">
+              Urgent or not, messages from every source draw attention just to be processed. How
+              often is a push notification just spam? Without triage, the message is noisy: more
+              material to scan, distrust, and discard. Triage changes the equation by ranking each
+              signal against context, timing, and an actual plan.
+            </p>
+            <p class="pull">
+              Signal buried in noise remains noise.<br />
+              Signal after triage is a resource.<br />
+              Resources, organized and reusable, become assets.
+            </p>
+          </div>
+          <figure
+            class="figure"
+            aria-label="Many signals mixed with noise are compared against context and a real plan; a few become useful foreground resources while the rest stay ambient or are suppressed"
+          >
+            <Fragment set:html={problemFunnelSvg} />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="why" class="band band--quiet" aria-labelledby="why-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">02</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="why-title">Why this layer</h2>
+        </div>
+        <p class="claim">Aggregation, triage, restrained delivery</p>
+        <p class="body body--wide">
+          Mail, calendar, task, and notification tools move information reliably. Assistants can
+          summarize it one item at a time. The missing layer compares unlike sources against the
+          same private context, then makes the delivery decision before anything interrupts.
+        </p>
+        <p class="body body--wide">
+          A private secretary sorting the morning mail made the same judgment: discard the junk,
+          file the routine, interrupt only for what cannot wait. Amanuensis rebuilds that narrow
+          role between existing sources and delivery channels. Conversation, long-term memory, and
+          privileged actions remain outside its boundary.
+        </p>
+        <figure
+          class="figure figure--wide"
+          aria-label="Mail, task, feed, and calendar signals already get moved and shortened; the missing layer compares them across sources against shared context and decides between immediate delivery, the digest window, and a quiet hold"
+        >
+          <Fragment set:html={whyLayerSvg} />
+        </figure>
+      </div>
+    </section>
+
+    <section id="example" class="band" aria-labelledby="example-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">03</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="example-title">In practice</h2>
+        </div>
+        <p class="claim">What's important depends on the context</p>
+        <p class="body body--wide">
+          A discount flyer is ambient when there is no purchase plan. Repeated as an immediate
+          notification, it becomes spam and a spending trap. When a plan already exists - for
+          example, replace a desk chair this month - the same offer becomes useful. Amanuensis
+          keeps it ambient by default, then surfaces it when the offer matches a real plan. Plans
+          arrive the same way anything else does: a memo is ingested as a record, then read as
+          context when other items are judged.
+        </p>
+        <div class="figure figure--wide">
+          <ProjectDiagram
+            canvasRaw={exampleCanvas}
+            accent="systems"
+            interactive={false}
+            title="The memo carrying a desk chair plan and the flyer are both ingested. With the memo as context, the flyer matches a recent purchase plan, lands on the should tier, and reaches a Discord channel in the next digest window. With no matching plan, it is a regular marketing message: it lands on ambient and is held quiet, nothing sent"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section id="system" class="band band--quiet" aria-labelledby="system-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">04</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="system-title">The system</h2>
+        </div>
+        <p class="claim">Three responsibilities, one inspectable trace</p>
+        <p class="body body--wide">
+          Amanuensis separates collection, judgment, and delivery so each boundary can be tested
+          independently. A stable item ID connects the stages; policy gates control where sensitive
+          content may be inferred and delivered.
+        </p>
+        <ol class="concept-stages" aria-label="Amanuensis stages">
+          {conceptStages.map((stage, index) => (
+            <li>
+              <p class="stage-number">0{index + 1} / {stage.label}</p>
+              <h3>{stage.title}</h3>
+              <p>{stage.text}</p>
+            </li>
+          ))}
+        </ol>
+        <a
+          class="text-link"
+          href="/projects/amanuensis/technical/"
+          data-umami-event="amanuensis_cta_click"
+          data-umami-event-cta="technical"
+          data-umami-event-placement="system"
+        >
+          Inspect the architecture and policy boundaries <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="explore" class="band" aria-labelledby="explore-title">
+      <div class="wrap">
+        <div class="sec-mark">
+          <span class="num">05</span><span class="slash" aria-hidden="true">/</span>
+          <h2 id="explore-title">Choose the next level</h2>
+        </div>
+        <p class="claim">Architecture for rationale. Walkthrough for evidence</p>
+        <div class="reading-paths">
+          <article class="reading-path">
+            <p class="kicker">Technical deep dive</p>
+            <h3>Inspect the system's boundaries</h3>
+            <p>
+              See each kit, the inbound and outbound policy gates, end-to-end traceability, the
+              reviewed feedback loop, and the costs of the design.
+            </p>
+            <a class="text-link" href="/projects/amanuensis/technical/">
+              Open the technical deep dive <span aria-hidden="true">&#8594;</span>
+            </a>
+          </article>
+          <article class="reading-path">
+            <p class="kicker">Example walkthrough</p>
+            <h3>Follow one item end to end</h3>
+            <p>
+              Inspect representative records from ingestion through triage, delivery gates, digest
+              assembly, the delivery ledger, and every failure branch.
+            </p>
+            <a class="text-link" href="/projects/amanuensis/walkthrough/">
+              Open the example walkthrough <span aria-hidden="true">&#8594;</span>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band band--close" aria-labelledby="close-title">
+      <div class="wrap close">
+        <p class="kicker" id="close-title">Work in progress</p>
+        <p class="body body--tight">
+          Amanuensis is developed in a private repository while its interfaces settle. The sensitive
+          policy already lives outside the engine, so opening a kit is a visibility flip rather than
+          a scrubbing exercise; the code will follow when it is ready to be public.
+        </p>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .aman-page {
+    --page-max: 72rem;
+    --pad: clamp(1.5rem, 4vw, 4rem);
+    --sec-pad: clamp(3.5rem, 6vw, 5.5rem);
+    --refuse-wash: #f7eee9;
+    color: var(--color-ink);
+  }
+
+
+  .band { border-top: 1px solid var(--color-line); }
+  .band--quiet,
+  .band--close { background: var(--color-paper-3); }
+  .wrap {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: var(--sec-pad) var(--pad);
+  }
+  .sec-mark {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin: 0 0 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .sec-mark .num { color: var(--color-accent); }
+  .sec-mark .slash { color: var(--color-ink-faint); }
+  .sec-mark h2 {
+    margin: 0;
+    font: inherit;
+    color: var(--color-ink-soft);
+  }
+  .kicker {
+    margin: 0 0 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+  .kicker--refuse { color: var(--color-stamp); }
+  .lede,
+  .body {
+    margin: 0 0 1.4rem;
+    max-width: 64ch;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+  }
+  .lede { max-width: 56ch; font-size: 1.12rem; }
+  .body--wide { max-width: 76ch; }
+  .body--tight { margin-bottom: 0.9rem; }
+  .claim {
+    margin: 0 0 0.9rem;
+    max-width: 35ch;
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2.4vw, 1.55rem);
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .pull {
+    margin: 2rem 0 0;
+    max-width: 38ch;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+  }
+  .pull--tight { margin-top: 0; }
+  .section-close { margin: 1.8rem 0 0; }
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: clamp(3.5rem, 7vw, 5.8rem) var(--pad) clamp(3rem, 5vw, 4.5rem);
+  }
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .hero h1 {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 6vw, 4.4rem);
+    font-weight: 600;
+    line-height: 1.02;
+    color: var(--color-ink);
+  }
+  .hero-position {
+    margin: 1rem 0 0;
+    max-width: 32ch;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .hero-summary {
+    margin: 1.35rem 0 0;
+    max-width: 55ch;
+    font-size: 1.08rem;
+    line-height: 1.72;
+    color: var(--color-ink-soft);
+  }
+  .boundary {
+    margin: 1.15rem 0 0;
+    max-width: 55ch;
+    padding-left: 1rem;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+    border-left: 3px solid var(--color-accent);
+  }
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  .text-link:hover,
+  .text-link:focus-visible { color: var(--color-ink); }
+
+  .figure {
+    margin: 0;
+    padding: clamp(1.2rem, 2.4vw, 1.6rem);
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+  }
+  .figure--wide { margin: 1.8rem 0 1.2rem; padding: clamp(1.4rem, 3vw, 2.2rem); }
+  .figure :global(svg) { display: block; width: 100%; height: auto; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .concept-stages {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .concept-stages li {
+    min-width: 0;
+    padding: 1.5rem;
+  }
+  .concept-stages li + li { border-left: 1px solid var(--color-line); }
+  .stage-number {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .concept-stages h3,
+  .reading-path h3 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.22rem;
+    line-height: 1.35;
+    color: var(--color-ink);
+  }
+  .concept-stages li > p:last-child,
+  .reading-path > p:not(.kicker) {
+    margin: 0.75rem 0 0;
+    font-size: 0.94rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+  .reading-paths {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 2rem;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+  .reading-path {
+    min-width: 0;
+    padding: clamp(1.5rem, 3vw, 2.2rem);
+    background: var(--color-paper-2);
+  }
+
+  .close { text-align: center; }
+  .close .kicker,
+  .close .claim,
+  .close .body { margin-left: auto; margin-right: auto; }
+  .claim--close { max-width: 42ch; }
+  .close .body { max-width: 52ch; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    margin-top: 1.3rem;
+    padding: 0 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-paper);
+    background: var(--color-accent);
+  }
+  .btn:hover,
+  .btn:focus-visible { background: var(--color-ink); }
+
+  @media (max-width: 1080px) {
+    .hero,
+    .two-col { grid-template-columns: minmax(0, 1fr); }
+    .hero { align-items: start; }
+    .hero .figure { max-width: 34rem; }
+  }
+  @media (max-width: 760px) {
+    .concept-stages,
+    .reading-paths { grid-template-columns: minmax(0, 1fr); }
+    .concept-stages li + li {
+      border-top: 1px solid var(--color-line);
+      border-left: 0;
+    }
+  }
+  @media (max-width: 560px) {
+    .aman-page { --sec-pad: 2.8rem; }
+    .hero { padding-top: 2.8rem; }
+    .hero h1 { font-size: 2.6rem; }
+    .hero-position { font-size: 1.18rem; }
+    .hero-summary { font-size: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .text-link,
+    .btn { transition: none; }
+  }
+</style>

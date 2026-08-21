@@ -27,10 +27,6 @@ export interface Project {
    * This project has its own hand-designed concept page at
    * `src/pages/projects/<id>.astro`, so the generic `[id]` template must not
    * also generate that route.
-   *
-   * Trailwalk is the first; the intent is that every project eventually gets a
-   * page designed for what it actually is, and `[id].astro` is the interim
-   * template for the ones that do not have one yet.
    */
   conceptPage?: true;
 }
@@ -51,8 +47,9 @@ export const projects: Project[] = [
     primary: 'systems',
     secondary: 'worlds',
     topic: 'Attention filtering',
+    conceptPage: true,
     summary:
-      'A base platform for personal LLM assistants, built to offload cognitive load. It aggregates personal information and ambient information, then triages, ranks, and denoises the stream, so what matters surfaces where it matters.',
+      'A privacy-aware information triage layer for personal LLM assistants. It gathers messages, tasks, events, and ambient feeds, then uses context to rank, denoise, and route each signal, so attention goes to what matters, when and where it matters.',
     existsNow: 'Read, reason, and push kits are in use for a digest loop.',
     why: 'It keeps attention from being spent on every incoming signal.',
     unresolved: 'Public release posture and broader adapter shape remain open.',
@@ -71,7 +68,7 @@ export const projects: Project[] = [
     conceptPage: true,
     summary:
       'A local-first, federated assistant architecture for auditable memory, sensitive-data routing, and harness-agnostic orchestration.',
-    existsNow: 'Architecture is mapped and several organs exist.',
+    existsNow: 'Architecture is mapped and several subsystems exist.',
     why: 'It asks how an assistant can stay auditable and under human authority.',
     unresolved: 'The full assistant loop and high-sensitivity safety path are not closed.',
     evidence: 'Capability map and binding plan',

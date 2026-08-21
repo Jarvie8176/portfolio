@@ -47,7 +47,7 @@ jobs:
       # makes the "auditable, drift-resistant" claim actually enforced.
       - run: npm run diagram:derive
       - run: npm run diagram:doc
-      - run: git diff --exit-code src/diagrams/yaaa.mmd docs/diagrams/yaaa.md
+      - run: git diff --exit-code src/diagrams/yaaa.mmd docs/diagrams/yaaa.md src/diagrams/amanuensis-example.mmd docs/diagrams/amanuensis-example.md src/diagrams/amanuensis-architecture.mmd docs/diagrams/amanuensis-architecture.md
       - run: npm run diagram:gate
       - run: npm run build
       - run: test -f dist/index.html
