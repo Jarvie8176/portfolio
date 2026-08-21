@@ -1,0 +1,33 @@
+flowchart LR
+  subgraph grp_ingest ["INGEST - gather"]
+    record_store["record store"]
+  end
+  subgraph grp_triage ["TRIAGE - judge"]
+    verdict_store["verdict store"]
+  end
+  subgraph grp_push ["PUSH - deliver"]
+    ledger["delivery ledger"]
+  end
+  subgraph grp_priority ["PRIORITY"]
+  end
+  subgraph grp_delivery ["DELIVERY"]
+  end
+
+  memo -->|ingest| rec_memo
+  flyer -->|ingest| rec_flyer
+  rec_flyer -->|every record lands here| record_store
+  rec_memo -.->|read as context| cls_match
+  rec_flyer -->|judged with a plan| cls_match
+  rec_flyer -->|judged without a plan| cls_regular
+  no_plan -.->|no plan in context| cls_regular
+  cls_match ==>|tier pick| tier_should
+  cls_regular ==>|tier pick| tier_ambient
+  tier_should ==>|route| out_window
+  tier_ambient ==>|route| out_quiet
+  tier_fyi -.->|default mapping| out_window
+  tier_drop -.->|default mapping| out_quiet
+  out_immediate -->|mobile push| sink_ntfy
+  out_window ==>|digest rollup| sink_discord
+  cls_match -->|verdict stored| verdict_store
+  cls_regular -->|verdict stored| verdict_store
+  out_quiet -->|attempt recorded| ledger

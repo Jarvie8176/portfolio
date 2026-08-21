@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 356" width="1040" height="356" role="img" aria-labelledby="t3 d3">
   <title id="t3">Three-stage architecture</title>
-  <desc id="d3">Ingest-kit normalizes a source item, triage-kit makes a context-ranked decision, and push-kit selects immediate delivery, the digest window, or an ambient hold. Policy gates control inference and delivery. Each stage writes to its own store: content-hashed records, verdicts versioned by route, and an idempotent delivery ledger. A stable item ID connects the complete trace.</desc>
+  <desc id="d3">Ingest-kit normalizes a source item, triage-kit makes a context-ranked decision, and push-kit selects immediate delivery, the digest window, or a quiet do-not-disturb hold. Policy gates control inference and delivery. Each stage writes to its own store: content-hashed records, verdicts versioned by route, and an idempotent delivery ledger. A stable item ID connects the complete trace.</desc>
   <defs>
     <marker id="arch-blue" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M0 0L8 4L0 8Z" fill="#2c4e8a"/>
@@ -76,7 +76,7 @@
   <rect x="872" y="177" width="64" height="28" fill="#eef2f8"/>
   <text class="mono tag" x="904" y="195" text-anchor="middle">DIGEST</text>
   <rect x="940" y="177" width="76" height="28" fill="#fff" stroke="#dce1de"/>
-  <text class="mono tag" x="978" y="195" text-anchor="middle">AMBIENT</text>
+  <text class="mono tag" x="978" y="195" text-anchor="middle">QUIET</text>
 
   <path d="M140 240v16M520 240v16M900 240v16" stroke="#9ca6a0" stroke-width="1.5"/>
   <g class="mono store">

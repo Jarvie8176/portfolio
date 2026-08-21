@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 390" width="1040" height="390" role="img" aria-labelledby="tw dw">
   <title id="tw">The judgment layer</title>
-  <desc id="dw">Mail, tasks, feeds, and calendar items can already be moved or shortened. Amanuensis compares them against shared context before choosing immediate delivery, the digest window, or an ambient hold. A chair discount stays ambient without a plan and enters a digest when a chair replacement plan exists.</desc>
+  <desc id="dw">Mail, tasks, feeds, and calendar items can already be moved or shortened. Amanuensis compares them against shared context before choosing immediate delivery, the digest window, or a quiet hold. A chair discount is held quiet without a plan and enters a digest when a chair replacement plan exists.</desc>
   <defs>
     <marker id="why-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M0 0L8 4L0 8Z" fill="#2c4e8a"/>
@@ -64,7 +64,7 @@
     <rect y="60" width="152" height="44" fill="#eef2f8" stroke="#2c4e8a"/>
     <text class="mono out" x="76" y="87" text-anchor="middle">DIGEST</text>
     <rect y="120" width="152" height="44" fill="#f6f7f5" stroke="#dce1de"/>
-    <text class="mono out" x="76" y="147" text-anchor="middle">AMBIENT</text>
+    <text class="mono out" x="76" y="147" text-anchor="middle">QUIET</text>
   </g>
 
   <rect x="0" y="234" width="1040" height="134" fill="#fbfaf7" stroke="#dce1de"/>
@@ -79,7 +79,7 @@
     <text class="mono case" x="372" y="24">NO PURCHASE PLAN</text>
     <path d="M574 19h62" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#why-arrow)"/>
     <rect x="652" y="0" width="148" height="38" fill="#f6f7f5" stroke="#dce1de"/>
-    <text class="mono result" x="726" y="24" text-anchor="middle">AMBIENT</text>
+    <text class="mono result" x="726" y="24" text-anchor="middle">QUIET</text>
     <rect x="356" y="52" width="206" height="38" fill="#eef2f8" stroke="#2c4e8a"/>
     <text class="mono case" x="372" y="76">REPLACE CHAIR</text>
     <path d="M574 71h62" stroke="#2c4e8a" stroke-width="1.5" marker-end="url(#why-arrow)"/>

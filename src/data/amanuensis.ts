@@ -92,13 +92,13 @@ export const conceptKits: ConceptKit[] = [
     name: 'push-kit',
     label: 'Deliver',
     title: 'Spend attention deliberately',
-    text: 'Priority and audience select a rung on a five-tier ladder - must, should, fyi, ambient, drop - and the rung selects the route: immediate delivery, the next digest window, an ambient hold, or suppression. Shared and public destinations must also clear the outbound gate.',
+    text: 'Priority and audience select a rung on a five-tier ladder - must, should, fyi, ambient, drop - and the rung selects the route: immediate delivery, the next digest window, a quiet do-not-disturb hold, or suppression. Shared and public destinations must also clear the outbound gate.',
     rationale: 'Delivery is separate from inference, so a model response cannot bypass deterministic audience and sensitivity rules.',
-    steps: ['ranked decision', 'ladder rung', 'delivery gates', 'immediate · digest · ambient'],
+    steps: ['ranked decision', 'ladder rung', 'delivery gates', 'immediate · digest · quiet'],
     details: [
       {
         term: 'the five tiers',
-        text: 'must interrupts immediately; should and fyi fold into the next digest window; ambient is retained and browsable without a push; drop is suppressed and kept only as a record.',
+        text: 'must interrupts immediately; should and fyi fold into the next digest window; ambient is held quiet - do not disturb, but browsable; drop is suppressed and kept only as a record.',
       },
       {
         term: 'digest fold with aging',
@@ -123,7 +123,7 @@ export const conceptGuarantees = [
   },
   {
     title: 'End-to-end traceability',
-    text: 'One item ID links receipt, policy checks, model route, ranking, and the final delivery, ambient hold, or refusal. Every consequential step remains inspectable.',
+    text: 'One item ID links receipt, policy checks, model route, ranking, and the final delivery, quiet hold, or refusal. Every consequential step remains inspectable.',
   },
 ];
 

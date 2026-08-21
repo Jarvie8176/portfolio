@@ -3,7 +3,10 @@
 import { renderSvg } from '../../src/components/diagram/render.mjs';
 import { checkParity } from './parity-gate.mjs';
 
-const LIST = [{ canvas: 'src/diagrams/yaaa.canvas', title: 'Yaaa - authority map' }];
+const LIST = [
+  { canvas: 'src/diagrams/yaaa.canvas', title: 'Yaaa - authority map' },
+  { canvas: 'src/diagrams/amanuensis-example.canvas', title: 'Amanuensis - one flyer, two routes' },
+];
 
 let bad = 0;
 for (const { canvas, title } of LIST) {

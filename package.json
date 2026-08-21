@@ -12,8 +12,8 @@
     "astro": "astro",
     "typecheck": "astro sync && tsc --noEmit -p tsconfig.json",
     "tokens:build": "node tokens/build.mjs",
-    "diagram:derive": "node scripts/diagram/canvas-to-mermaid.mjs src/diagrams/yaaa.canvas src/diagrams/yaaa.mmd",
-    "diagram:doc": "node scripts/diagram/canvas-to-doc.mjs src/diagrams/yaaa.canvas docs/diagrams/yaaa.md",
+    "diagram:derive": "node scripts/diagram/canvas-to-mermaid.mjs src/diagrams/yaaa.canvas src/diagrams/yaaa.mmd && node scripts/diagram/canvas-to-mermaid.mjs src/diagrams/amanuensis-example.canvas src/diagrams/amanuensis-example.mmd",
+    "diagram:doc": "node scripts/diagram/canvas-to-doc.mjs src/diagrams/yaaa.canvas docs/diagrams/yaaa.md && node scripts/diagram/canvas-to-doc.mjs src/diagrams/amanuensis-example.canvas docs/diagrams/amanuensis-example.md",
     "diagram:gate": "node scripts/diagram/render-and-gate.mjs"
   },
   "dependencies": {

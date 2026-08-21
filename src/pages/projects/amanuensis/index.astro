@@ -15,7 +15,8 @@ import problemFunnelSvg from '../../../figures/amanuensis/fig-problem-funnel.svg
 import whyLayerSvg from '../../../figures/amanuensis/fig-why-layer.svg?raw';
 import architectureSvg from '../../../figures/amanuensis/fig-architecture.svg?raw';
 import exampleIngestSvg from '../../../figures/amanuensis/fig-example-ingest.svg?raw';
-import exampleDecisionSvg from '../../../figures/amanuensis/fig-example-decision.svg?raw';
+import ProjectDiagram from '../../../components/diagram/ProjectDiagram.astro';
+import exampleCanvas from '../../../diagrams/amanuensis-example.canvas?raw';
 
 const dotNavItems = [
   { id: 'intro', label: 'Intro', accent: 'ink' as const },
@@ -110,7 +111,7 @@ const description =
         <p class="hero-summary">
           Amanuensis sits between personal information sources and delivery channels, using context
           and priority to decide what deserves the foreground. Urgent items go out immediately; the rest
-          fold into a digest window, stay ambient, or drop away entirely. This protects attention without
+          fold into a digest window, are held quiet, or drop away entirely. This protects attention without
           discarding signals that may matter later.
         </p>
         <p class="boundary">
@@ -128,7 +129,7 @@ const description =
       </div>
       <figure
         class="figure figure--hero"
-        aria-label="Personal information is gathered, prioritized, and delivered; urgent items go out immediately while the rest fold into a digest window, stay ambient, or are suppressed"
+        aria-label="Personal information is gathered, prioritized, and delivered; urgent items go out immediately while the rest fold into a digest window, are held quiet, or are suppressed"
       >
         <Fragment set:html={heroFlowSvg} />
       </figure>
@@ -175,11 +176,11 @@ const description =
         <p class="body body--wide">
           Transport and notification tools already move messages well. Per-item summaries already
           shorten them. Neither compares unlike sources against the same context before deciding
-          whether something deserves immediate delivery, the next digest, or an ambient hold.
+          whether something deserves immediate delivery, the next digest, or a quiet hold.
         </p>
         <figure
           class="figure figure--wide"
-          aria-label="Mail, task, feed, and calendar signals pass through cross-source judgment before an item is delivered immediately, folded into a digest, or held as ambient; a chair discount becomes useful only when a purchase plan exists"
+          aria-label="Mail, task, feed, and calendar signals pass through cross-source judgment before an item is delivered immediately, folded into a digest, or held quiet; a chair discount becomes useful only when a purchase plan exists"
         >
           <Fragment set:html={whyLayerSvg} />
         </figure>
@@ -219,12 +220,13 @@ const description =
         >
           <Fragment set:html={exampleIngestSvg} />
         </figure>
-        <figure
-          class="figure figure--wide"
-          aria-label="The same record is triaged against the reader's context: without a plan it lands on the ambient tier of five and is held without a push; with a plan to replace a desk chair this month it lands on should and enters the next digest window"
-        >
-          <Fragment set:html={exampleDecisionSvg} />
-        </figure>
+        <div class="figure figure--wide">
+          <ProjectDiagram
+            canvasRaw={exampleCanvas}
+            accent="systems"
+            title="A memo carrying a desk chair plan and the flyer are both ingested; with the memo as context the flyer matches a recent purchase plan, lands on the should tier, and reaches a Discord channel in the next digest window, while with no matching plan it is a regular marketing message, lands on ambient, and is held quiet with nothing sent"
+          />
+        </div>
       </div>
     </section>
 
@@ -243,7 +245,7 @@ const description =
         </p>
         <figure
           class="figure figure--wide"
-          aria-label="A source item becomes a normalized record, a context-ranked decision, and an immediate, digest, or ambient outcome; policy gates sit before inference and delivery, and one item ID connects the trace"
+          aria-label="A source item becomes a normalized record, a context-ranked decision, and an immediate, digest, or quiet outcome; policy gates sit before inference and delivery, and one item ID connects the trace"
         >
           <Fragment set:html={architectureSvg} />
         </figure>
