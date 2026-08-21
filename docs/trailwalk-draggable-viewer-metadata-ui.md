@@ -1,12 +1,8 @@
 # Trailwalk Draggable Viewer And Metadata UI
 
-Date: 2026-08-07
-
 ## Implementation Status
 
-Implemented. This document is the design record for what shipped, not a plan.
-
-As built:
+Implemented.
 
 - `src/components/trailwalk/TrailwalkGallery.astro` renders the gallery and the
   viewer shell.
@@ -16,13 +12,12 @@ As built:
 - `@photo-sphere-viewer/core` and `@photo-sphere-viewer/gyroscope-plugin` are
   pinned to `5.15.1` in `package.json`.
 
-The original constraint still holds: the page ships almost no client
-JavaScript, so the viewer stays a progressive enhancement loaded after user
-intent rather than part of the initial bundle.
+Gallery cards and metadata are server-rendered. Viewer code and CSS load after
+a visitor selects a card.
 
-## Viewer Recommendation
+## Viewer Engine
 
-Use `Photo Sphere Viewer` for the first draggable public gallery implementation.
+`Photo Sphere Viewer` renders the draggable public gallery.
 
 Why:
 
@@ -34,25 +29,12 @@ Why:
   events, which gives room for future Trailwalk annotations.
 - Its adapter model allows a future move from single panorama derivatives to
   tiled panoramas without changing the public data model.
-- The markers plugin is available if future field notes or points of interest
-  need to appear inside the panorama.
-
-Acceptable fallback:
-
-- `Pannellum` is still a good minimal first spike if the goal is only
-  still-image inspection. It supports equirectangular panoramas, preview images,
-  default draggable mouse/touch behavior, hot spots, CORS configuration, and a
-  simple JSON setup.
-
-Defer:
-
-- `Marzipano` is strong for tiled/multiresolution tours, but its setup is heavier
-  and better suited after the R2 derivative pipeline proves that mobile memory
-  requires tiles.
+- Its plugin model leaves room for field-note markers or tiled panoramas without
+  changing the public data model.
 
 ## Implementation Shape
 
-Keep first load static:
+Runtime flow:
 
 1. Render gallery cards with highlight crops and metadata from a typed data file.
 2. On card click, dynamically import the viewer component and viewer CSS.
@@ -60,7 +42,7 @@ Keep first load static:
 4. Show a poster/highlight fallback while the viewer initializes.
 5. Keep metadata outside the panorama canvas as a normal HTML disclosure.
 
-Recommended files:
+Implementation files:
 
 - `src/data/trailwalkGallery.ts`
 - `src/components/trailwalk/TrailwalkGallery.astro`
@@ -74,7 +56,7 @@ exact peer on the core package:
 - `@photo-sphere-viewer/core`
 - `@photo-sphere-viewer/gyroscope-plugin`
 
-Candidates for later, not installed:
+Open extensions, not installed:
 
 - `@photo-sphere-viewer/markers-plugin` for in-panorama field notes.
 - `@photo-sphere-viewer/equirectangular-tiles-adapter` if mobile memory ever
@@ -82,7 +64,7 @@ Candidates for later, not installed:
 
 ## Data Contract
 
-`src/data/trailwalkGallery.ts` is the source of truth. As built:
+`src/data/trailwalkGallery.ts` is the source of truth:
 
 ```ts
 export type TrailwalkGalleryItem = {
@@ -150,8 +132,8 @@ Desktop:
   - sample title
   - `Back to gallery`
   - `Details` toggle
-- Metadata is collapsed by default, or shown as a quiet right rail only after
-  the user opens `Details`.
+- Metadata opens by default as a quiet right rail. `Details` toggles it when the
+  visitor wants the full viewer width.
 
 Mobile:
 
@@ -225,10 +207,8 @@ for all six cards:
 | phone 3x | 324-359 px | 972-1077 px | 1200 | 637 KB |
 | tablet 2x, one column | 612-718 px | 1224-1436 px | 1600 | 918 KB |
 
-Before this the ladder was a single 1200 plus a 2400 that no browser selected
-at any viewport or pixel ratio, so every configuration drew 1008 KB — a
-1200-wide file into a 367 px slot on desktop, and an upscale on the widest slot
-of all.
+The ladder keeps the six-card transfer between 149 KB and 918 KB across the
+measured configurations while matching each rendered slot more closely.
 
 ### Panorama Tiers
 
@@ -259,8 +239,8 @@ Match the Trailwalk detail page:
 - 6-8px radius.
 - Lora heading, DM Sans rows.
 - Forest green action link.
-- No map embed on first version. A map embed would add third-party requests,
-  consent questions, and visual weight. Use a plain outbound Maps URL instead.
+- The UI uses a plain outbound Maps URL. An embedded map would add third-party
+  requests, consent questions, and visual weight.
 
 ### Privacy And Accuracy Rule
 
@@ -268,12 +248,9 @@ This repository is public, so anything committed here is published whatever the
 renderer does with it. The rule is therefore about what may exist in the file,
 not about what the UI chooses to draw.
 
-An earlier draft used a per-image `publicApproved` flag to gate exact
-coordinate display. That was removed and must not come back. A runtime toggle
-only helps if the data it guards is safe to have around, and the exact
-coordinates would have to be committed for the flag to have anything to switch
-on: the flag would have been the control, and the committed coordinates would
-have been the leak.
+The repository never stores exact coordinates. A runtime display flag is not a
+privacy boundary because committed data is already disclosed whether or not the
+renderer draws it.
 
 The rule is structural:
 
@@ -327,7 +304,7 @@ leak through this function.
 
 Use `target="_blank"` and `rel="noreferrer"` on the public link.
 
-## Spike Acceptance Criteria
+## Acceptance Criteria
 
 - No viewer JS/CSS loads before selecting a gallery card.
 - Selecting a card opens a draggable 360 viewer with mouse and touch input.
@@ -341,5 +318,5 @@ Use `target="_blank"` and `rel="noreferrer"` on the public link.
 - `Back to gallery` cancels any load still in flight rather than letting it
   finish into a hidden shell.
 - Reduced-motion users do not get animated camera movement.
-- Build still passes with JavaScript disabled, showing gallery cards and
-  fallback images.
+- Gallery cards and fallback images are server-rendered before viewer
+  hydration.
