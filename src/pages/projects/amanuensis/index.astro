@@ -13,10 +13,10 @@ import {
 import heroFlowSvg from '../../../figures/amanuensis/fig-hero-flow.svg?raw';
 import problemFunnelSvg from '../../../figures/amanuensis/fig-problem-funnel.svg?raw';
 import whyLayerSvg from '../../../figures/amanuensis/fig-why-layer.svg?raw';
-import architectureSvg from '../../../figures/amanuensis/fig-architecture.svg?raw';
 import exampleIngestSvg from '../../../figures/amanuensis/fig-example-ingest.svg?raw';
 import ProjectDiagram from '../../../components/diagram/ProjectDiagram.astro';
 import exampleCanvas from '../../../diagrams/amanuensis-example.canvas?raw';
+import architectureCanvas from '../../../diagrams/amanuensis-architecture.canvas?raw';
 
 const dotNavItems = [
   { id: 'intro', label: 'Intro', accent: 'ink' as const },
@@ -243,12 +243,13 @@ const description =
           while a stable item ID connects every decision. This keeps adapters replaceable, model
           routing auditable, and delivery gates deterministic.
         </p>
-        <figure
-          class="figure figure--wide"
-          aria-label="A source item becomes a normalized record, a context-ranked decision, and an immediate, digest, or quiet outcome; policy gates sit before inference and delivery, and one item ID connects the trace"
-        >
-          <Fragment set:html={architectureSvg} />
-        </figure>
+        <div class="figure figure--wide">
+          <ProjectDiagram
+            canvasRaw={architectureCanvas}
+            accent="systems"
+            title="Ingest-kit, triage-kit, and push-kit in sequence, each writing to its own store; policy gates sit before inference and delivery, and a stable item ID joins the stores into one trace. Drill into a stage for its internal steps"
+          />
+        </div>
         <div class="kit-sections">
           {conceptKits.map((kit, index) => (
             <article class="kit-section">
