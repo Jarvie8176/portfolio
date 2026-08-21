@@ -376,28 +376,45 @@ const description =
           <span class="num">06</span><span class="slash" aria-hidden="true">/</span>
           <h2 id="decisions-title">Decisions, trade-offs, and limits</h2>
         </div>
-        <div class="decision-grid">
-          <article class="decision-group">
-            <p class="kicker">Built this way on purpose</p>
-            <h3>Design decisions</h3>
-            <ul>
-              {conceptDesignDecisions.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-          <article class="decision-group">
-            <p class="kicker">What the choices cost</p>
-            <h3>Trade-offs</h3>
-            <ul>
-              {conceptTradeoffs.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
-          <article class="decision-group">
-            <p class="kicker">What remains outside</p>
-            <h3>Limitations</h3>
-            <ul>
-              {conceptLimitations.map((item) => <li>{item}</li>)}
-            </ul>
-          </article>
+        <div class="decision-block">
+          <p class="kicker">Determinism and control</p>
+          <h3>Design decisions</h3>
+          <div class="decision-cards">
+            {conceptDesignDecisions.map((item) => (
+              <article class="decision-card">
+                <p class="decision-lead">{item.lead}</p>
+                <p class="decision-text">{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div class="decision-block">
+          <p class="kicker">What the choices cost</p>
+          <h3>Trade-offs</h3>
+          <div class="tradeoff-list">
+            {conceptTradeoffs.map((item) => (
+              <div class="tradeoff-row">
+                <p class="tradeoff-pair">
+                  <span class="tradeoff-keep">{item.keep}</span>
+                  <span class="tradeoff-vs" aria-hidden="true">vs</span>
+                  <span class="tradeoff-cost">{item.cost}</span>
+                </p>
+                <p class="decision-text">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="decision-block">
+          <p class="kicker">What remains outside</p>
+          <h3>Limitations</h3>
+          <div class="limit-cards">
+            {conceptLimitations.map((item) => (
+              <article class="limit-card">
+                <p class="decision-lead">{item.lead}</p>
+                <p class="decision-text">{item.text}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -405,9 +422,6 @@ const description =
     <section class="band band--close" aria-labelledby="close-title">
       <div class="wrap close">
         <p class="kicker" id="close-title">Work in progress</p>
-        <p class="claim claim--close">
-          Documented in full, ahead of a public release
-        </p>
         <p class="body body--tight">
           Amanuensis is developed in a private repository while its interfaces settle. The sensitive
           policy already lives outside the engine, so opening a kit is a visibility flip rather than
@@ -822,39 +836,77 @@ const description =
     border: 2px solid var(--color-stamp);
   }
 
-  .decision-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+  .decision-block { padding: 2rem 0 0.6rem; }
+  .decision-block + .decision-block {
+    margin-top: 1.6rem;
     border-top: 1px solid var(--color-line);
-    border-bottom: 1px solid var(--color-line);
   }
-  .decision-group {
-    min-width: 0;
-    padding: 1.7rem 0;
-  }
-  .decision-group + .decision-group { border-top: 1px solid var(--color-line); }
-  .decision-group h3 {
-    margin: 0 0 1rem;
+  .decision-block h3 {
+    margin: 0 0 1.3rem;
     font-family: var(--font-serif);
     font-size: 1.25rem;
     line-height: 1.4;
     color: var(--color-ink);
   }
-  .decision-group ul { margin: 0; padding: 0; list-style: none; }
-  .decision-group li {
-    position: relative;
-    padding: 0.8rem 0 0.8rem 1.25rem;
-    font-size: 0.94rem;
+  .decision-lead {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-serif);
+    font-size: 1.08rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+  }
+  .decision-text {
+    margin: 0;
+    font-size: 0.93rem;
     line-height: 1.65;
     color: var(--color-ink-soft);
-    border-top: 1px solid var(--color-line);
   }
-  .decision-group li::before {
-    position: absolute;
-    left: 0;
-    color: var(--color-accent);
-    content: '\2192';
+  .decision-cards,
+  .limit-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
   }
+  .decision-card {
+    min-width: 0;
+    padding: 1.4rem 1.5rem;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-line);
+    border-left: 3px solid var(--color-accent);
+  }
+  .limit-card {
+    min-width: 0;
+    padding: 1.4rem 1.5rem;
+    border: 1px dashed var(--color-rule-hard, #9ca6a0);
+  }
+  .tradeoff-row {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+    padding: 1.15rem 0;
+  }
+  .tradeoff-row + .tradeoff-row { border-top: 1px solid var(--color-line); }
+  .tradeoff-pair {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    align-items: baseline;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tradeoff-keep { color: var(--color-accent); }
+  .tradeoff-vs {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: none;
+    color: var(--color-ink-faint);
+  }
+  .tradeoff-cost { color: var(--color-stamp); }
 
   .close { text-align: center; }
   .close .kicker,
@@ -898,6 +950,9 @@ const description =
   }
   @media (max-width: 760px) {
     .card-grid { grid-template-columns: minmax(0, 1fr); }
+    .decision-cards,
+    .limit-cards { grid-template-columns: minmax(0, 1fr); }
+    .tradeoff-row { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
     .card-grid > :last-child:nth-child(odd) { grid-column: auto; }
     .kit-section { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
     .loadbearing { align-items: flex-start; }

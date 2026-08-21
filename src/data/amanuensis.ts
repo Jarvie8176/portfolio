@@ -127,23 +127,44 @@ export const conceptGuarantees = [
   },
 ];
 
-export const conceptDesignDecisions = [
-  'Digest-first delivery makes interruption the exception rather than the default.',
-  'Sensitive inference stays local, while private policy is supplied by the assistant that embeds it.',
-  'Narrow kit contracts and a stable item ID keep every stage independently testable and traceable.',
-  'Safety invariants are deterministic code branches, and adversarial audits are routine: one bug class was chased through six consecutive review rounds.',
+export const conceptDesignDecisions: { lead: string; text: string }[] = [
+  {
+    lead: 'Code replaces prompt constraints',
+    text: 'A prompt is a request with limited binding force: a model can misread it, drift from it, or be talked out of it. So none of the core safety rules - route selection, the two gates, the fail-closed branches - depend on a model understanding intent; each is an ordinary deterministic branch that runs the same way every time.',
+  },
+  {
+    lead: 'Independent testing and traceability',
+    text: 'The stable item ID follows a record across every kit and stage, from receipt to verdict to delivery. Any single link can be pulled out of the chain, fed a known input, and replayed on its own, and any delivery can be walked backwards to the judgment that produced it.',
+  },
 ];
 
-export const conceptTradeoffs = [
-  'Digest windows protect attention but delay non-urgent information.',
-  'Local inference preserves the private path but sets a lower capability ceiling.',
-  'Explicit gates and durable traces add latency, storage, and operational work.',
+export const conceptTradeoffs: { keep: string; cost: string; text: string }[] = [
+  {
+    keep: 'Privacy',
+    cost: 'capability',
+    text: 'Keeping sensitive inference local means running small local models where a frontier cloud model would judge more accurately and write a smoother digest. That cost is accepted: the privacy of the material is worth more than the polish of its summary.',
+  },
+  {
+    keep: 'Attention',
+    cost: 'immediacy',
+    text: 'Digest-first delivery deliberately delays everything that is not urgent; information that could have arrived now arrives at the next window instead. The delay is the price paid for fewer interruptions.',
+  },
+  {
+    keep: 'Auditability',
+    cost: 'overhead',
+    text: 'Every send clears explicit gates, and every consequential step writes a durable trace row. Gates add latency, traces add storage, and both add operational work - accepted, because a delivery that cannot be explained is the more expensive failure.',
+  },
 ];
 
-export const conceptLimitations = [
-  'Every new source still needs an adapter and an explicit policy.',
-  'Broader source coverage, a public release, and wider assistant integration are still ahead.',
-  'Conversation, long-term memory, and privileged action remain outside Amanuensis itself.',
+export const conceptLimitations: { lead: string; text: string }[] = [
+  {
+    lead: 'Advanced capabilities are stripped away on purpose',
+    text: 'Conversation, long-term memory, and privileged action are excluded from Amanuensis: each belongs to a different kind of system with its own safety story, and bolting them onto a triage layer would blur the boundary this design depends on.',
+  },
+  {
+    lead: 'A sorting router and a breakwater',
+    text: 'Amanuensis delivers the right information at the right granularity to the reader or to an external system, and stops there; complex operations happen on the other side of that boundary, done by whoever received the item.',
+  },
 ];
 
 /* ------------------------------------------------------------ walkthrough */
