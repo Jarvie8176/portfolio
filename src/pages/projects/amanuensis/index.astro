@@ -54,8 +54,15 @@ const description =
           discarding signals that may matter later.
         </p>
         <p class="boundary">
-          Amanuensis focuses on one job: deciding what deserves attention, and when. Conversation,
-          long-term memory, and privileged actions stay with the assistants it serves.
+          Amanuensis focuses on one job: deciding what deserves attention, and when. Its reasoning
+          and converse flows are bounded to information triage; general-purpose conversation,
+          long-term memory, and privileged actions stay outside this boundary.
+        </p>
+        <p class="boundary boundary--relation">
+          Within the <a href="/projects/yaaa/">Yaaa ops architecture</a>, Amanuensis is a concrete
+          subsystem implementation spanning reasoning, converse, and attention-aware delivery.
+          Yaaa defines how those subsystems are composed and governed; Amanuensis implements the
+          information-triage path.
         </p>
         <a
           class="text-link"
@@ -215,8 +222,9 @@ const description =
             <p class="kicker">Example walkthrough</p>
             <h3>Follow one item end to end</h3>
             <p>
-              Inspect representative records from ingestion through triage, delivery gates, digest
-              assembly, the delivery ledger, and every failure branch.
+              Inspect records sampled and reconstructed from the live system for presentation,
+              from ingestion through triage, delivery gates, digest assembly, the delivery ledger,
+              and every failure branch.
             </p>
             <a class="text-link" href="/projects/amanuensis/walkthrough/">
               Open the example walkthrough <span aria-hidden="true">&#8594;</span>
@@ -230,9 +238,10 @@ const description =
       <div class="wrap close">
         <p class="kicker" id="close-title">Work in progress</p>
         <p class="body body--tight">
-          Amanuensis is developed in a private repository while its interfaces settle. The sensitive
-          policy already lives outside the engine, so opening a kit is a visibility flip rather than
-          a scrubbing exercise; the code will follow when it is ready to be public.
+          The design, interface contracts, and reconstructed example trace are public. The
+          implementation remains in a private repository while its interfaces evolve. A public
+          release requires dependency and licensing review, secret scanning, provenance checks,
+          and sufficient documentation - not only a change in repository visibility.
         </p>
       </div>
     </section>
@@ -365,6 +374,8 @@ const description =
     color: var(--color-ink-soft);
     border-left: 3px solid var(--color-accent);
   }
+  .boundary--relation { margin-top: 0.7rem; }
+  .boundary a { color: var(--color-accent); }
   .text-link {
     display: inline-flex;
     align-items: center;

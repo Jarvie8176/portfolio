@@ -17,6 +17,7 @@ export interface PracticePanel {
 export interface WorkProject {
   id: string;
   name: string;
+  status: string;
   introduction: string;
   href: string;
   material: Material;
@@ -69,7 +70,7 @@ export const homepage = {
     {
       id: 'inhabited-worlds',
       title: 'Inhabited Worlds',
-      lead: 'How we share and experience, and engage with the world',
+      lead: 'How relationships and encounters shape the worlds we share and experience',
       meaning:
         'Studying the relationship and otherness in encounters between humans, AI agents, and other creatures, and what those encounters come to mean for us.',
       related: 'commonplace',
@@ -87,16 +88,18 @@ export const homepage = {
         {
           id: 'amanuensis',
           name: 'Amanuensis',
+          status: 'Active development · private repository · public design and example trace',
           introduction:
-            'A privacy-aware information triage layer for personal LLM assistants. It gathers messages, tasks, events, and ambient feeds, then uses context to rank, denoise, and route each signal, so attention goes to what matters, when and where it matters.',
+            'A policy-gated information triage layer for personal assistants. It compares messages, tasks, events, and feeds against private context, then decides what should interrupt, wait for a digest, or remain quiet.',
           href: '/projects/amanuensis/',
           material: materials.amanuensis,
         },
         {
           id: 'yaaa',
           name: 'Yaaa',
+          status: 'Ops architecture · conceptual framework',
           introduction:
-            'A local-first, federated assistant architecture: self-hostable AI orchestration for auditability and harness-agnostic memory synchronization.',
+            'A self-hostable personal-assistant architecture that keeps memory authority and side-effect control with the user while models, harnesses, and tools remain replaceable.',
           href: '/projects/yaaa/',
           material: materials.yaaa,
         },
@@ -113,6 +116,7 @@ export const homepage = {
         {
           id: 'beagle',
           name: 'Beagle',
+          status: 'Concept study · feasibility and roadmap defined',
           introduction:
             'A cognitive-support agent concept for people facing memory or attention barriers: an always-on assistant that logs, tracks, and reminds, so the person can make informed decisions even when being informed is a challenge.',
           href: '/projects/beagle/',
@@ -121,8 +125,9 @@ export const homepage = {
         {
           id: 'trailwalk',
           name: 'Trailwalk',
+          status: 'Concept stage · working VR prototype · field media library',
           introduction:
-            'A VR walking prototype built from real 360-degree trail video and spatial audio, designed to make outdoor places more accessible from indoor community settings.',
+            'A working VR prototype built from real 360-degree trail footage and spatial audio, bringing outdoor places into homes and community settings when the trail is hard to reach.',
           href: '/projects/trailwalk/',
           material: materials.trailwalk,
         },
@@ -139,6 +144,7 @@ export const homepage = {
         {
           id: 'commonplace',
           name: 'commonplace',
+          status: 'Research build · bridge and toy world implemented',
           introduction:
             'Research into human-AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
           href: '/projects/commonplace/',
