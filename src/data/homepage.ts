@@ -18,6 +18,7 @@ export interface WorkProject {
   id: string;
   name: string;
   status: string;
+  statusStyle?: 'label';
   introduction: string;
   href: string;
   material: Material;
@@ -88,9 +89,9 @@ export const homepage = {
         {
           id: 'amanuensis',
           name: 'Amanuensis',
-          status: 'Active development · private repository · public design and example trace',
+          status: 'attention, aggregation, signal extraction',
           introduction:
-            'A policy-gated information triage layer for personal assistants. It compares messages, tasks, events, and feeds against private context, then decides what should interrupt, wait for a digest, or remain quiet.',
+            'A policy-gated information triage layer for personal LLM assistants. It gathers messages, tasks, events, and ambient feeds, then uses context to rank, denoise, and route each signal, so attention goes to what matters, when and where it matters.',
           href: '/projects/amanuensis/',
           material: materials.amanuensis,
         },
@@ -117,6 +118,7 @@ export const homepage = {
           id: 'beagle',
           name: 'Beagle',
           status: 'WIP',
+          statusStyle: 'label',
           introduction:
             'A cognitive-support agent concept for people facing memory or attention barriers: an always-on assistant that logs, tracks, and reminds, so the person can make informed decisions even when being informed is a challenge.',
           href: '/projects/beagle/',
@@ -125,7 +127,7 @@ export const homepage = {
         {
           id: 'trailwalk',
           name: 'Trailwalk',
-          status: 'Concept stage · working VR prototype · field media library',
+          status: 'working MVP · field media library',
           introduction:
             'A working VR prototype built from real 360-degree trail footage and spatial audio, bringing outdoor places into homes and community settings when the trail is hard to reach.',
           href: '/projects/trailwalk/',
@@ -144,7 +146,8 @@ export const homepage = {
         {
           id: 'commonplace',
           name: 'commonplace',
-          status: 'WIP',
+          status: 'Research WIP',
+          statusStyle: 'label',
           introduction:
             'Research into human-AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
           href: '/projects/commonplace/',

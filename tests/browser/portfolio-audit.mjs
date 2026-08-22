@@ -11,9 +11,10 @@ const views = [
     path: '/',
     requiredCopy: [
       'How relationships and encounters shape the worlds we share and experience',
-      'Active development · private repository · public design and example trace',
+      'attention, aggregation, signal extraction',
       'Ops architecture · conceptual framework',
-      'Concept stage · working VR prototype · field media library',
+      'working MVP · field media library',
+      'Research WIP',
     ],
     removedCopy: ['feasibility and roadmap defined', 'bridge and toy world implemented'],
     expectedWipLabels: 2,
@@ -37,12 +38,12 @@ const views = [
     name: 'trailwalk',
     path: '/projects/trailwalk/',
     requiredCopy: [
-      'Concept stage · working VR prototype · field media library',
+      'Working MVP · field media library',
       'Request a demo',
       'Follow updates',
       'Request a demo or share feedback',
     ],
-    removedCopy: ['working technical demo', 'Founder links'],
+    removedCopy: ['Concept stage · working VR prototype', 'working technical demo', 'Founder links'],
   },
 ];
 
