@@ -119,7 +119,7 @@ const dotNav = [
                     <span
                       class:list={[
                         'project-status',
-                        project.status === 'WIP' && 'project-status--wip',
+                        project.statusStyle === 'label' && 'project-status--wip',
                       ]}
                     >
                       {project.status}

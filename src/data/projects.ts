@@ -49,7 +49,7 @@ export const projects: Project[] = [
     topic: 'Attention filtering',
     conceptPage: true,
     summary:
-      'A policy-gated information triage layer for personal assistants. It compares messages, tasks, events, and feeds against private context, then decides what should interrupt, wait for a digest, or remain quiet.',
+      'A policy-gated information triage layer for personal LLM assistants. It gathers messages, tasks, events, and ambient feeds, then uses context to rank, denoise, and route each signal, so attention goes to what matters, when and where it matters.',
     existsNow: 'Read, reason, and push kits are in use for a digest loop.',
     why: 'It keeps attention from being spent on every incoming signal.',
     unresolved: 'Public release posture and broader adapter shape remain open.',

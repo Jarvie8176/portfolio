@@ -2,7 +2,7 @@ export const site = {
   name: 'J. Kong',
   homeTitle: 'Exploring what remains irreducible in the age of Generative AI',
   description:
-    'Work by J. Kong across auditable personal AI, accessible embodied media, and the relationships that shape shared worlds.',
+    'Work by J. Kong across auditable personal AI, accessible computing, and the relationships that shape shared worlds.',
   githubUrl: 'https://github.com/Jarvie8176',
   agentGithubUrl: 'https://github.com/cyber-ayi',
   repoUrl: 'https://github.com/Jarvie8176/portfolio',
