@@ -11,7 +11,7 @@ const views = [
     path: '/',
     requiredCopy: [
       'How relationships and encounters shape the worlds we share and experience',
-      'attention, aggregation, signal extraction',
+      'attention · aggregation · signal extraction',
       'Ops architecture · conceptual framework',
       'working MVP · field media library',
       'Research WIP',

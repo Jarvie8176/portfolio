@@ -89,7 +89,7 @@ export const homepage = {
         {
           id: 'amanuensis',
           name: 'Amanuensis',
-          status: 'attention, aggregation, signal extraction',
+          status: 'attention · aggregation · signal extraction',
           introduction:
             'A policy-gated information triage layer for personal LLM assistants. It gathers messages, tasks, events, and ambient feeds, then uses context to rank, denoise, and route each signal, so attention goes to what matters, when and where it matters.',
           href: '/projects/amanuensis/',
