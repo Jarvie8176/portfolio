@@ -7,6 +7,9 @@ const site = process.env.SITE_URL;
 
 // https://astro.build/config
 export default defineConfig({
+  redirects: {
+    '/work': '/#work',
+  },
   ...(site
     ? {
         site,
