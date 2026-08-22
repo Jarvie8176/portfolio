@@ -293,7 +293,7 @@ const dotNavItems = [
     <div class="nav-identity">
       <a
         class="nav-home"
-        href="/work/#yaaa"
+        href="/#yaaa"
         aria-label="Back to work index"
         data-umami-event="yaaa_nav_click"
         data-umami-event-section="work_index"
@@ -395,6 +395,13 @@ const dotNavItems = [
           Conversation harnesses can be replaced without moving the source of
           truth.
         </p>
+        <p class="framework-note">
+          <a href="/projects/amanuensis/">Amanuensis</a> is one concrete
+          implementation within this framework, supplying reasoning, converse,
+          and attention-aware delivery subsystems for information triage. Yaaa
+          defines the ops architecture around those subsystems rather than
+          replacing them with one application.
+        </p>
       </div>
 
       <figure
@@ -421,10 +428,10 @@ const dotNavItems = [
           <h2 id="problem-title">Problem</h2>
         </div>
         <p class="lead problem-intro">
-          The AI that understands you best is often the biggest threat to your
-          data privacy.
+          The more context a personal assistant needs, the more consequential
+          its ownership boundary becomes.
         </p>
-        <figure class="problem-figure" id="problem-risk-map" role="img" aria-label="Your personal data streams, including mail, notes, calendar, camera, health, location, and chats, converge into one commercial entity that aggregates and watches them; once sent, the data cannot be recalled.">
+        <figure class="problem-figure" id="problem-risk-map" role="img" aria-label="Personal data streams, including mail, notes, calendar, camera, health, location, and chats, converge into an external cloud service; handling, retention, and recall then depend on provider terms.">
           <svg viewBox="0 0 560 262" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <marker id="pf-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -457,20 +464,22 @@ const dotNavItems = [
               <rect class="pf-box" x="240" y="88" width="140" height="84" rx="6"/>
               <ellipse class="pf-eye" cx="310" cy="112" rx="14" ry="8"/>
               <circle class="pf-pupil" cx="310" cy="112" r="3.6"/>
-              <text class="pf-box-t" x="310" y="145" text-anchor="middle">one commercial</text>
-              <text class="pf-box-t" x="310" y="161" text-anchor="middle">entity</text>
+              <text class="pf-box-t" x="310" y="145" text-anchor="middle">external cloud</text>
+              <text class="pf-box-t" x="310" y="161" text-anchor="middle">service</text>
               <line class="pf-out" x1="380" y1="124" x2="500" y2="124" marker-end="url(#pf-arr)"/>
               <text class="pf-faint" x="440" y="116" text-anchor="middle">sent out</text>
               <line class="pf-block" x1="500" y1="146" x2="388" y2="146"/>
-              <path class="pf-x" d="M437 140 L449 152 M449 140 L437 152"/>
-              <text class="pf-block-t" x="443" y="170" text-anchor="middle">no recall</text>
+              <text class="pf-block-t" x="443" y="170" text-anchor="middle">provider terms</text>
             </g>
           </svg>
-          <figcaption>Once the data is sent, it's out of control.</figcaption>
+          <figcaption>
+            Once data leaves the user-owned boundary, control depends on
+            provider terms.
+          </figcaption>
         </figure>
         <div class="problem-grid" id="problem-failure-modes">
           <article>
-            <figure class="problem-card-visual" role="img" aria-label="Multiple private sources collapse into one external processor, then leave without a recall path.">
+            <figure class="problem-card-visual" role="img" aria-label="Multiple private sources cross into an external service, where downstream handling depends on provider terms.">
               <svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <defs>
                   <marker id="pc-aggregate-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -487,25 +496,23 @@ const dotNavItems = [
                 <line class="pc-line" x1="62" y1="52" x2="103" y2="52" marker-end="url(#pc-aggregate-arr)"/>
                 <line class="pc-line" x1="62" y1="83" x2="103" y2="52" marker-end="url(#pc-aggregate-arr)"/>
                 <rect class="pc-box pc-danger" x="108" y="27" width="64" height="50" rx="5"/>
-                <text class="pc-strong" x="140" y="50" text-anchor="middle">vendor</text>
-                <text class="pc-text" x="140" y="64" text-anchor="middle">aggregate</text>
+                <text class="pc-strong" x="140" y="50" text-anchor="middle">external</text>
+                <text class="pc-text" x="140" y="64" text-anchor="middle">service</text>
                 <line class="pc-line pc-heavy" x1="172" y1="52" x2="219" y2="52" marker-end="url(#pc-aggregate-arr)"/>
-                <path class="pc-warn" d="M194 69 L208 83 M208 69 L194 83"/>
-                <text class="pc-note" x="201" y="98" text-anchor="middle">no recall</text>
+                <text class="pc-note" x="201" y="82" text-anchor="middle">provider terms</text>
               </svg>
             </figure>
-            <span class="problem-label">Aggregated · unrecallable</span>
+            <span class="problem-label">Context crosses a boundary</span>
             <p>
               To be useful, an assistant needs context other software only
-              glimpses: behavior, identity, legal and medical history,
-              conversations, private notes, the cameras in your home, and the
-              shape of your thinking. Pooled inside one commercial entity, that
-              intimacy turns into leverage. Once that context leaves, it cannot
-              be taken back.
+              glimpses: identity, conversations, private notes, location, and
+              sometimes legal or medical history. Sending that context across
+              an external ownership boundary makes provider controls
+              consequential, and a complete recall path may not be available.
             </p>
           </article>
           <article>
-            <figure class="problem-card-visual" role="img" aria-label="Cloud routing inserts screening, monitoring, and retention between the user and the assistant output.">
+            <figure class="problem-card-visual" role="img" aria-label="Cloud routing places provider processing, logging, retention, moderation, and policy between the user and the assistant output.">
               <svg viewBox="0 0 240 104" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <defs>
                   <marker id="pc-screen-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -523,15 +530,16 @@ const dotNavItems = [
                 <line class="pc-line" x1="168" y1="52" x2="198" y2="52" marker-end="url(#pc-screen-arr)"/>
                 <rect class="pc-chip" x="202" y="40" width="28" height="24" rx="5"/>
                 <text class="pc-text" x="216" y="55" text-anchor="middle">out</text>
-                <text class="pc-note" x="132" y="14" text-anchor="middle">screened</text>
-                <text class="pc-note" x="132" y="98" text-anchor="middle">retained / watched</text>
+                <text class="pc-note" x="132" y="14" text-anchor="middle">processed</text>
+                <text class="pc-note" x="132" y="98" text-anchor="middle">logging / retention</text>
               </svg>
             </figure>
-            <span class="problem-label">Screened · surveilled</span>
+            <span class="problem-label">Provider governed</span>
             <p>
-              Data routed to a cloud model is subject to that vendor's moderation,
-              monitoring, and retention. Your assistant's inputs and outputs are
-              watched on terms that are not yours.
+              Data routed through a cloud service may be subject to provider
+              logging, retention, moderation, and policy. Those terms may be
+              reasonable for some tasks, but they are not controlled by the
+              user.
             </p>
           </article>
           <article>
@@ -1287,7 +1295,7 @@ const dotNavItems = [
       </section>
     </div>
 
-    <p class="back-link"><a href="/work/#yaaa">Back to work index</a></p>
+    <p class="back-link"><a href="/#yaaa">Back to work index</a></p>
   </main>
 </Base>
 
@@ -1654,6 +1662,22 @@ const dotNavItems = [
     margin: clamp(1.4rem, 3vw, 2.2rem) 0 0;
     font-size: clamp(1.05rem, 1.5vw, 1.28rem);
     line-height: 1.7;
+  }
+
+  .framework-note {
+    max-width: 39rem;
+    margin: 1.35rem 0 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--systems);
+    color: var(--ink-soft);
+    font-size: 0.94rem;
+    line-height: 1.65;
+  }
+
+  .framework-note a {
+    color: var(--systems);
+    font-weight: 700;
+    text-underline-offset: 0.18em;
   }
 
   /* ---------- hero subsystem stack ---------- */
