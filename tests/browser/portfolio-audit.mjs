@@ -15,7 +15,8 @@ const views = [
       'Ops architecture · conceptual framework',
       'Concept stage · working VR prototype · field media library',
     ],
-    removedCopy: [],
+    removedCopy: ['feasibility and roadmap defined', 'bridge and toy world implemented'],
+    expectedWipLabels: 2,
   },
   {
     name: 'yaaa',
@@ -106,6 +107,7 @@ for (const view of views) {
         clipped,
         offscreen,
         missingFragmentTargets,
+        wipLabels: document.querySelectorAll('.project-status--wip').length,
         requiredCopy: Object.fromEntries(requiredCopy.map((copy) => [copy, text.includes(copy)])),
         removedCopy: Object.fromEntries(removedCopy.map((copy) => [copy, !text.includes(copy)])),
       };
@@ -117,6 +119,7 @@ for (const view of views) {
       metrics.clipped.length > 0 ||
       metrics.offscreen.length > 0 ||
       metrics.missingFragmentTargets.length > 0 ||
+      (view.expectedWipLabels !== undefined && metrics.wipLabels !== view.expectedWipLabels) ||
       pageErrors.length > 0 ||
       Object.values(metrics.requiredCopy).some((present) => !present) ||
       Object.values(metrics.removedCopy).some((removed) => !removed);
