@@ -116,7 +116,7 @@ export const homepage = {
         {
           id: 'beagle',
           name: 'Beagle',
-          status: 'Concept study · feasibility and roadmap defined',
+          status: 'WIP',
           introduction:
             'A cognitive-support agent concept for people facing memory or attention barriers: an always-on assistant that logs, tracks, and reminds, so the person can make informed decisions even when being informed is a challenge.',
           href: '/projects/beagle/',
@@ -144,7 +144,7 @@ export const homepage = {
         {
           id: 'commonplace',
           name: 'commonplace',
-          status: 'Research build · bridge and toy world implemented',
+          status: 'WIP',
           introduction:
             'Research into human-AI relationships in game worlds, curiosity-driven autotelic agency in AI agents, and the philosophy of Otherness as it emerges from how we treat and regard LLM agents.',
           href: '/projects/commonplace/',
