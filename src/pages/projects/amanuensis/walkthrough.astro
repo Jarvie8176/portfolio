@@ -5,7 +5,7 @@ import { site, deployment } from '../../../data/site';
 import { stages, tiers, deliveryStates, closingPoints } from '../../../data/amanuensis';
 
 const description =
-  'An example walkthrough of one item travelling the whole Amanuensis path, including representative records and failure branches.';
+  'An example walkthrough of one item travelling the whole Amanuensis path, with records sampled and reconstructed from the live system for presentation.';
 ---
 
 <Base
@@ -26,7 +26,7 @@ const description =
         priority and audience, folded into a digest window, and recorded in a delivery ledger. Each
         stage shows what it does, what it produces, and what happens when it fails.
       </p>
-      <p class="provenance">Records shown are sampled from the live system.</p>
+      <p class="provenance">Records are sampled and reconstructed from the live system for presentation.</p>
     </section>
 
     <nav class="rail" aria-label="Stage rail">
@@ -78,7 +78,7 @@ const description =
             {stage.record && (
               <figure class="record">
                 <figcaption>{stage.recordLabel}</figcaption>
-                <pre aria-label={`${stage.recordLabel}, a representative record`}>{stage.record}</pre>
+                <pre aria-label={`${stage.recordLabel}, sampled and reconstructed from the live system for presentation`}>{stage.record}</pre>
               </figure>
             )}
           </div>

@@ -116,6 +116,14 @@ const dotNav = [
                         {project.name}
                       </a>
                     </h3>
+                    <span
+                      class:list={[
+                        'project-status',
+                        project.statusStyle === 'label' && 'project-status--wip',
+                      ]}
+                    >
+                      {project.status}
+                    </span>
                     <p>{project.introduction}</p>
                   </div>
                 </article>
@@ -216,7 +224,7 @@ const dotNav = [
     color: var(--paper);
     font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0;
     line-height: 1.2;
     text-decoration: none;
     text-transform: uppercase;
@@ -449,6 +457,26 @@ const dotNav = [
 
   .project-copy h3 a:hover {
     color: var(--worlds);
+  }
+
+  .project-copy .project-status {
+    display: block;
+    color: currentColor;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+
+  .project-copy .project-status--wip {
+    justify-self: start;
+    padding: 4px 7px 3px;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+    line-height: 1;
   }
 
   .project-copy p {

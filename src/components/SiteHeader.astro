@@ -2,7 +2,7 @@
 import { site } from '../data/site';
 
 const pathname = Astro.url.pathname;
-const isWorkPath = pathname === '/work/' || pathname.startsWith('/projects/');
+const isWorkPath = pathname.startsWith('/projects/');
 const isContactPath = pathname === '/contact/';
 ---
 

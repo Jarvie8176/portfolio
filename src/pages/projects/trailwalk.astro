@@ -1,18 +1,29 @@
 ---
 import Analytics from "../../components/Analytics.astro";
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
-import { deployment, displayHost } from "../../data/site";
+import { build } from "../../data/build";
+import { deployment, displayHost, site } from "../../data/site";
 
 // Email and development links can be injected at build time; see src/data/site.ts.
-// Founder contact links remain stable in uninjected builds.
 const contactEmail = deployment.contactEmail;
 const updatesEmailHref = contactEmail
     ? `mailto:${contactEmail}?subject=Trailwalk%20updates`
     : undefined;
 const updateHref = deployment.updatesUrl;
 const updateLabel = displayHost(updateHref);
-const founderLinksHref = "https://fnpg.me/";
-const founderLinkedInHref = "https://www.linkedin.com/in/jiawei-kong-235a4254";
+const canonical = Astro.site
+    ? new URL(Astro.url.pathname, Astro.site)
+    : undefined;
+const socialImage = Astro.site
+    ? new URL(
+          "/assets/project-covers/trailwalk-hero-background.webp",
+          Astro.site,
+      )
+    : undefined;
+const commitUrl =
+    build.version === "local"
+        ? undefined
+        : `${site.repoUrl}/commit/${build.version}`;
 const shorelineTrailHref =
     "https://www.google.com/maps/search/?api=1&query=Shoreline%20Trail%20Port%20Moody%20BC";
 const saintAnthonyViewHref =
@@ -94,7 +105,7 @@ const faqs = [
     {
         analyticsId: "try_now",
         question: "Can I try it now?",
-        answer: "Trailwalk is at concept stage with a working technical demo. Get in touch and we'll include you when demo sessions open.",
+        answer: "Trailwalk has a working MVP. Get in touch and we'll include you when demo sessions open.",
     },
 ];
 ---
@@ -109,6 +120,8 @@ const faqs = [
             name="description"
             content="Trailwalk helps people stay connected to real outdoor places through immersive 360-degree trail walks and spatial outdoor sound."
         />
+        <meta name="author" content={site.name} />
+        {canonical && <link rel="canonical" href={canonical} />}
         <meta
             property="og:title"
             content="Trailwalk · Walking in Nature is not a privilege"
@@ -118,7 +131,10 @@ const faqs = [
             content="Immersive 360-degree trail walks for everyone who has been separated from the outdoors."
         />
         <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary" />
+        <meta property="og:site_name" content={site.name} />
+        {canonical && <meta property="og:url" content={canonical} />}
+        {socialImage && <meta property="og:image" content={socialImage} />}
+        <meta name="twitter:card" content="summary_large_image" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -236,6 +252,9 @@ const faqs = [
                 </svg>
 
                 <div class="hero-inner">
+                    <span class="hero-status">
+                        Working MVP · field media library
+                    </span>
                     <h1 id="hero-title">
                         Walking in Nature<br />is not a privilege
                     </h1>
@@ -244,25 +263,23 @@ const faqs = [
                         been separated from the outdoors.
                     </p>
                     <div class="hero-actions" aria-label="Trailwalk actions">
-                        {updatesEmailHref && (
-                            <a
-                                class="button button-light"
-                                href={updatesEmailHref}
-                                data-umami-event="trailwalk_cta_click"
-                                data-umami-event-cta="request_updates"
-                                data-umami-event-placement="hero"
-                            >
-                                Request updates
-                            </a>
-                        )}
                         <a
-                            class="button button-ghost"
-                            href="#contact"
+                            class="button button-light"
+                            href="/contact/"
                             data-umami-event="trailwalk_cta_click"
-                            data-umami-event-cta="get_in_touch"
+                            data-umami-event-cta="request_demo"
                             data-umami-event-placement="hero"
                         >
-                            Get in Touch
+                            Request a demo
+                        </a>
+                        <a
+                            class="button button-ghost"
+                            href="#stay-in-the-loop"
+                            data-umami-event="trailwalk_cta_click"
+                            data-umami-event-cta="follow_updates"
+                            data-umami-event-placement="hero"
+                        >
+                            Follow updates
                         </a>
                     </div>
                 </div>
@@ -425,8 +442,8 @@ const faqs = [
                 <div class="contact-card">
                     <h2>Help shape what this becomes</h2>
                     <p class="body-copy">
-                        Trailwalk is in its earliest stage with a working
-                        technical demo. We are inviting older adults,
+                        Trailwalk is in its earliest stage with a working VR
+                        prototype. We are inviting older adults,
                         caregivers, accessibility partners, community programs,
                         and anyone generally interested in accessible nature to
                         shape what the product becomes next.
@@ -434,25 +451,21 @@ const faqs = [
                     <div class="contact-actions">
                         <a
                             class="button button-primary"
-                            href={founderLinksHref}
-                            target="_blank"
-                            rel="noreferrer"
+                            href="/contact/"
                             data-umami-event="trailwalk_cta_click"
-                            data-umami-event-cta="founder_links"
+                            data-umami-event-cta="request_demo_or_feedback"
                             data-umami-event-placement="contact"
                         >
-                            Founder links <span aria-hidden="true">→</span>
+                            Request a demo or share feedback
                         </a>
                         <a
                             class="button button-secondary"
-                            href={founderLinkedInHref}
-                            target="_blank"
-                            rel="noreferrer"
+                            href="#stay-in-the-loop"
                             data-umami-event="trailwalk_cta_click"
-                            data-umami-event-cta="linkedin"
+                            data-umami-event-cta="follow_updates"
                             data-umami-event-placement="contact"
                         >
-                            LinkedIn <span aria-hidden="true">→</span>
+                            Follow prototype updates
                         </a>
                     </div>
                 </div>
@@ -519,7 +532,7 @@ const faqs = [
         </main>
 
         <footer class="trail-footer">
-            <span>Trailwalk</span>
+            <span>Trailwalk · {site.name}</span>
             {
                 deployment.analytics.enabled && (
                     <span class="trail-footer__tracker">
@@ -527,7 +540,15 @@ const faqs = [
                     </span>
                 )
             }
-            <span>© 2026 · Concept Stage</span>
+            {
+                commitUrl ? (
+                    <a class="trail-footer__build" href={commitUrl}>
+                        Build {build.version}
+                    </a>
+                ) : (
+                    <span class="trail-footer__build">Local build</span>
+                )
+            }
         </footer>
         <script>
             const trackTrailwalkEvent = (
@@ -906,6 +927,16 @@ const faqs = [
         position: relative;
         z-index: 1;
         max-width: 780px;
+    }
+
+    .hero-status {
+        display: block;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.45;
+        text-transform: uppercase;
     }
 
     .hero-footnote {
@@ -1388,9 +1419,14 @@ const faqs = [
         text-align: center;
     }
 
-    .trail-footer span:last-child {
+    .trail-footer__build {
         color: rgba(255, 255, 255, 0.25);
         font-size: 12px;
+        text-decoration: none;
+    }
+
+    .trail-footer__build:hover {
+        color: rgba(255, 255, 255, 0.6);
     }
 
     @media (max-width: 1400px) {
