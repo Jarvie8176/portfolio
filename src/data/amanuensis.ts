@@ -15,6 +15,7 @@ export const conceptNav: NavItem[] = [
   { id: 'problem', label: 'Problem' },
   { id: 'why', label: 'Why this' },
   { id: 'example', label: 'In practice' },
+  { id: 'production-samples', label: 'See in action' },
   { id: 'system', label: 'The system' },
   { id: 'explore', label: 'Explore' },
 ];

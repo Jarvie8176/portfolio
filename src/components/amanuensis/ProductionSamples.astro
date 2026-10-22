@@ -1,0 +1,172 @@
+---
+import ProductionTriage from './ProductionTriage.astro';
+// Public, edited sample only. Never copy raw inbox subjects or identifiers here.
+const categories = [
+  { title: 'Deliveries', text: 'A beauty order is confirmed and preparing to ship; another package is on its way.' },
+  { title: 'Finance', text: 'A bank offers a credit card balance transfer; an insurance profile needs setup; membership benefits and expiry rules have changed.' },
+  { title: 'Development', text: 'CI checks and photo pipeline jobs failed in a personal repository and need attention.' },
+  { title: 'Life / Accounts', text: 'A gaming account reports a sign-in from an unfamiliar location; a shopping account has a new passkey. An online lesson was cancelled; the coach has converted a refund to lesson credit and needs a booking reply.' },
+  { title: 'Other', text: 'Lower-priority neighborhood posts, election reminders, and a promotional share kit.' },
+];
+
+const messages = [
+  { level: 'must', title: 'Your account sign-in code', text: 'A gaming account sent a verification code and an unfamiliar-location sign-in alert. Verify immediately.' },
+  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: 'A CI workflow failed in a personal repository and needs attention.' },
+  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: 'Photo pipeline jobs failed in a personal repository and need attention.' },
+  { level: 'should', title: 'Special offer: Transfer balances & save on interest!', text: 'A bank offers a credit card balance transfer. Check the terms and deadline.' },
+  { level: 'should', title: 'Your passkey has been created', text: 'A passkey was created for a shopping account. Verify account security if this was unexpected.' },
+  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: 'Another CI workflow run failed and needs attention.' },
+  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: 'Another photo pipeline run failed and needs attention.' },
+  { level: 'should', title: 'Don’t forget to set up your insurance profile', text: 'A reminder to set up a personal insurance profile.' },
+  { level: 'should', title: 'Your order has been confirmed', text: 'A beauty order is confirmed and preparing to ship.' },
+  { level: 'should', title: 'Appointment Cancelled: Online lesson', text: 'An online lesson was cancelled. Check the refund or rescheduling policy.' },
+  { level: 'should', title: 'Re: Monthly Coaching Plan Terms & Conditions', text: 'The coach confirmed a refund was converted to lesson credit. Reply to book before the credit expires.' },
+  { level: 'fyi', title: 'A new post from your neighborhood', text: 'A neighbor shared a post about nearby police activity.' },
+  { level: 'fyi', title: 'Election vote reminder', text: 'A neighborhood post about voting in an election.' },
+  { level: 'fyi', title: 'Your share kit is ready', text: 'A booking platform share kit is ready, with a promotional QR code and social media images.' },
+  { level: 'fyi', title: 'New posts in your neighborhood', text: 'A neighborhood digest with local posts and job listings.' },
+  { level: 'fyi', title: 'Good news! A package is coming your way.', text: 'A package is due to arrive. The original notification includes a tracking link.' },
+  { level: 'fyi', title: 'Important update to your account', text: 'Membership benefits have changed, including status expiry and points rules.' },
+  { level: 'fyi', title: 'Important update to your account', text: 'Another membership update covering points rules and expiry dates.' },
+];
+const levels = ['must', 'should', 'fyi'];
+const folded = messages.slice(11, 15);
+---
+
+<div class="production-sample">
+  <div class="sample-context">
+    <p class="eyebrow">Amanuensis · Discord delivery</p>
+    <h3>One evening.<br />An inbox in context.</h3>
+    <p>Account alerts, failed builds, deliveries, and everyday admin arrive together. Amanuensis surfaces individual classifications in a triage thread and delivers a category digest with a priority list to Discord.</p>
+    <dl class="sample-counts">
+      <div><dt>{messages.length}</dt><dd>source messages</dd></div>
+      <div><dt>{messages.filter((m) => m.level === 'must').length}</dt><dd>marked must</dd></div>
+      <div><dt>{folded.length}</dt><dd>notices folded</dd></div>
+    </dl>
+    <p class="sample-note">An edited, anonymized production sample, translated into English. Names, services, locations, identifiers, and dates have been generalized.</p>
+    <p class="sample-note">Priority labels reflect this run’s output. Repeated build failures and membership notices remain visible in the details. These are triage suggestions; the sample shows no account changes, refunds, or bookings being carried out.</p>
+    <p class="sample-note">Switch views to inspect a separate triage excerpt: three forwarded spam messages marked <code>drop</code> and one product update marked <code>ambient</code>, with local routing metadata and reaction chips.</p>
+    <a href="/projects/amanuensis/walkthrough/">Follow a signal through the pipeline <span aria-hidden="true">↗</span></a>
+  </div>
+
+  <div class="sample-views">
+    <fieldset class="view-picker">
+      <legend>Production samples</legend>
+      <div class="view-options">
+        <input type="radio" name="production-view" id="sample-view-digest" value="digest" checked aria-controls="sample-panel-digest" />
+        <label for="sample-view-digest">Digest</label>
+        <input type="radio" name="production-view" id="sample-view-triage" value="triage" aria-controls="sample-panel-triage" />
+        <label for="sample-view-triage">Triage</label>
+      </div>
+    </fieldset>
+  <div id="sample-panel-digest" class="sample-panel sample-panel--digest">
+  <figure class="discord-sample" aria-label="Anonymized Discord digest sample">
+    <div class="channel-bar"><span aria-hidden="true">#</span> evening-digest <span class="sample-label">Anonymized sample</span></div>
+    <div class="message" lang="en">
+      <div class="message-avatar" aria-hidden="true">A</div>
+      <div class="message-content">
+        <div class="message-author"><b>Amanuensis</b><span class="app-badge">APP</span><span class="message-time">Evening digest</span></div>
+        <p class="message-kind">digest (1/1)</p>
+        <dl class="digest-categories">
+          {categories.map(({ title, text }) => <div><dt>{title}</dt><dd>{text}</dd></div>)}
+        </dl>
+        <details class="folded-notices">
+          <summary>{folded.length} community / promotional notices folded</summary>
+          <ul>{folded.map((m) => <li>{m.text}</li>)}</ul>
+        </details>
+        <div class="needs-attention">
+          <p>Needs attention</p>
+          <span class="priority must">must</span>
+          <b>Account sign-in alert</b>
+          <p>A verification code and an unfamiliar-location alert arrived. Confirm whether the sign-in was yours.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="message message--details" lang="en">
+      <div class="message-avatar" aria-hidden="true">A</div>
+      <div class="message-content">
+        <div class="message-author"><b>Amanuensis</b><span class="app-badge">APP</span></div>
+        <details class="priority-details">
+          <summary><span class="message-kind">details (1/1)</span><span>View all {messages.length} messages</span></summary>
+          {levels.map((level) => (
+            <div class="priority-group">
+              <h4><span class:list={['priority', level]}>{level}</span><span>{messages.filter((m) => m.level === level).length} {messages.filter((m) => m.level === level).length === 1 ? 'message' : 'messages'}</span></h4>
+              <ul>{messages.filter((m) => m.level === level).map((m) => <li><b>{m.title}</b><p>{m.text}</p></li>)}</ul>
+            </div>
+          ))}
+        </details>
+      </div>
+    </div>
+  </figure>
+  </div>
+  <div id="sample-panel-triage" class="sample-panel sample-panel--triage">
+    <ProductionTriage />
+  </div>
+  </div>
+</div>
+
+<style>
+  .production-sample { display: grid; grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); gap: clamp(2rem, 4vw, 4rem); align-items: start; }
+  .sample-context, .discord-sample, .message-content { min-width: 0; }
+  .sample-views { min-width: 0; }
+  .view-picker { margin: 0 0 1rem; padding: 0; border: 0; }
+  .view-picker legend { padding: 0; margin-bottom: .6rem; font: .65rem/1.5 var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); }
+  .view-options { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .view-options input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .view-options label { display: inline-flex; align-items: baseline; gap: .6rem; padding: .55rem .8rem; border: 1px solid var(--rule-hard); font: 600 .75rem/1.5 var(--mono); cursor: pointer; }
+  .view-options input:checked + label { color: var(--surface); background: var(--systems); border-color: var(--systems); }
+  .view-options input:focus-visible + label { outline: 2px solid var(--systems); outline-offset: 3px; }
+  .sample-panel--triage { display: none; }
+  .sample-views:has(#sample-view-triage:checked) .sample-panel--triage { display: block; }
+  .sample-views:has(#sample-view-triage:checked) .sample-panel--digest { display: none; }
+  .eyebrow { margin: 0 0 1rem; font: 700 .7rem/1.6 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--systems); }
+  h3 { margin: 0 0 1.3rem; font: 500 clamp(1.9rem, 3vw, 2.8rem)/1.12 var(--serif); letter-spacing: -.03em; }
+  .sample-context > p:not(.eyebrow) { color: var(--ink-soft); line-height: 1.75; }
+  .sample-context > .sample-note { font-size: .82rem; }
+  .sample-counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; border-block: 1px solid var(--rule); padding: 1.2rem 0; margin: 1.8rem 0; }
+  .sample-counts dt { font: 500 2rem/1.2 var(--mono); color: var(--systems); }
+  .sample-counts dd { margin: .4rem 0 0; font-size: .72rem; color: var(--ink-soft); }
+  .sample-context a { display: inline-block; margin-top: .7rem; font-size: .85rem; }
+  .discord-sample { margin: 0; border: 1px solid var(--rule-hard); background: var(--surface); }
+  .channel-bar { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; padding: .85rem 1.1rem; border-bottom: 1px solid var(--rule); font: 600 .78rem/1.5 var(--mono); }
+  .channel-bar > span:first-child { color: var(--ink-soft); font-size: 1.1rem; }
+  .sample-label { margin-left: auto; font-size: .6rem; font-weight: 400; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+  .message { display: grid; grid-template-columns: 1.9rem minmax(0, 1fr); gap: .8rem; padding: 1.4rem 1.1rem; }
+  .message-avatar { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--systems); color: var(--surface); font: 600 .9rem var(--mono); }
+  .message-author { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; font-size: .82rem; }
+  .app-badge { padding: .1rem .3rem; background: var(--systems); color: var(--surface); border-radius: 2px; font: 600 .58rem/1.4 var(--sans); }
+  .message-time { font-size: .65rem; color: var(--ink-soft); }
+  .message-kind { margin: .35rem 0 1rem; font: .75rem/1.5 var(--mono); color: var(--ink-soft); }
+  .digest-categories { margin: 0; font-size: .85rem; line-height: 1.8; }
+  .digest-categories > div + div { margin-top: .8rem; }
+  .digest-categories dt { font-weight: 700; }
+  .digest-categories dd { margin: .1rem 0 0; color: var(--ink-soft); }
+  summary { cursor: pointer; }
+  summary:focus-visible, a:focus-visible { outline: 2px solid var(--systems); outline-offset: 4px; }
+  .folded-notices { margin-top: 1rem; font-size: .77rem; color: var(--ink-soft); }
+  .folded-notices summary { padding: .5rem .6rem; background: var(--surface-quiet); }
+  .folded-notices ul { margin: .7rem 0; padding-left: 1.2rem; line-height: 1.8; }
+  .needs-attention { margin-top: 1.2rem; padding: .8rem .9rem; border-left: 2px solid var(--worlds); background: color-mix(in srgb, var(--worlds) 5%, var(--surface)); font-size: .8rem; line-height: 1.8; }
+  .needs-attention p { margin: 0; }
+  .needs-attention > p:first-child { margin-bottom: .35rem; font-weight: 700; }
+  .needs-attention > p:last-child { margin-top: .3rem; color: var(--ink-soft); }
+  .priority { display: inline-flex; align-items: center; gap: .35rem; margin-right: .5rem; font: 600 .68rem/1.5 var(--mono); }
+  .priority::before { content: ''; width: .5rem; height: .5rem; border-radius: 50%; background: currentColor; }
+  .must { color: #a13535; }
+  .should { color: #7b5c00; }
+  .fyi { color: var(--systems); }
+  .message--details { border-top: 1px solid var(--rule); padding-top: 1.1rem; }
+  .priority-details > summary { margin-top: .4rem; font-size: .75rem; }
+  .priority-details > summary .message-kind { margin: 0 .7rem 0 0; }
+  .priority-details > summary > span:last-child { color: var(--systems); }
+  .priority-group { margin-top: 1.2rem; }
+  .priority-group h4 { display: flex; align-items: center; gap: .5rem; margin: 0; padding-bottom: .5rem; border-bottom: 1px solid var(--rule); }
+  .priority-group h4 > span:last-child { font-size: .65rem; font-weight: 400; color: var(--ink-soft); }
+  .priority-group ul { list-style: none; padding: 0; margin: 0; }
+  .priority-group li { padding: .7rem 0; border-bottom: 1px dotted var(--rule); font-size: .77rem; line-height: 1.7; overflow-wrap: anywhere; }
+  .priority-group li b { font-weight: 600; }
+  .priority-group li p { margin: .2rem 0 0; color: var(--ink-soft); }
+  @media (max-width: 900px) { .production-sample { grid-template-columns: minmax(0, 1fr); } .sample-context { max-width: 38rem; } }
+  @media (max-width: 560px) { .message { grid-template-columns: minmax(0, 1fr); padding: 1rem; } .message-avatar { display: none; } .channel-bar { padding: .75rem 1rem; } .sample-label { width: 100%; margin-left: 0; } }
+</style>
