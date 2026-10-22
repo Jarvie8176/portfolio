@@ -1,4 +1,5 @@
 ---
+import ProductionTriage from './ProductionTriage.astro';
 // Public, edited sample only. Never copy raw inbox subjects or identifiers here.
 const categories = [
   { title: '物流', text: '美妆订单已确认，即将发货；邮政有新包裹在途中。' },
@@ -36,7 +37,7 @@ const folded = messages.slice(11, 15);
   <div class="sample-context">
     <p class="eyebrow">Amanuensis · Discord delivery</p>
     <h3>One evening.<br />An inbox in context.</h3>
-    <p>Account alerts, failed builds, deliveries, and everyday admin arrive together. Amanuensis, one implementation within Yaaa, turns them into a category digest and a priority list delivered to Discord.</p>
+    <p>Account alerts, failed builds, deliveries, and everyday admin arrive together. Amanuensis, one implementation within Yaaa, surfaces individual classifications in a triage thread and delivers a category digest with a priority list to Discord.</p>
     <dl class="sample-counts">
       <div><dt>{messages.length}</dt><dd>source messages</dd></div>
       <div><dt>{messages.filter((m) => m.level === 'must').length}</dt><dd>marked must</dd></div>
@@ -44,9 +45,21 @@ const folded = messages.slice(11, 15);
     </dl>
     <p class="sample-note">An edited, anonymized production sample. Names, services, locations, identifiers, and dates have been generalized; Chinese summaries and English subjects preserve the mixed-language format.</p>
     <p class="sample-note">Priority labels reflect this run’s output. Repeated build failures and membership notices remain visible in the details. These are triage suggestions; the sample shows no account changes, refunds, or bookings being carried out.</p>
+    <p class="sample-note">Switch views to inspect a separate triage excerpt: three forwarded spam messages marked <code>drop</code> and one product update marked <code>ambient</code>, with local routing metadata and reaction chips.</p>
     <a href="/projects/amanuensis/">Explore the Amanuensis implementation <span aria-hidden="true">↗</span></a>
   </div>
 
+  <div class="sample-views">
+    <fieldset class="view-picker">
+      <legend>Production samples</legend>
+      <div class="view-options">
+        <input type="radio" name="production-view" id="sample-view-digest" value="digest" checked aria-controls="sample-panel-digest" />
+        <label for="sample-view-digest">Digest <span>摘要</span></label>
+        <input type="radio" name="production-view" id="sample-view-triage" value="triage" aria-controls="sample-panel-triage" />
+        <label for="sample-view-triage">Triage <span>逐条分流</span></label>
+      </div>
+    </fieldset>
+  <div id="sample-panel-digest" class="sample-panel sample-panel--digest">
   <figure class="discord-sample" aria-labelledby="digest-caption">
     <div class="channel-bar"><span aria-hidden="true">#</span> evening-digest <span class="sample-label">Anonymized sample</span></div>
     <div class="message" lang="zh-Hans">
@@ -87,11 +100,28 @@ const folded = messages.slice(11, 15);
     </div>
     <figcaption id="digest-caption">Category digest first; individual priorities on demand. Recreated as selectable text from an anonymized Discord production excerpt.</figcaption>
   </figure>
+  </div>
+  <div id="sample-panel-triage" class="sample-panel sample-panel--triage">
+    <ProductionTriage />
+  </div>
+  </div>
 </div>
 
 <style>
   .production-sample { display: grid; grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); gap: clamp(2rem, 4vw, 4rem); align-items: start; }
   .sample-context, .discord-sample, .message-content { min-width: 0; }
+  .sample-views { min-width: 0; }
+  .view-picker { margin: 0 0 1rem; padding: 0; border: 0; }
+  .view-picker legend { padding: 0; margin-bottom: .6rem; font: .65rem/1.5 var(--mono); text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); }
+  .view-options { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .view-options input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .view-options label { display: inline-flex; align-items: baseline; gap: .6rem; padding: .55rem .8rem; border: 1px solid var(--rule-hard); font: 600 .75rem/1.5 var(--mono); cursor: pointer; }
+  .view-options label span { font: 400 .7rem/1.5 var(--sans); }
+  .view-options input:checked + label { color: var(--surface); background: var(--systems); border-color: var(--systems); }
+  .view-options input:focus-visible + label { outline: 2px solid var(--systems); outline-offset: 3px; }
+  .sample-panel--triage { display: none; }
+  .sample-views:has(#sample-view-triage:checked) .sample-panel--triage { display: block; }
+  .sample-views:has(#sample-view-triage:checked) .sample-panel--digest { display: none; }
   .eyebrow { margin: 0 0 1rem; font: 700 .7rem/1.6 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--systems); }
   h3 { margin: 0 0 1.3rem; font: 500 clamp(1.9rem, 3vw, 2.8rem)/1.12 var(--serif); letter-spacing: -.03em; }
   .sample-context > p:not(.eyebrow) { color: var(--ink-soft); line-height: 1.75; }
