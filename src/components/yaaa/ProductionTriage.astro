@@ -1,4 +1,5 @@
 ---
+import { faThumbsUp, faArrowUp, faArrowDown, faVolumeXmark } from '@fortawesome/free-solid-svg-icons';
 // Only the four fully visible entries in the supplied screenshot are recreated.
 // Demo references are display labels, never live mailbox record identifiers.
 const entries = [
@@ -8,10 +9,10 @@ const entries = [
   { level: 'ambient', title: '[Important] An agent becomes part of your IDE', text: 'IDE 产品更新：新版本将集成代理开发工具，可关闭。', ref: 'sample-004' },
 ];
 const reactions = [
-  { emoji: '👍', label: '点赞' },
-  { emoji: '⬆️', label: '上调' },
-  { emoji: '⬇️', label: '下调' },
-  { emoji: '🔇', label: '静音' },
+  { icon: faThumbsUp, label: '点赞' },
+  { icon: faArrowUp, label: '上调' },
+  { icon: faArrowDown, label: '下调' },
+  { icon: faVolumeXmark, label: '静音' },
 ];
 ---
 
@@ -29,7 +30,7 @@ const reactions = [
           <p class="entry-summary">{entry.text}</p>
           <code>mailbox/{entry.ref}</code>
           <ul class="reactions" aria-label="原消息反应样式的静态示例">
-            {reactions.map(({ emoji, label }) => <li><span role="img" aria-label={label}>{emoji}</span><span>1</span></li>)}
+            {reactions.map(({ icon, label }) => <li><svg role="img" aria-label={label} viewBox={`0 0 ${icon.icon[0]} ${icon.icon[1]}`}>{[icon.icon[4]].flat().map((path) => <path d={path} />)}</svg><span>1</span></li>)}
           </ul>
         </li>
       ))}
@@ -59,6 +60,7 @@ const reactions = [
   code { display: inline-block; max-width: 100%; padding: .08rem .25rem; background: #2b2d31; border: 1px solid #4b4e55; border-radius: 3px; color: #dbdee1; font: .72rem/1.5 var(--mono); overflow-wrap: anywhere; }
   .reactions { display: flex; flex-wrap: wrap; gap: .3rem; list-style: none; padding: 0; margin: .4rem 0 0; }
   .reactions li { display: inline-flex; align-items: center; gap: .4rem; border-radius: 7px; padding: .15rem .5rem; background: #41434a; font-size: .8rem; line-height: 1.5; color: #dbdee1; }
+  .reactions svg { width: .8rem; height: .8rem; fill: currentColor; }
   figcaption { padding: .85rem 1.1rem; border-top: 1px solid #4b4e55; font-size: .7rem; line-height: 1.7; color: #b5bac1; }
   h4, h5, p { overflow-wrap: anywhere; }
   @media (max-width: 560px) { .thread-body { padding: 1rem; } .triage-entries { margin-left: 0; } .thread-bar > span:last-child { width: 100%; margin-left: 0; } }
