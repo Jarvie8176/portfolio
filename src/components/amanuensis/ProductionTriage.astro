@@ -3,33 +3,33 @@ import { faThumbsUp, faArrowUp, faArrowDown, faVolumeXmark } from '@fortawesome/
 // Only the four fully visible entries in the supplied screenshot are recreated.
 // Demo references are display labels, never live mailbox record identifiers.
 const entries = [
-  { level: 'drop', title: 'Forward SMS From: [已隐去号码]', text: '垃圾短信转发通知，正文含乱码及可疑商品列表，疑似诈骗。', ref: 'sample-001' },
-  { level: 'drop', title: 'Forward SMS From: [已隐去号码]', text: '疑似垃圾短信转发通知，含诱导链接，无实际业务价值。', ref: 'sample-002' },
-  { level: 'drop', title: 'Forward SMS From: [已隐去号码]', text: '垃圾短信转发通知，无实际内容价值。', ref: 'sample-003' },
-  { level: 'ambient', title: '[Important] An agent becomes part of your IDE', text: 'IDE 产品更新：新版本将集成代理开发工具，可关闭。', ref: 'sample-004' },
+  { level: 'drop', title: 'Forwarded SMS from: [number hidden]', text: 'Forwarded spam with garbled text and suspicious product listings. Likely a scam.', ref: 'sample-001' },
+  { level: 'drop', title: 'Forwarded SMS from: [number hidden]', text: 'Suspected spam with a deceptive link and no useful business content.', ref: 'sample-002' },
+  { level: 'drop', title: 'Forwarded SMS from: [number hidden]', text: 'A forwarded spam notification with no useful content.', ref: 'sample-003' },
+  { level: 'ambient', title: '[Important] An agent becomes part of your IDE', text: 'An IDE product update: the next release includes an agent development tool that can be disabled.', ref: 'sample-004' },
 ];
 const reactions = [
-  { icon: faThumbsUp, label: '点赞' },
-  { icon: faArrowUp, label: '上调' },
-  { icon: faArrowDown, label: '下调' },
-  { icon: faVolumeXmark, label: '静音' },
+  { icon: faThumbsUp, label: 'Like' },
+  { icon: faArrowUp, label: 'Higher priority' },
+  { icon: faArrowDown, label: 'Lower priority' },
+  { icon: faVolumeXmark, label: 'Mute' },
 ];
 ---
 
 <figure class="triage-sample" aria-labelledby="triage-caption">
   <div class="thread-bar"><span aria-hidden="true">#</span> triage · sample <span>Anonymized sample</span></div>
-  <div class="thread-body" lang="zh-Hans">
-    <h4>triage · 收件分流</h4>
-    <p class="thread-description">逐条查看分类、摘要与处理路径</p>
+  <div class="thread-body" lang="en">
+    <h4>triage · inbox review</h4>
+    <p class="thread-description">Inspect each classification, summary, and processing route</p>
     <div class="thread-author"><span class="avatar" aria-hidden="true">A</span><b>Amanuensis</b><span class="app-badge">APP</span></div>
     <ol class="triage-entries">
       {entries.map((entry) => (
         <li>
           <h5>{entry.title}</h5>
-          <p class="route"><span class:list={['classification', entry.level]}>{entry.level === 'drop' && <span class="drop-dot" aria-hidden="true"></span>}{entry.level}</span> · 个人 · mailbox · local · qwen3.5-9b</p>
+          <p class="route"><span class:list={['classification', entry.level]}>{entry.level === 'drop' && <span class="drop-dot" aria-hidden="true"></span>}{entry.level}</span> · personal · mailbox · local · qwen3.5-9b</p>
           <p class="entry-summary">{entry.text}</p>
           <code>mailbox/{entry.ref}</code>
-          <ul class="reactions" aria-label="原消息反应样式的静态示例">
+          <ul class="reactions" aria-label="Static examples of the original message reactions">
             {reactions.map(({ icon, label }) => <li><svg role="img" aria-label={label} viewBox={`0 0 ${icon.icon[0]} ${icon.icon[1]}`}>{[icon.icon[4]].flat().map((path) => <path d={path} />)}</svg><span>1</span></li>)}
           </ul>
         </li>

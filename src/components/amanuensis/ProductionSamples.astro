@@ -2,32 +2,32 @@
 import ProductionTriage from './ProductionTriage.astro';
 // Public, edited sample only. Never copy raw inbox subjects or identifiers here.
 const categories = [
-  { title: '物流', text: '美妆订单已确认，即将发货；邮政有新包裹在途中。' },
-  { title: '财务', text: '银行提供信用卡余额转移优惠；需设置个人保险档案；会员权益规则及有效期更新。' },
-  { title: '开发 / 仓库', text: '个人代码库的 CI 工作流与照片流水线任务运行失败，需留意。' },
-  { title: '生活 / 账户', text: '游戏平台账号收到异地登录安全告警，需核实；购物账户创建通行密钥；线上课程取消，需处理退费或重排；教练确认退款转为课程积分，需回复预约。' },
-  { title: '其他', text: '社区动态、投票通知及推广套件就绪等低优先级信息。' },
+  { title: 'Deliveries', text: 'A beauty order is confirmed and preparing to ship; another package is on its way.' },
+  { title: 'Finance', text: 'A bank offers a credit card balance transfer; an insurance profile needs setup; membership benefits and expiry rules have changed.' },
+  { title: 'Development', text: 'CI checks and photo pipeline jobs failed in a personal repository and need attention.' },
+  { title: 'Life / Accounts', text: 'A gaming account reports a sign-in from an unfamiliar location; a shopping account has a new passkey. An online lesson was cancelled; the coach has converted a refund to lesson credit and needs a booking reply.' },
+  { title: 'Other', text: 'Lower-priority neighborhood posts, election reminders, and a promotional share kit.' },
 ];
 
 const messages = [
-  { level: 'must', title: '您的账号登录验证码', text: '游戏平台账号验证码及异地登录安全告警，需立即核实。' },
-  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: '个人代码库 CI 工作流运行失败，需留意。' },
-  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: '个人代码库照片流水线部分任务失败，需留意。' },
-  { level: 'should', title: 'Special offer: Transfer balances & save on interest!', text: '银行提供信用卡余额转移优惠，需留意适用条款与截止日期。' },
-  { level: 'should', title: 'Your passkey has been created', text: '购物账户成功创建通行密钥，若未操作需核实账户安全。' },
-  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: '另一轮 CI 工作流运行失败，需留意。' },
-  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: '另一轮照片流水线任务失败，需留意。' },
-  { level: 'should', title: 'Don’t forget to set up your insurance profile', text: '提醒设置个人保险档案。' },
-  { level: 'should', title: 'Your order has been confirmed', text: '美妆订单已确认，即将发货。' },
-  { level: 'should', title: 'Appointment Cancelled: Online lesson', text: '线上课程已取消，需留意退费或重排政策。' },
-  { level: 'should', title: 'Re: Monthly Coaching Plan Terms & Conditions', text: '教练确认退款转为课程积分，需在有效期内回复预约。' },
-  { level: 'fyi', title: 'A new post from your neighborhood', text: '社区动态：邻居分享附近的警务活动。' },
-  { level: 'fyi', title: 'Election vote reminder', text: '社区关于选举投票的帖子通知。' },
-  { level: 'fyi', title: 'Your share kit is ready', text: '预约平台分享套件已就绪，包含推广用二维码和社交媒体图片。' },
-  { level: 'fyi', title: 'New posts in your neighborhood', text: '社区动态推送，含邻里帖子及招聘广告。' },
-  { level: 'fyi', title: 'Good news! A package is coming your way.', text: '邮政通知有新包裹即将送达，原消息附有追踪链接。' },
-  { level: 'fyi', title: 'Important update to your account', text: '会员等级权益变更通知，涉及状态有效期及积分规则调整。' },
-  { level: 'fyi', title: 'Important update to your account', text: '另一条会员权益变更通知，涉及积分规则及有效期调整。' },
+  { level: 'must', title: 'Your account sign-in code', text: 'A gaming account sent a verification code and an unfamiliar-location sign-in alert. Verify immediately.' },
+  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: 'A CI workflow failed in a personal repository and needs attention.' },
+  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: 'Photo pipeline jobs failed in a personal repository and need attention.' },
+  { level: 'should', title: 'Special offer: Transfer balances & save on interest!', text: 'A bank offers a credit card balance transfer. Check the terms and deadline.' },
+  { level: 'should', title: 'Your passkey has been created', text: 'A passkey was created for a shopping account. Verify account security if this was unexpected.' },
+  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: 'Another CI workflow run failed and needs attention.' },
+  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: 'Another photo pipeline run failed and needs attention.' },
+  { level: 'should', title: 'Don’t forget to set up your insurance profile', text: 'A reminder to set up a personal insurance profile.' },
+  { level: 'should', title: 'Your order has been confirmed', text: 'A beauty order is confirmed and preparing to ship.' },
+  { level: 'should', title: 'Appointment Cancelled: Online lesson', text: 'An online lesson was cancelled. Check the refund or rescheduling policy.' },
+  { level: 'should', title: 'Re: Monthly Coaching Plan Terms & Conditions', text: 'The coach confirmed a refund was converted to lesson credit. Reply to book before the credit expires.' },
+  { level: 'fyi', title: 'A new post from your neighborhood', text: 'A neighbor shared a post about nearby police activity.' },
+  { level: 'fyi', title: 'Election vote reminder', text: 'A neighborhood post about voting in an election.' },
+  { level: 'fyi', title: 'Your share kit is ready', text: 'A booking platform share kit is ready, with a promotional QR code and social media images.' },
+  { level: 'fyi', title: 'New posts in your neighborhood', text: 'A neighborhood digest with local posts and job listings.' },
+  { level: 'fyi', title: 'Good news! A package is coming your way.', text: 'A package is due to arrive. The original notification includes a tracking link.' },
+  { level: 'fyi', title: 'Important update to your account', text: 'Membership benefits have changed, including status expiry and points rules.' },
+  { level: 'fyi', title: 'Important update to your account', text: 'Another membership update covering points rules and expiry dates.' },
 ];
 const levels = ['must', 'should', 'fyi'];
 const folded = messages.slice(11, 15);
@@ -43,7 +43,7 @@ const folded = messages.slice(11, 15);
       <div><dt>{messages.filter((m) => m.level === 'must').length}</dt><dd>marked must</dd></div>
       <div><dt>{folded.length}</dt><dd>notices folded</dd></div>
     </dl>
-    <p class="sample-note">An edited, anonymized production sample. Names, services, locations, identifiers, and dates have been generalized; Chinese summaries and English subjects preserve the mixed-language format.</p>
+    <p class="sample-note">An edited, anonymized production sample, translated into English. Names, services, locations, identifiers, and dates have been generalized.</p>
     <p class="sample-note">Priority labels reflect this run’s output. Repeated build failures and membership notices remain visible in the details. These are triage suggestions; the sample shows no account changes, refunds, or bookings being carried out.</p>
     <p class="sample-note">Switch views to inspect a separate triage excerpt: three forwarded spam messages marked <code>drop</code> and one product update marked <code>ambient</code>, with local routing metadata and reaction chips.</p>
     <a href="/projects/amanuensis/walkthrough/">Follow a signal through the pipeline <span aria-hidden="true">↗</span></a>
@@ -54,44 +54,44 @@ const folded = messages.slice(11, 15);
       <legend>Production samples</legend>
       <div class="view-options">
         <input type="radio" name="production-view" id="sample-view-digest" value="digest" checked aria-controls="sample-panel-digest" />
-        <label for="sample-view-digest">Digest <span>摘要</span></label>
+        <label for="sample-view-digest">Digest</label>
         <input type="radio" name="production-view" id="sample-view-triage" value="triage" aria-controls="sample-panel-triage" />
-        <label for="sample-view-triage">Triage <span>逐条分流</span></label>
+        <label for="sample-view-triage">Triage</label>
       </div>
     </fieldset>
   <div id="sample-panel-digest" class="sample-panel sample-panel--digest">
   <figure class="discord-sample" aria-label="Anonymized Discord digest sample">
     <div class="channel-bar"><span aria-hidden="true">#</span> evening-digest <span class="sample-label">Anonymized sample</span></div>
-    <div class="message" lang="zh-Hans">
+    <div class="message" lang="en">
       <div class="message-avatar" aria-hidden="true">A</div>
       <div class="message-content">
-        <div class="message-author"><b>Amanuensis</b><span class="app-badge">APP</span><span class="message-time">晚间摘要</span></div>
+        <div class="message-author"><b>Amanuensis</b><span class="app-badge">APP</span><span class="message-time">Evening digest</span></div>
         <p class="message-kind">digest (1/1)</p>
         <dl class="digest-categories">
           {categories.map(({ title, text }) => <div><dt>{title}</dt><dd>{text}</dd></div>)}
         </dl>
         <details class="folded-notices">
-          <summary>{folded.length} 条社区 / 推广通知折叠</summary>
+          <summary>{folded.length} community / promotional notices folded</summary>
           <ul>{folded.map((m) => <li>{m.text}</li>)}</ul>
         </details>
         <div class="needs-attention">
-          <p>需处理</p>
+          <p>Needs attention</p>
           <span class="priority must">must</span>
-          <b>账号登录安全告警</b>
-          <p>收到验证码及异地登录提醒，需核实是否为本人操作。</p>
+          <b>Account sign-in alert</b>
+          <p>A verification code and an unfamiliar-location alert arrived. Confirm whether the sign-in was yours.</p>
         </div>
       </div>
     </div>
 
-    <div class="message message--details" lang="zh-Hans">
+    <div class="message message--details" lang="en">
       <div class="message-avatar" aria-hidden="true">A</div>
       <div class="message-content">
         <div class="message-author"><b>Amanuensis</b><span class="app-badge">APP</span></div>
         <details class="priority-details">
-          <summary><span class="message-kind">details (1/1)</span><span>展开 {messages.length} 条明细</span></summary>
+          <summary><span class="message-kind">details (1/1)</span><span>View all {messages.length} messages</span></summary>
           {levels.map((level) => (
             <div class="priority-group">
-              <h4><span class:list={['priority', level]}>{level}</span><span>{messages.filter((m) => m.level === level).length} 条</span></h4>
+              <h4><span class:list={['priority', level]}>{level}</span><span>{messages.filter((m) => m.level === level).length} {messages.filter((m) => m.level === level).length === 1 ? 'message' : 'messages'}</span></h4>
               <ul>{messages.filter((m) => m.level === level).map((m) => <li><b>{m.title}</b><p>{m.text}</p></li>)}</ul>
             </div>
           ))}
@@ -115,7 +115,6 @@ const folded = messages.slice(11, 15);
   .view-options { display: flex; flex-wrap: wrap; gap: .5rem; }
   .view-options input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .view-options label { display: inline-flex; align-items: baseline; gap: .6rem; padding: .55rem .8rem; border: 1px solid var(--rule-hard); font: 600 .75rem/1.5 var(--mono); cursor: pointer; }
-  .view-options label span { font: 400 .7rem/1.5 var(--sans); }
   .view-options input:checked + label { color: var(--surface); background: var(--systems); border-color: var(--systems); }
   .view-options input:focus-visible + label { outline: 2px solid var(--systems); outline-offset: 3px; }
   .sample-panel--triage { display: none; }
