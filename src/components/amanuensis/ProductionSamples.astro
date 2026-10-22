@@ -60,7 +60,7 @@ const folded = messages.slice(11, 15);
       </div>
     </fieldset>
   <div id="sample-panel-digest" class="sample-panel sample-panel--digest">
-  <figure class="discord-sample" aria-labelledby="digest-caption">
+  <figure class="discord-sample" aria-label="Anonymized Discord digest sample">
     <div class="channel-bar"><span aria-hidden="true">#</span> evening-digest <span class="sample-label">Anonymized sample</span></div>
     <div class="message" lang="zh-Hans">
       <div class="message-avatar" aria-hidden="true">A</div>
@@ -98,7 +98,6 @@ const folded = messages.slice(11, 15);
         </details>
       </div>
     </div>
-    <figcaption id="digest-caption">Category digest first; individual priorities on demand. Recreated as selectable text from an anonymized Discord production excerpt.</figcaption>
   </figure>
   </div>
   <div id="sample-panel-triage" class="sample-panel sample-panel--triage">
@@ -169,7 +168,6 @@ const folded = messages.slice(11, 15);
   .priority-group li { padding: .7rem 0; border-bottom: 1px dotted var(--rule); font-size: .77rem; line-height: 1.7; overflow-wrap: anywhere; }
   .priority-group li b { font-weight: 600; }
   .priority-group li p { margin: .2rem 0 0; color: var(--ink-soft); }
-  figcaption { border-top: 1px solid var(--rule); padding: .85rem 1.1rem; font-size: .7rem; line-height: 1.7; color: var(--ink-soft); }
   @media (max-width: 900px) { .production-sample { grid-template-columns: minmax(0, 1fr); } .sample-context { max-width: 38rem; } }
   @media (max-width: 560px) { .message { grid-template-columns: minmax(0, 1fr); padding: 1rem; } .message-avatar { display: none; } .channel-bar { padding: .75rem 1rem; } .sample-label { width: 100%; margin-left: 0; } }
 </style>
