@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { site } from '../../data/site';
 import ProjectDiagram from '../../components/diagram/ProjectDiagram.astro';
 import SectionDotNav from '../../components/SectionDotNav.astro';
+import ProductionDigest from '../../components/yaaa/ProductionDigest.astro';
 import yaaaCanvas from '../../diagrams/yaaa.canvas?raw';
 
 const formulaLines = [
@@ -238,6 +239,12 @@ const sectionNavItems = [
       { id: 'concept-formula', label: 'Formula' },
       { id: 'concept-rationale', label: 'Rationale' },
     ],
+  },
+  {
+    id: 'in-practice',
+    label: 'In practice',
+    accent: 'embodied',
+    children: [],
   },
   {
     id: 'how-it-works',
@@ -698,9 +705,17 @@ const dotNavItems = [
         </div>
       </section>
 
-      <section class="page-section" id="how-it-works" aria-labelledby="loop-title">
+      <section class="page-section" id="in-practice" aria-labelledby="practice-title">
         <div class="section-label">
           <span class="sec-no">03</span>
+          <h2 id="practice-title">In practice</h2>
+        </div>
+        <ProductionDigest />
+      </section>
+
+      <section class="page-section" id="how-it-works" aria-labelledby="loop-title">
+        <div class="section-label">
+          <span class="sec-no">04</span>
           <h2 id="loop-title">How it works</h2>
         </div>
         <div class="how-intro" id="architecture-rationale">
@@ -1053,7 +1068,7 @@ const dotNavItems = [
 
       <section class="page-section" id="design-invariants" aria-labelledby="case-title">
         <div class="section-label">
-          <span class="sec-no">04</span>
+          <span class="sec-no">05</span>
           <h2 id="case-title">Design invariants</h2>
         </div>
         <div class="case-grid">
@@ -1201,7 +1216,7 @@ const dotNavItems = [
 
       <section class="page-section" id="challenges-limits" aria-labelledby="questions-title">
         <div class="section-label">
-          <span class="sec-no">05</span>
+          <span class="sec-no">06</span>
           <h2 id="questions-title">Challenges &amp; limits</h2>
         </div>
         <div class="limits-intro">

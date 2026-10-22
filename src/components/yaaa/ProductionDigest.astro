@@ -1,0 +1,145 @@
+---
+// Public, edited sample only. Never copy raw inbox subjects or identifiers here.
+const categories = [
+  { title: '物流', text: '美妆订单已确认，即将发货；邮政有新包裹在途中。' },
+  { title: '财务', text: '银行提供信用卡余额转移优惠；需设置个人保险档案；会员权益规则及有效期更新。' },
+  { title: '开发 / 仓库', text: '个人代码库的 CI 工作流与照片流水线任务运行失败，需留意。' },
+  { title: '生活 / 账户', text: '游戏平台账号收到异地登录安全告警，需核实；购物账户创建通行密钥；线上课程取消，需处理退费或重排；教练确认退款转为课程积分，需回复预约。' },
+  { title: '其他', text: '社区动态、投票通知及推广套件就绪等低优先级信息。' },
+];
+
+const messages = [
+  { level: 'must', title: '您的账号登录验证码', text: '游戏平台账号验证码及异地登录安全告警，需立即核实。' },
+  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: '个人代码库 CI 工作流运行失败，需留意。' },
+  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: '个人代码库照片流水线部分任务失败，需留意。' },
+  { level: 'should', title: 'Special offer: Transfer balances & save on interest!', text: '银行提供信用卡余额转移优惠，需留意适用条款与截止日期。' },
+  { level: 'should', title: 'Your passkey has been created', text: '购物账户成功创建通行密钥，若未操作需核实账户安全。' },
+  { level: 'should', title: '[personal-project] Run failed: integration-check — main', text: '另一轮 CI 工作流运行失败，需留意。' },
+  { level: 'should', title: '[personal-project] Run failed: photo-pipeline — main', text: '另一轮照片流水线任务失败，需留意。' },
+  { level: 'should', title: 'Don’t forget to set up your insurance profile', text: '提醒设置个人保险档案。' },
+  { level: 'should', title: 'Your order has been confirmed', text: '美妆订单已确认，即将发货。' },
+  { level: 'should', title: 'Appointment Cancelled: Online lesson', text: '线上课程已取消，需留意退费或重排政策。' },
+  { level: 'should', title: 'Re: Monthly Coaching Plan Terms & Conditions', text: '教练确认退款转为课程积分，需在有效期内回复预约。' },
+  { level: 'fyi', title: 'A new post from your neighborhood', text: '社区动态：邻居分享附近的警务活动。' },
+  { level: 'fyi', title: 'Election vote reminder', text: '社区关于选举投票的帖子通知。' },
+  { level: 'fyi', title: 'Your share kit is ready', text: '预约平台分享套件已就绪，包含推广用二维码和社交媒体图片。' },
+  { level: 'fyi', title: 'New posts in your neighborhood', text: '社区动态推送，含邻里帖子及招聘广告。' },
+  { level: 'fyi', title: 'Good news! A package is coming your way.', text: '邮政通知有新包裹即将送达，原消息附有追踪链接。' },
+  { level: 'fyi', title: 'Important update to your account', text: '会员等级权益变更通知，涉及状态有效期及积分规则调整。' },
+  { level: 'fyi', title: 'Important update to your account', text: '另一条会员权益变更通知，涉及积分规则及有效期调整。' },
+];
+const levels = ['must', 'should', 'fyi'];
+const folded = messages.slice(11, 15);
+---
+
+<div class="production-sample">
+  <div class="sample-context">
+    <p class="eyebrow">Amanuensis · Discord delivery</p>
+    <h3>One evening.<br />An inbox in context.</h3>
+    <p>Account alerts, failed builds, deliveries, and everyday admin arrive together. Amanuensis, one implementation within Yaaa, turns them into a category digest and a priority list delivered to Discord.</p>
+    <dl class="sample-counts">
+      <div><dt>{messages.length}</dt><dd>source messages</dd></div>
+      <div><dt>{messages.filter((m) => m.level === 'must').length}</dt><dd>marked must</dd></div>
+      <div><dt>{folded.length}</dt><dd>notices folded</dd></div>
+    </dl>
+    <p class="sample-note">An edited, anonymized production sample. Names, services, locations, identifiers, and dates have been generalized; Chinese summaries and English subjects preserve the mixed-language format.</p>
+    <p class="sample-note">Priority labels reflect this run’s output. Repeated build failures and membership notices remain visible in the details. These are triage suggestions; the sample shows no account changes, refunds, or bookings being carried out.</p>
+    <a href="/projects/amanuensis/">Explore the Amanuensis implementation <span aria-hidden="true">↗</span></a>
+  </div>
+
+  <figure class="discord-sample" aria-labelledby="digest-caption">
+    <div class="channel-bar"><span aria-hidden="true">#</span> evening-digest <span class="sample-label">Anonymized sample</span></div>
+    <div class="message" lang="zh-Hans">
+      <div class="message-avatar" aria-hidden="true">A</div>
+      <div class="message-content">
+        <div class="message-author"><b>Amanuensis</b><span class="app-badge">APP</span><span class="message-time">晚间摘要</span></div>
+        <p class="message-kind">digest (1/1)</p>
+        <dl class="digest-categories">
+          {categories.map(({ title, text }) => <div><dt>{title}</dt><dd>{text}</dd></div>)}
+        </dl>
+        <details class="folded-notices">
+          <summary>{folded.length} 条社区 / 推广通知折叠</summary>
+          <ul>{folded.map((m) => <li>{m.text}</li>)}</ul>
+        </details>
+        <div class="needs-attention">
+          <p>需处理</p>
+          <span class="priority must">must</span>
+          <b>账号登录安全告警</b>
+          <p>收到验证码及异地登录提醒，需核实是否为本人操作。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="message message--details" lang="zh-Hans">
+      <div class="message-avatar" aria-hidden="true">A</div>
+      <div class="message-content">
+        <div class="message-author"><b>Amanuensis</b><span class="app-badge">APP</span></div>
+        <details class="priority-details">
+          <summary><span class="message-kind">details (1/1)</span><span>展开 {messages.length} 条明细</span></summary>
+          {levels.map((level) => (
+            <div class="priority-group">
+              <h4><span class:list={['priority', level]}>{level}</span><span>{messages.filter((m) => m.level === level).length} 条</span></h4>
+              <ul>{messages.filter((m) => m.level === level).map((m) => <li><b>{m.title}</b><p>{m.text}</p></li>)}</ul>
+            </div>
+          ))}
+        </details>
+      </div>
+    </div>
+    <figcaption id="digest-caption">Category digest first; individual priorities on demand. Recreated as selectable text from an anonymized Discord production excerpt.</figcaption>
+  </figure>
+</div>
+
+<style>
+  .production-sample { display: grid; grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); gap: clamp(2rem, 4vw, 4rem); align-items: start; }
+  .sample-context, .discord-sample, .message-content { min-width: 0; }
+  .eyebrow { margin: 0 0 1rem; font: 700 .7rem/1.6 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--systems); }
+  h3 { margin: 0 0 1.3rem; font: 500 clamp(1.9rem, 3vw, 2.8rem)/1.12 var(--serif); letter-spacing: -.03em; }
+  .sample-context > p:not(.eyebrow) { color: var(--ink-soft); line-height: 1.75; }
+  .sample-context > .sample-note { font-size: .82rem; }
+  .sample-counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; border-block: 1px solid var(--rule); padding: 1.2rem 0; margin: 1.8rem 0; }
+  .sample-counts dt { font: 500 2rem/1.2 var(--mono); color: var(--systems); }
+  .sample-counts dd { margin: .4rem 0 0; font-size: .72rem; color: var(--ink-soft); }
+  .sample-context a { display: inline-block; margin-top: .7rem; font-size: .85rem; }
+  .discord-sample { margin: 0; border: 1px solid var(--rule-hard); background: var(--surface); }
+  .channel-bar { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; padding: .85rem 1.1rem; border-bottom: 1px solid var(--rule); font: 600 .78rem/1.5 var(--mono); }
+  .channel-bar > span:first-child { color: var(--ink-soft); font-size: 1.1rem; }
+  .sample-label { margin-left: auto; font-size: .6rem; font-weight: 400; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+  .message { display: grid; grid-template-columns: 1.9rem minmax(0, 1fr); gap: .8rem; padding: 1.4rem 1.1rem; }
+  .message-avatar { display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--systems); color: var(--surface); font: 600 .9rem var(--mono); }
+  .message-author { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; font-size: .82rem; }
+  .app-badge { padding: .1rem .3rem; background: var(--systems); color: var(--surface); border-radius: 2px; font: 600 .58rem/1.4 var(--sans); }
+  .message-time { font-size: .65rem; color: var(--ink-soft); }
+  .message-kind { margin: .35rem 0 1rem; font: .75rem/1.5 var(--mono); color: var(--ink-soft); }
+  .digest-categories { margin: 0; font-size: .85rem; line-height: 1.8; }
+  .digest-categories > div + div { margin-top: .8rem; }
+  .digest-categories dt { font-weight: 700; }
+  .digest-categories dd { margin: .1rem 0 0; color: var(--ink-soft); }
+  summary { cursor: pointer; }
+  summary:focus-visible, a:focus-visible { outline: 2px solid var(--systems); outline-offset: 4px; }
+  .folded-notices { margin-top: 1rem; font-size: .77rem; color: var(--ink-soft); }
+  .folded-notices summary { padding: .5rem .6rem; background: var(--surface-quiet); }
+  .folded-notices ul { margin: .7rem 0; padding-left: 1.2rem; line-height: 1.8; }
+  .needs-attention { margin-top: 1.2rem; padding: .8rem .9rem; border-left: 2px solid var(--worlds); background: color-mix(in srgb, var(--worlds) 5%, var(--surface)); font-size: .8rem; line-height: 1.8; }
+  .needs-attention p { margin: 0; }
+  .needs-attention > p:first-child { margin-bottom: .35rem; font-weight: 700; }
+  .needs-attention > p:last-child { margin-top: .3rem; color: var(--ink-soft); }
+  .priority { display: inline-flex; align-items: center; gap: .35rem; margin-right: .5rem; font: 600 .68rem/1.5 var(--mono); }
+  .priority::before { content: ''; width: .5rem; height: .5rem; border-radius: 50%; background: currentColor; }
+  .must { color: #a13535; }
+  .should { color: #7b5c00; }
+  .fyi { color: var(--systems); }
+  .message--details { border-top: 1px solid var(--rule); padding-top: 1.1rem; }
+  .priority-details > summary { margin-top: .4rem; font-size: .75rem; }
+  .priority-details > summary .message-kind { margin: 0 .7rem 0 0; }
+  .priority-details > summary > span:last-child { color: var(--systems); }
+  .priority-group { margin-top: 1.2rem; }
+  .priority-group h4 { display: flex; align-items: center; gap: .5rem; margin: 0; padding-bottom: .5rem; border-bottom: 1px solid var(--rule); }
+  .priority-group h4 > span:last-child { font-size: .65rem; font-weight: 400; color: var(--ink-soft); }
+  .priority-group ul { list-style: none; padding: 0; margin: 0; }
+  .priority-group li { padding: .7rem 0; border-bottom: 1px dotted var(--rule); font-size: .77rem; line-height: 1.7; overflow-wrap: anywhere; }
+  .priority-group li b { font-weight: 600; }
+  .priority-group li p { margin: .2rem 0 0; color: var(--ink-soft); }
+  figcaption { border-top: 1px solid var(--rule); padding: .85rem 1.1rem; font-size: .7rem; line-height: 1.7; color: var(--ink-soft); }
+  @media (max-width: 900px) { .production-sample { grid-template-columns: minmax(0, 1fr); } .sample-context { max-width: 38rem; } }
+  @media (max-width: 560px) { .message { grid-template-columns: minmax(0, 1fr); padding: 1rem; } .message-avatar { display: none; } .channel-bar { padding: .75rem 1rem; } .sample-label { width: 100%; margin-left: 0; } }
+</style>
