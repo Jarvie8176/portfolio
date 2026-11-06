@@ -1,6 +1,7 @@
 ---
 import Analytics from "../../components/Analytics.astro";
 import TrailwalkGallery from "../../components/trailwalk/TrailwalkGallery.astro";
+import TrailwalkProductions from "../../components/trailwalk/TrailwalkProductions.astro";
 import { build } from "../../data/build";
 import { deployment, displayHost, site } from "../../data/site";
 
@@ -33,6 +34,7 @@ const navItems = [
     { href: "#problem", label: "The Problem", analyticsId: "problem" },
     { href: "#origin", label: "Origin Story", analyticsId: "origin" },
     { href: "#gallery", label: "Gallery", analyticsId: "gallery" },
+    { href: "#production", label: "YouTube", analyticsId: "production" },
     { href: "#experience", label: "The Experience", analyticsId: "experience" },
     { href: "#audience", label: "Who It Helps", analyticsId: "audience" },
     { href: "#faq", label: "FAQ", analyticsId: "faq" },
@@ -377,6 +379,8 @@ const faqs = [
             </section>
 
             <TrailwalkGallery />
+
+            <TrailwalkProductions />
 
             <div class="waveform-wrap" aria-hidden="true">
                 <svg viewBox="0 0 200 20" class="waveform" fill="none">
@@ -1429,7 +1433,7 @@ const faqs = [
         color: rgba(255, 255, 255, 0.6);
     }
 
-    @media (max-width: 1400px) {
+    @media (max-width: 1600px) {
         .page-nav {
             gap: 18px;
             padding-right: clamp(20px, 4vw, 56px);

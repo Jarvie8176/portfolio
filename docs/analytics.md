@@ -54,11 +54,23 @@ the setup look unwired. Query strings and URL hashes are still excluded.
 
 Fields:
 
-- `section`: `portfolio_home`, `hero`, `problem`, `origin`, `gallery`,
+- `section`: `portfolio_home`, `hero`, `problem`, `origin`, `gallery`, `production`,
   `experience`, `audience`, `faq`, `contact`, or `request_updates`
 - `placement`: `header` or `mobile_menu`
 
 Purpose: understand which sections visitors intentionally jump to.
+
+### Trailwalk YouTube Production
+
+`trailwalk_production_click`
+
+Fields:
+
+- `destination`: `channel` or the public YouTube video id
+
+Purpose: understand whether visitors open a published walk or explore the
+Trailwalk Studio channel. Links open YouTube in a new tab; the section does not
+load an embedded player or track playback.
 
 ### Trailwalk CTA
 
