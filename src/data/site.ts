@@ -6,6 +6,7 @@ export const site = {
   githubUrl: 'https://github.com/Jarvie8176',
   agentGithubUrl: 'https://github.com/cyber-ayi',
   repoUrl: 'https://github.com/Jarvie8176/portfolio',
+  trailwalkYoutubeUrl: 'https://www.youtube.com/@fnpg-ch',
 };
 
 const env = (key: string) => process.env[key]?.trim() || undefined;
