@@ -18,23 +18,6 @@ const films = [
     },
 ];
 
-const productionSteps = [
-    {
-        number: "01",
-        title: "Record on the trail",
-        description: "360-degree footage and spatial sound captured on location.",
-    },
-    {
-        number: "02",
-        title: "Shape the walk",
-        description: "Picture and sound aligned, ambience carefully cleaned, colour graded.",
-    },
-    {
-        number: "03",
-        title: "Publish the experience",
-        description: "Full-length walks finished in 8K with spatial audio for YouTube.",
-    },
-];
 ---
 
 <section class="productions" id="production" aria-labelledby="production-title">
@@ -108,19 +91,6 @@ const productionSteps = [
             }
         </div>
 
-        <ol class="productions__process" aria-label="From field recording to finished film">
-            {
-                productionSteps.map((step) => (
-                    <li>
-                        <span class="productions__step-number" aria-hidden="true">{step.number}</span>
-                        <div>
-                            <h3>{step.title}</h3>
-                            <p>{step.description}</p>
-                        </div>
-                    </li>
-                ))
-            }
-        </ol>
     </div>
 </section>
 
@@ -298,43 +268,6 @@ const productionSteps = [
         outline-offset: 5px;
     }
 
-    .productions__process {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 28px;
-        margin: 40px 0 0;
-        padding: 28px 0 0;
-        border-top: 1px solid var(--tw-divider);
-        list-style: none;
-    }
-
-    .productions__process li {
-        display: flex;
-        gap: 14px;
-        min-width: 0;
-    }
-
-    .productions__step-number {
-        padding-top: 3px;
-        color: var(--tw-forest);
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .productions__process h3 {
-        margin: 0 0 8px;
-        font-size: 15px;
-        font-weight: 600;
-        line-height: 1.5;
-    }
-
-    .productions__process p {
-        margin: 0;
-        color: var(--tw-secondary);
-        font-size: 14px;
-        line-height: 1.7;
-    }
-
     @media (max-width: 920px) {
         .productions__heading {
             align-items: flex-start;
@@ -342,8 +275,7 @@ const productionSteps = [
             gap: 20px;
         }
 
-        .productions__films,
-        .productions__process {
+        .productions__films {
             grid-template-columns: 1fr;
         }
     }
